@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SellSense — Connexion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --black: #0a0a0a;
+  --white: #f5f3ee;
+  --cream: #f0ede6;
+  --accent: #c8ff00;
+  --accent2: #00e5ff;
+  --muted: #6b6b6b;
+  --card: #141414;
+  --border: rgba(255,255,255,0.08);
+  --border-focus: rgba(200,255,0,0.5);
+  --radius: 16px;
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --error: #ff5757;
+  --success: #c8ff00;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+[dir="rtl"] { direction: rtl; text-align: right; }
+
+/* ── BG GLOW ── */
+.bg-glow {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 600px 400px at 20% 50%, rgba(200,255,0,0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 500px at 80% 20%, rgba(0,229,255,0.03) 0%, transparent 70%);
+}
+
+/* ── NAV ── */
+nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 40px;
+  border-bottom: 1px solid var(--border);
+  position: relative; z-index: 10;
+  background: rgba(10,10,10,0.85);
+  backdrop-filter: blur(12px);
+}
+.logo { font-family: var(--font-display); font-size: 22px; font-weight: 800; letter-spacing: -0.5px; text-decoration: none; color: var(--white); }
+.logo span { color: var(--accent); }
+.lang-switcher { display: flex; gap: 6px; }
+.lang-btn {
+  background: transparent; border: 1px solid var(--border);
+  color: var(--muted); padding: 6px 14px; border-radius: 40px;
+  font-family: var(--font-body); font-size: 13px; cursor: pointer;
+  transition: all 0.2s;
+}
+.lang-btn:hover, .lang-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(200,255,0,0.06); }
+
+/* ── MAIN LAYOUT ── */
+main {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  padding: 48px 24px; position: relative; z-index: 1;
+}
+
+/* ── AUTH CARD ── */
+.auth-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  width: 100%; max-width: 460px;
+  padding: 48px 44px;
+  position: relative;
+  animation: fadeUp 0.4s ease forwards;
+}
+.auth-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 24px 24px 0 0;
+}
+
+/* ── TABS ── */
+.tabs {
+  display: flex; gap: 0;
+  background: rgba(255,255,255,0.04);
+  border-radius: 12px; padding: 4px;
+  margin-bottom: 36px;
+}
+.tab {
+  flex: 1; text-align: center;
+  padding: 10px;
+  border-radius: 9px;
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  cursor: pointer; border: none;
+  transition: all 0.2s;
+  color: var(--muted); background: transparent;
+}
+.tab.active {
+  background: var(--accent); color: var(--black); font-weight: 700;
+}
+
+/* ── FORM HEADER ── */
+.auth-title {
+  font-family: var(--font-display); font-size: 26px; font-weight: 800;
+  letter-spacing: -0.5px; margin-bottom: 6px;
+}
+.auth-sub { color: var(--muted); font-size: 14px; margin-bottom: 32px; font-weight: 300; }
+
+/* ── FIELDS ── */
+.field { margin-bottom: 18px; }
+.field label {
+  display: block; font-size: 13px; font-weight: 500;
+  color: rgba(255,255,255,0.7); margin-bottom: 8px;
+}
+.input-wrap { position: relative; }
+.input-wrap input {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 13px 16px;
+  color: var(--white);
+  font-family: var(--font-body); font-size: 15px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.input-wrap input::placeholder { color: var(--muted); }
+.input-wrap input:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(200,255,0,0.07);
+}
+.input-wrap input.error { border-color: var(--error); }
+
+/* Eye toggle for password */
+.eye-btn {
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer; color: var(--muted);
+  padding: 4px; display: flex; align-items: center;
+  transition: color 0.2s;
+}
+.eye-btn:hover { color: var(--white); }
+[dir="rtl"] .eye-btn { right: auto; left: 14px; }
+
+/* Password strength */
+.strength-bar { display: flex; gap: 4px; margin-top: 8px; }
+.strength-seg {
+  flex: 1; height: 3px; border-radius: 2px;
+  background: rgba(255,255,255,0.08);
+  transition: background 0.3s;
+}
+.strength-seg.weak { background: #ff5757; }
+.strength-seg.medium { background: #ffb347; }
+.strength-seg.strong { background: var(--accent); }
+.strength-label { font-size: 11px; color: var(--muted); margin-top: 5px; }
+
+/* Error message */
+.field-error { font-size: 12px; color: var(--error); margin-top: 5px; display: none; }
+.field-error.visible { display: block; }
+
+/* Forgot password */
+.forgot {
+  display: block; text-align: right; font-size: 13px;
+  color: var(--muted); text-decoration: none; margin-top: -8px; margin-bottom: 18px;
+  transition: color 0.2s;
+}
+[dir="rtl"] .forgot { text-align: left; }
+.forgot:hover { color: var(--accent); }
+
+/* ── TYPE SELECTOR (signup only) ── */
+.type-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.type-card {
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 14px 8px; cursor: pointer;
+  transition: all 0.2s; text-align: center;
+  position: relative;
+}
+.type-card:hover { border-color: rgba(200,255,0,0.3); background: rgba(200,255,0,0.03); }
+.type-card.selected { border-color: var(--accent); background: rgba(200,255,0,0.06); }
+.type-card input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+.tc-icon { font-size: 20px; margin-bottom: 6px; }
+.tc-name { font-size: 11px; font-weight: 500; line-height: 1.3; color: rgba(255,255,255,0.8); }
+
+/* ── DIVIDER ── */
+.or-divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 24px 0; color: var(--muted); font-size: 13px;
+}
+.or-divider::before, .or-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+/* ── GOOGLE BTN ── */
+.btn-google {
+  width: 100%; background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border); border-radius: 12px;
+  padding: 13px 16px; color: var(--white);
+  font-family: var(--font-body); font-size: 15px; font-weight: 500;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: all 0.2s; margin-bottom: 8px;
+}
+.btn-google:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.15); }
+
+/* ── PRIMARY BTN ── */
+.btn-primary {
+  width: 100%; background: var(--accent); color: var(--black);
+  border: none; border-radius: 12px; padding: 15px;
+  font-family: var(--font-display); font-size: 16px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s; letter-spacing: 0.02em;
+  margin-top: 8px; position: relative; overflow: hidden;
+}
+.btn-primary:hover { background: #d4ff26; transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+.btn-primary.loading { pointer-events: none; opacity: 0.7; }
+.btn-primary .spinner {
+  width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.3);
+  border-top-color: var(--black); border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: none; margin: 0 auto;
+}
+.btn-primary.loading .btn-text { display: none; }
+.btn-primary.loading .spinner { display: block; }
+
+/* ── TERMS ── */
+.terms {
+  font-size: 12px; color: var(--muted); text-align: center;
+  margin-top: 16px; line-height: 1.5;
+}
+.terms a { color: rgba(255,255,255,0.5); text-decoration: underline; }
+.terms a:hover { color: var(--accent); }
+
+/* ── SUCCESS STATE ── */
+.success-view {
+  text-align: center; display: none;
+  animation: fadeUp 0.4s ease forwards;
+}
+.success-icon {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: rgba(200,255,0,0.1); border: 1px solid rgba(200,255,0,0.3);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 24px; font-size: 28px;
+}
+.success-title {
+  font-family: var(--font-display); font-size: 24px; font-weight: 800;
+  margin-bottom: 8px;
+}
+.success-sub { color: var(--muted); font-size: 14px; margin-bottom: 32px; }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  text-align: center; padding: 24px;
+  color: var(--muted); font-size: 13px;
+  position: relative; z-index: 1;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes slideIn { from { opacity:0; transform:translateX(16px); } to { opacity:1; transform:translateX(0); } }
+.slide-in { animation: slideIn 0.3s ease forwards; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 520px) {
+  .auth-card { padding: 32px 24px; }
+  nav { padding: 16px 20px; }
+  .type-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="sellsense-landing.html" class="logo">Sell<span>Sense</span></a>
+  <div class="lang-switcher">
+    <button class="lang-btn active" onclick="setLang('en',event)">EN</button>
+    <button class="lang-btn" onclick="setLang('fr',event)">FR</button>
+    <button class="lang-btn" onclick="setLang('ar',event)">عر</button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main>
+  <div class="auth-card" id="auth-card">
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab active" id="tab-login" onclick="switchTab('login')" data-i18n="tabLogin">Login</button>
+      <button class="tab" id="tab-signup" onclick="switchTab('signup')" data-i18n="tabSignup">Create account</button>
+    </div>
+
+    <!-- ═══ LOGIN FORM ═══ -->
+    <div id="form-login" class="slide-in">
+      <div class="auth-title" data-i18n="loginTitle">Welcome back</div>
+      <div class="auth-sub" data-i18n="loginSub">Log in to access your dashboard and saved projects.</div>
+
+      <!-- Google -->
+      <button class="btn-google" onclick="fakeOAuth()">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <path d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615Z" fill="#4285F4"/>
+          <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18Z" fill="#34A853"/>
+          <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332Z" fill="#FBBC05"/>
+          <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58Z" fill="#EA4335"/>
+        </svg>
+        <span data-i18n="googleBtn">Continue with Google</span>
+      </button>
+
+      <div class="or-divider"><span data-i18n="orDivider">or</span></div>
+
+      <div class="field">
+        <label data-i18n="labelEmail">Email address</label>
+        <div class="input-wrap">
+          <input type="email" id="login-email" data-i18n-ph="phEmail" placeholder="you@example.com" oninput="clearError('login-email-err')"/>
+        </div>
+        <div class="field-error" id="login-email-err" data-i18n="errEmail">Please enter a valid email.</div>
+      </div>
+
+      <div class="field">
+        <label data-i18n="labelPassword">Password</label>
+        <div class="input-wrap">
+          <input type="password" id="login-pass" data-i18n-ph="phPassword" placeholder="••••••••" style="padding-right:44px;" oninput="clearError('login-pass-err')"/>
+          <button class="eye-btn" onclick="toggleEye('login-pass',this)" type="button" aria-label="Show password">
+            <svg id="eye-login-pass" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="field-error" id="login-pass-err" data-i18n="errPass">Incorrect password.</div>
+      </div>
+
+      <a href="#" class="forgot" data-i18n="forgotPass">Forgot password?</a>
+
+      <button class="btn-primary" id="btn-login" onclick="handleLogin()">
+        <span class="btn-text" data-i18n="loginBtn">Log in →</span>
+        <div class="spinner"></div>
+      </button>
+
+      <p class="terms" data-i18n="loginTerms">Don't have an account? <a href="#" onclick="switchTab('signup')">Sign up free</a></p>
+    </div>
+
+    <!-- ═══ SIGNUP FORM ═══ -->
+    <div id="form-signup" style="display:none;">
+      <div class="auth-title" data-i18n="signupTitle">Create your account</div>
+      <div class="auth-sub" data-i18n="signupSub">Free forever. Upgrade to Premium when you're ready.</div>
+
+      <!-- Google -->
+      <button class="btn-google" onclick="fakeOAuth()">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <path d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615Z" fill="#4285F4"/>
+          <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18Z" fill="#34A853"/>
+          <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332Z" fill="#FBBC05"/>
+          <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58Z" fill="#EA4335"/>
+        </svg>
+        <span data-i18n="googleBtn">Continue with Google</span>
+      </button>
+
+      <div class="or-divider"><span data-i18n="orDivider">or</span></div>
+
+      <div class="field">
+        <label data-i18n="labelName">Full name</label>
+        <div class="input-wrap">
+          <input type="text" id="signup-name" data-i18n-ph="phName" placeholder="Karim Benali" oninput="clearError('signup-name-err')"/>
+        </div>
+        <div class="field-error" id="signup-name-err" data-i18n="errName">Please enter your name.</div>
+      </div>
+
+      <div class="field">
+        <label data-i18n="labelEmail">Email address</label>
+        <div class="input-wrap">
+          <input type="email" id="signup-email" data-i18n-ph="phEmail" placeholder="you@example.com" oninput="clearError('signup-email-err')"/>
+        </div>
+        <div class="field-error" id="signup-email-err" data-i18n="errEmail">Please enter a valid email.</div>
+      </div>
+
+      <div class="field">
+        <label data-i18n="labelPassword">Password</label>
+        <div class="input-wrap">
+          <input type="password" id="signup-pass" data-i18n-ph="phPassword" placeholder="••••••••" style="padding-right:44px;" oninput="checkStrength(this.value)"/>
+          <button class="eye-btn" onclick="toggleEye('signup-pass',this)" type="button" aria-label="Show password">
+            <svg id="eye-signup-pass" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="strength-bar">
+          <div class="strength-seg" id="seg1"></div>
+          <div class="strength-seg" id="seg2"></div>
+          <div class="strength-seg" id="seg3"></div>
+        </div>
+        <div class="strength-label" id="strength-label"></div>
+        <div class="field-error" id="signup-pass-err" data-i18n="errPassWeak">Password must be at least 8 characters.</div>
+      </div>
+
+      <div class="field">
+        <label data-i18n="labelType">I am a...</label>
+        <div class="type-grid">
+          <div class="type-card" onclick="selectType('creator',this)">
+            <input type="radio" name="stype" value="creator"/>
+            <div class="tc-icon">🎬</div>
+            <div class="tc-name" data-i18n="typeCreator">Content Creator</div>
+          </div>
+          <div class="type-card" onclick="selectType('ecom',this)">
+            <input type="radio" name="stype" value="ecom"/>
+            <div class="tc-icon">📦</div>
+            <div class="tc-name" data-i18n="typeEcom">E-com / Dropship</div>
+          </div>
+          <div class="type-card" onclick="selectType('freelancer',this)">
+            <input type="radio" name="stype" value="freelancer"/>
+            <div class="tc-icon">💻</div>
+            <div class="tc-name" data-i18n="typeFreelancer">Freelancer</div>
+          </div>
+        </div>
+        <div class="field-error" id="signup-type-err" data-i18n="errType">Please select your profile type.</div>
+      </div>
+
+      <button class="btn-primary" id="btn-signup" onclick="handleSignup()">
+        <span class="btn-text" data-i18n="signupBtn">Create my account →</span>
+        <div class="spinner"></div>
+      </button>
+
+      <p class="terms" data-i18n="signupTerms">By signing up, you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</p>
+    </div>
+
+    <!-- ═══ SUCCESS ═══ -->
+    <div id="success-view" class="success-view">
+      <div class="success-icon">✓</div>
+      <div class="success-title" id="success-title"></div>
+      <div class="success-sub" id="success-sub"></div>
+      <button class="btn-primary" onclick="goToDashboard()">
+        <span class="btn-text" data-i18n="successBtn">Go to my dashboard →</span>
+        <div class="spinner"></div>
+      </button>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <span data-i18n="footer">© 2025 SellSense · Free forever for individuals</span>
+</footer>
+
+<script>
+// ════════════════════════════
+// i18n
+// ════════════════════════════
+const T = {
+  en: {
+    tabLogin:'Log in', tabSignup:'Create account',
+    loginTitle:'Welcome back', loginSub:'Log in to access your dashboard and saved projects.',
+    signupTitle:'Create your account', signupSub:'Free forever. Upgrade to Premium when you\'re ready.',
+    googleBtn:'Continue with Google', orDivider:'or',
+    labelEmail:'Email address', phEmail:'you@example.com',
+    labelPassword:'Password', phPassword:'••••••••',
+    labelName:'Full name', phName:'Karim Benali',
+    labelType:'I am a...',
+    typeCreator:'Content Creator', typeEcom:'E-com / Dropship', typeFreelancer:'Freelancer',
+    forgotPass:'Forgot password?',
+    loginBtn:'Log in →', signupBtn:'Create my account →',
+    loginTerms:'Don\'t have an account? <a href="#" onclick="switchTab(\'signup\')">Sign up free</a>',
+    signupTerms:'By signing up, you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.',
+    errEmail:'Please enter a valid email.',
+    errPass:'Incorrect password.',
+    errPassWeak:'Password must be at least 8 characters.',
+    errName:'Please enter your name.',
+    errType:'Please select your profile type.',
+    strengthWeak:'Weak', strengthMedium:'Medium', strengthStrong:'Strong',
+    successLoginTitle:'You\'re logged in!', successLoginSub:'Redirecting you to your dashboard...',
+    successSignupTitle:'Account created!', successSignupSub:'Welcome to SellSense. Your dashboard is ready.',
+    successBtn:'Go to my dashboard →',
+    footer:'© 2025 SellSense · Free forever for individuals',
+  },
+  fr: {
+    tabLogin:'Connexion', tabSignup:'Créer un compte',
+    loginTitle:'Content de te revoir', loginSub:'Connecte-toi pour accéder à ton tableau de bord.',
+    signupTitle:'Crée ton compte', signupSub:'Gratuit pour toujours. Passe au Premium quand tu veux.',
+    googleBtn:'Continuer avec Google', orDivider:'ou',
+    labelEmail:'Adresse e-mail', phEmail:'toi@exemple.com',
+    labelPassword:'Mot de passe', phPassword:'••••••••',
+    labelName:'Nom complet', phName:'Karim Benali',
+    labelType:'Je suis...',
+    typeCreator:'Créateur de contenu', typeEcom:'E-com / Dropshipping', typeFreelancer:'Freelance',
+    forgotPass:'Mot de passe oublié ?',
+    loginBtn:'Se connecter →', signupBtn:'Créer mon compte →',
+    loginTerms:'Pas encore de compte ? <a href="#" onclick="switchTab(\'signup\')">S\'inscrire gratuitement</a>',
+    signupTerms:'En t\'inscrivant, tu acceptes nos <a href="#">CGU</a> et notre <a href="#">Politique de confidentialité</a>.',
+    errEmail:'Adresse e-mail invalide.',
+    errPass:'Mot de passe incorrect.',
+    errPassWeak:'Le mot de passe doit contenir au moins 8 caractères.',
+    errName:'Merci d\'entrer ton nom.',
+    errType:'Choisis ton profil.',
+    strengthWeak:'Faible', strengthMedium:'Moyen', strengthStrong:'Fort',
+    successLoginTitle:'Connexion réussie !', successLoginSub:'Redirection vers ton tableau de bord...',
+    successSignupTitle:'Compte créé !', successSignupSub:'Bienvenue sur SellSense. Ton dashboard est prêt.',
+    successBtn:'Accéder à mon dashboard →',
+    footer:'© 2025 SellSense · Gratuit pour les particuliers',
+  },
+  ar: {
+    tabLogin:'تسجيل الدخول', tabSignup:'إنشاء حساب',
+    loginTitle:'مرحباً بعودتك', loginSub:'سجّل دخولك للوصول إلى لوحة التحكم ومشاريعك.',
+    signupTitle:'أنشئ حسابك', signupSub:'مجاني للأبد. يمكنك الترقية إلى Premium متى شئت.',
+    googleBtn:'المتابعة مع Google', orDivider:'أو',
+    labelEmail:'البريد الإلكتروني', phEmail:'you@example.com',
+    labelPassword:'كلمة المرور', phPassword:'••••••••',
+    labelName:'الاسم الكامل', phName:'كريم بنعلي',
+    labelType:'أنا...',
+    typeCreator:'منشئ محتوى', typeEcom:'تجارة إلكترونية', typeFreelancer:'مستقل',
+    forgotPass:'نسيت كلمة المرور؟',
+    loginBtn:'تسجيل الدخول ←', signupBtn:'إنشاء حسابي ←',
+    loginTerms:'ليس لديك حساب؟ <a href="#" onclick="switchTab(\'signup\')">سجّل مجاناً</a>',
+    signupTerms:'بالتسجيل، أنت توافق على <a href="#">الشروط</a> و<a href="#">سياسة الخصوصية</a>.',
+    errEmail:'البريد الإلكتروني غير صالح.',
+    errPass:'كلمة المرور غير صحيحة.',
+    errPassWeak:'يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل.',
+    errName:'الرجاء إدخال اسمك.',
+    errType:'الرجاء اختيار نوع ملفك الشخصي.',
+    strengthWeak:'ضعيفة', strengthMedium:'متوسطة', strengthStrong:'قوية',
+    successLoginTitle:'تم تسجيل الدخول!', successLoginSub:'جارٍ توجيهك إلى لوحة التحكم...',
+    successSignupTitle:'تم إنشاء الحساب!', successSignupSub:'مرحباً بك في SellSense. لوحة التحكم جاهزة.',
+    successBtn:'الذهاب إلى لوحتي ←',
+    footer:'© 2025 SellSense · مجاني للأفراد',
+  }
+};
+let lang = 'en';
+let selectedType = null;
+
+function setLang(l, e) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  if (e && e.target) e.target.classList.add('active');
+  document.body.setAttribute('dir', l === 'ar' ? 'rtl' : 'ltr');
+  document.documentElement.setAttribute('lang', l);
+  applyTranslations();
+}
+function applyTranslations() {
+  const t = T[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (t[k] !== undefined) el.innerHTML = t[k];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const k = el.getAttribute('data-i18n-ph');
+    if (t[k] !== undefined) el.placeholder = t[k];
+  });
+}
+
+// ════════════════════════════
+// TABS
+// ════════════════════════════
+function switchTab(tab) {
+  const isLogin = tab === 'login';
+  document.getElementById('tab-login').classList.toggle('active', isLogin);
+  document.getElementById('tab-signup').classList.toggle('active', !isLogin);
+  document.getElementById('form-login').style.display = isLogin ? 'block' : 'none';
+  document.getElementById('form-signup').style.display = isLogin ? 'none' : 'block';
+  document.getElementById('success-view').style.display = 'none';
+}
+
+// ════════════════════════════
+// TYPE SELECT
+// ════════════════════════════
+function selectType(type, el) {
+  selectedType = type;
+  document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  clearError('signup-type-err');
+}
+
+// ════════════════════════════
+// EYE TOGGLE
+// ════════════════════════════
+function toggleEye(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  const isPass = inp.type === 'password';
+  inp.type = isPass ? 'text' : 'password';
+  btn.querySelector('svg').innerHTML = isPass
+    ? '<path d="M17.94 12C17.94 12 15 6 12 6c-3 0-5.94 6-5.94 6s2.94 6 5.94 6c3 0 5.94-6 5.94-6z"/><line x1="1" y1="1" x2="23" y2="23"/>'
+    : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+}
+
+// ════════════════════════════
+// PASSWORD STRENGTH
+// ════════════════════════════
+function checkStrength(val) {
+  const t = T[lang];
+  let score = 0;
+  if (val.length >= 8) score++;
+  if (/[A-Z]/.test(val) && /[0-9]/.test(val)) score++;
+  if (/[^A-Za-z0-9]/.test(val)) score++;
+  const segs = ['seg1','seg2','seg3'];
+  const cls = ['','weak','medium','strong'];
+  segs.forEach((s,i) => {
+    document.getElementById(s).className = 'strength-seg ' + (i < score ? cls[score] : '');
+  });
+  const labels = ['', t.strengthWeak, t.strengthMedium, t.strengthStrong];
+  document.getElementById('strength-label').textContent = val.length ? labels[score] : '';
+}
+
+// ════════════════════════════
+// VALIDATION
+// ════════════════════════════
+function showError(id) { document.getElementById(id).classList.add('visible'); }
+function clearError(id) { document.getElementById(id).classList.remove('visible'); }
+
+function isValidEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+
+function handleLogin() {
+  let ok = true;
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  if (!isValidEmail(email)) { showError('login-email-err'); ok = false; }
+  if (pass.length < 1) { showError('login-pass-err'); ok = false; }
+  if (!ok) return;
+  simulateLoad('btn-login', () => showSuccess('login'));
+}
+
+function handleSignup() {
+  let ok = true;
+  const name = document.getElementById('signup-name').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  const pass = document.getElementById('signup-pass').value;
+  if (!name) { showError('signup-name-err'); ok = false; }
+  if (!isValidEmail(email)) { showError('signup-email-err'); ok = false; }
+  if (pass.length < 8) { showError('signup-pass-err'); ok = false; }
+  if (!selectedType) { showError('signup-type-err'); ok = false; }
+  if (!ok) return;
+  simulateLoad('btn-signup', () => showSuccess('signup'));
+}
+
+function simulateLoad(btnId, cb) {
+  const btn = document.getElementById(btnId);
+  btn.classList.add('loading');
+  setTimeout(() => { btn.classList.remove('loading'); cb(); }, 1600);
+}
+
+function showSuccess(type) {
+  const t = T[lang];
+  document.getElementById('form-login').style.display = 'none';
+  document.getElementById('form-signup').style.display = 'none';
+  document.getElementById('success-view').style.display = 'block';
+  document.getElementById('success-title').textContent = type === 'login' ? t.successLoginTitle : t.successSignupTitle;
+  document.getElementById('success-sub').textContent = type === 'login' ? t.successLoginSub : t.successSignupSub;
+}
+
+function goToDashboard() {
+  simulateLoad('btn-signup', () => {
+    alert('🚧 Dashboard — étape suivante !');
+  });
+}
+
+function fakeOAuth() {
+  alert(lang === 'ar' ? 'سيتم ربط Google لاحقاً بـ Supabase' : lang === 'fr' ? 'Google sera connecté via Supabase à l\'étape suivante.' : 'Google OAuth will be connected via Supabase in the next step.');
+}
+</script>
+</body>
+</html>

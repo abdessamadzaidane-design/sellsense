@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SellSense — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --black: #0a0a0a;
+  --white: #f5f3ee;
+  --accent: #c8ff00;
+  --accent2: #00e5ff;
+  --muted: #6b6b6b;
+  --card: #141414;
+  --card2: #1a1a1a;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --sidebar: 240px;
+  --premium: #FFD700;
+  --premium-bg: rgba(255,215,0,0.08);
+  --premium-border: rgba(255,215,0,0.25);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--black); color: var(--white);
+  font-family: var(--font-body); font-size: 15px;
+  line-height: 1.6; min-height: 100vh; overflow-x: hidden;
+}
+
+/* ── LAYOUT ── */
+.app { display: flex; min-height: 100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar); flex-shrink: 0;
+  background: #0d0d0d; border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; bottom: 0; z-index: 50;
+  transition: transform 0.3s;
+}
+.sidebar-logo {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-display); font-size: 20px; font-weight: 800;
+}
+.sidebar-logo span { color: var(--accent); }
+.sidebar-logo small {
+  display: block; font-size: 10px; font-weight: 400;
+  color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px;
+}
+.nav-section { padding: 16px 12px 8px; }
+.nav-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding: 0 8px; margin-bottom: 6px; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 10px; border-radius: 10px; cursor: pointer;
+  font-size: 14px; color: rgba(255,255,255,0.6);
+  transition: all 0.15s; position: relative; margin-bottom: 2px;
+  text-decoration: none;
+}
+.nav-item:hover { background: rgba(255,255,255,0.05); color: var(--white); }
+.nav-item.active { background: rgba(200,255,0,0.08); color: var(--accent); }
+.nav-item .nav-icon { width: 18px; text-align: center; font-size: 16px; flex-shrink: 0; }
+.nav-item .lock-badge {
+  margin-left: auto; font-size: 10px;
+  background: var(--premium-bg); color: var(--premium);
+  border: 1px solid var(--premium-border); border-radius: 20px;
+  padding: 2px 7px; flex-shrink: 0;
+}
+.sidebar-bottom {
+  margin-top: auto; padding: 16px 12px;
+  border-top: 1px solid var(--border);
+}
+.user-pill {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px; border-radius: 12px;
+  background: rgba(255,255,255,0.04); margin-bottom: 10px;
+}
+.user-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(200,255,0,0.15); border: 1px solid rgba(200,255,0,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: var(--accent); flex-shrink: 0;
+}
+.user-name { font-size: 13px; font-weight: 500; }
+.user-plan { font-size: 11px; color: var(--muted); }
+.upgrade-btn {
+  width: 100%; background: linear-gradient(135deg, #FFD700, #FFA500);
+  border: none; border-radius: 10px; padding: 11px;
+  font-family: var(--font-display); font-size: 13px; font-weight: 700;
+  color: #000; cursor: pointer; transition: all 0.2s;
+}
+.upgrade-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* ── MAIN CONTENT ── */
+.main {
+  margin-left: var(--sidebar); flex: 1;
+  display: flex; flex-direction: column; min-height: 100vh;
+}
+
+/* ── TOP BAR ── */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 32px; border-bottom: 1px solid var(--border);
+  background: rgba(10,10,10,0.8); backdrop-filter: blur(12px);
+  position: sticky; top: 0; z-index: 40;
+}
+.topbar-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.demo-badge {
+  background: rgba(200,255,0,0.1); color: var(--accent);
+  border: 1px solid rgba(200,255,0,0.25); border-radius: 20px;
+  font-size: 12px; font-weight: 500; padding: 5px 12px;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+.topbar-upgrade {
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  border: none; border-radius: 8px; padding: 8px 16px;
+  font-family: var(--font-display); font-size: 13px; font-weight: 700;
+  color: #000; cursor: pointer; transition: all 0.2s;
+}
+.topbar-upgrade:hover { opacity: 0.9; }
+
+/* ── PAGE CONTENT ── */
+.content { padding: 32px; flex: 1; }
+
+/* ── WELCOME BANNER ── */
+.welcome-banner {
+  background: var(--card); border: 1px solid var(--border2);
+  border-radius: 20px; padding: 28px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 28px; position: relative; overflow: hidden;
+}
+.welcome-banner::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+}
+.welcome-text h2 {
+  font-family: var(--font-display); font-size: 22px; font-weight: 800;
+  letter-spacing: -0.5px; margin-bottom: 4px;
+}
+.welcome-text p { color: var(--muted); font-size: 14px; }
+.free-limit {
+  text-align: right; font-size: 13px;
+}
+.free-limit strong { color: var(--accent); font-size: 22px; font-family: var(--font-display); display: block; }
+.free-limit span { color: var(--muted); font-size: 12px; }
+
+/* ── STAT CARDS ── */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+.stat-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 20px;
+}
+.stat-label { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+.stat-val {
+  font-family: var(--font-display); font-size: 28px; font-weight: 800;
+  letter-spacing: -1px; line-height: 1;
+}
+.stat-val.positive { color: var(--accent); }
+.stat-val.negative { color: #ff5757; }
+.stat-change { font-size: 12px; color: var(--muted); margin-top: 6px; }
+.stat-change.up { color: #7aff9a; }
+
+/* ── SECTION TITLES ── */
+.section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.section-title {
+  font-family: var(--font-display); font-size: 16px; font-weight: 700;
+}
+.section-action {
+  font-size: 13px; color: var(--muted); cursor: pointer;
+  background: none; border: none; transition: color 0.2s;
+}
+.section-action:hover { color: var(--accent); }
+
+/* ── PROJECTS TABLE ── */
+.projects-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden; margin-bottom: 28px;
+}
+.projects-table { width: 100%; border-collapse: collapse; }
+.projects-table th {
+  text-align: left; font-size: 11px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--muted);
+  padding: 14px 20px; border-bottom: 1px solid var(--border);
+  font-weight: 500;
+}
+.projects-table td {
+  padding: 14px 20px; border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.projects-table tr:last-child td { border-bottom: none; }
+.projects-table tbody tr { transition: background 0.15s; cursor: pointer; }
+.projects-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+.project-type-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(255,255,255,0.05); border-radius: 6px;
+  padding: 3px 8px; font-size: 12px;
+}
+.profit-positive { color: var(--accent); font-weight: 600; }
+.profit-negative { color: #ff5757; font-weight: 600; }
+.margin-bar-wrap { width: 80px; }
+.margin-bar {
+  height: 4px; border-radius: 2px; background: rgba(255,255,255,0.08);
+  overflow: hidden; margin-bottom: 3px;
+}
+.margin-bar-fill { height: 100%; border-radius: 2px; background: var(--accent); }
+.margin-bar-fill.low { background: #ff5757; }
+.margin-bar-fill.mid { background: #ffb347; }
+.margin-val { font-size: 11px; color: var(--muted); }
+
+/* ── ADD PROJECT BTN ── */
+.add-project-row {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+  color: var(--muted); font-size: 14px; cursor: pointer;
+  transition: color 0.2s;
+}
+.add-project-row:hover { color: var(--accent); }
+
+/* ── PREMIUM LOCKED SECTIONS ── */
+.locked-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+.locked-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden; position: relative;
+}
+.locked-inner { padding: 20px; filter: blur(4px); user-select: none; pointer-events: none; }
+.locked-overlay {
+  position: absolute; inset: 0;
+  background: rgba(10,10,10,0.65);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  backdrop-filter: blur(1px);
+  border-radius: 16px;
+}
+.lock-icon { font-size: 28px; margin-bottom: 10px; }
+.lock-title {
+  font-family: var(--font-display); font-size: 16px; font-weight: 700;
+  color: var(--premium); margin-bottom: 4px; text-align: center;
+}
+.lock-sub { font-size: 13px; color: rgba(255,255,255,0.5); text-align: center; margin-bottom: 16px; }
+.lock-btn {
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  border: none; border-radius: 8px; padding: 9px 20px;
+  font-family: var(--font-display); font-size: 13px; font-weight: 700;
+  color: #000; cursor: pointer; transition: all 0.2s;
+}
+.lock-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* ── FAKE CHART (locked) ── */
+.fake-chart { height: 100px; display: flex; align-items: flex-end; gap: 6px; padding: 12px 0 0; }
+.fake-bar {
+  flex: 1; border-radius: 4px 4px 0 0;
+  background: linear-gradient(180deg, rgba(200,255,0,0.4), rgba(200,255,0,0.1));
+}
+.fake-line {
+  height: 80px; position: relative;
+}
+.fake-line svg { width: 100%; height: 80px; }
+
+/* ── PREMIUM UPSELL BANNER ── */
+.upsell-banner {
+  background: linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,165,0,0.05));
+  border: 1px solid var(--premium-border);
+  border-radius: 20px; padding: 32px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 28px; gap: 24px;
+}
+.upsell-left { flex: 1; }
+.upsell-eyebrow {
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--premium); font-weight: 500; margin-bottom: 8px;
+}
+.upsell-title {
+  font-family: var(--font-display); font-size: 22px; font-weight: 800;
+  letter-spacing: -0.5px; margin-bottom: 8px;
+}
+.upsell-features { display: flex; flex-direction: column; gap: 6px; margin-top: 16px; }
+.upsell-feat { display: flex; align-items: center; gap: 8px; font-size: 14px; color: rgba(255,255,255,0.75); }
+.upsell-feat::before { content: '✓'; color: var(--premium); font-weight: 700; flex-shrink: 0; }
+.upsell-right { text-align: center; flex-shrink: 0; }
+.price-box {
+  background: rgba(0,0,0,0.3); border: 1px solid var(--premium-border);
+  border-radius: 16px; padding: 24px 32px; margin-bottom: 12px;
+}
+.price-old { font-size: 14px; color: var(--muted); text-decoration: line-through; margin-bottom: 4px; }
+.price-val {
+  font-family: var(--font-display); font-size: 42px; font-weight: 800;
+  color: var(--premium); line-height: 1; letter-spacing: -1px;
+}
+.price-per { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.btn-upgrade-big {
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  border: none; border-radius: 12px; padding: 14px 32px;
+  font-family: var(--font-display); font-size: 16px; font-weight: 700;
+  color: #000; cursor: pointer; transition: all 0.2s; width: 100%;
+}
+.btn-upgrade-big:hover { opacity: 0.92; transform: translateY(-2px); }
+.price-note { font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+/* ── MODAL (Premium) ── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(8px); z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: #141414; border: 1px solid var(--border2);
+  border-radius: 24px; width: 100%; max-width: 480px;
+  padding: 40px; position: relative;
+  transform: translateY(20px); transition: transform 0.3s;
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, #FFD700, #FFA500);
+  border-radius: 24px 24px 0 0;
+}
+.modal-close {
+  position: absolute; top: 16px; right: 16px;
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  border-radius: 8px; width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--muted); font-size: 16px; transition: all 0.2s;
+}
+.modal-close:hover { background: rgba(255,255,255,0.1); color: var(--white); }
+.modal-title {
+  font-family: var(--font-display); font-size: 26px; font-weight: 800;
+  letter-spacing: -0.5px; margin-bottom: 4px;
+}
+.modal-sub { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+.payment-field { margin-bottom: 16px; }
+.payment-field label { display: block; font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 8px; }
+.payment-input {
+  width: 100%; background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 12px 14px; color: var(--white);
+  font-family: var(--font-body); font-size: 15px; transition: border-color 0.2s;
+}
+.payment-input:focus { outline: none; border-color: rgba(255,215,0,0.4); }
+.payment-input::placeholder { color: var(--muted); }
+.card-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.card-logos { display: flex; gap: 8px; margin-bottom: 20px; }
+.card-logo {
+  background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+  border-radius: 6px; padding: 4px 10px; font-size: 12px;
+  color: rgba(255,255,255,0.7); display: flex; align-items: center; gap: 4px;
+}
+.secure-note {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--muted); margin-bottom: 16px;
+}
+.btn-pay {
+  width: 100%; background: linear-gradient(135deg, #FFD700, #FFA500);
+  border: none; border-radius: 12px; padding: 15px;
+  font-family: var(--font-display); font-size: 16px; font-weight: 700;
+  color: #000; cursor: pointer; transition: all 0.2s;
+}
+.btn-pay:hover { opacity: 0.9; }
+.btn-pay.loading { opacity: 0.7; pointer-events: none; }
+
+/* ── ADD PROJECT MODAL ── */
+.add-modal {
+  background: #141414; border: 1px solid var(--border2);
+  border-radius: 24px; width: 100%; max-width: 440px;
+  padding: 36px; position: relative;
+  transform: translateY(20px); transition: transform 0.3s;
+}
+.modal-overlay.open .add-modal { transform: translateY(0); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .locked-grid { grid-template-columns: 1fr; }
+  .upsell-banner { flex-direction: column; }
+}
+@media (max-width: 700px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .content { padding: 20px; }
+  .topbar { padding: 14px 20px; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ════ SIDEBAR ════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      Sell<span>Sense</span>
+      <small>Tableau de bord</small>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Menu</div>
+      <a class="nav-item active" href="#">
+        <span class="nav-icon">⬡</span> Vue d'ensemble
+      </a>
+      <a class="nav-item" href="#" onclick="alert('Disponible en version gratuite !')">
+        <span class="nav-icon">📊</span> Mes projets
+      </a>
+      <a class="nav-item" href="#" onclick="openUpgrade()">
+        <span class="nav-icon">📈</span> Analyses
+        <span class="lock-badge">Premium</span>
+      </a>
+      <a class="nav-item" href="#" onclick="openUpgrade()">
+        <span class="nav-icon">📅</span> Suivi journalier
+        <span class="lock-badge">Premium</span>
+      </a>
+      <a class="nav-item" href="#" onclick="openUpgrade()">
+        <span class="nav-icon">💡</span> Conseils IA
+        <span class="lock-badge">Premium</span>
+      </a>
+      <a class="nav-item" href="#" onclick="openUpgrade()">
+        <span class="nav-icon">📤</span> Export PDF
+        <span class="lock-badge">Premium</span>
+      </a>
+    </div>
+
+    <div class="nav-section" style="margin-top:auto; padding-bottom:0;">
+      <a class="nav-item" href="#">
+        <span class="nav-icon">⚙</span> Paramètres
+      </a>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="user-pill">
+        <div class="user-avatar">K</div>
+        <div>
+          <div class="user-name">Karim</div>
+          <div class="user-plan">Plan Gratuit</div>
+        </div>
+      </div>
+      <button class="upgrade-btn" onclick="openUpgrade()">⭐ Passer au Premium</button>
+    </div>
+  </aside>
+
+  <!-- ════ MAIN ════ -->
+  <div class="main">
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button onclick="toggleSidebar()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;display:none;" id="menu-btn">☰</button>
+        <div class="topbar-title">Vue d'ensemble</div>
+      </div>
+      <div class="topbar-right">
+        <div class="demo-badge">✦ Démo interactive</div>
+        <button class="topbar-upgrade" onclick="openUpgrade()">⭐ Passer au Premium</button>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- WELCOME -->
+      <div class="welcome-banner">
+        <div class="welcome-text">
+          <h2>Bonjour Karim 👋</h2>
+          <p>Voici un aperçu de tes performances. <strong style="color:var(--accent)">Passe au Premium</strong> pour tout débloquer.</p>
+        </div>
+        <div class="free-limit">
+          <strong id="proj-count">2 / 3</strong>
+          <span>projets gratuits utilisés</span>
+        </div>
+      </div>
+
+      <!-- STATS -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Revenu total (ce mois)</div>
+          <div class="stat-val positive">12 400 $</div>
+          <div class="stat-change up">↑ +8% vs mois dernier</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Profit net (ce mois)</div>
+          <div class="stat-val positive">3 820 $</div>
+          <div class="stat-change up">↑ +12%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Marge moyenne</div>
+          <div class="stat-val">30.8%</div>
+          <div class="stat-change">= Stable</div>
+        </div>
+        <div class="stat-card" onclick="openUpgrade()" style="cursor:pointer;position:relative;overflow:hidden;">
+          <div style="filter:blur(5px);user-select:none;pointer-events:none;">
+            <div class="stat-label">Meilleur mois</div>
+            <div class="stat-val positive">5 210 $</div>
+            <div class="stat-change up">↑ Juillet</div>
+          </div>
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;background:rgba(10,10,10,0.6);">
+            <span style="font-size:18px;">🔒</span>
+            <span style="font-size:12px;color:var(--premium);font-weight:600;">Premium</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJECTS TABLE -->
+      <div class="section-header">
+        <div class="section-title">Mes projets</div>
+        <button class="section-action" onclick="openAddProject()">+ Ajouter un projet</button>
+      </div>
+      <div class="projects-card">
+        <table class="projects-table">
+          <thead>
+            <tr>
+              <th>Projet</th>
+              <th>Type</th>
+              <th>Revenu</th>
+              <th>Profit net</th>
+              <th>Marge</th>
+              <th>Mis à jour</th>
+            </tr>
+          </thead>
+          <tbody id="projects-body">
+            <tr>
+              <td><strong>Boutique Maroc COD</strong></td>
+              <td><span class="project-type-badge">📦 E-com</span></td>
+              <td>8 200 $</td>
+              <td class="profit-positive">+2 460 $</td>
+              <td>
+                <div class="margin-bar-wrap">
+                  <div class="margin-bar"><div class="margin-bar-fill" style="width:30%"></div></div>
+                  <div class="margin-val">30%</div>
+                </div>
+              </td>
+              <td style="color:var(--muted)">Aujourd'hui</td>
+            </tr>
+            <tr>
+              <td><strong>YouTube Gaming FR</strong></td>
+              <td><span class="project-type-badge">🎬 Créateur</span></td>
+              <td>4 200 $</td>
+              <td class="profit-positive">+1 360 $</td>
+              <td>
+                <div class="margin-bar-wrap">
+                  <div class="margin-bar"><div class="margin-bar-fill mid" style="width:32%"></div></div>
+                  <div class="margin-val">32%</div>
+                </div>
+              </td>
+              <td style="color:var(--muted)">Hier</td>
+            </tr>
+            <tr onclick="openUpgrade()" style="opacity:0.4;cursor:pointer;position:relative;">
+              <td colspan="6" style="text-align:center;padding:20px;">
+                <span style="font-size:13px;color:var(--muted);">🔒 Ajouter un 3ème projet — <span style="color:var(--premium)">Premium requis</span></span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="add-project-row" onclick="openAddProject()">
+          <span>+</span> Nouveau projet
+        </div>
+      </div>
+
+      <!-- LOCKED PREMIUM SECTIONS -->
+      <div class="section-header">
+        <div class="section-title">Analyses & Insights <span style="font-size:12px;color:var(--premium);margin-left:8px;">✦ Premium</span></div>
+      </div>
+      <div class="locked-grid">
+
+        <!-- Locked: Evolution chart -->
+        <div class="locked-card">
+          <div class="locked-inner">
+            <div style="font-size:13px;color:var(--muted);margin-bottom:12px;">Évolution du profit — 6 mois</div>
+            <div class="fake-chart">
+              <div class="fake-bar" style="height:40%"></div>
+              <div class="fake-bar" style="height:55%"></div>
+              <div class="fake-bar" style="height:45%"></div>
+              <div class="fake-bar" style="height:70%"></div>
+              <div class="fake-bar" style="height:60%"></div>
+              <div class="fake-bar" style="height:85%"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px;">
+              <span>Fév</span><span>Mar</span><span>Avr</span><span>Mai</span><span>Jun</span><span>Jul</span>
+            </div>
+          </div>
+          <div class="locked-overlay">
+            <div class="lock-icon">📈</div>
+            <div class="lock-title">Évolution du profit</div>
+            <div class="lock-sub">Vois comment tes profits évoluent mois par mois</div>
+            <button class="lock-btn" onclick="openUpgrade()">Débloquer — Premium</button>
+          </div>
+        </div>
+
+        <!-- Locked: AI Tips -->
+        <div class="locked-card">
+          <div class="locked-inner">
+            <div style="font-size:13px;color:var(--muted);margin-bottom:12px;">Conseils personnalisés</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:12px;font-size:13px;">💡 Ta marge sur la Boutique COD peut être améliorée de 8% en réduisant les frais de livraison...</div>
+              <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:12px;font-size:13px;">🎯 Tes revenus YouTube sont en hausse. Moment idéal pour négocier des sponsors...</div>
+            </div>
+          </div>
+          <div class="locked-overlay">
+            <div class="lock-icon">💡</div>
+            <div class="lock-title">Conseils IA personnalisés</div>
+            <div class="lock-sub">Des recommandations basées sur tes vrais chiffres</div>
+            <button class="lock-btn" onclick="openUpgrade()">Débloquer — Premium</button>
+          </div>
+        </div>
+
+        <!-- Locked: Daily tracking -->
+        <div class="locked-card">
+          <div class="locked-inner">
+            <div style="font-size:13px;color:var(--muted);margin-bottom:12px;">Suivi journalier</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06)">
+                <span>Lundi 21 juil</span><span class="profit-positive">+320$</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06)">
+                <span>Mardi 22 juil</span><span class="profit-positive">+480$</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;">
+                <span>Mercredi 23 juil</span><span class="profit-negative">-120$</span>
+              </div>
+            </div>
+          </div>
+          <div class="locked-overlay">
+            <div class="lock-icon">📅</div>
+            <div class="lock-title">Suivi journalier</div>
+            <div class="lock-sub">Enregistre tes chiffres chaque jour, vois ta progression</div>
+            <button class="lock-btn" onclick="openUpgrade()">Débloquer — Premium</button>
+          </div>
+        </div>
+
+        <!-- Locked: Export -->
+        <div class="locked-card">
+          <div class="locked-inner">
+            <div style="font-size:13px;color:var(--muted);margin-bottom:12px;">Export & Rapports</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:12px;display:flex;align-items:center;gap:10px;font-size:13px;">📄 Rapport mensuel — Juillet 2025.pdf</div>
+              <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:12px;display:flex;align-items:center;gap:10px;font-size:13px;">📊 Export Excel — Tous les projets.xlsx</div>
+            </div>
+          </div>
+          <div class="locked-overlay">
+            <div class="lock-icon">📤</div>
+            <div class="lock-title">Export PDF & Excel</div>
+            <div class="lock-sub">Génère des rapports professionnels en un clic</div>
+            <button class="lock-btn" onclick="openUpgrade()">Débloquer — Premium</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- UPSELL BANNER -->
+      <div class="upsell-banner">
+        <div class="upsell-left">
+          <div class="upsell-eyebrow">✦ SellSense Premium</div>
+          <div class="upsell-title">Tout débloquer.<br/>Connaître chaque centime.</div>
+          <div class="upsell-features">
+            <div class="upsell-feat">Projets illimités (gratuit = 3 max)</div>
+            <div class="upsell-feat">Suivi journalier de tes profits</div>
+            <div class="upsell-feat">Graphiques & analyses avancées</div>
+            <div class="upsell-feat">Conseils IA personnalisés</div>
+            <div class="upsell-feat">Export PDF et Excel en 1 clic</div>
+            <div class="upsell-feat">Accès prioritaire aux nouvelles fonctions</div>
+          </div>
+        </div>
+        <div class="upsell-right">
+          <div class="price-box">
+            <div class="price-old">19.99 $ / mois</div>
+            <div class="price-val">9<span style="font-size:22px;">.99$</span></div>
+            <div class="price-per">par mois · offre de lancement</div>
+          </div>
+          <button class="btn-upgrade-big" onclick="openUpgrade()">⭐ Passer au Premium →</button>
+          <div class="price-note">🔒 Paiement sécurisé · Annulable à tout moment</div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ════ UPGRADE MODAL ════ -->
+<div class="modal-overlay" id="upgrade-modal" onclick="closeIfOverlay(event,'upgrade-modal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('upgrade-modal')">✕</button>
+    <div style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--premium);margin-bottom:8px;font-weight:500;">⭐ SellSense Premium</div>
+    <div class="modal-title">Passer au Premium</div>
+    <div class="modal-sub">9.99$ / mois · Annulable à tout moment</div>
+
+    <div class="card-logos">
+      <div class="card-logo">💳 Visa</div>
+      <div class="card-logo">💳 Mastercard</div>
+      <div class="card-logo">💳 Amex</div>
+    </div>
+
+    <div class="payment-field">
+      <label>Numéro de carte</label>
+      <input class="payment-input" type="text" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)"/>
+    </div>
+    <div class="card-row">
+      <div class="payment-field">
+        <label>Date d'expiration</label>
+        <input class="payment-input" type="text" placeholder="MM/AA" maxlength="5" oninput="formatExpiry(this)"/>
+      </div>
+      <div class="payment-field">
+        <label>CVV</label>
+        <input class="payment-input" type="text" placeholder="•••" maxlength="4"/>
+      </div>
+    </div>
+    <div class="payment-field">
+      <label>Nom sur la carte</label>
+      <input class="payment-input" type="text" placeholder="KARIM BENALI"/>
+    </div>
+
+    <div class="secure-note">
+      🔒 <span>Paiement sécurisé par Stripe · Données chiffrées SSL</span>
+    </div>
+
+    <button class="btn-pay" id="btn-pay" onclick="handlePayment()">
+      Payer 9.99$ et activer Premium →
+    </button>
+  </div>
+</div>
+
+<!-- ════ ADD PROJECT MODAL ════ -->
+<div class="modal-overlay" id="add-modal" onclick="closeIfOverlay(event,'add-modal')">
+  <div class="add-modal">
+    <button class="modal-close" onclick="closeModal('add-modal')">✕</button>
+    <div class="modal-title" style="font-size:20px;margin-bottom:4px;">Nouveau projet</div>
+    <div class="modal-sub" style="font-size:13px;">Il te reste <strong style="color:var(--accent)">1 projet gratuit</strong>. Passe au Premium pour des projets illimités.</div>
+
+    <div class="payment-field">
+      <label>Nom du projet</label>
+      <input class="payment-input" id="new-proj-name" type="text" placeholder="ex: Boutique Vêtements"/>
+    </div>
+    <div class="payment-field">
+      <label>Type</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:4px;">
+        <div class="type-card" onclick="selectNewType('ecom',this)" style="border:1px solid var(--border);border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;transition:all 0.2s;">
+          <div style="font-size:18px;margin-bottom:4px;">📦</div>
+          <div style="font-size:11px;font-weight:500;">E-com</div>
+        </div>
+        <div class="type-card" onclick="selectNewType('creator',this)" style="border:1px solid var(--border);border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;transition:all 0.2s;">
+          <div style="font-size:18px;margin-bottom:4px;">🎬</div>
+          <div style="font-size:11px;font-weight:500;">Créateur</div>
+        </div>
+        <div class="type-card" onclick="selectNewType('freelancer',this)" style="border:1px solid var(--border);border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;transition:all 0.2s;">
+          <div style="font-size:18px;margin-bottom:4px;">💻</div>
+          <div style="font-size:11px;font-weight:500;">Freelance</div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-pay" style="margin-top:8px;" onclick="addProject()">Créer le projet →</button>
+  </div>
+</div>
+
+<!-- ════ SUCCESS MODAL ════ -->
+<div class="modal-overlay" id="success-modal">
+  <div class="modal" style="text-align:center;">
+    <div style="width:64px;height:64px;border-radius:50%;background:rgba(255,215,0,0.1);border:1px solid var(--premium-border);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px;">⭐</div>
+    <div class="modal-title" style="margin-bottom:8px;">Bienvenue dans Premium !</div>
+    <div class="modal-sub">Toutes les fonctionnalités sont maintenant débloquées. Profites-en !</div>
+    <button class="btn-pay" onclick="activatePremium()">Accéder à mon dashboard complet →</button>
+  </div>
+</div>
+
+<script>
+// ════════════════════════
+// MODALS
+// ════════════════════════
+function openUpgrade() { document.getElementById('upgrade-modal').classList.add('open'); }
+function openAddProject() { document.getElementById('add-modal').classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function closeIfOverlay(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
+
+// ════════════════════════
+// CARD FORMAT
+// ════════════════════════
+function formatCard(el) {
+  let v = el.value.replace(/\D/g,'').substring(0,16);
+  el.value = v.match(/.{1,4}/g)?.join(' ') || v;
+}
+function formatExpiry(el) {
+  let v = el.value.replace(/\D/g,'').substring(0,4);
+  if (v.length > 2) v = v.substring(0,2) + '/' + v.substring(2);
+  el.value = v;
+}
+
+// ════════════════════════
+// PAYMENT
+// ════════════════════════
+function handlePayment() {
+  const btn = document.getElementById('btn-pay');
+  btn.classList.add('loading');
+  btn.textContent = 'Traitement en cours...';
+  setTimeout(() => {
+    closeModal('upgrade-modal');
+    document.getElementById('success-modal').classList.add('open');
+  }, 2000);
+}
+function activatePremium() {
+  closeModal('success-modal');
+  document.querySelector('.user-plan').textContent = '⭐ Premium';
+  document.querySelector('.demo-badge').textContent = '✦ Premium actif';
+  document.querySelector('.demo-badge').style.background = 'rgba(255,215,0,0.1)';
+  document.querySelector('.demo-badge').style.color = 'var(--premium)';
+  document.querySelector('.demo-badge').style.borderColor = 'var(--premium-border)';
+  document.querySelectorAll('.locked-overlay').forEach(o => {
+    o.style.display = 'none';
+  });
+  document.querySelectorAll('.locked-inner').forEach(i => {
+    i.style.filter = 'none';
+    i.style.pointerEvents = 'all';
+  });
+  document.querySelectorAll('.lock-badge').forEach(b => b.remove());
+  document.getElementById('proj-count').textContent = '2 / ∞';
+}
+
+// ════════════════════════
+// ADD PROJECT
+// ════════════════════════
+let newType = null;
+function selectNewType(t, el) {
+  newType = t;
+  document.querySelectorAll('#add-modal .type-card').forEach(c => {
+    c.style.borderColor = 'var(--border)';
+    c.style.background = 'transparent';
+  });
+  el.style.borderColor = 'var(--accent)';
+  el.style.background = 'rgba(200,255,0,0.06)';
+}
+function addProject() {
+  const name = document.getElementById('new-proj-name').value.trim();
+  if (!name || !newType) { alert('Remplis le nom et le type.'); return; }
+  const icons = { ecom:'📦', creator:'🎬', freelancer:'💻' };
+  const labels = { ecom:'E-com', creator:'Créateur', freelancer:'Freelance' };
+  const body = document.getElementById('projects-body');
+  const lockedRow = body.querySelector('tr:last-child');
+  const newRow = document.createElement('tr');
+  newRow.innerHTML = `
+    <td><strong>${name}</strong></td>
+    <td><span class="project-type-badge">${icons[newType]} ${labels[newType]}</span></td>
+    <td>0 $</td>
+    <td class="profit-positive">0 $</td>
+    <td><div class="margin-bar-wrap"><div class="margin-bar"><div class="margin-bar-fill" style="width:0%"></div></div><div class="margin-val">0%</div></div></td>
+    <td style="color:var(--muted)">À l'instant</td>
+  `;
+  body.insertBefore(newRow, lockedRow);
+  document.getElementById('proj-count').textContent = '3 / 3';
+  closeModal('add-modal');
+  newType = null;
+  document.getElementById('new-proj-name').value = '';
+}
+
+// ════════════════════════
+// SIDEBAR MOBILE
+// ════════════════════════
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+if (window.innerWidth <= 700) {
+  document.getElementById('menu-btn').style.display = 'block';
+}
+</script>
+</body>
+</html>
