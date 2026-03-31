@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -268,18 +268,53 @@ footer {
   .result-panel { position: static; }
   .hero h1 { letter-spacing: -1px; }
 }
+
+/* ── SHARED NAV ── */
+nav { position:sticky;top:0;z-index:100;background:rgba(10,10,10,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.08); }
+.nav-inner { display:flex;align-items:center;justify-content:space-between;padding:16px 40px;max-width:1400px;margin:0 auto; }
+.logo { font-family:var(--font-display);font-size:22px;font-weight:800;letter-spacing:-0.5px;text-decoration:none;color:#f5f3ee; }
+.logo span { color:#c8ff00; }
+.nav-links { display:flex;align-items:center;gap:4px; }
+.nav-link { font-family:var(--font-body);font-size:14px;font-weight:500;color:rgba(255,255,255,0.6);text-decoration:none;padding:8px 14px;border-radius:8px;transition:all 0.2s; }
+.nav-link:hover,.nav-link.active { color:#f5f3ee;background:rgba(255,255,255,0.06); }
+.nav-link.active { color:#c8ff00; }
+.nav-cta { background:rgba(200,255,0,0.1);color:#c8ff00 !important;border:1px solid rgba(200,255,0,0.25);border-radius:20px;padding:7px 16px;font-weight:600; }
+.nav-cta:hover { background:rgba(200,255,0,0.18) !important; }
+.hamburger { display:none;background:none;border:none;color:rgba(255,255,255,0.7);font-size:22px;cursor:pointer; }
+.mobile-menu { display:none;flex-direction:column;gap:4px;padding:12px 24px 20px;border-top:1px solid rgba(255,255,255,0.06); }
+.mobile-menu.open { display:flex; }
+.mobile-link { font-size:15px;color:rgba(255,255,255,0.7);text-decoration:none;padding:10px 14px;border-radius:8px;transition:all 0.2s; }
+.mobile-link:hover { background:rgba(255,255,255,0.06);color:#f5f3ee; }
+.nav-cta-m { color:#c8ff00 !important;font-weight:600; }
+@media(max-width:768px){.nav-links,.lang-switcher{display:none;}.hamburger{display:block;}.nav-inner{padding:14px 20px;}}
+/* ── END SHARED NAV ── */
 </style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav>
-  <div class="logo">Sell<span>Sense</span></div>
-  <div class="lang-switcher">
-    <button class="lang-btn active" onclick="setLang('en')">EN</button>
-    <button class="lang-btn" onclick="setLang('fr')">FR</button>
-    <button class="lang-btn" onclick="setLang('ar')">عر</button>
-  </div>
+<div class="nav-inner">
+<a href="index.html" class="logo">Sell<span>Sense</span></a>
+<div class="nav-links">
+<a href="sellsense-landing.html" class="nav-link">Accueil</a>
+<a href="sellsense-auth.html" class="nav-link">Connexion</a>
+<a href="sellsense-dashboard.html" class="nav-link">Dashboard</a>
+<a href="sellsense-payment.html" class="nav-link nav-cta">&#11088; Premium</a>
+</div>
+<div class="lang-switcher">
+<button class="lang-btn active" onclick="setLang('en',event)">EN</button>
+<button class="lang-btn" onclick="setLang('fr',event)">FR</button>
+<button class="lang-btn" onclick="setLang('ar',event)">&#1593;&#1585;</button>
+</div>
+<button class="hamburger" onclick="toggleMobileMenu()">&#9776;</button>
+</div>
+<div class="mobile-menu" id="mobile-menu">
+<a href="sellsense-landing.html" class="mobile-link">Accueil</a>
+<a href="sellsense-auth.html" class="mobile-link">Connexion</a>
+<a href="sellsense-dashboard.html" class="mobile-link">Dashboard</a>
+<a href="sellsense-payment.html" class="mobile-link nav-cta-m">&#11088; Premium</a>
+</div>
 </nav>
 
 <!-- ════════════════════════════════
@@ -777,6 +812,19 @@ function recalc() {
 function fmt(n) {
   return n.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 }
+</script>
+<script>
+function toggleMobileMenu(){
+  var m=document.getElementById("mobile-menu");
+  if(m) m.classList.toggle("open");
+}
+(function(){
+  var links=document.querySelectorAll(".nav-link,.mobile-link");
+  links.forEach(function(l){
+    var href=l.getAttribute("href");
+    if(href && window.location.href.indexOf(href)>-1) l.classList.add("active");
+  });
+})();
 </script>
 </body>
 </html>
