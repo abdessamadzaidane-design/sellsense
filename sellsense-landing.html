@@ -1,16 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-    <title>ProfitSense — Real Profit Calculator for Africa</title>
-    
-    <!-- Modern Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>ProfitSense - Real Profit Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -18,68 +12,29 @@
             box-sizing: border-box;
         }
 
-        :root {
-            --bg-deep: #070b14;
-            --bg-surface: #0f1420;
-            --glass-bg: rgba(18, 22, 35, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-border-light: rgba(255, 255, 255, 0.12);
-            --accent-green: #00f593;
-            --accent-green-dim: rgba(0, 245, 147, 0.15);
-            --accent-cyan: #00d4ff;
-            --accent-cyan-dim: rgba(0, 212, 255, 0.1);
-            --accent-gold: #ffb347;
-            --text-primary: #ffffff;
-            --text-secondary: #8f9bb3;
-            --text-muted: #5a657d;
-            --success: #00f593;
-            --error: #ff4d6d;
-            --warning: #ffb347;
-            --card-radius: 28px;
-            --btn-radius: 60px;
-        }
-
         body {
-            background: linear-gradient(135deg, #070b14 0%, #0f1420 50%, #0a0f1a 100%);
+            background: linear-gradient(135deg, #0a0c15 0%, #0f1420 100%);
             font-family: 'Inter', sans-serif;
-            color: var(--text-primary);
+            color: white;
             min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* Animated background */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(0, 245, 147, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(0, 212, 255, 0.06) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 1400px;
-            margin: 0 auto;
             padding: 20px;
         }
 
-        /* Glass Navigation */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Glass navigation */
         nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 24px;
-            background: var(--glass-bg);
+            background: rgba(18, 22, 35, 0.75);
             backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
+            border: 1px solid rgba(255,255,255,0.08);
             border-radius: 80px;
+            padding: 12px 24px;
             margin-bottom: 40px;
         }
 
@@ -87,178 +42,118 @@
             font-family: 'Syne', sans-serif;
             font-size: 24px;
             font-weight: 800;
-            background: linear-gradient(135deg, #fff 0%, var(--accent-green) 100%);
+            background: linear-gradient(135deg, #00f593, #00d4ff);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
         }
 
-        .logo span {
-            color: var(--accent-green);
-            background: none;
-            background-clip: unset;
-            -webkit-background-clip: unset;
-        }
-
-        .nav-buttons {
+        .lang-buttons {
             display: flex;
-            gap: 12px;
+            gap: 8px;
         }
 
-        .btn-outline {
+        .lang-btn {
             background: transparent;
-            border: 1px solid var(--glass-border-light);
-            padding: 10px 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 6px 14px;
             border-radius: 40px;
-            color: var(--text-primary);
-            font-weight: 500;
+            color: #8f9bb3;
             cursor: pointer;
-            transition: all 0.2s;
+            font-size: 13px;
         }
 
-        .btn-outline:hover {
-            border-color: var(--accent-green);
-            color: var(--accent-green);
+        .lang-btn.active {
+            background: #00f593;
+            color: #000;
+            border-color: #00f593;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+            background: linear-gradient(135deg, #00f593, #00d4ff);
             border: none;
-            padding: 10px 28px;
+            padding: 10px 24px;
             border-radius: 40px;
-            color: #000;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
+            color: #000;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 28px rgba(0, 245, 147, 0.25);
-        }
-
-        /* Hero Section */
+        /* Hero */
         .hero {
             text-align: center;
-            padding: 40px 20px 60px;
-        }
-
-        .hero-badge {
-            display: inline-block;
-            padding: 6px 16px;
-            background: var(--accent-green-dim);
-            border: 1px solid rgba(0, 245, 147, 0.3);
-            border-radius: 40px;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--accent-green);
-            margin-bottom: 24px;
+            padding: 40px 20px;
         }
 
         h1 {
             font-family: 'Syne', sans-serif;
-            font-size: clamp(36px, 6vw, 68px);
+            font-size: 48px;
             font-weight: 800;
-            line-height: 1.1;
-            letter-spacing: -0.02em;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .gradient-text {
-            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+            background: linear-gradient(135deg, #00f593, #00d4ff);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
         }
 
-        .hero-sub {
+        .hero p {
+            color: #8f9bb3;
             font-size: 18px;
-            color: var(--text-secondary);
-            max-width: 560px;
-            margin: 0 auto 32px;
+            max-width: 500px;
+            margin: 0 auto;
         }
 
-        /* Split Screen Calculator */
-        .calculator-split {
+        /* Calculator grid */
+        .calc-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 24px;
-            margin: 40px 0;
+            margin-top: 40px;
         }
 
         .glass-card {
-            background: var(--glass-bg);
+            background: rgba(18, 22, 35, 0.75);
             backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--card-radius);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 28px;
             padding: 32px;
-            transition: all 0.3s ease;
         }
 
-        .glass-card:hover {
-            border-color: var(--glass-border-light);
-            transform: translateY(-2px);
-        }
-
-        .section-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .section-sub {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-bottom: 28px;
-        }
-
-        /* Role Selector */
-        .role-grid {
-            display: grid;
+        .role-buttons {
+            display: flex;
+            flex-direction: column;
             gap: 12px;
-            margin-bottom: 32px;
+            margin: 24px 0;
         }
 
         .role-btn {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
             border-radius: 20px;
-            padding: 18px 20px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
+            padding: 16px;
+            text-align: left;
             cursor: pointer;
             transition: all 0.2s;
-            text-align: left;
-        }
-
-        .role-btn:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: var(--glass-border-light);
         }
 
         .role-btn.active {
-            background: var(--accent-green-dim);
-            border-color: var(--accent-green);
+            background: rgba(0, 245, 147, 0.1);
+            border-color: #00f593;
         }
 
-        .role-icon {
-            font-size: 32px;
-        }
-
-        .role-info h4 {
+        .role-btn h4 {
             font-size: 16px;
-            font-weight: 700;
             margin-bottom: 4px;
         }
 
-        .role-info p {
+        .role-btn p {
             font-size: 12px;
-            color: var(--text-secondary);
+            color: #8f9bb3;
         }
 
-        /* Input Fields */
         .input-group {
             margin-bottom: 20px;
         }
@@ -266,764 +161,344 @@
         .input-group label {
             display: block;
             font-size: 13px;
-            font-weight: 500;
-            color: var(--text-secondary);
+            color: #8f9bb3;
             margin-bottom: 8px;
         }
 
-        .input-wrapper {
-            position: relative;
-        }
-
-        .input-wrapper input {
+        .input-group input {
             width: 100%;
-            padding: 16px 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
+            padding: 14px 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            color: white;
             font-size: 16px;
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            transition: all 0.2s;
         }
 
-        .input-wrapper input:focus {
+        .input-group input:focus {
             outline: none;
-            border-color: var(--accent-green);
-            background: rgba(0, 245, 147, 0.05);
+            border-color: #00f593;
         }
 
-        .input-prefix {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--accent-green);
-            font-weight: 600;
-        }
-
-        .input-prefix + input {
-            padding-left: 48px;
-        }
-
-        /* Result Panel */
-        .result-panel {
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 500px;
-        }
-
-        .profit-label {
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-        }
-
-        .profit-amount {
+        .result-amount {
             font-family: 'Syne', sans-serif;
-            font-size: clamp(48px, 8vw, 88px);
+            font-size: 64px;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+            background: linear-gradient(135deg, #00f593, #00d4ff);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
-            margin-bottom: 8px;
-        }
-
-        .profit-margin {
-            font-size: 18px;
-            color: var(--text-secondary);
-            margin-bottom: 32px;
-        }
-
-        .profit-margin span {
-            color: var(--accent-green);
-            font-weight: 700;
+            margin: 20px 0;
         }
 
         .breakdown {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255,255,255,0.03);
             border-radius: 20px;
             padding: 20px;
-            text-align: left;
-            margin: 24px 0;
+            margin: 20px 0;
         }
 
         .breakdown-row {
             display: flex;
             justify-content: space-between;
             padding: 10px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .breakdown-row:last-child {
-            border-bottom: none;
-        }
-
-        .breakdown-label {
-            color: var(--text-secondary);
-            font-size: 14px;
-        }
-
-        .breakdown-value {
-            font-weight: 600;
-        }
-
-        .breakdown-value.positive {
-            color: var(--accent-green);
-        }
-
-        .breakdown-value.negative {
-            color: var(--error);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
         .save-btn {
             width: 100%;
-            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+            background: linear-gradient(135deg, #00f593, #00d4ff);
             border: none;
             border-radius: 60px;
             padding: 16px;
-            font-size: 16px;
             font-weight: 700;
-            color: #000;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 16px;
-        }
-
-        .save-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 28px rgba(0, 245, 147, 0.3);
-        }
-
-        /* Auth Modal */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(12px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
-        }
-
-        .modal.open {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-content {
-            background: var(--bg-surface);
-            border: 1px solid var(--glass-border);
-            border-radius: 32px;
-            padding: 40px;
-            max-width: 440px;
-            width: 90%;
-            text-align: center;
-        }
-
-        .modal-content h3 {
-            font-family: 'Syne', sans-serif;
-            font-size: 28px;
-            margin-bottom: 12px;
-        }
-
-        .trial-badge {
-            background: var(--accent-green-dim);
-            padding: 8px 16px;
-            border-radius: 40px;
-            font-size: 13px;
-            color: var(--accent-green);
-            display: inline-block;
-            margin: 16px 0;
-        }
-
-        .email-input {
-            width: 100%;
-            padding: 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            color: white;
             font-size: 16px;
-            margin: 16px 0;
-        }
-
-        .google-btn {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            border-radius: 60px;
-            padding: 14px;
-            font-size: 15px;
-            font-weight: 500;
-            color: white;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-        }
-
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: var(--accent-green);
             color: #000;
-            padding: 12px 24px;
-            border-radius: 60px;
-            font-weight: 600;
-            z-index: 1100;
-            transition: transform 0.3s;
+            margin-top: 20px;
         }
 
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 900px) {
-            .calculator-split {
+        @media (max-width: 768px) {
+            .calc-grid {
                 grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .container {
-                padding: 16px;
-            }
-            
-            nav {
-                padding: 12px 20px;
-            }
-            
-            .glass-card {
-                padding: 24px;
-            }
-            
-            .role-btn {
-                padding: 14px 16px;
-            }
-            
-            .role-icon {
-                font-size: 24px;
-            }
-            
-            .profit-amount {
-                font-size: 52px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero {
-                padding: 20px 16px 40px;
             }
             
             h1 {
                 font-size: 32px;
             }
             
-            .hero-sub {
-                font-size: 15px;
-            }
-            
             .glass-card {
                 padding: 20px;
             }
-        }
-
-        /* Loading state */
-        .loading {
-            opacity: 0.7;
-            pointer-events: none;
-        }
-
-        /* Language selector */
-        .lang-selector {
-            display: flex;
-            gap: 4px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 40px;
-            padding: 4px;
-        }
-
-        .lang-btn {
-            background: transparent;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 40px;
-            color: var(--text-secondary);
-            font-size: 12px;
-            cursor: pointer;
-            font-weight: 500;
-        }
-
-        .lang-btn.active {
-            background: var(--accent-green);
-            color: #000;
+            
+            .result-amount {
+                font-size: 48px;
+            }
         }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <!-- Navigation -->
-    <nav>
-        <div class="logo">Profit<span>Sense</span></div>
-        <div style="display: flex; gap: 16px; align-items: center;">
-            <div class="lang-selector" id="langSelector">
-                <button class="lang-btn active" data-lang="en">EN</button>
-                <button class="lang-btn" data-lang="fr">FR</button>
-                <button class="lang-btn" data-lang="ar">عربي</button>
-            </div>
-            <div class="nav-buttons" id="navButtons">
-                <button class="btn-outline" id="signInBtn">Sign In</button>
+    <div class="container">
+        <!-- Navigation -->
+        <nav>
+            <div class="logo">ProfitSense</div>
+            <div style="display: flex; gap: 16px; align-items: center;">
+                <div class="lang-buttons">
+                    <button class="lang-btn active" onclick="setLanguage('en')">EN</button>
+                    <button class="lang-btn" onclick="setLanguage('fr')">FR</button>
+                    <button class="lang-btn" onclick="setLanguage('ar')">AR</button>
+                </div>
                 <button class="btn-primary" id="trialBtn">Start Free Trial</button>
             </div>
-            <div id="userInfo" style="display: none;">
-                <span id="userEmail" style="color: var(--accent-green); font-size: 14px;"></span>
-            </div>
+        </nav>
+
+        <!-- Hero -->
+        <div class="hero">
+            <h1>Know your <span class="gradient-text">real profit</span></h1>
+            <p id="heroSub">Built for creators, e-commerce, and freelancers across Africa</p>
         </div>
-    </nav>
 
-    <!-- Hero -->
-    <div class="hero">
-        <div class="hero-badge" id="heroBadge">✨ Free Profit Calculator</div>
-        <h1>Know your <span class="gradient-text">real profit</span><br>in 60 seconds</h1>
-        <p class="hero-sub" id="heroSub">Built for creators, e-commerce owners, and freelancers across Africa. No spreadsheet needed.</p>
-    </div>
-
-    <!-- Split Calculator -->
-    <div class="calculator-split">
-        <!-- Left: Inputs -->
-        <div class="glass-card">
-            <div class="section-title" id="inputTitle">📊 Your Numbers</div>
-            <div class="section-sub" id="inputSub">Enter your revenue and costs below</div>
-            
-            <!-- Role Selector -->
-            <div class="role-grid" id="roleGrid">
-                <div class="role-btn" data-role="creator">
-                    <div class="role-icon">🎬</div>
-                    <div class="role-info">
-                        <h4>Content Creator</h4>
+        <!-- Calculator -->
+        <div class="calc-grid">
+            <!-- Left side - Inputs -->
+            <div class="glass-card">
+                <h3 style="margin-bottom: 8px;">📊 Your Numbers</h3>
+                <p style="color: #8f9bb3; font-size: 14px; margin-bottom: 24px;">Enter your revenue and costs</p>
+                
+                <div class="role-buttons" id="roleButtons">
+                    <div class="role-btn active" data-role="creator" onclick="selectRole('creator')">
+                        <h4>🎬 Content Creator</h4>
                         <p>YouTube, TikTok, Instagram</p>
                     </div>
-                </div>
-                <div class="role-btn" data-role="ecom">
-                    <div class="role-icon">📦</div>
-                    <div class="role-info">
-                        <h4>E-commerce</h4>
+                    <div class="role-btn" data-role="ecom" onclick="selectRole('ecom')">
+                        <h4>📦 E-commerce</h4>
                         <p>Dropshipping, COD, Online Store</p>
                     </div>
-                </div>
-                <div class="role-btn" data-role="freelancer">
-                    <div class="role-icon">💻</div>
-                    <div class="role-info">
-                        <h4>Freelancer</h4>
+                    <div class="role-btn" data-role="freelancer" onclick="selectRole('freelancer')">
+                        <h4>💻 Freelancer</h4>
                         <p>Services, Consulting, Contracts</p>
                     </div>
                 </div>
+
+                <div id="inputFields"></div>
             </div>
 
-            <!-- Dynamic Fields Container -->
-            <div id="dynamicFields"></div>
-        </div>
-
-        <!-- Right: Result Panel -->
-        <div class="glass-card result-panel">
-            <div class="profit-label" id="profitLabel">NET PROFIT</div>
-            <div class="profit-amount" id="profitAmount">$0</div>
-            <div class="profit-margin" id="profitMargin">Margin: <span>0%</span></div>
-            
-            <div class="breakdown" id="breakdown">
-                <div class="breakdown-row">
-                    <span class="breakdown-label">Revenue</span>
-                    <span class="breakdown-value positive" id="breakRevenue">$0</span>
+            <!-- Right side - Result -->
+            <div class="glass-card">
+                <h3 id="profitLabel" style="font-size: 14px; color: #8f9bb3; letter-spacing: 2px;">NET PROFIT</h3>
+                <div class="result-amount" id="profitAmount">$0</div>
+                <p id="marginText">Margin: <span id="marginValue" style="color: #00f593;">0%</span></p>
+                
+                <div class="breakdown" id="breakdown">
+                    <div class="breakdown-row">
+                        <span>Revenue</span>
+                        <span id="breakRevenue" style="color: #00f593;">$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span>Total Costs</span>
+                        <span id="breakCosts" style="color: #ff4d6d;">-$0</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span>Taxes (est.)</span>
+                        <span id="breakTax" style="color: #ff4d6d;">-$0</span>
+                    </div>
                 </div>
-                <div class="breakdown-row">
-                    <span class="breakdown-label">Total Costs</span>
-                    <span class="breakdown-value negative" id="breakCosts">-$0</span>
-                </div>
-                <div class="breakdown-row">
-                    <span class="breakdown-label">Taxes (est.)</span>
-                    <span class="breakdown-value negative" id="breakTax">-$0</span>
-                </div>
+                
+                <button class="save-btn" id="saveBtn">💾 Save This Calculation</button>
+                <p id="saveNote" style="font-size: 12px; color: #5a657d; text-align: center; margin-top: 12px;">Sign in to save your calculations</p>
             </div>
-            
-            <button class="save-btn" id="saveCalcBtn">💾 Save This Calculation</button>
-            <p style="font-size: 12px; color: var(--text-muted); margin-top: 12px;" id="saveNote">Sign in to save and track your progress</p>
         </div>
     </div>
-</div>
 
-<!-- Auth Modal -->
-<div class="modal" id="authModal">
-    <div class="modal-content">
-        <div class="trial-badge" id="trialBadge">🎁 7-Day Free Trial</div>
-        <h3 id="modalTitle">Save Your Calculation</h3>
-        <p id="modalDesc" style="color: var(--text-secondary); margin: 8px 0;">Create an account in 30 seconds. No credit card required.</p>
-        <input type="email" class="email-input" id="modalEmail" placeholder="your@email.com">
-        <button class="btn-primary" id="emailSignupBtn" style="width: 100%; margin-bottom: 12px;">Start Free Trial →</button>
-        <div style="text-align: center; margin: 12px 0; color: var(--text-muted);">or</div>
-        <button class="google-btn" id="googleSignupBtn">
-            <span>G</span> Continue with Google
-        </button>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 20px;">No spam. Cancel anytime. Your data is safe.</p>
-    </div>
-</div>
-
-<!-- Toast -->
-<div class="toast" id="toast">✓ Calculation saved!</div>
-
-<script>
-    // ============ CONFIGURATION ============
-    const SUPABASE_URL = 'https://fmlmkxbcfeebeqtlzzvn.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_M68a1m8LRq_DHQUov2k5pw_e-qrAefU';
-    const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    
-    // State
-    let currentRole = 'creator';
-    let currentUser = null;
-    let currentValues = {
-        revenue: 0,
-        costs: 0,
-        taxRate: 25
-    };
-    
-    // Translations
-    const translations = {
-        en: {
-            heroBadge: '✨ Free Profit Calculator',
-            heroSub: 'Built for creators, e-commerce owners, and freelancers across Africa. No spreadsheet needed.',
-            inputTitle: '📊 Your Numbers',
-            inputSub: 'Enter your revenue and costs below',
-            profitLabel: 'NET PROFIT',
-            saveNote: 'Sign in to save and track your progress',
-            modalTitle: 'Save Your Calculation',
-            modalDesc: 'Create an account in 30 seconds. No credit card required.',
-            trialBadge: '🎁 7-Day Free Trial',
-            fields: {
-                revenue: 'Total Revenue',
-                productCosts: 'Product Costs (COGS)',
-                shipping: 'Shipping & Fulfillment',
-                ads: 'Marketing & Ads',
-                platformFee: 'Platform Fee (%)',
-                equipment: 'Equipment & Software',
-                editing: 'Editing/Production',
-                sponsors: 'Sponsorships'
+    <script>
+        // Current state
+        let currentRole = 'creator';
+        let currentLang = 'en';
+        
+        // Translations
+        const texts = {
+            en: {
+                heroSub: 'Built for creators, e-commerce, and freelancers across Africa',
+                saveNote: 'Sign in to save your calculations',
+                profitLabel: 'NET PROFIT',
+                margin: 'Margin'
+            },
+            fr: {
+                heroSub: 'Pour créateurs, e-commerçants et freelances en Afrique',
+                saveNote: 'Connectez-vous pour sauvegarder',
+                profitLabel: 'PROFIT NET',
+                margin: 'Marge'
+            },
+            ar: {
+                heroSub: 'للمبدعين والتجارة الإلكترونية والمستقلين في أفريقيا',
+                saveNote: 'سجل الدخول لحفظ حساباتك',
+                profitLabel: 'صافي الربح',
+                margin: 'الهامش'
             }
-        },
-        fr: {
-            heroBadge: '✨ Calculateur de Profit Gratuit',
-            heroSub: 'Pour créateurs, e-commerçants et freelances en Afrique. Pas de tableur nécessaire.',
-            inputTitle: '📊 Vos Chiffres',
-            inputSub: 'Entrez vos revenus et dépenses ci-dessous',
-            profitLabel: 'PROFIT NET',
-            saveNote: 'Connectez-vous pour sauvegarder et suivre',
-            modalTitle: 'Sauvegarder Votre Calcul',
-            modalDesc: 'Créez un compte en 30 secondes. Sans carte bancaire.',
-            trialBadge: '🎁 7 Jours Gratuits',
-            fields: {
-                revenue: 'Revenu Total',
-                productCosts: 'Coût des produits',
-                shipping: 'Livraison',
-                ads: 'Marketing',
-                platformFee: 'Commission plateforme (%)',
-                equipment: 'Équipement',
-                editing: 'Montage',
-                sponsors: 'Sponsoring'
-            }
-        },
-        ar: {
-            heroBadge: '✨ حاسبة الأرباح المجانية',
-            heroSub: 'مصممة للمبدعين وأصحاب المتاجر والمستقلين في أفريقيا. بدون جداول بيانات.',
-            inputTitle: '📊 أرقامك',
-            inputSub: 'أدخل إيراداتك وتكاليفك أدناه',
-            profitLabel: 'صافي الربح',
-            saveNote: 'سجل الدخول لحفظ وتتبع تقدمك',
-            modalTitle: 'احفظ حسابك',
-            modalDesc: 'أنشئ حسابًا في 30 ثانية. بدون بطاقة ائتمان.',
-            trialBadge: '🎁 7 أيام مجانية',
-            fields: {
-                revenue: 'إجمالي الإيرادات',
-                productCosts: 'تكلفة المنتجات',
-                shipping: 'الشحن',
-                ads: 'التسويق',
-                platformFee: 'رسوم المنصة (%)',
-                equipment: 'المعدات',
-                editing: 'المونتاج',
-                sponsors: 'الرعايات'
-            }
-        }
-    };
-    
-    let currentLang = 'en';
-    
-    // ============ FIELD CONFIGURATIONS PER ROLE ============
-    const roleFields = {
-        creator: [
-            { id: 'adRevenue', label: 'adRevenue', type: 'number', placeholder: '0', prefix: '$' },
-            { id: 'sponsors', label: 'sponsors', type: 'number', placeholder: '0', prefix: '$' },
-            { id: 'merch', label: 'merch', type: 'number', placeholder: '0', prefix: '$' },
-            { id: 'equipment', label: 'equipment', type: 'number', placeholder: '0', prefix: '$' },
-            { id: 'editing', label: 'editing', type: 'number', placeholder: '0', prefix: '$' },
-            { id: 'platformFee', label: 'platformFee', type: 'number', placeholder: '0', suffix: '%' }
-        ],
-        ecom: [
-            { id: 'revenue', label: 'revenue', type: 'number', placeholder: '0', prefix: '$' },
-            { id: 'productCosts', label: 'productCosts', type: 'number', placeholder: '0', prefix: '$' },
-            { id: 'shipping', label: 'shipping', type: 'number', placeholder: '0', prefix: '$' },
-            { id: 'ads', label: 'ads', type: 'number', placeholder: '0', prefix: '$' },
-            { id: 'platformFee', label: 'platformFee', type: 'number', placeholder: '0', suffix: '%' }
-        ],
-        freelancer: [
-            { id: 'revenue', label: 'revenue', type: 'number', placeholder: '0', prefix: '$' },
-            { id: 'software', label: 'software', type: 'number', placeholder: '0', prefix: '$' },
-            { id: 'subcontractors', label: 'subcontractors', type: 'number', placeholder: '0', prefix: '$' },
-            { id: 'platformFee', label: 'platformFee', type: 'number', placeholder: '0', suffix: '%' }
-        ]
-    };
-    
-    // ============ RENDER FUNCTIONS ============
-    function renderFields() {
-        const container = document.getElementById('dynamicFields');
-        const fields = roleFields[currentRole];
-        const t = translations[currentLang].fields;
-        
-        container.innerHTML = fields.map(field => `
-            <div class="input-group">
-                <label>${t[field.id] || field.id}</label>
-                <div class="input-wrapper">
-                    ${field.prefix ? `<span class="input-prefix">${field.prefix}</span>` : ''}
-                    <input type="number" 
-                           id="field_${field.id}" 
-                           placeholder="${field.placeholder}"
-                           value="0"
-                           step="any"
-                           oninput="updateCalculation()">
-                    ${field.suffix ? `<span class="input-prefix" style="left: auto; right: 20px;">${field.suffix}</span>` : ''}
-                </div>
-            </div>
-        `).join('');
-        
-        // Add tax rate field for all roles
-        container.innerHTML += `
-            <div class="input-group">
-                <label>Estimated Tax Rate</label>
-                <div class="input-wrapper">
-                    <input type="number" id="field_taxRate" placeholder="25" value="25" step="1" oninput="updateCalculation()">
-                    <span class="input-prefix" style="left: auto; right: 20px;">%</span>
-                </div>
-            </div>
-        `;
-        
-        updateCalculation();
-    }
-    
-    function updateCalculation() {
-        const fields = roleFields[currentRole];
-        let revenue = 0;
-        let totalCosts = 0;
-        
-        // Calculate based on role
-        for (const field of fields) {
-            const value = parseFloat(document.getElementById(`field_${field.id}`)?.value) || 0;
-            
-            if (field.id === 'revenue' || field.id === 'adRevenue' || field.id === 'grossIncome') {
-                revenue += value;
-            } else if (field.id === 'platformFee') {
-                const rev = revenue || 1;
-                totalCosts += (value / 100) * rev;
-            } else {
-                totalCosts += value;
-            }
-        }
-        
-        const taxRate = parseFloat(document.getElementById('field_taxRate')?.value) || 0;
-        const taxableProfit = Math.max(0, revenue - totalCosts);
-        const taxAmount = taxableProfit * (taxRate / 100);
-        const netProfit = taxableProfit - taxAmount;
-        const margin = revenue > 0 ? (netProfit / revenue) * 100 : 0;
-        
-        // Update UI
-        const symbol = '$';
-        document.getElementById('profitAmount').innerHTML = `${symbol}${netProfit.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
-        document.getElementById('profitMargin').innerHTML = `Margin: <span>${margin.toFixed(1)}%</span>`;
-        document.getElementById('breakRevenue').innerHTML = `${symbol}${revenue.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
-        document.getElementById('breakCosts').innerHTML = `-${symbol}${totalCosts.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
-        document.getElementById('breakTax').innerHTML = `-${symbol}${taxAmount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
-        
-        // Store for saving
-        currentValues = { revenue, costs: totalCosts, taxAmount, netProfit, margin, taxRate };
-    }
-    
-    // ============ ROLE SELECTION ============
-    function initRoleSelector() {
-        document.querySelectorAll('.role-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentRole = btn.dataset.role;
-                renderFields();
-            });
-        });
-    }
-    
-    // ============ AUTH & SAVING ============
-    async function saveCalculation() {
-        if (!currentUser) {
-            openModal();
-            return;
-        }
-        
-        const btn = document.getElementById('saveCalcBtn');
-        btn.textContent = 'Saving...';
-        btn.disabled = true;
-        
-        const { data, error } = await supabase
-            .from('calculations')
-            .insert({
-                user_id: currentUser.id,
-                revenue: currentValues.revenue,
-                expenses: currentValues.costs,
-                tax_amount: currentValues.taxAmount,
-                net_profit: currentValues.netProfit,
-                margin_percent: currentValues.margin,
-                details: { role: currentRole, values: currentValues }
-            });
-        
-        btn.textContent = '💾 Save This Calculation';
-        btn.disabled = false;
-        
-        if (error) {
-            showToast('Error saving: ' + error.message);
-        } else {
-            showToast('✓ Calculation saved!');
-        }
-    }
-    
-    function openModal() {
-        document.getElementById('authModal').classList.add('open');
-    }
-    
-    function closeModal() {
-        document.getElementById('authModal').classList.remove('open');
-    }
-    
-    async function signUpWithEmail() {
-        const email = document.getElementById('modalEmail').value;
-        if (!email || !email.includes('@')) {
-            showToast('Please enter a valid email');
-            return;
-        }
-        
-        const password = Math.random().toString(36).slice(-12);
-        const { data, error } = await supabase.auth.signUp({
-            email: email,
-            password: password,
-            options: {
-                data: { trial_start: new Date().toISOString(), trial_end: new Date(Date.now() + 7*24*60*60*1000).toISOString() }
-            }
-        });
-        
-        if (error) {
-            showToast(error.message);
-        } else {
-            showToast('Account created! 7-day trial started.');
-            closeModal();
-            checkUser();
-        }
-    }
-    
-    async function signUpWithGoogle() {
-        const { error } = await supabase.auth.signInWithOAuth({
-            provider: 'google',
-            options: { redirectTo: window.location.href }
-        });
-        if (error) showToast(error.message);
-    }
-    
-    async function checkUser() {
-        const { data: { user } } = await supabase.auth.getUser();
-        currentUser = user;
-        
-        if (user) {
-            document.getElementById('navButtons').style.display = 'none';
-            document.getElementById('userInfo').style.display = 'block';
-            document.getElementById('userEmail').textContent = user.email.split('@')[0];
-            document.getElementById('saveNote').innerHTML = '✓ Your calculations are being saved';
-        } else {
-            document.getElementById('navButtons').style.display = 'flex';
-            document.getElementById('userInfo').style.display = 'none';
-        }
-    }
-    
-    // ============ LANGUAGE ============
-    function setLanguage(lang) {
-        currentLang = lang;
-        const t = translations[lang];
-        
-        document.getElementById('heroBadge').textContent = t.heroBadge;
-        document.getElementById('heroSub').textContent = t.heroSub;
-        document.getElementById('inputTitle').textContent = t.inputTitle;
-        document.getElementById('inputSub').textContent = t.inputSub;
-        document.getElementById('profitLabel').textContent = t.profitLabel;
-        document.getElementById('saveNote').innerHTML = currentUser ? '✓ Your calculations are being saved' : t.saveNote;
-        document.getElementById('modalTitle').textContent = t.modalTitle;
-        document.getElementById('modalDesc').textContent = t.modalDesc;
-        document.getElementById('trialBadge').textContent = t.trialBadge;
-        
-        document.querySelectorAll('.lang-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.lang === lang);
-        });
-        
-        renderFields();
-    }
-    
-    // ============ TOAST ============
-    function showToast(message, isError = false) {
-        const toast = document.getElementById('toast');
-        toast.textContent = message;
-        toast.style.background = isError ? 'var(--error)' : 'var(--accent-green)';
-        toast.style.color = isError ? 'white' : 'black';
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 3000);
-    }
-    
-    // ============ INIT ============
-    document.addEventListener('DOMContentLoaded', () => {
-        initRoleSelector();
-        renderFields();
-        checkUser();
-        
-        document.getElementById('saveCalcBtn').onclick = saveCalculation;
-        document.getElementById('signInBtn').onclick = openModal;
-        document.getElementById('trialBtn').onclick = openModal;
-        document.getElementById('emailSignupBtn').onclick = signUpWithEmail;
-        document.getElementById('googleSignupBtn').onclick = signUpWithGoogle;
-        
-        document.querySelectorAll('.lang-btn').forEach(btn => {
-            btn.onclick = () => setLanguage(btn.dataset.lang);
-        });
-        
-        // Close modal on outside click
-        document.getElementById('authModal').onclick = (e) => {
-            if (e.target === document.getElementById('authModal')) closeModal();
         };
-    });
-</script>
+        
+        // Field configurations per role
+        const fieldsConfig = {
+            creator: [
+                { id: 'adRevenue', label: 'Ad Revenue', placeholder: '0' },
+                { id: 'sponsors', label: 'Sponsorships', placeholder: '0' },
+                { id: 'merch', label: 'Merch & Products', placeholder: '0' },
+                { id: 'equipment', label: 'Equipment & Software', placeholder: '0' },
+                { id: 'editing', label: 'Editing/Production', placeholder: '0' },
+                { id: 'taxRate', label: 'Tax Rate (%)', placeholder: '25' }
+            ],
+            ecom: [
+                { id: 'revenue', label: 'Total Revenue', placeholder: '0' },
+                { id: 'cogs', label: 'Product Costs (COGS)', placeholder: '0' },
+                { id: 'shipping', label: 'Shipping', placeholder: '0' },
+                { id: 'ads', label: 'Marketing & Ads', placeholder: '0' },
+                { id: 'platformFee', label: 'Platform Fee (%)', placeholder: '0' },
+                { id: 'taxRate', label: 'Tax Rate (%)', placeholder: '25' }
+            ],
+            freelancer: [
+                { id: 'income', label: 'Gross Income', placeholder: '0' },
+                { id: 'software', label: 'Software & Tools', placeholder: '0' },
+                { id: 'subcontractors', label: 'Subcontractors', placeholder: '0' },
+                { id: 'platformFee', label: 'Platform Fee (%)', placeholder: '0' },
+                { id: 'taxRate', label: 'Tax Rate (%)', placeholder: '25' }
+            ]
+        };
+        
+        // Translation for field labels
+        const fieldLabels = {
+            en: {
+                adRevenue: 'Ad Revenue', sponsors: 'Sponsorships', merch: 'Merch & Products',
+                equipment: 'Equipment & Software', editing: 'Editing/Production',
+                revenue: 'Total Revenue', cogs: 'Product Costs (COGS)', shipping: 'Shipping',
+                ads: 'Marketing & Ads', platformFee: 'Platform Fee (%)', taxRate: 'Tax Rate (%)',
+                income: 'Gross Income', software: 'Software & Tools', subcontractors: 'Subcontractors'
+            },
+            fr: {
+                adRevenue: 'Revenus publicitaires', sponsors: 'Sponsoring', merch: 'Produits dérivés',
+                equipment: 'Équipement', editing: 'Montage', revenue: 'Revenu total',
+                cogs: 'Coût des produits', shipping: 'Livraison', ads: 'Marketing',
+                platformFee: 'Commission (%)', taxRate: 'Taux d\'impôt (%)',
+                income: 'Revenu brut', software: 'Logiciels', subcontractors: 'Sous-traitants'
+            },
+            ar: {
+                adRevenue: 'إيرادات الإعلانات', sponsors: 'الرعايات', merch: 'المنتجات',
+                equipment: 'المعدات', editing: 'المونتاج', revenue: 'إجمالي الإيرادات',
+                cogs: 'تكلفة المنتجات', shipping: 'الشحن', ads: 'التسويق',
+                platformFee: 'رسوم المنصة (%)', taxRate: 'نسبة الضريبة (%)',
+                income: 'الدخل الإجمالي', software: 'البرامج', subcontractors: 'المقاولون'
+            }
+        };
+        
+        // Render input fields based on role
+        function renderFields() {
+            const container = document.getElementById('inputFields');
+            const fields = fieldsConfig[currentRole];
+            const labels = fieldLabels[currentLang];
+            
+            container.innerHTML = fields.map(field => `
+                <div class="input-group">
+                    <label>${labels[field.id] || field.label}</label>
+                    <input type="number" id="${field.id}" placeholder="${field.placeholder}" value="0" step="any" oninput="calculateProfit()">
+                </div>
+            `).join('');
+            
+            calculateProfit();
+        }
+        
+        // Calculate profit
+        function calculateProfit() {
+            let revenue = 0;
+            let totalCosts = 0;
+            let taxRate = 25;
+            
+            if (currentRole === 'creator') {
+                const adRevenue = parseFloat(document.getElementById('adRevenue')?.value) || 0;
+                const sponsors = parseFloat(document.getElementById('sponsors')?.value) || 0;
+                const merch = parseFloat(document.getElementById('merch')?.value) || 0;
+                revenue = adRevenue + sponsors + merch;
+                
+                const equipment = parseFloat(document.getElementById('equipment')?.value) || 0;
+                const editing = parseFloat(document.getElementById('editing')?.value) || 0;
+                totalCosts = equipment + editing;
+                taxRate = parseFloat(document.getElementById('taxRate')?.value) || 25;
+            }
+            else if (currentRole === 'ecom') {
+                revenue = parseFloat(document.getElementById('revenue')?.value) || 0;
+                const cogs = parseFloat(document.getElementById('cogs')?.value) || 0;
+                const shipping = parseFloat(document.getElementById('shipping')?.value) || 0;
+                const ads = parseFloat(document.getElementById('ads')?.value) || 0;
+                const platformFee = (parseFloat(document.getElementById('platformFee')?.value) || 0) / 100 * revenue;
+                totalCosts = cogs + shipping + ads + platformFee;
+                taxRate = parseFloat(document.getElementById('taxRate')?.value) || 25;
+            }
+            else if (currentRole === 'freelancer') {
+                revenue = parseFloat(document.getElementById('income')?.value) || 0;
+                const software = parseFloat(document.getElementById('software')?.value) || 0;
+                const subcontractors = parseFloat(document.getElementById('subcontractors')?.value) || 0;
+                const platformFee = (parseFloat(document.getElementById('platformFee')?.value) || 0) / 100 * revenue;
+                totalCosts = software + subcontractors + platformFee;
+                taxRate = parseFloat(document.getElementById('taxRate')?.value) || 25;
+            }
+            
+            const taxableProfit = Math.max(0, revenue - totalCosts);
+            const taxAmount = taxableProfit * (taxRate / 100);
+            const netProfit = taxableProfit - taxAmount;
+            const margin = revenue > 0 ? (netProfit / revenue) * 100 : 0;
+            
+            // Update UI
+            const symbol = '$';
+            document.getElementById('profitAmount').innerHTML = `${symbol}${netProfit.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+            document.getElementById('marginValue').innerHTML = `${margin.toFixed(1)}%`;
+            document.getElementById('breakRevenue').innerHTML = `${symbol}${revenue.toLocaleString()}`;
+            document.getElementById('breakCosts').innerHTML = `-${symbol}${totalCosts.toLocaleString()}`;
+            document.getElementById('breakTax').innerHTML = `-${symbol}${taxAmount.toLocaleString()}`;
+        }
+        
+        // Select role
+        function selectRole(role) {
+            currentRole = role;
+            
+            // Update active button style
+            document.querySelectorAll('.role-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.role-btn[data-role="${role}"]`).classList.add('active');
+            
+            renderFields();
+        }
+        
+        // Set language
+        function setLanguage(lang) {
+            currentLang = lang;
+            const t = texts[lang];
+            
+            // Update UI text
+            document.getElementById('heroSub').innerHTML = t.heroSub;
+            document.getElementById('saveNote').innerHTML = t.saveNote;
+            document.getElementById('profitLabel').innerHTML = t.profitLabel;
+            document.getElementById('marginText').innerHTML = `${t.margin}: <span id="marginValue" style="color: #00f593;">${document.getElementById('marginValue').innerHTML}</span>`;
+            
+            // Update active language button
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Re-render fields with new language
+            renderFields();
+        }
+        
+        // Save button (demo for now)
+        document.getElementById('saveBtn').onclick = function() {
+            alert('Sign in to save your calculations! (Supabase integration ready)');
+        };
+        
+        document.getElementById('trialBtn').onclick = function() {
+            alert('Start your 7-day free trial! (Supabase auth ready)');
+        };
+        
+        // Initialize
+        renderFields();
+    </script>
 </body>
 </html>
