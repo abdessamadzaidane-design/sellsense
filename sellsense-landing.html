@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ProfitSense - Real Profit Calculator</title>
+    <title>SellSense - Votre Profit Réel</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
@@ -25,7 +25,6 @@
             margin: 0 auto;
         }
 
-        /* Glass navigation */
         nav {
             display: flex;
             justify-content: space-between;
@@ -36,6 +35,8 @@
             border-radius: 80px;
             padding: 12px 24px;
             margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .logo {
@@ -79,7 +80,6 @@
             color: #000;
         }
 
-        /* Hero */
         .hero {
             text-align: center;
             padding: 40px 20px;
@@ -106,7 +106,6 @@
             margin: 0 auto;
         }
 
-        /* Calculator grid */
         .calc-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -205,6 +204,10 @@
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
+        .breakdown-row:last-child {
+            border-bottom: none;
+        }
+
         .save-btn {
             width: 100%;
             background: linear-gradient(135deg, #00f593, #00d4ff);
@@ -218,287 +221,387 @@
             margin-top: 20px;
         }
 
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .modal.open {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: #0f1420;
+            border-radius: 32px;
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            border: 1px solid #00f593;
+        }
+
+        .trial-badge {
+            background: rgba(0, 245, 147, 0.1);
+            border: 1px solid #00f593;
+            border-radius: 40px;
+            padding: 6px 16px;
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #00f593;
+            font-size: 13px;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 14px;
+            margin: 16px 0;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            color: white;
+            font-size: 16px;
+        }
+
+        .modal-content .btn-google {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 12px;
+            border-radius: 40px;
+            width: 100%;
+            color: white;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+
         @media (max-width: 768px) {
             .calc-grid {
                 grid-template-columns: 1fr;
             }
-            
             h1 {
                 font-size: 32px;
             }
-            
             .glass-card {
                 padding: 20px;
             }
-            
             .result-amount {
                 font-size: 48px;
+            }
+            nav {
+                justify-content: center;
+                text-align: center;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Navigation -->
         <nav>
-            <div class="logo">ProfitSense</div>
-            <div style="display: flex; gap: 16px; align-items: center;">
+            <div class="logo">💰 SellSense</div>
+            <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
                 <div class="lang-buttons">
-                    <button class="lang-btn active" onclick="setLanguage('en')">EN</button>
-                    <button class="lang-btn" onclick="setLanguage('fr')">FR</button>
-                    <button class="lang-btn" onclick="setLanguage('ar')">AR</button>
+                    <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">EN</button>
+                    <button class="lang-btn" data-lang="fr" onclick="setLanguage('fr')">FR</button>
+                    <button class="lang-btn" data-lang="ar" onclick="setLanguage('ar')">AR</button>
                 </div>
-                <button class="btn-primary" id="trialBtn">Start Free Trial</button>
+                <button class="btn-primary" id="trialBtn">🚀 Démarrer gratuit</button>
             </div>
         </nav>
 
-        <!-- Hero -->
         <div class="hero">
-            <h1>Know your <span class="gradient-text">real profit</span></h1>
-            <p id="heroSub">Built for creators, e-commerce, and freelancers across Africa</p>
+            <h1>Connais ton <span class="gradient-text">vrai profit</span></h1>
+            <p id="heroSub">Pour créateurs, e-commerçants et freelances en Afrique</p>
         </div>
 
-        <!-- Calculator -->
         <div class="calc-grid">
-            <!-- Left side - Inputs -->
             <div class="glass-card">
-                <h3 style="margin-bottom: 8px;">📊 Your Numbers</h3>
-                <p style="color: #8f9bb3; font-size: 14px; margin-bottom: 24px;">Enter your revenue and costs</p>
+                <h3 id="inputTitle" style="margin-bottom: 8px;">📊 Tes chiffres</h3>
+                <p id="inputSub" style="color: #8f9bb3; font-size: 14px; margin-bottom: 24px;">Entre tes revenus et dépenses</p>
                 
                 <div class="role-buttons" id="roleButtons">
                     <div class="role-btn active" data-role="creator" onclick="selectRole('creator')">
-                        <h4>🎬 Content Creator</h4>
-                        <p>YouTube, TikTok, Instagram</p>
+                        <h4 id="roleCreatorLabel">🎬 Créateur</h4>
+                        <p id="roleCreatorDesc">YouTube, TikTok, Instagram</p>
                     </div>
                     <div class="role-btn" data-role="ecom" onclick="selectRole('ecom')">
-                        <h4>📦 E-commerce</h4>
-                        <p>Dropshipping, COD, Online Store</p>
+                        <h4 id="roleEcomLabel">📦 E-commerce</h4>
+                        <p id="roleEcomDesc">Dropshipping, COD, Boutique</p>
                     </div>
                     <div class="role-btn" data-role="freelancer" onclick="selectRole('freelancer')">
-                        <h4>💻 Freelancer</h4>
-                        <p>Services, Consulting, Contracts</p>
+                        <h4 id="roleFreelancerLabel">💻 Freelance</h4>
+                        <p id="roleFreelancerDesc">Services, Consulting</p>
                     </div>
                 </div>
 
                 <div id="inputFields"></div>
             </div>
 
-            <!-- Right side - Result -->
             <div class="glass-card">
-                <h3 id="profitLabel" style="font-size: 14px; color: #8f9bb3; letter-spacing: 2px;">NET PROFIT</h3>
-                <div class="result-amount" id="profitAmount">$0</div>
-                <p id="marginText">Margin: <span id="marginValue" style="color: #00f593;">0%</span></p>
+                <h3 id="profitLabel" style="font-size: 14px; color: #8f9bb3; letter-spacing: 2px;">PROFIT NET</h3>
+                <div class="result-amount" id="profitAmount">0 MAD</div>
+                <p id="marginText">Marge: <span id="marginValue" style="color: #00f593;">0%</span></p>
                 
                 <div class="breakdown" id="breakdown">
                     <div class="breakdown-row">
-                        <span>Revenue</span>
-                        <span id="breakRevenue" style="color: #00f593;">$0</span>
+                        <span id="revenueLabel">💰 Revenus</span>
+                        <span id="breakRevenue" style="color: #00f593;">0 MAD</span>
                     </div>
                     <div class="breakdown-row">
-                        <span>Total Costs</span>
-                        <span id="breakCosts" style="color: #ff4d6d;">-$0</span>
-                    </div>
-                    <div class="breakdown-row">
-                        <span>Taxes (est.)</span>
-                        <span id="breakTax" style="color: #ff4d6d;">-$0</span>
+                        <span id="costsLabel">📉 Dépenses</span>
+                        <span id="breakCosts" style="color: #ff4d6d;">0 MAD</span>
                     </div>
                 </div>
                 
-                <button class="save-btn" id="saveBtn">💾 Save This Calculation</button>
-                <p id="saveNote" style="font-size: 12px; color: #5a657d; text-align: center; margin-top: 12px;">Sign in to save your calculations</p>
+                <button class="save-btn" id="saveBtn">💾 Sauvegarder ce calcul</button>
+                <p id="saveNote" style="font-size: 12px; color: #5a657d; text-align: center; margin-top: 12px;">Connecte-toi pour sauvegarder</p>
             </div>
         </div>
     </div>
 
+    <!-- Modal Connexion -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <div class="trial-badge">🎁 7 jours d'essai gratuit</div>
+            <h3 style="margin-bottom: 8px;">Sauvegarde ton calcul</h3>
+            <p style="color: #8f9bb3; margin-bottom: 20px;">Crée un compte en 30 secondes</p>
+            <input type="email" id="modalEmail" placeholder="ton@email.com">
+            <button class="btn-primary" id="modalSignupBtn" style="width: 100%; margin-bottom: 12px;">Commencer l'essai →</button>
+            <div style="color: #5a657d; margin: 12px;">ou</div>
+            <button class="btn-google" id="googleSignupBtn">🔐 Continuer avec Google</button>
+        </div>
+    </div>
+
     <script>
-        // Current state
+        // Supabase
+        const SUPABASE_URL = 'https://fmlmkxbcfeebeqtlzzvn.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_M68a1m8LRq_DHQUov2k5pw_e-qrAefU';
+        const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUser = null;
         let currentRole = 'creator';
-        let currentLang = 'en';
+        let currentLang = 'fr';
         
-        // Translations
+        // Traductions COMPLÈTES
         const texts = {
-            en: {
-                heroSub: 'Built for creators, e-commerce, and freelancers across Africa',
-                saveNote: 'Sign in to save your calculations',
-                profitLabel: 'NET PROFIT',
-                margin: 'Margin'
-            },
             fr: {
                 heroSub: 'Pour créateurs, e-commerçants et freelances en Afrique',
-                saveNote: 'Connectez-vous pour sauvegarder',
+                inputTitle: '📊 Tes chiffres',
+                inputSub: 'Entre tes revenus et dépenses',
+                roleCreatorLabel: '🎬 Créateur',
+                roleCreatorDesc: 'YouTube, TikTok, Instagram',
+                roleEcomLabel: '📦 E-commerce',
+                roleEcomDesc: 'Dropshipping, COD, Boutique',
+                roleFreelancerLabel: '💻 Freelance',
+                roleFreelancerDesc: 'Services, Consulting',
                 profitLabel: 'PROFIT NET',
-                margin: 'Marge'
+                marginText: 'Marge',
+                revenueLabel: '💰 Revenus',
+                costsLabel: '📉 Dépenses',
+                saveNote: 'Connecte-toi pour sauvegarder',
+                fields: {
+                    adRevenue: 'Revenus publicitaires', sponsors: 'Sponsoring', merch: 'Produits',
+                    equipment: 'Équipement', editing: 'Montage', revenue: 'Revenu total',
+                    cogs: 'Coût des produits', shipping: 'Livraison', ads: 'Marketing',
+                    platformFee: 'Commission (%)', income: 'Revenu brut',
+                    software: 'Logiciels', subcontractors: 'Sous-traitants'
+                }
             },
-            ar: {
-                heroSub: 'للمبدعين والتجارة الإلكترونية والمستقلين في أفريقيا',
-                saveNote: 'سجل الدخول لحفظ حساباتك',
-                profitLabel: 'صافي الربح',
-                margin: 'الهامش'
-            }
-        };
-        
-        // Field configurations per role
-        const fieldsConfig = {
-            creator: [
-                { id: 'adRevenue', label: 'Ad Revenue', placeholder: '0' },
-                { id: 'sponsors', label: 'Sponsorships', placeholder: '0' },
-                { id: 'merch', label: 'Merch & Products', placeholder: '0' },
-                { id: 'equipment', label: 'Equipment & Software', placeholder: '0' },
-                { id: 'editing', label: 'Editing/Production', placeholder: '0' },
-                { id: 'taxRate', label: 'Tax Rate (%)', placeholder: '25' }
-            ],
-            ecom: [
-                { id: 'revenue', label: 'Total Revenue', placeholder: '0' },
-                { id: 'cogs', label: 'Product Costs (COGS)', placeholder: '0' },
-                { id: 'shipping', label: 'Shipping', placeholder: '0' },
-                { id: 'ads', label: 'Marketing & Ads', placeholder: '0' },
-                { id: 'platformFee', label: 'Platform Fee (%)', placeholder: '0' },
-                { id: 'taxRate', label: 'Tax Rate (%)', placeholder: '25' }
-            ],
-            freelancer: [
-                { id: 'income', label: 'Gross Income', placeholder: '0' },
-                { id: 'software', label: 'Software & Tools', placeholder: '0' },
-                { id: 'subcontractors', label: 'Subcontractors', placeholder: '0' },
-                { id: 'platformFee', label: 'Platform Fee (%)', placeholder: '0' },
-                { id: 'taxRate', label: 'Tax Rate (%)', placeholder: '25' }
-            ]
-        };
-        
-        // Translation for field labels
-        const fieldLabels = {
             en: {
-                adRevenue: 'Ad Revenue', sponsors: 'Sponsorships', merch: 'Merch & Products',
-                equipment: 'Equipment & Software', editing: 'Editing/Production',
-                revenue: 'Total Revenue', cogs: 'Product Costs (COGS)', shipping: 'Shipping',
-                ads: 'Marketing & Ads', platformFee: 'Platform Fee (%)', taxRate: 'Tax Rate (%)',
-                income: 'Gross Income', software: 'Software & Tools', subcontractors: 'Subcontractors'
-            },
-            fr: {
-                adRevenue: 'Revenus publicitaires', sponsors: 'Sponsoring', merch: 'Produits dérivés',
-                equipment: 'Équipement', editing: 'Montage', revenue: 'Revenu total',
-                cogs: 'Coût des produits', shipping: 'Livraison', ads: 'Marketing',
-                platformFee: 'Commission (%)', taxRate: 'Taux d\'impôt (%)',
-                income: 'Revenu brut', software: 'Logiciels', subcontractors: 'Sous-traitants'
+                heroSub: 'For creators, e-commerce owners, and freelancers across Africa',
+                inputTitle: '📊 Your numbers',
+                inputSub: 'Enter your revenue and costs',
+                roleCreatorLabel: '🎬 Creator',
+                roleCreatorDesc: 'YouTube, TikTok, Instagram',
+                roleEcomLabel: '📦 E-commerce',
+                roleEcomDesc: 'Dropshipping, COD, Store',
+                roleFreelancerLabel: '💻 Freelancer',
+                roleFreelancerDesc: 'Services, Consulting',
+                profitLabel: 'NET PROFIT',
+                marginText: 'Margin',
+                revenueLabel: '💰 Revenue',
+                costsLabel: '📉 Costs',
+                saveNote: 'Sign in to save',
+                fields: {
+                    adRevenue: 'Ad Revenue', sponsors: 'Sponsorships', merch: 'Merch',
+                    equipment: 'Equipment', editing: 'Editing', revenue: 'Total Revenue',
+                    cogs: 'Product Costs', shipping: 'Shipping', ads: 'Marketing',
+                    platformFee: 'Platform Fee (%)', income: 'Gross Income',
+                    software: 'Software', subcontractors: 'Subcontractors'
+                }
             },
             ar: {
-                adRevenue: 'إيرادات الإعلانات', sponsors: 'الرعايات', merch: 'المنتجات',
-                equipment: 'المعدات', editing: 'المونتاج', revenue: 'إجمالي الإيرادات',
-                cogs: 'تكلفة المنتجات', shipping: 'الشحن', ads: 'التسويق',
-                platformFee: 'رسوم المنصة (%)', taxRate: 'نسبة الضريبة (%)',
-                income: 'الدخل الإجمالي', software: 'البرامج', subcontractors: 'المقاولون'
+                heroSub: 'للمبدعين وأصحاب المتاجر الإلكترونية والمستقلين في أفريقيا',
+                inputTitle: '📊 أرقامك',
+                inputSub: 'أدخل إيراداتك ومصروفاتك',
+                roleCreatorLabel: '🎬 مبدع',
+                roleCreatorDesc: 'يوتيوب، تيك توك، إنستغرام',
+                roleEcomLabel: '📦 تجارة إلكترونية',
+                roleEcomDesc: 'دروبشيبينغ، COD، متجر',
+                roleFreelancerLabel: '💻 مستقل',
+                roleFreelancerDesc: 'خدمات، استشارات',
+                profitLabel: 'صافي الربح',
+                marginText: 'الهامش',
+                revenueLabel: '💰 الإيرادات',
+                costsLabel: '📉 المصروفات',
+                saveNote: 'سجل الدخول للحفظ',
+                fields: {
+                    adRevenue: 'إيرادات الإعلانات', sponsors: 'الرعايات', merch: 'المنتجات',
+                    equipment: 'المعدات', editing: 'المونتاج', revenue: 'إجمالي الإيرادات',
+                    cogs: 'تكلفة المنتجات', shipping: 'الشحن', ads: 'التسويق',
+                    platformFee: 'رسوم المنصة (%)', income: 'الدخل الإجمالي',
+                    software: 'البرامج', subcontractors: 'المقاولون'
+                }
             }
         };
-        
-        // Render input fields based on role
+
+        const fieldsConfig = {
+            creator: ['adRevenue', 'sponsors', 'merch', 'equipment', 'editing', 'platformFee'],
+            ecom: ['revenue', 'cogs', 'shipping', 'ads', 'platformFee'],
+            freelancer: ['income', 'software', 'subcontractors', 'platformFee']
+        };
+
         function renderFields() {
             const container = document.getElementById('inputFields');
             const fields = fieldsConfig[currentRole];
-            const labels = fieldLabels[currentLang];
+            const t = texts[currentLang];
             
             container.innerHTML = fields.map(field => `
                 <div class="input-group">
-                    <label>${labels[field.id] || field.label}</label>
-                    <input type="number" id="${field.id}" placeholder="${field.placeholder}" value="0" step="any" oninput="calculateProfit()">
+                    <label>${t.fields[field] || field}</label>
+                    <input type="number" id="${field}" placeholder="0" value="0" step="any" oninput="calculateProfit()">
                 </div>
             `).join('');
-            
             calculateProfit();
         }
-        
-        // Calculate profit
+
         function calculateProfit() {
             let revenue = 0;
             let totalCosts = 0;
-            let taxRate = 25;
             
             if (currentRole === 'creator') {
-                const adRevenue = parseFloat(document.getElementById('adRevenue')?.value) || 0;
-                const sponsors = parseFloat(document.getElementById('sponsors')?.value) || 0;
-                const merch = parseFloat(document.getElementById('merch')?.value) || 0;
-                revenue = adRevenue + sponsors + merch;
-                
-                const equipment = parseFloat(document.getElementById('equipment')?.value) || 0;
-                const editing = parseFloat(document.getElementById('editing')?.value) || 0;
-                totalCosts = equipment + editing;
-                taxRate = parseFloat(document.getElementById('taxRate')?.value) || 25;
-            }
-            else if (currentRole === 'ecom') {
-                revenue = parseFloat(document.getElementById('revenue')?.value) || 0;
-                const cogs = parseFloat(document.getElementById('cogs')?.value) || 0;
-                const shipping = parseFloat(document.getElementById('shipping')?.value) || 0;
-                const ads = parseFloat(document.getElementById('ads')?.value) || 0;
-                const platformFee = (parseFloat(document.getElementById('platformFee')?.value) || 0) / 100 * revenue;
-                totalCosts = cogs + shipping + ads + platformFee;
-                taxRate = parseFloat(document.getElementById('taxRate')?.value) || 25;
-            }
-            else if (currentRole === 'freelancer') {
-                revenue = parseFloat(document.getElementById('income')?.value) || 0;
-                const software = parseFloat(document.getElementById('software')?.value) || 0;
-                const subcontractors = parseFloat(document.getElementById('subcontractors')?.value) || 0;
-                const platformFee = (parseFloat(document.getElementById('platformFee')?.value) || 0) / 100 * revenue;
-                totalCosts = software + subcontractors + platformFee;
-                taxRate = parseFloat(document.getElementById('taxRate')?.value) || 25;
+                revenue = (parseFloat(document.getElementById('adRevenue')?.value)||0) + (parseFloat(document.getElementById('sponsors')?.value)||0) + (parseFloat(document.getElementById('merch')?.value)||0);
+                totalCosts = (parseFloat(document.getElementById('equipment')?.value)||0) + (parseFloat(document.getElementById('editing')?.value)||0);
+                totalCosts += (parseFloat(document.getElementById('platformFee')?.value)||0) / 100 * revenue;
+            } else if (currentRole === 'ecom') {
+                revenue = parseFloat(document.getElementById('revenue')?.value)||0;
+                totalCosts = (parseFloat(document.getElementById('cogs')?.value)||0) + (parseFloat(document.getElementById('shipping')?.value)||0) + (parseFloat(document.getElementById('ads')?.value)||0);
+                totalCosts += (parseFloat(document.getElementById('platformFee')?.value)||0) / 100 * revenue;
+            } else if (currentRole === 'freelancer') {
+                revenue = parseFloat(document.getElementById('income')?.value)||0;
+                totalCosts = (parseFloat(document.getElementById('software')?.value)||0) + (parseFloat(document.getElementById('subcontractors')?.value)||0);
+                totalCosts += (parseFloat(document.getElementById('platformFee')?.value)||0) / 100 * revenue;
             }
             
-            const taxableProfit = Math.max(0, revenue - totalCosts);
-            const taxAmount = taxableProfit * (taxRate / 100);
-            const netProfit = taxableProfit - taxAmount;
+            const netProfit = revenue - totalCosts;
             const margin = revenue > 0 ? (netProfit / revenue) * 100 : 0;
             
-            // Update UI
-            const symbol = '$';
-            document.getElementById('profitAmount').innerHTML = `${symbol}${netProfit.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+            document.getElementById('profitAmount').innerHTML = `${Math.round(netProfit).toLocaleString()} MAD`;
             document.getElementById('marginValue').innerHTML = `${margin.toFixed(1)}%`;
-            document.getElementById('breakRevenue').innerHTML = `${symbol}${revenue.toLocaleString()}`;
-            document.getElementById('breakCosts').innerHTML = `-${symbol}${totalCosts.toLocaleString()}`;
-            document.getElementById('breakTax').innerHTML = `-${symbol}${taxAmount.toLocaleString()}`;
+            document.getElementById('breakRevenue').innerHTML = `${Math.round(revenue).toLocaleString()} MAD`;
+            document.getElementById('breakCosts').innerHTML = `${Math.round(totalCosts).toLocaleString()} MAD`;
         }
-        
-        // Select role
+
         function selectRole(role) {
             currentRole = role;
-            
-            // Update active button style
-            document.querySelectorAll('.role-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
+            document.querySelectorAll('.role-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`.role-btn[data-role="${role}"]`).classList.add('active');
-            
             renderFields();
         }
-        
-        // Set language
+
         function setLanguage(lang) {
             currentLang = lang;
             const t = texts[lang];
             
-            // Update UI text
             document.getElementById('heroSub').innerHTML = t.heroSub;
-            document.getElementById('saveNote').innerHTML = t.saveNote;
+            document.getElementById('inputTitle').innerHTML = t.inputTitle;
+            document.getElementById('inputSub').innerHTML = t.inputSub;
+            document.getElementById('roleCreatorLabel').innerHTML = t.roleCreatorLabel;
+            document.getElementById('roleCreatorDesc').innerHTML = t.roleCreatorDesc;
+            document.getElementById('roleEcomLabel').innerHTML = t.roleEcomLabel;
+            document.getElementById('roleEcomDesc').innerHTML = t.roleEcomDesc;
+            document.getElementById('roleFreelancerLabel').innerHTML = t.roleFreelancerLabel;
+            document.getElementById('roleFreelancerDesc').innerHTML = t.roleFreelancerDesc;
             document.getElementById('profitLabel').innerHTML = t.profitLabel;
-            document.getElementById('marginText').innerHTML = `${t.margin}: <span id="marginValue" style="color: #00f593;">${document.getElementById('marginValue').innerHTML}</span>`;
+            document.getElementById('marginText').innerHTML = `${t.marginText}: <span id="marginValue" style="color: #00f593;">${document.getElementById('marginValue').innerHTML}</span>`;
+            document.getElementById('revenueLabel').innerHTML = t.revenueLabel;
+            document.getElementById('costsLabel').innerHTML = t.costsLabel;
+            document.getElementById('saveNote').innerHTML = t.saveNote;
             
-            // Update active language button
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.lang-btn[data-lang="${lang}"]`).classList.add('active');
             
-            // Re-render fields with new language
             renderFields();
         }
-        
-        // Save button (demo for now)
-        document.getElementById('saveBtn').onclick = function() {
-            alert('Sign in to save your calculations! (Supabase integration ready)');
-        };
-        
-        document.getElementById('trialBtn').onclick = function() {
-            alert('Start your 7-day free trial! (Supabase auth ready)');
-        };
-        
-        // Initialize
+
+        function openModal() {
+            document.getElementById('authModal').classList.add('open');
+        }
+
+        function closeModal() {
+            document.getElementById('authModal').classList.remove('open');
+        }
+
+        async function signUpWithEmail() {
+            const email = document.getElementById('modalEmail').value;
+            if (!email || !email.includes('@')) {
+                alert('Email invalide');
+                return;
+            }
+            const password = Math.random().toString(36).slice(-12);
+            const { error } = await supabase.auth.signUp({
+                email: email,
+                password: password,
+                options: { data: { trial_start: new Date().toISOString() } }
+            });
+            if (error) {
+                alert(error.message);
+            } else {
+                alert('✅ Compte créé ! 7 jours gratuits. Vérifie tes emails.');
+                closeModal();
+            }
+        }
+
+        async function signUpWithGoogle() {
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: { redirectTo: window.location.href }
+            });
+            if (error) alert(error.message);
+        }
+
+        async function saveCalculation() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                openModal();
+                return;
+            }
+            const profitText = document.getElementById('profitAmount').innerHTML;
+            const profit = parseFloat(profitText.replace(' MAD', '').replace(',', '')) || 0;
+            await supabase.from('calculations').insert({ user_id: user.id, net_profit: profit, business_type: currentRole });
+            alert('✅ Calcul sauvegardé !');
+        }
+
+        document.getElementById('saveBtn').onclick = saveCalculation;
+        document.getElementById('trialBtn').onclick = openModal;
+        document.getElementById('modalSignupBtn').onclick = signUpWithEmail;
+        document.getElementById('googleSignupBtn').onclick = signUpWithGoogle;
+        document.getElementById('authModal').onclick = (e) => { if (e.target === document.getElementById('authModal')) closeModal(); };
+
         renderFields();
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </body>
 </html>
