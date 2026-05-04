@@ -3,355 +3,226 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SellSense — Dashboard</title>
+<title>SellSense — Connexion</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <script>
+  // ============================================
+  // REMPLACE CES 2 VALEURS PAR LES TIENNES
+  // ============================================
   const SUPABASE_URL = 'https://fmlmkxbcfeebeqtlzzvn.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_M68a1m8LRq_DHQUov2k5pw_e-qrAefU';
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{--bg:#080808;--bg2:#0f0f0f;--bg3:#161616;--white:#f0ede6;--muted:#585858;--accent:#c8ff00;--accent-dim:rgba(200,255,0,0.08);--accent-border:rgba(200,255,0,0.2);--gold:#FFD700;--gold-dim:rgba(255,215,0,0.08);--gold-border:rgba(255,215,0,0.2);--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--red:#ff5757;--green:#7aff9a;--font-d:'Syne',sans-serif;--font-b:'DM Sans',sans-serif;--sidebar:240px;}
-body{background:var(--bg);color:var(--white);font-family:var(--font-b);font-size:15px;line-height:1.6;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
-#ls{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;z-index:999;}
-.ll{font-family:var(--font-d);font-size:28px;font-weight:800;}.ll span{color:var(--accent);}
-.lb{width:200px;height:2px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;}
-.lf{height:100%;background:var(--accent);border-radius:2px;animation:lf 1.2s ease forwards;}
-@keyframes lf{from{width:0}to{width:100%}}
-.lt{font-size:13px;color:var(--muted);}
-.app{display:flex;min-height:100vh;}
-.sidebar{width:var(--sidebar);flex-shrink:0;background:#0a0a0a;border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:50;transition:transform .3s;}
-.sl{padding:22px 20px 18px;border-bottom:1px solid var(--border);}
-.sl a{font-family:var(--font-d);font-size:20px;font-weight:800;text-decoration:none;color:var(--white);}
-.sl a span{color:var(--accent);}
-.sl small{display:block;font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:2px;}
-.ns{padding:14px 12px 8px;}
-.nl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:0 8px;margin-bottom:6px;}
-.ni{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;cursor:pointer;font-size:14px;color:rgba(255,255,255,0.55);transition:all .15s;margin-bottom:2px;text-decoration:none;}
-.ni:hover{background:rgba(255,255,255,0.05);color:var(--white);}
-.ni.active{background:rgba(200,255,0,0.08);color:var(--accent);}
-.nico{width:18px;text-align:center;font-size:15px;flex-shrink:0;}
-.lb2{margin-left:auto;font-size:10px;background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold-border);border-radius:20px;padding:2px 7px;flex-shrink:0;}
-.sb{margin-top:auto;padding:14px 12px;border-top:1px solid var(--border);}
-.up{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;background:rgba(255,255,255,0.04);margin-bottom:10px;}
-.ua{width:34px;height:34px;border-radius:50%;background:rgba(200,255,0,0.15);border:1px solid rgba(200,255,0,0.3);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent);flex-shrink:0;}
-.un{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.upl{font-size:11px;color:var(--muted);}
-.ub{width:100%;background:linear-gradient(135deg,#FFD700,#FFA500);border:none;border-radius:10px;padding:11px;font-family:var(--font-d);font-size:13px;font-weight:700;color:#000;cursor:pointer;transition:all .2s;}
-.ub:hover{opacity:.9;}
-.lo{width:100%;background:transparent;border:1px solid var(--border);border-radius:10px;padding:9px;font-family:var(--font-b);font-size:13px;color:var(--muted);cursor:pointer;transition:all .2s;margin-top:6px;}
-.lo:hover{border-color:var(--red);color:var(--red);}
-.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid var(--border);background:rgba(8,8,8,0.85);backdrop-filter:blur(12px);position:sticky;top:0;z-index:40;}
-.tt{font-family:var(--font-d);font-size:17px;font-weight:700;}
-.tr{display:flex;align-items:center;gap:10px;}
-.pb{font-size:12px;padding:5px 12px;border-radius:20px;font-weight:500;}
-.pb.free{background:rgba(255,255,255,0.06);color:var(--muted);border:1px solid var(--border);}
-.pb.premium{background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold-border);}
-.tub{background:linear-gradient(135deg,#FFD700,#FFA500);border:none;border-radius:8px;padding:8px 16px;font-family:var(--font-d);font-size:13px;font-weight:700;color:#000;cursor:pointer;}
-.mb{display:none;background:none;border:1px solid var(--border);border-radius:8px;width:36px;height:36px;color:var(--white);font-size:18px;cursor:pointer;align-items:center;justify-content:center;}
-.content{padding:28px;flex:1;}
-.welcome{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:26px 28px;display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;position:relative;overflow:hidden;}
-.welcome::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),#00e5ff);}
-.welcome h2{font-family:var(--font-d);font-size:20px;font-weight:800;letter-spacing:-.3px;margin-bottom:4px;}
-.welcome p{color:var(--muted);font-size:14px;}
-.welcome p strong{color:var(--accent);}
-.pc{text-align:right;}
-.pc strong{font-family:var(--font-d);font-size:24px;font-weight:800;color:var(--accent);display:block;}
-.pc span{font-size:12px;color:var(--muted);}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
-.sc{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px;}
-.sl2{font-size:12px;color:var(--muted);margin-bottom:8px;}
-.sv{font-family:var(--font-d);font-size:26px;font-weight:800;letter-spacing:-1px;line-height:1;}
-.sv.pos{color:var(--accent);}
-.sv.neg{color:var(--red);}
-.sc2{font-size:12px;color:var(--muted);margin-top:6px;}
-.sc2.up{color:var(--green);}
-.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-.sti{font-family:var(--font-d);font-size:16px;font-weight:700;}
-.sa{font-size:13px;color:var(--muted);cursor:pointer;background:none;border:none;transition:color .2s;}
-.sa:hover{color:var(--accent);}
-.pc2{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:24px;}
-table{width:100%;border-collapse:collapse;}
-th{text-align:left;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:13px 18px;border-bottom:1px solid var(--border);font-weight:500;}
-td{padding:14px 18px;border-bottom:1px solid var(--border);font-size:14px;}
-tr:last-child td{border-bottom:none;}
-tbody tr:hover{background:rgba(255,255,255,0.02);}
-.tb{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.05);border-radius:6px;padding:3px 8px;font-size:12px;}
-.pp{color:var(--accent);font-weight:600;}
-.pn{color:var(--red);font-weight:600;}
-.mw{width:80px;}
-.mb2{height:4px;border-radius:2px;background:rgba(255,255,255,0.08);overflow:hidden;margin-bottom:3px;}
-.mf{height:100%;border-radius:2px;background:var(--accent);}
-.mf.mid{background:#ffb347;}.mf.low{background:var(--red);}
-.mv{font-size:11px;color:var(--muted);}
-.ar{padding:13px 18px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px;color:var(--muted);font-size:14px;cursor:pointer;transition:color .2s;}
-.ar:hover{color:var(--accent);}
-.es{text-align:center;padding:48px 24px;color:var(--muted);}
-.es .ei{font-size:36px;margin-bottom:12px;}
-.es p{font-size:14px;margin-bottom:20px;}
-.lg{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;}
-.lc{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;position:relative;}
-.li{padding:20px;filter:blur(4px);user-select:none;pointer-events:none;}
-.lo2{position:absolute;inset:0;background:rgba(8,8,8,0.65);display:flex;flex-direction:column;align-items:center;justify-content:center;backdrop-filter:blur(1px);border-radius:16px;}
-.loi{font-size:26px;margin-bottom:8px;}
-.lot{font-family:var(--font-d);font-size:15px;font-weight:700;color:var(--gold);margin-bottom:4px;}
-.los{font-size:13px;color:rgba(255,255,255,0.45);text-align:center;margin-bottom:14px;max-width:200px;}
-.lob{background:linear-gradient(135deg,#FFD700,#FFA500);border:none;border-radius:8px;padding:9px 18px;font-family:var(--font-d);font-size:13px;font-weight:700;color:#000;cursor:pointer;}
-.fb{display:flex;align-items:flex-end;gap:6px;padding:12px 0 0;height:80px;}
-.fbar{flex:1;border-radius:4px 4px 0 0;background:linear-gradient(180deg,rgba(200,255,0,0.4),rgba(200,255,0,0.1));}
-.us{background:linear-gradient(135deg,rgba(255,215,0,0.07),rgba(255,165,0,0.04));border:1px solid var(--gold-border);border-radius:20px;padding:28px;display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:24px;flex-wrap:wrap;}
-.ul{flex:1;}
-.ue{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:8px;}
-.ut{font-family:var(--font-d);font-size:20px;font-weight:800;letter-spacing:-.3px;margin-bottom:10px;}
-.ufs{display:flex;flex-direction:column;gap:6px;}
-.uf{display:flex;align-items:center;gap:8px;font-size:14px;color:rgba(255,255,255,0.7);}
-.uf::before{content:'✓';color:var(--gold);font-weight:700;}
-.ur{text-align:center;flex-shrink:0;}
-.pb3{background:rgba(0,0,0,0.3);border:1px solid var(--gold-border);border-radius:14px;padding:20px 28px;margin-bottom:10px;}
-.po{font-size:13px;color:var(--muted);text-decoration:line-through;margin-bottom:2px;}
-.pn2{font-family:var(--font-d);font-size:38px;font-weight:800;color:var(--gold);line-height:1;letter-spacing:-1px;}
-.pp2{font-size:12px;color:var(--muted);margin-top:4px;}
-.bu{background:linear-gradient(135deg,#FFD700,#FFA500);border:none;border-radius:12px;padding:13px 28px;font-family:var(--font-d);font-size:15px;font-weight:800;color:#000;cursor:pointer;transition:all .2s;width:100%;}
-.bu:hover{opacity:.92;transform:translateY(-2px);}
-.mo{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:200;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .3s;}
-.mo.open{opacity:1;pointer-events:all;}
-.md{background:var(--bg2);border:1px solid var(--border2);border-radius:24px;width:100%;max-width:440px;padding:36px;position:relative;transform:translateY(20px);transition:transform .3s;}
-.mo.open .md{transform:translateY(0);}
-.md::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),#00e5ff);border-radius:24px 24px 0 0;}
-.mc{position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:15px;}
-.mc:hover{background:rgba(255,255,255,0.1);color:var(--white);}
-.mt{font-family:var(--font-d);font-size:20px;font-weight:800;margin-bottom:6px;}
-.ms{font-size:13px;color:var(--muted);margin-bottom:22px;}
-.mf2{margin-bottom:14px;}
-.mf2 label{display:block;font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:7px;}
-.mf2 input{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--white);font-family:var(--font-b);font-size:15px;transition:border-color .2s;}
-.mf2 input:focus{outline:none;border-color:var(--accent-border);}
-.mf2 input::placeholder{color:var(--muted);}
-.tg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-.tc{border:1px solid var(--border);border-radius:10px;padding:12px 8px;cursor:pointer;transition:all .2s;text-align:center;}
+:root{--bg:#080808;--bg2:#0f0f0f;--white:#f0ede6;--muted:#585858;--accent:#c8ff00;--border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.13);--error:#ff5757;--font-d:'Syne',sans-serif;--font-b:'DM Sans',sans-serif;}
+body{background:var(--bg);color:var(--white);font-family:var(--font-b);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;}
+nav{background:rgba(8,8,8,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 24px;}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px;}
+.logo{font-family:var(--font-d);font-size:20px;font-weight:800;text-decoration:none;color:var(--white);}
+.logo span{color:var(--accent);}
+.nav-link{font-size:14px;color:var(--muted);text-decoration:none;padding:8px 14px;border-radius:8px;}
+.nav-link:hover{color:var(--white);}
+.nav-cta{background:var(--accent);color:#000;font-weight:700;font-family:var(--font-d);padding:9px 20px;border-radius:40px;font-size:14px;text-decoration:none;}
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:48px 24px;}
+.card{background:var(--bg2);border:1px solid var(--border2);border-radius:24px;width:100%;max-width:460px;padding:44px;position:relative;animation:fUp .4s ease both;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),#00e5ff);border-radius:24px 24px 0 0;}
+.tabs{display:flex;background:rgba(255,255,255,0.04);border-radius:12px;padding:4px;margin-bottom:32px;}
+.tab{flex:1;text-align:center;padding:10px;border-radius:9px;font-family:var(--font-b);font-size:14px;cursor:pointer;border:none;transition:all .2s;color:var(--muted);background:transparent;}
+.tab.active{background:var(--accent);color:#000;font-weight:700;}
+.ttitle{font-family:var(--font-d);font-size:24px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px;}
+.tsub{color:var(--muted);font-size:14px;margin-bottom:24px;}
+.field{margin-bottom:14px;}
+label{display:block;font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:7px;}
+input[type="text"],input[type="email"],input[type="password"]{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:13px 16px;color:var(--white);font-family:var(--font-b);font-size:15px;transition:border-color .2s;}
+input::placeholder{color:var(--muted);}
+input:focus{outline:none;border-color:rgba(200,255,0,0.4);}
+.btn-g{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;padding:13px;color:var(--white);font-family:var(--font-b);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .2s;margin-bottom:8px;}
+.btn-g:hover{background:rgba(255,255,255,0.08);}
+.or{display:flex;align-items:center;gap:12px;margin:16px 0;color:var(--muted);font-size:13px;}
+.or::before,.or::after{content:'';flex:1;height:1px;background:var(--border);}
+.btn-p{width:100%;background:var(--accent);color:#000;border:none;border-radius:12px;padding:15px;font-family:var(--font-d);font-size:16px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:8px;position:relative;overflow:hidden;}
+.btn-p:hover{background:#d4ff26;}
+.btn-p:disabled{opacity:.6;cursor:not-allowed;}
+.btn-p .sp{display:none;width:18px;height:18px;border:2px solid rgba(0,0,0,.3);border-top-color:#000;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto;}
+.btn-p.ld .bt{display:none;}
+.btn-p.ld .sp{display:block;}
+.alert{border-radius:10px;padding:12px 16px;font-size:14px;margin-bottom:14px;display:none;}
+.alert.show{display:block;}
+.ae{background:rgba(255,87,87,0.1);border:1px solid rgba(255,87,87,0.25);color:#ff8080;}
+.as{background:rgba(200,255,0,0.08);border:1px solid rgba(200,255,0,0.2);color:var(--accent);}
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.tc{border:1px solid var(--border);border-radius:10px;padding:14px 8px;cursor:pointer;transition:all .2s;text-align:center;}
 .tc:hover{border-color:rgba(200,255,0,0.3);}
-.tc.sel{border-color:var(--accent);background:var(--accent-dim);}
-.ti{font-size:18px;margin-bottom:4px;}
-.tn{font-size:11px;font-weight:500;}
-.bm{width:100%;background:var(--accent);color:#000;border:none;border-radius:12px;padding:14px;font-family:var(--font-d);font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:6px;position:relative;}
-.bm:hover{background:#d4ff26;}
-.bm:disabled{opacity:.6;cursor:not-allowed;}
-.bm .sp{display:none;width:16px;height:16px;border:2px solid rgba(0,0,0,.3);border-top-color:#000;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto;}
-.bm.ld .bt{display:none;}.bm.ld .sp{display:block;}
-.ale{border-radius:10px;padding:10px 14px;font-size:13px;margin-bottom:12px;display:none;}
-.ale.show{display:block;}
-.ae2{background:rgba(255,87,87,0.1);border:1px solid rgba(255,87,87,0.25);color:#ff8080;}
+.tc.sel{border-color:var(--accent);background:rgba(200,255,0,0.06);}
+.tc-i{font-size:20px;margin-bottom:6px;}
+.tc-n{font-size:11px;font-weight:500;}
+.forgot-btn{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;text-align:right;width:100%;margin:-4px 0 14px;text-decoration:underline;}
+.forgot-btn:hover{color:var(--accent);}
+.terms{font-size:12px;color:var(--muted);text-align:center;margin-top:14px;}
+.terms a{color:rgba(255,255,255,0.4);}
+.sview{display:none;text-align:center;padding:20px 0;animation:fUp .4s ease both;}
+.sicon{width:64px;height:64px;border-radius:50%;background:rgba(200,255,0,0.1);border:1px solid rgba(200,255,0,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px;}
+footer{border-top:1px solid var(--border);text-align:center;padding:24px;color:var(--muted);font-size:13px;}
+@keyframes fUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes spin{to{transform:rotate(360deg)}}
-@media(max-width:900px){.stats{grid-template-columns:1fr 1fr;}.lg{grid-template-columns:1fr;}.us{flex-direction:column;}}
-@media(max-width:700px){.sidebar{transform:translateX(-100%);}.sidebar.open{transform:translateX(0);}.main{margin-left:0;}.mb{display:flex;}.stats{grid-template-columns:1fr 1fr;}.content{padding:16px;}}
+@media(max-width:520px){.card{padding:28px 20px;}.tgrid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
-<div id="ls"><div class="ll">Sell<span>Sense</span></div><div class="lb"><div class="lf"></div></div><div class="lt">Chargement...</div></div>
-<div class="app" id="app" style="display:none;">
-  <aside class="sidebar" id="sidebar">
-    <div class="sl"><a href="sellsense-landing.html">Sell<span>Sense</span></a><small>Tableau de bord</small></div>
-    <div class="ns">
-      <div class="nl">Menu</div>
-      <a class="ni active" href="#"><span class="nico">⬡</span>Vue d'ensemble</a>
-      <a class="ni" href="#" onclick="openAdd()"><span class="nico">📊</span>Mes projets</a>
-      <a class="ni" href="#" onclick="openUp()"><span class="nico">📈</span>Analyses<span class="lb2">Premium</span></a>
-      <a class="ni" href="#" onclick="openUp()"><span class="nico">📅</span>Suivi journalier<span class="lb2">Premium</span></a>
-      <a class="ni" href="#" onclick="openUp()"><span class="nico">💡</span>Conseils IA<span class="lb2">Premium</span></a>
-      <a class="ni" href="#" onclick="openUp()"><span class="nico">📤</span>Export PDF<span class="lb2">Premium</span></a>
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="logo">Sell<span>Sense</span></a>
+    <div style="display:flex;gap:4px;align-items:center;">
+      <a href="sellsense-landing.html" class="nav-link">Accueil</a>
+      <a href="sellsense-payment.html" class="nav-cta">⭐ Premium</a>
     </div>
-    <div class="ns" style="margin-top:auto;padding-bottom:0;"><a class="ni" href="sellsense-landing.html"><span class="nico">🏠</span>Accueil</a></div>
-    <div class="sb">
-      <div class="up"><div class="ua" id="uav">?</div><div><div class="un" id="uname">...</div><div class="upl" id="uplan">Plan Gratuit</div></div></div>
-      <button class="ub" id="ubtn" onclick="openUp()">⭐ Passer au Premium</button>
-      <button class="lo" onclick="doLogout()">← Déconnexion</button>
+  </div>
+</nav>
+<main>
+  <div class="card">
+    <div class="tabs">
+      <button class="tab active" id="tl" onclick="sw('login')">Connexion</button>
+      <button class="tab" id="ts" onclick="sw('signup')">Créer un compte</button>
     </div>
-  </aside>
-  <div class="main">
-    <div class="topbar">
-      <div style="display:flex;align-items:center;gap:12px;">
-        <button class="mb" onclick="toggleSB()">☰</button>
-        <div class="tt">Vue d'ensemble</div>
-      </div>
-      <div class="tr">
-        <div class="pb free" id="tpb">Plan Gratuit</div>
-        <button class="tub" id="tubtn" onclick="openUp()">⭐ Premium</button>
-      </div>
+    <div class="alert ae" id="ae"></div>
+    <div class="alert as" id="as"></div>
+
+    <!-- LOGIN -->
+    <div id="vlogin">
+      <div class="ttitle">Content de te revoir</div>
+      <div class="tsub">Connecte-toi pour accéder à ton dashboard.</div>
+      <button class="btn-g" onclick="gLogin()">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615Z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18Z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332Z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58Z" fill="#EA4335"/></svg>
+        Continuer avec Google
+      </button>
+      <div class="or"><span>ou</span></div>
+      <div class="field"><label>E-mail</label><input type="email" id="le" placeholder="toi@exemple.com"/></div>
+      <div class="field"><label>Mot de passe</label><input type="password" id="lp" placeholder="••••••••"/></div>
+      <button class="forgot-btn" onclick="sv('forgot')">Mot de passe oublié ?</button>
+      <button class="btn-p" id="bl" onclick="doLogin()"><span class="bt">Se connecter →</span><div class="sp"></div></button>
+      <p class="terms">Pas de compte ? <a href="#" onclick="sw('signup')">S'inscrire</a></p>
     </div>
-    <div class="content">
-      <div class="welcome">
-        <div><h2 id="wname">Bonjour 👋</h2><p>Voici tes performances. <strong>Passe au Premium</strong> pour tout débloquer.</p></div>
-        <div class="pc"><strong id="pcv">0 / 3</strong><span>projets gratuits</span></div>
-      </div>
-      <div class="stats">
-        <div class="sc"><div class="sl2">Revenu total</div><div class="sv pos" id="srev">0 $</div><div class="sc2">Tous tes projets</div></div>
-        <div class="sc"><div class="sl2">Profit net</div><div class="sv pos" id="sprof">0 $</div><div class="sc2 up" id="sprofch">—</div></div>
-        <div class="sc"><div class="sl2">Marge moyenne</div><div class="sv" id="smarg">0%</div><div class="sc2">Tous projets</div></div>
-        <div class="sc" style="cursor:pointer;position:relative;overflow:hidden;" onclick="openUp()">
-          <div style="filter:blur(5px);user-select:none;pointer-events:none;"><div class="sl2">Meilleur mois</div><div class="sv pos">—</div></div>
-          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;background:rgba(8,8,8,0.6);"><span style="font-size:18px;">🔒</span><span style="font-size:12px;color:var(--gold);font-weight:600;">Premium</span></div>
+
+    <!-- SIGNUP -->
+    <div id="vsignup" style="display:none;">
+      <div class="ttitle">Crée ton compte</div>
+      <div class="tsub">Gratuit pour toujours. Premium quand tu veux.</div>
+      <button class="btn-g" onclick="gLogin()">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615Z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18Z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332Z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58Z" fill="#EA4335"/></svg>
+        Continuer avec Google
+      </button>
+      <div class="or"><span>ou</span></div>
+      <div class="field"><label>Nom complet</label><input type="text" id="sn" placeholder="Karim Benali"/></div>
+      <div class="field"><label>E-mail</label><input type="email" id="se" placeholder="toi@exemple.com"/></div>
+      <div class="field"><label>Mot de passe (min. 8 caractères)</label><input type="password" id="sp2" placeholder="••••••••"/></div>
+      <div class="field">
+        <label>Je suis...</label>
+        <div class="tgrid">
+          <div class="tc" onclick="selT('creator',this)"><div class="tc-i">🎬</div><div class="tc-n">Créateur</div></div>
+          <div class="tc" onclick="selT('ecom',this)"><div class="tc-i">📦</div><div class="tc-n">E-com</div></div>
+          <div class="tc" onclick="selT('freelancer',this)"><div class="tc-i">💻</div><div class="tc-n">Freelance</div></div>
         </div>
       </div>
-      <div class="sh"><div class="sti">Mes projets</div><button class="sa" onclick="openAdd()">+ Ajouter</button></div>
-      <div class="pc2">
-        <table><thead><tr><th>Projet</th><th>Type</th><th>Revenu</th><th>Profit net</th><th>Marge</th><th>Date</th></tr></thead>
-        <tbody id="ptb"><tr><td colspan="6"><div class="es"><div class="ei">📊</div><p>Aucun projet. Crée ton premier projet !</p><button class="bm" style="width:auto;padding:12px 24px;" onclick="openAdd()"><span class="bt">Créer mon premier projet →</span><div class="sp"></div></button></div></td></tr></tbody></table>
-        <div class="ar" onclick="openAdd()">+ Nouveau projet</div>
-      </div>
-      <div class="sh"><div class="sti">Analyses <span style="font-size:12px;color:var(--gold);margin-left:8px;">✦ Premium</span></div></div>
-      <div class="lg">
-        <div class="lc"><div class="li"><div style="font-size:13px;color:var(--muted);margin-bottom:10px;">Évolution du profit</div><div class="fb"><div class="fbar" style="height:40%"></div><div class="fbar" style="height:60%"></div><div class="fbar" style="height:45%"></div><div class="fbar" style="height:75%"></div><div class="fbar" style="height:55%"></div><div class="fbar" style="height:85%"></div></div></div><div class="lo2"><div class="loi">📈</div><div class="lot">Évolution du profit</div><div class="los">Vois tes profits sur 6 mois</div><button class="lob" onclick="openUp()">Débloquer</button></div></div>
-        <div class="lc"><div class="li"><div style="font-size:13px;color:var(--muted);margin-bottom:10px;">Conseils IA</div><div style="display:flex;flex-direction:column;gap:8px;"><div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:10px;font-size:13px;">💡 Ta marge peut être améliorée...</div><div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:10px;font-size:13px;">🎯 Moment idéal pour négocier...</div></div></div><div class="lo2"><div class="loi">💡</div><div class="lot">Conseils IA personnalisés</div><div class="los">Recommandations basées sur tes chiffres</div><button class="lob" onclick="openUp()">Débloquer</button></div></div>
-      </div>
-      <div class="us" id="usbanner">
-        <div class="ul"><div class="ue">✦ SellSense Premium</div><div class="ut">Tout débloquer.<br/>Connaître chaque centime.</div><div class="ufs"><div class="uf">Projets illimités</div><div class="uf">Suivi journalier</div><div class="uf">Graphiques avancés</div><div class="uf">Conseils IA</div><div class="uf">Export PDF & Excel</div></div></div>
-        <div class="ur"><div class="pb3"><div class="po">19.99$ / mois</div><div class="pn2">9<span style="font-size:18px;">.99$</span></div><div class="pp2">par mois · lancement</div></div><button class="bu" onclick="location.href='sellsense-payment.html'">⭐ Passer au Premium →</button><div style="font-size:11px;color:var(--muted);margin-top:8px;">🔒 Annulable à tout moment</div></div>
-      </div>
+      <button class="btn-p" id="bs" onclick="doSignup()"><span class="bt">Créer mon compte →</span><div class="sp"></div></button>
+      <p class="terms">Tu acceptes nos <a href="#">CGU</a> et <a href="#">Confidentialité</a>.</p>
+    </div>
+
+    <!-- FORGOT -->
+    <div id="vforgot" style="display:none;">
+      <div class="ttitle">Réinitialiser</div>
+      <div class="tsub">Entre ton e-mail pour recevoir un lien.</div>
+      <div class="field"><label>E-mail</label><input type="email" id="re" placeholder="toi@exemple.com"/></div>
+      <button class="btn-p" id="br" onclick="doReset()"><span class="bt">Envoyer →</span><div class="sp"></div></button>
+      <button style="background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;margin-top:12px;text-decoration:underline;" onclick="sv('login')">← Retour</button>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="sview" id="vsuccess">
+      <div class="sicon">✓</div>
+      <div class="ttitle" id="stitle">Connexion réussie !</div>
+      <div class="tsub" id="ssub">Redirection vers ton dashboard...</div>
+      <button class="btn-p" onclick="location.href='sellsense-dashboard.html'"><span class="bt">Accéder à mon dashboard →</span><div class="sp"></div></button>
     </div>
   </div>
-</div>
-<!-- ADD MODAL -->
-<div class="mo" id="addm" onclick="cov(event,'addm')">
-  <div class="md">
-    <button class="mc" onclick="cm('addm')">✕</button>
-    <div class="mt">Nouveau projet</div>
-    <div class="ms" id="amsub">Ajoute un projet pour suivre tes profits.</div>
-    <div class="ale ae2" id="aerr"></div>
-    <div class="mf2"><label>Nom du projet</label><input type="text" id="nn" placeholder="ex: Boutique Maroc COD"/></div>
-    <div class="mf2"><label>Type d'activité</label><div class="tg"><div class="tc" onclick="st('ecom',this)"><div class="ti">📦</div><div class="tn">E-com</div></div><div class="tc" onclick="st('creator',this)"><div class="ti">🎬</div><div class="tn">Créateur</div></div><div class="tc" onclick="st('freelancer',this)"><div class="ti">💻</div><div class="tn">Freelance</div></div></div></div>
-    <div class="mf2"><label>Devise</label><input type="text" id="nc" placeholder="USD" value="USD"/></div>
-    <button class="bm" id="badd" onclick="createP()"><span class="bt">Créer le projet →</span><div class="sp"></div></button>
-  </div>
-</div>
-<!-- UPGRADE MODAL -->
-<div class="mo" id="upm" onclick="cov(event,'upm')">
-  <div class="md" style="max-width:460px;">
-    <button class="mc" onclick="cm('upm')">✕</button>
-    <div style="font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;font-weight:600;">⭐ SellSense Premium</div>
-    <div class="mt">Passer au Premium</div>
-    <div class="ms">9.99$ / mois · Annulable à tout moment</div>
-    <button class="bm" style="background:linear-gradient(135deg,#FFD700,#FFA500);color:#000;" onclick="location.href='sellsense-payment.html'"><span class="bt">Voir les options Premium →</span><div class="sp"></div></button>
-  </div>
-</div>
+</main>
+<footer>© 2025 SellSense · sellsenseapp.com</footer>
 <script>
 const {createClient}=supabase;
 const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-let user=null,profile=null,projects=[],ntype=null;
+let selType=null;
 
-async function boot(){
-  const {data:{session}}=await sb.auth.getSession();
-  if(!session){location.href='sellsense-auth.html';return;}
-  user=session.user;
-  await loadProfile();
-  await loadProjects();
-  show();
+// Redirect if already logged in
+sb.auth.getSession().then(({data:{session}})=>{if(session)location.href='sellsense-dashboard.html';});
+sb.auth.onAuthStateChange((ev,session)=>{if(ev==='SIGNED_IN'&&session){ok('Connexion réussie !','Redirection...');setTimeout(()=>location.href='sellsense-dashboard.html',1500);}});
+
+function sw(t){
+  document.getElementById('tl').classList.toggle('active',t==='login');
+  document.getElementById('ts').classList.toggle('active',t==='signup');
+  sv(t);clr();
 }
+function sv(v){['login','signup','forgot','success'].forEach(n=>document.getElementById('v'+n).style.display=n===v?'block':'none');}
+function err(m){const e=document.getElementById('ae');e.textContent=m;e.classList.add('show');document.getElementById('as').classList.remove('show');}
+function ok(t,s){document.getElementById('stitle').textContent=t;document.getElementById('ssub').textContent=s;sv('success');}
+function clr(){document.getElementById('ae').classList.remove('show');document.getElementById('as').classList.remove('show');}
+function ld(id,on){const b=document.getElementById(id);b.classList.toggle('ld',on);b.disabled=on;}
+function selT(t,el){selType=t;document.querySelectorAll('.tc').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
 
-async function loadProfile(){
-  const {data}=await sb.from('profiles').select('*').eq('id',user.id).single();
-  if(data){
-    profile=data;
-    const n=data.full_name||user.email.split('@')[0];
-    const i=n.charAt(0).toUpperCase();
-    document.getElementById('uav').textContent=i;
-    document.getElementById('uname').textContent=n;
-    document.getElementById('wname').textContent='Bonjour '+n.split(' ')[0]+' 👋';
-    if(data.plan==='premium'){
-      document.getElementById('uplan').textContent='⭐ Premium';
-      document.getElementById('tpb').textContent='⭐ Premium';
-      document.getElementById('tpb').className='pb premium';
-      document.getElementById('tubtn').style.display='none';
-      document.getElementById('ubtn').style.display='none';
-      document.getElementById('usbanner').style.display='none';
-      document.querySelectorAll('.lo2').forEach(o=>o.style.display='none');
-      document.querySelectorAll('.li').forEach(i=>{i.style.filter='none';i.style.pointerEvents='all';});
-      document.querySelectorAll('.lb2').forEach(b=>b.remove());
-    }
-  } else {
-    const n=user.user_metadata?.full_name||user.email.split('@')[0];
-    await sb.from('profiles').upsert({id:user.id,full_name:n,email:user.email});
-    document.getElementById('uav').textContent=n.charAt(0).toUpperCase();
-    document.getElementById('uname').textContent=n;
-    document.getElementById('wname').textContent='Bonjour '+n.split(' ')[0]+' 👋';
+async function doLogin(){
+  clr();
+  const email=document.getElementById('le').value.trim();
+  const pass=document.getElementById('lp').value;
+  if(!email||!pass){err('Remplis tous les champs.');return;}
+  ld('bl',true);
+  const{error}=await sb.auth.signInWithPassword({email,password:pass});
+  ld('bl',false);
+  if(error){
+    if(error.message.includes('Invalid login'))err('Email ou mot de passe incorrect.');
+    else if(error.message.includes('Email not confirmed'))err('Confirme ton e-mail d\'abord.');
+    else err(error.message);
+    return;
   }
+  ok('Connexion réussie !','Redirection vers ton dashboard...');
+  setTimeout(()=>location.href='sellsense-dashboard.html',1500);
 }
 
-async function loadProjects(){
-  const {data}=await sb.from('projects').select('*').eq('user_id',user.id).eq('is_archived',false).order('created_at',{ascending:false});
-  projects=data||[];
-  renderP();
-  updateStats();
+async function doSignup(){
+  clr();
+  const name=document.getElementById('sn').value.trim();
+  const email=document.getElementById('se').value.trim();
+  const pass=document.getElementById('sp2').value;
+  if(!name){err('Entre ton nom.');return;}
+  if(!email){err('Entre ton e-mail.');return;}
+  if(pass.length<8){err('Mot de passe trop court (min. 8 caractères).');return;}
+  if(!selType){err('Choisis ton type d\'activité.');return;}
+  ld('bs',true);
+  const{data,error}=await sb.auth.signUp({email,password:pass,options:{data:{full_name:name,business_type:selType}}});
+  ld('bs',false);
+  if(error){if(error.message.includes('already registered'))err('Cet e-mail est déjà utilisé.');else err(error.message);return;}
+  if(data.user){
+    await sb.from('profiles').upsert({id:data.user.id,full_name:name,email,business_type:selType});
+  }
+  ok('Compte créé !','Vérifie ton e-mail pour confirmer, puis connecte-toi.');
 }
 
-function renderP(){
-  const tb=document.getElementById('ptb');
-  const isPrem=profile?.plan==='premium';
-  const lim=isPrem?'∞':'3';
-  document.getElementById('pcv').textContent=projects.length+' / '+lim;
-  if(projects.length===0){tb.innerHTML='<tr><td colspan="6"><div class="es"><div class="ei">📊</div><p>Aucun projet. Crée ton premier projet !</p><button class="bm" style="width:auto;padding:12px 24px;" onclick="openAdd()"><span class="bt">Créer mon premier projet →</span><div class="sp"></div></button></div></td></tr>';return;}
-  const icons={ecom:'📦',creator:'🎬',freelancer:'💻'};
-  const labels={ecom:'E-com',creator:'Créateur',freelancer:'Freelance'};
-  tb.innerHTML=projects.map(p=>{
-    const rev=p.last_revenue||0,prof=p.last_profit||0;
-    const marg=rev>0?((prof/rev)*100).toFixed(0):0;
-    const mc=marg>=20?'':marg>=10?'mid':'low';
-    const pc2=prof>=0?'pp':'pn';
-    const sign=prof>=0?'+':'';
-    const date=new Date(p.created_at).toLocaleDateString('fr-FR');
-    return `<tr><td><strong>${p.name}</strong></td><td><span class="tb">${icons[p.business_type]||'📁'} ${labels[p.business_type]||p.business_type}</span></td><td>${fmt(rev)} ${p.currency||'$'}</td><td class="${pc2}">${sign}${fmt(prof)} ${p.currency||'$'}</td><td><div class="mw"><div class="mb2"><div class="mf ${mc}" style="width:${Math.min(marg,100)}%"></div></div><div class="mv">${marg}%</div></div></td><td style="color:var(--muted);">${date}</td></tr>`;
-  }).join('');
+async function gLogin(){
+  clr();
+  const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/sellsense-dashboard.html'}});
+  if(error)err('Erreur Google : '+error.message);
 }
 
-function updateStats(){
-  const rev=projects.reduce((s,p)=>s+(p.last_revenue||0),0);
-  const prof=projects.reduce((s,p)=>s+(p.last_profit||0),0);
-  const marg=rev>0?((prof/rev)*100).toFixed(1):'0.0';
-  document.getElementById('srev').textContent=fmt(rev)+' $';
-  document.getElementById('sprof').textContent=(prof>=0?'+':'')+fmt(prof)+' $';
-  document.getElementById('sprof').className='sv '+(prof>=0?'pos':'neg');
-  document.getElementById('smarg').textContent=marg+'%';
+async function doReset(){
+  clr();
+  const email=document.getElementById('re').value.trim();
+  if(!email){err('Entre ton e-mail.');return;}
+  ld('br',true);
+  const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/sellsense-auth.html'});
+  ld('br',false);
+  if(error){err(error.message);return;}
+  const as=document.getElementById('as');as.textContent='✓ E-mail envoyé ! Vérifie ta boîte mail.';as.classList.add('show');
 }
 
-function fmt(n){return Number(n).toLocaleString('fr-FR',{minimumFractionDigits:0,maximumFractionDigits:2});}
-
-function openAdd(){
-  const isPrem=profile?.plan==='premium';
-  document.getElementById('amsub').textContent=(!isPrem&&projects.length>=3)?'🔒 Limite de 3 projets atteinte. Passe au Premium.':'Ajoute un projet pour suivre tes profits.';
-  ntype=null;document.getElementById('nn').value='';document.getElementById('nc').value='USD';
-  document.querySelectorAll('.tc').forEach(c=>c.classList.remove('sel'));
-  document.getElementById('aerr').classList.remove('show');
-  om('addm');
-}
-
-function st(t,el){ntype=t;document.querySelectorAll('.tc').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
-
-async function createP(){
-  const name=document.getElementById('nn').value.trim();
-  const cur=document.getElementById('nc').value.trim().toUpperCase()||'USD';
-  const err=document.getElementById('aerr');
-  err.classList.remove('show');
-  if(!name){err.textContent='Entre un nom.';err.classList.add('show');return;}
-  if(!ntype){err.textContent='Choisis le type d\'activité.';err.classList.add('show');return;}
-  const isPrem=profile?.plan==='premium';
-  if(!isPrem&&projects.length>=3){err.textContent='Limite atteinte. Passe au Premium.';err.classList.add('show');return;}
-  const btn=document.getElementById('badd');
-  btn.classList.add('ld');btn.disabled=true;
-  const {data,error}=await sb.from('projects').insert({user_id:user.id,name,business_type:ntype,currency:cur}).select().single();
-  btn.classList.remove('ld');btn.disabled=false;
-  if(error){err.textContent=error.message;err.classList.add('show');return;}
-  projects.unshift(data);renderP();updateStats();cm('addm');
-}
-
-async function doLogout(){await sb.auth.signOut();location.href='sellsense-auth.html';}
-function show(){document.getElementById('ls').style.display='none';document.getElementById('app').style.display='flex';}
-function om(id){document.getElementById(id).classList.add('open');}
-function cm(id){document.getElementById(id).classList.remove('open');}
-function cov(e,id){if(e.target===document.getElementById(id))cm(id);}
-function openUp(){om('upm');}
-function toggleSB(){document.getElementById('sidebar').classList.toggle('open');}
-boot();
+document.addEventListener('keydown',e=>{if(e.key==='Enter'){if(document.getElementById('vlogin').style.display!=='none')doLogin();else if(document.getElementById('vsignup').style.display!=='none')doSignup();}});
 </script>
 </body>
 </html>
