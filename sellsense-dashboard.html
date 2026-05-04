@@ -4,900 +4,937 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>SellSense — Dashboard</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script>
+  const SUPABASE_URL = 'https://fmlmkxbcfeebeqtlzzvn.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_M68a1m8LRq_DHQUov2k5pw_e-qrAefU';
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
-:root {
-  --black: #0a0a0a;
-  --white: #f5f3ee;
-  --accent: #c8ff00;
-  --accent2: #00e5ff;
-  --muted: #6b6b6b;
-  --card: #141414;
-  --card2: #1a1a1a;
-  --border: rgba(255,255,255,0.07);
-  --border2: rgba(255,255,255,0.12);
-  --font-display: 'Syne', sans-serif;
-  --font-body: 'DM Sans', sans-serif;
-  --sidebar: 240px;
-  --premium: #FFD700;
-  --premium-bg: rgba(255,215,0,0.08);
-  --premium-border: rgba(255,215,0,0.25);
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#080808;--bg2:#0f0f0f;--bg3:#161616;
+  --white:#f0ede6;--muted:#585858;--muted2:#2a2a2a;
+  --accent:#c8ff00;--adim:rgba(200,255,0,0.08);--abor:rgba(200,255,0,0.2);
+  --gold:#FFD700;--gdim:rgba(255,215,0,0.08);--gbor:rgba(255,215,0,0.2);
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --red:#ff5757;--green:#4ade80;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;
+  --sw:260px;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  background: var(--black); color: var(--white);
-  font-family: var(--font-body); font-size: 15px;
-  line-height: 1.6; min-height: 100vh; overflow-x: hidden;
-}
+html,body{height:100%;}
+body{background:var(--bg);color:var(--white);font-family:var(--fb);font-size:15px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
 
-/* ── LAYOUT ── */
-.app { display: flex; min-height: 100vh; }
+/* LOADING */
+#ls{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;z-index:999;}
+.ll{font-family:var(--fd);font-size:28px;font-weight:800;}.ll span{color:var(--accent);}
+.lb{width:180px;height:2px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;}
+.lf{height:100%;background:var(--accent);animation:lf 1.2s ease forwards;}
+@keyframes lf{from{width:0}to{width:100%}}
 
-/* ── SIDEBAR ── */
-.sidebar {
-  width: var(--sidebar); flex-shrink: 0;
-  background: #0d0d0d; border-right: 1px solid var(--border);
-  display: flex; flex-direction: column;
-  position: fixed; top: 0; left: 0; bottom: 0; z-index: 50;
-  transition: transform 0.3s;
-}
-.sidebar-logo {
-  padding: 24px 20px 20px;
-  border-bottom: 1px solid var(--border);
-  font-family: var(--font-display); font-size: 20px; font-weight: 800;
-}
-.sidebar-logo span { color: var(--accent); }
-.sidebar-logo small {
-  display: block; font-size: 10px; font-weight: 400;
-  color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px;
-}
-.nav-section { padding: 16px 12px 8px; }
-.nav-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding: 0 8px; margin-bottom: 6px; }
-.nav-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 10px; border-radius: 10px; cursor: pointer;
-  font-size: 14px; color: rgba(255,255,255,0.6);
-  transition: all 0.15s; position: relative; margin-bottom: 2px;
-  text-decoration: none;
-}
-.nav-item:hover { background: rgba(255,255,255,0.05); color: var(--white); }
-.nav-item.active { background: rgba(200,255,0,0.08); color: var(--accent); }
-.nav-item .nav-icon { width: 18px; text-align: center; font-size: 16px; flex-shrink: 0; }
-.nav-item .lock-badge {
-  margin-left: auto; font-size: 10px;
-  background: var(--premium-bg); color: var(--premium);
-  border: 1px solid var(--premium-border); border-radius: 20px;
-  padding: 2px 7px; flex-shrink: 0;
-}
-.sidebar-bottom {
-  margin-top: auto; padding: 16px 12px;
-  border-top: 1px solid var(--border);
-}
-.user-pill {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px; border-radius: 12px;
-  background: rgba(255,255,255,0.04); margin-bottom: 10px;
-}
-.user-avatar {
-  width: 32px; height: 32px; border-radius: 50%;
-  background: rgba(200,255,0,0.15); border: 1px solid rgba(200,255,0,0.3);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 700; color: var(--accent); flex-shrink: 0;
-}
-.user-name { font-size: 13px; font-weight: 500; }
-.user-plan { font-size: 11px; color: var(--muted); }
-.upgrade-btn {
-  width: 100%; background: linear-gradient(135deg, #FFD700, #FFA500);
-  border: none; border-radius: 10px; padding: 11px;
-  font-family: var(--font-display); font-size: 13px; font-weight: 700;
-  color: #000; cursor: pointer; transition: all 0.2s;
-}
-.upgrade-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+/* APP */
+.app{display:flex;min-height:100vh;}
 
-/* ── MAIN CONTENT ── */
-.main {
-  margin-left: var(--sidebar); flex: 1;
-  display: flex; flex-direction: column; min-height: 100vh;
-}
+/* SIDEBAR */
+.sidebar{width:var(--sw);flex-shrink:0;background:#090909;border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:transform .3s;}
+.sl{padding:20px;border-bottom:1px solid var(--border);}
+.sl-logo{font-family:var(--fd);font-size:20px;font-weight:800;text-decoration:none;color:var(--white);}
+.sl-logo span{color:var(--accent);}
+.sl-tag{font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:2px;display:block;}
+.nav{padding:12px;}
+.nav-sec{margin-bottom:4px;}
+.nav-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:8px 10px 4px;display:block;}
+.ni{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-size:14px;color:rgba(255,255,255,0.5);transition:all .15s;cursor:pointer;text-decoration:none;margin-bottom:2px;}
+.ni:hover{background:rgba(255,255,255,0.05);color:var(--white);}
+.ni.active{background:var(--adim);color:var(--accent);}
+.ni-icon{font-size:15px;width:18px;text-align:center;flex-shrink:0;}
+.ni-badge{margin-left:auto;font-size:10px;background:var(--gdim);color:var(--gold);border:1px solid var(--gbor);border-radius:20px;padding:2px 7px;}
+.sb-bottom{margin-top:auto;padding:14px;border-top:1px solid var(--border);}
+.user-row{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;background:rgba(255,255,255,0.04);margin-bottom:10px;}
+.user-av{width:34px;height:34px;border-radius:50%;background:var(--adim);border:1px solid var(--abor);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent);flex-shrink:0;}
+.user-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.user-plan{font-size:11px;color:var(--muted);}
+.btn-upgrade{width:100%;background:linear-gradient(135deg,#FFD700,#FFA500);border:none;border-radius:10px;padding:11px;font-family:var(--fd);font-size:13px;font-weight:700;color:#000;cursor:pointer;transition:all .2s;margin-bottom:6px;}
+.btn-upgrade:hover{opacity:.9;transform:translateY(-1px);}
+.btn-logout{width:100%;background:transparent;border:1px solid var(--border);border-radius:10px;padding:9px;font-size:13px;color:var(--muted);cursor:pointer;transition:all .2s;}
+.btn-logout:hover{border-color:var(--red);color:var(--red);}
 
-/* ── TOP BAR ── */
-.topbar {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 16px 32px; border-bottom: 1px solid var(--border);
-  background: rgba(10,10,10,0.8); backdrop-filter: blur(12px);
-  position: sticky; top: 0; z-index: 40;
-}
-.topbar-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; }
-.topbar-right { display: flex; align-items: center; gap: 12px; }
-.demo-badge {
-  background: rgba(200,255,0,0.1); color: var(--accent);
-  border: 1px solid rgba(200,255,0,0.25); border-radius: 20px;
-  font-size: 12px; font-weight: 500; padding: 5px 12px;
-  animation: pulse 2s infinite;
-}
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
-.topbar-upgrade {
-  background: linear-gradient(135deg, #FFD700, #FFA500);
-  border: none; border-radius: 8px; padding: 8px 16px;
-  font-family: var(--font-display); font-size: 13px; font-weight: 700;
-  color: #000; cursor: pointer; transition: all 0.2s;
-}
-.topbar-upgrade:hover { opacity: 0.9; }
+/* MAIN */
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh;}
 
-/* ── PAGE CONTENT ── */
-.content { padding: 32px; flex: 1; }
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid var(--border);background:rgba(8,8,8,0.9);backdrop-filter:blur(16px);position:sticky;top:0;z-index:50;}
+.topbar-title{font-family:var(--fd);font-size:17px;font-weight:700;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.plan-badge{font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);color:var(--muted);}
+.plan-badge.premium{background:var(--gdim);color:var(--gold);border-color:var(--gbor);}
+.hambtn{display:none;background:none;border:1px solid var(--border);border-radius:8px;width:36px;height:36px;color:var(--white);font-size:18px;cursor:pointer;align-items:center;justify-content:center;}
 
-/* ── WELCOME BANNER ── */
-.welcome-banner {
-  background: var(--card); border: 1px solid var(--border2);
-  border-radius: 20px; padding: 28px 32px;
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 28px; position: relative; overflow: hidden;
-}
-.welcome-banner::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, var(--accent), var(--accent2));
-}
-.welcome-text h2 {
-  font-family: var(--font-display); font-size: 22px; font-weight: 800;
-  letter-spacing: -0.5px; margin-bottom: 4px;
-}
-.welcome-text p { color: var(--muted); font-size: 14px; }
-.free-limit {
-  text-align: right; font-size: 13px;
-}
-.free-limit strong { color: var(--accent); font-size: 22px; font-family: var(--font-display); display: block; }
-.free-limit span { color: var(--muted); font-size: 12px; }
+/* VIEWS */
+.view{display:none;padding:28px;flex:1;}
+.view.active{display:block;}
 
-/* ── STAT CARDS ── */
-.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
-.stat-card {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 16px; padding: 20px;
-}
-.stat-label { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
-.stat-val {
-  font-family: var(--font-display); font-size: 28px; font-weight: 800;
-  letter-spacing: -1px; line-height: 1;
-}
-.stat-val.positive { color: var(--accent); }
-.stat-val.negative { color: #ff5757; }
-.stat-change { font-size: 12px; color: var(--muted); margin-top: 6px; }
-.stat-change.up { color: #7aff9a; }
+/* ══ OVERVIEW VIEW ══ */
+.welcome-card{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:24px 28px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden;}
+.welcome-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),#00e5ff);}
+.welcome-card h2{font-family:var(--fd);font-size:20px;font-weight:800;margin-bottom:4px;}
+.welcome-card p{font-size:14px;color:var(--muted);}
+.proj-counter strong{font-family:var(--fd);font-size:26px;font-weight:800;color:var(--accent);display:block;text-align:right;}
+.proj-counter span{font-size:12px;color:var(--muted);}
 
-/* ── SECTION TITLES ── */
-.section-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 16px;
-}
-.section-title {
-  font-family: var(--font-display); font-size: 16px; font-weight: 700;
-}
-.section-action {
-  font-size: 13px; color: var(--muted); cursor: pointer;
-  background: none; border: none; transition: color 0.2s;
-}
-.section-action:hover { color: var(--accent); }
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;}
+.stat-box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px;}
+.stat-lbl{font-size:12px;color:var(--muted);margin-bottom:8px;}
+.stat-val{font-family:var(--fd);font-size:28px;font-weight:800;letter-spacing:-1px;line-height:1;}
+.stat-val.pos{color:var(--accent);}
+.stat-val.neg{color:var(--red);}
+.stat-sub{font-size:12px;color:var(--muted);margin-top:6px;}
 
-/* ── PROJECTS TABLE ── */
-.projects-card {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 16px; overflow: hidden; margin-bottom: 28px;
-}
-.projects-table { width: 100%; border-collapse: collapse; }
-.projects-table th {
-  text-align: left; font-size: 11px; letter-spacing: 0.1em;
-  text-transform: uppercase; color: var(--muted);
-  padding: 14px 20px; border-bottom: 1px solid var(--border);
-  font-weight: 500;
-}
-.projects-table td {
-  padding: 14px 20px; border-bottom: 1px solid var(--border);
-  font-size: 14px;
-}
-.projects-table tr:last-child td { border-bottom: none; }
-.projects-table tbody tr { transition: background 0.15s; cursor: pointer; }
-.projects-table tbody tr:hover { background: rgba(255,255,255,0.02); }
-.project-type-badge {
-  display: inline-flex; align-items: center; gap: 5px;
-  background: rgba(255,255,255,0.05); border-radius: 6px;
-  padding: 3px 8px; font-size: 12px;
-}
-.profit-positive { color: var(--accent); font-weight: 600; }
-.profit-negative { color: #ff5757; font-weight: 600; }
-.margin-bar-wrap { width: 80px; }
-.margin-bar {
-  height: 4px; border-radius: 2px; background: rgba(255,255,255,0.08);
-  overflow: hidden; margin-bottom: 3px;
-}
-.margin-bar-fill { height: 100%; border-radius: 2px; background: var(--accent); }
-.margin-bar-fill.low { background: #ff5757; }
-.margin-bar-fill.mid { background: #ffb347; }
-.margin-val { font-size: 11px; color: var(--muted); }
+/* PROJECTS LIST */
+.sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.sec-title{font-family:var(--fd);font-size:17px;font-weight:700;}
+.btn-add-proj{background:var(--accent);color:#000;border:none;border-radius:10px;padding:9px 20px;font-family:var(--fd);font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-add-proj:hover{background:#d4ff26;transform:translateY(-1px);}
 
-/* ── ADD PROJECT BTN ── */
-.add-project-row {
-  padding: 14px 20px;
-  border-top: 1px solid var(--border);
-  display: flex; align-items: center; gap: 8px;
-  color: var(--muted); font-size: 14px; cursor: pointer;
-  transition: color 0.2s;
-}
-.add-project-row:hover { color: var(--accent); }
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:32px;}
+.proj-card-item{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;}
+.proj-card-item::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:16px 16px 0 0;}
+.proj-card-item.type-ecom::before{background:linear-gradient(90deg,#00e5ff,#0066ff);}
+.proj-card-item.type-creator::before{background:linear-gradient(90deg,#ff6b6b,#ff9f43);}
+.proj-card-item.type-freelancer::before{background:linear-gradient(90deg,var(--accent),#00ff88);}
+.proj-card-item:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,0.4);}
+.proj-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.proj-type-icon{font-size:24px;}
+.proj-type-badge{font-size:11px;padding:4px 10px;border-radius:20px;font-weight:500;}
+.proj-type-badge.ecom{background:rgba(0,229,255,0.1);color:#00e5ff;}
+.proj-type-badge.creator{background:rgba(255,107,107,0.1);color:#ff8080;}
+.proj-type-badge.freelancer{background:var(--adim);color:var(--accent);}
+.proj-name{font-family:var(--fd);font-size:16px;font-weight:700;margin-bottom:12px;}
+.proj-stats-row{display:flex;justify-content:space-between;}
+.proj-stat{text-align:center;}
+.proj-stat-val{font-family:var(--fd);font-size:18px;font-weight:700;line-height:1;}
+.proj-stat-val.pos{color:var(--accent);}
+.proj-stat-val.neg{color:var(--red);}
+.proj-stat-val.neutral{color:var(--white);}
+.proj-stat-lbl{font-size:11px;color:var(--muted);margin-top:3px;}
+.proj-divider{height:1px;background:var(--border);margin:14px 0;}
+.proj-footer{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--muted);}
+.proj-calc-btn{font-size:12px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:var(--fb);font-weight:500;}
 
-/* ── PREMIUM LOCKED SECTIONS ── */
-.locked-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
-.locked-card {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 16px; overflow: hidden; position: relative;
-}
-.locked-inner { padding: 20px; filter: blur(4px); user-select: none; pointer-events: none; }
-.locked-overlay {
-  position: absolute; inset: 0;
-  background: rgba(10,10,10,0.65);
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  backdrop-filter: blur(1px);
-  border-radius: 16px;
-}
-.lock-icon { font-size: 28px; margin-bottom: 10px; }
-.lock-title {
-  font-family: var(--font-display); font-size: 16px; font-weight: 700;
-  color: var(--premium); margin-bottom: 4px; text-align: center;
-}
-.lock-sub { font-size: 13px; color: rgba(255,255,255,0.5); text-align: center; margin-bottom: 16px; }
-.lock-btn {
-  background: linear-gradient(135deg, #FFD700, #FFA500);
-  border: none; border-radius: 8px; padding: 9px 20px;
-  font-family: var(--font-display); font-size: 13px; font-weight: 700;
-  color: #000; cursor: pointer; transition: all 0.2s;
-}
-.lock-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.empty-projects{text-align:center;padding:48px 24px;background:var(--bg2);border:1px dashed var(--border2);border-radius:20px;}
+.empty-icon{font-size:48px;margin-bottom:16px;}
+.empty-title{font-family:var(--fd);font-size:20px;font-weight:700;margin-bottom:8px;}
+.empty-sub{color:var(--muted);font-size:14px;margin-bottom:24px;max-width:360px;margin-left:auto;margin-right:auto;}
 
-/* ── FAKE CHART (locked) ── */
-.fake-chart { height: 100px; display: flex; align-items: flex-end; gap: 6px; padding: 12px 0 0; }
-.fake-bar {
-  flex: 1; border-radius: 4px 4px 0 0;
-  background: linear-gradient(180deg, rgba(200,255,0,0.4), rgba(200,255,0,0.1));
-}
-.fake-line {
-  height: 80px; position: relative;
-}
-.fake-line svg { width: 100%; height: 80px; }
+/* ══ CALC VIEW ══ */
+.calc-header{display:flex;align-items:center;gap:14px;margin-bottom:28px;}
+.back-btn{background:none;border:1px solid var(--border);border-radius:10px;padding:8px 16px;color:var(--muted);font-size:14px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;}
+.back-btn:hover{border-color:var(--white);color:var(--white);}
+.calc-proj-title{font-family:var(--fd);font-size:24px;font-weight:800;letter-spacing:-.5px;}
+.calc-proj-type{font-size:13px;color:var(--muted);margin-top:2px;}
 
-/* ── PREMIUM UPSELL BANNER ── */
-.upsell-banner {
-  background: linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,165,0,0.05));
-  border: 1px solid var(--premium-border);
-  border-radius: 20px; padding: 32px;
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 28px; gap: 24px;
-}
-.upsell-left { flex: 1; }
-.upsell-eyebrow {
-  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
-  color: var(--premium); font-weight: 500; margin-bottom: 8px;
-}
-.upsell-title {
-  font-family: var(--font-display); font-size: 22px; font-weight: 800;
-  letter-spacing: -0.5px; margin-bottom: 8px;
-}
-.upsell-features { display: flex; flex-direction: column; gap: 6px; margin-top: 16px; }
-.upsell-feat { display: flex; align-items: center; gap: 8px; font-size: 14px; color: rgba(255,255,255,0.75); }
-.upsell-feat::before { content: '✓'; color: var(--premium); font-weight: 700; flex-shrink: 0; }
-.upsell-right { text-align: center; flex-shrink: 0; }
-.price-box {
-  background: rgba(0,0,0,0.3); border: 1px solid var(--premium-border);
-  border-radius: 16px; padding: 24px 32px; margin-bottom: 12px;
-}
-.price-old { font-size: 14px; color: var(--muted); text-decoration: line-through; margin-bottom: 4px; }
-.price-val {
-  font-family: var(--font-display); font-size: 42px; font-weight: 800;
-  color: var(--premium); line-height: 1; letter-spacing: -1px;
-}
-.price-per { font-size: 13px; color: var(--muted); margin-top: 4px; }
-.btn-upgrade-big {
-  background: linear-gradient(135deg, #FFD700, #FFA500);
-  border: none; border-radius: 12px; padding: 14px 32px;
-  font-family: var(--font-display); font-size: 16px; font-weight: 700;
-  color: #000; cursor: pointer; transition: all 0.2s; width: 100%;
-}
-.btn-upgrade-big:hover { opacity: 0.92; transform: translateY(-2px); }
-.price-note { font-size: 12px; color: var(--muted); margin-top: 8px; }
+.calc-layout{display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start;}
+.calc-left{display:flex;flex-direction:column;gap:16px;}
+.calc-section{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+.calc-section-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.calc-section-icon{font-size:18px;}
+.calc-section-title{font-family:var(--fd);font-size:15px;font-weight:700;}
+.calc-section-sub{font-size:12px;color:var(--muted);margin-left:auto;}
+.calc-fields{padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.calc-field{display:flex;flex-direction:column;gap:6px;}
+.calc-field.full{grid-column:1/-1;}
+.calc-field label{font-size:13px;color:rgba(255,255,255,0.6);font-weight:400;}
+.input-wrap{position:relative;}
+.input-suffix{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--muted);pointer-events:none;}
+.calc-input{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:11px 40px 11px 14px;color:var(--white);font-family:var(--fb);font-size:15px;transition:border-color .2s;}
+.calc-input:focus{outline:none;border-color:var(--abor);background:rgba(200,255,0,0.03);}
+.calc-input::placeholder{color:var(--muted);}
 
-/* ── MODAL (Premium) ── */
-.modal-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.75);
-  backdrop-filter: blur(8px); z-index: 200;
-  display: flex; align-items: center; justify-content: center;
-  padding: 24px; opacity: 0; pointer-events: none; transition: opacity 0.3s;
-}
-.modal-overlay.open { opacity: 1; pointer-events: all; }
-.modal {
-  background: #141414; border: 1px solid var(--border2);
-  border-radius: 24px; width: 100%; max-width: 480px;
-  padding: 40px; position: relative;
-  transform: translateY(20px); transition: transform 0.3s;
-}
-.modal-overlay.open .modal { transform: translateY(0); }
-.modal::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, #FFD700, #FFA500);
-  border-radius: 24px 24px 0 0;
-}
-.modal-close {
-  position: absolute; top: 16px; right: 16px;
-  background: rgba(255,255,255,0.05); border: 1px solid var(--border);
-  border-radius: 8px; width: 32px; height: 32px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; color: var(--muted); font-size: 16px; transition: all 0.2s;
-}
-.modal-close:hover { background: rgba(255,255,255,0.1); color: var(--white); }
-.modal-title {
-  font-family: var(--font-display); font-size: 26px; font-weight: 800;
-  letter-spacing: -0.5px; margin-bottom: 4px;
-}
-.modal-sub { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
-.payment-field { margin-bottom: 16px; }
-.payment-field label { display: block; font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 8px; }
-.payment-input {
-  width: 100%; background: rgba(255,255,255,0.04);
-  border: 1px solid var(--border); border-radius: 10px;
-  padding: 12px 14px; color: var(--white);
-  font-family: var(--font-body); font-size: 15px; transition: border-color 0.2s;
-}
-.payment-input:focus { outline: none; border-color: rgba(255,215,0,0.4); }
-.payment-input::placeholder { color: var(--muted); }
-.card-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.card-logos { display: flex; gap: 8px; margin-bottom: 20px; }
-.card-logo {
-  background: rgba(255,255,255,0.06); border: 1px solid var(--border);
-  border-radius: 6px; padding: 4px 10px; font-size: 12px;
-  color: rgba(255,255,255,0.7); display: flex; align-items: center; gap: 4px;
-}
-.secure-note {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 12px; color: var(--muted); margin-bottom: 16px;
-}
-.btn-pay {
-  width: 100%; background: linear-gradient(135deg, #FFD700, #FFA500);
-  border: none; border-radius: 12px; padding: 15px;
-  font-family: var(--font-display); font-size: 16px; font-weight: 700;
-  color: #000; cursor: pointer; transition: all 0.2s;
-}
-.btn-pay:hover { opacity: 0.9; }
-.btn-pay.loading { opacity: 0.7; pointer-events: none; }
+/* RESULT PANEL */
+.result-panel{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:24px;position:sticky;top:80px;}
+.result-panel::before{content:'';display:block;height:2px;background:linear-gradient(90deg,var(--accent),#00e5ff);border-radius:4px;margin-bottom:20px;}
+.result-label{font-size:12px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;}
+.result-amount{font-family:var(--fd);font-size:48px;font-weight:800;letter-spacing:-2px;line-height:1;margin-bottom:4px;}
+.result-amount.pos{color:var(--accent);}
+.result-amount.neg{color:var(--red);}
+.result-currency{font-size:18px;font-weight:400;color:var(--muted);}
+.result-margin{font-size:14px;color:var(--muted);margin-bottom:20px;}
+.result-margin span{color:var(--white);font-weight:600;}
+.result-divider{height:1px;background:var(--border);margin:16px 0;}
+.result-row{display:flex;justify-content:space-between;font-size:14px;margin-bottom:10px;}
+.result-row .rl{color:var(--muted);}
+.result-row .rv{font-weight:500;}
+.result-row .rv.inc{color:var(--green);}
+.result-row .rv.exp{color:var(--red);}
+.health-box{margin-top:16px;border-radius:12px;padding:12px 16px;font-size:13px;font-weight:500;text-align:center;}
+.health-good{background:var(--adim);color:var(--accent);border:1px solid var(--abor);}
+.health-warn{background:rgba(255,179,71,0.08);color:#ffb347;border:1px solid rgba(255,179,71,0.2);}
+.health-bad{background:rgba(255,87,87,0.08);color:var(--red);border:1px solid rgba(255,87,87,0.2);}
+.btn-save{width:100%;background:var(--accent);color:#000;border:none;border-radius:12px;padding:14px;font-family:var(--fd);font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:16px;position:relative;}
+.btn-save:hover{background:#d4ff26;transform:translateY(-1px);}
+.btn-save:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.btn-save .sp{display:none;width:16px;height:16px;border:2px solid rgba(0,0,0,.3);border-top-color:#000;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto;}
+.btn-save.ld .bt{display:none;}.btn-save.ld .sp{display:block;}
+.save-note{font-size:12px;color:var(--muted);text-align:center;margin-top:10px;}
 
-/* ── ADD PROJECT MODAL ── */
-.add-modal {
-  background: #141414; border: 1px solid var(--border2);
-  border-radius: 24px; width: 100%; max-width: 440px;
-  padding: 36px; position: relative;
-  transform: translateY(20px); transition: transform 0.3s;
-}
-.modal-overlay.open .add-modal { transform: translateY(0); }
+/* DEVISE SELECTOR */
+.devise-row{display:flex;gap:8px;margin-bottom:20px;}
+.devise-btn{flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:var(--fb);font-size:14px;cursor:pointer;transition:all .2s;}
+.devise-btn.active{border-color:var(--accent);background:var(--adim);color:var(--white);font-weight:600;}
 
-/* ── RESPONSIVE ── */
-@media (max-width: 900px) {
-  .stats-grid { grid-template-columns: 1fr 1fr; }
-  .locked-grid { grid-template-columns: 1fr; }
-  .upsell-banner { flex-direction: column; }
-}
-@media (max-width: 700px) {
-  .sidebar { transform: translateX(-100%); }
-  .sidebar.open { transform: translateX(0); }
-  .main { margin-left: 0; }
-  .stats-grid { grid-template-columns: 1fr 1fr; }
-  .content { padding: 20px; }
-  .topbar { padding: 14px 20px; }
-}
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);z-index:300;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .3s;}
+.modal-ov.open{opacity:1;pointer-events:all;}
+.modal-box{background:var(--bg2);border:1px solid var(--border2);border-radius:24px;width:100%;max-width:480px;padding:36px;position:relative;transform:translateY(20px);transition:transform .3s;}
+.modal-ov.open .modal-box{transform:translateY(0);}
+.modal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),#00e5ff);border-radius:24px 24px 0 0;}
+.modal-close{position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:15px;transition:all .2s;}
+.modal-close:hover{background:rgba(255,255,255,0.1);color:var(--white);}
+.modal-title{font-family:var(--fd);font-size:22px;font-weight:800;margin-bottom:6px;}
+.modal-sub{font-size:14px;color:var(--muted);margin-bottom:24px;}
+.type-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+.type-card-opt{border:1px solid var(--border);border-radius:12px;padding:16px 10px;cursor:pointer;transition:all .2s;text-align:center;}
+.type-card-opt:hover{border-color:var(--abor);}
+.type-card-opt.sel{border-color:var(--accent);background:var(--adim);}
+.tc-icon{font-size:24px;margin-bottom:8px;}
+.tc-name{font-size:12px;font-weight:600;margin-bottom:2px;}
+.tc-sub{font-size:11px;color:var(--muted);}
+.m-field{margin-bottom:16px;}
+.m-field label{display:block;font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:7px;}
+.m-input{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--white);font-family:var(--fb);font-size:15px;transition:border-color .2s;}
+.m-input:focus{outline:none;border-color:var(--abor);}
+.m-input::placeholder{color:var(--muted);}
+.m-select{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--white);font-family:var(--fb);font-size:15px;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23585858' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;}
+.m-select option{background:#1a1a1a;}
+.btn-modal-main{width:100%;background:var(--accent);color:#000;border:none;border-radius:12px;padding:14px;font-family:var(--fd);font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:4px;}
+.btn-modal-main:hover{background:#d4ff26;}
+.alert-box{border-radius:10px;padding:10px 14px;font-size:13px;margin-bottom:14px;display:none;}
+.alert-box.show{display:block;}
+.alert-err{background:rgba(255,87,87,0.1);border:1px solid rgba(255,87,87,0.2);color:#ff8080;}
+.alert-ok{background:var(--adim);border:1px solid var(--abor);color:var(--accent);}
 
-/* ── SHARED NAV ── */
-nav { position:sticky;top:0;z-index:100;background:rgba(10,10,10,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.08); }
-.nav-inner { display:flex;align-items:center;justify-content:space-between;padding:16px 40px;max-width:1400px;margin:0 auto; }
-.logo { font-family:var(--font-display);font-size:22px;font-weight:800;letter-spacing:-0.5px;text-decoration:none;color:#f5f3ee; }
-.logo span { color:#c8ff00; }
-.nav-links { display:flex;align-items:center;gap:4px; }
-.nav-link { font-family:var(--font-body);font-size:14px;font-weight:500;color:rgba(255,255,255,0.6);text-decoration:none;padding:8px 14px;border-radius:8px;transition:all 0.2s; }
-.nav-link:hover,.nav-link.active { color:#f5f3ee;background:rgba(255,255,255,0.06); }
-.nav-link.active { color:#c8ff00; }
-.nav-cta { background:rgba(200,255,0,0.1);color:#c8ff00 !important;border:1px solid rgba(200,255,0,0.25);border-radius:20px;padding:7px 16px;font-weight:600; }
-.nav-cta:hover { background:rgba(200,255,0,0.18) !important; }
-.hamburger { display:none;background:none;border:none;color:rgba(255,255,255,0.7);font-size:22px;cursor:pointer; }
-.mobile-menu { display:none;flex-direction:column;gap:4px;padding:12px 24px 20px;border-top:1px solid rgba(255,255,255,0.06); }
-.mobile-menu.open { display:flex; }
-.mobile-link { font-size:15px;color:rgba(255,255,255,0.7);text-decoration:none;padding:10px 14px;border-radius:8px;transition:all 0.2s; }
-.mobile-link:hover { background:rgba(255,255,255,0.06);color:#f5f3ee; }
-.nav-cta-m { color:#c8ff00 !important;font-weight:600; }
-@media(max-width:768px){.nav-links,.lang-switcher{display:none;}.hamburger{display:block;}.nav-inner{padding:14px 20px;}}
-/* ── END SHARED NAV ── */
+/* LOCKED PREMIUM */
+.locked-section{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center;margin-bottom:16px;}
+.locked-icon{font-size:32px;margin-bottom:12px;}
+.locked-title{font-family:var(--fd);font-size:18px;font-weight:700;color:var(--gold);margin-bottom:6px;}
+.locked-sub{font-size:14px;color:var(--muted);margin-bottom:20px;}
+.btn-unlock{background:linear-gradient(135deg,#FFD700,#FFA500);border:none;border-radius:10px;padding:12px 28px;font-family:var(--fd);font-size:14px;font-weight:700;color:#000;cursor:pointer;}
+
+/* SUCCESS TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--bg2);border:1px solid var(--accent);border-radius:12px;padding:14px 20px;font-size:14px;color:var(--accent);display:flex;align-items:center;gap:10px;transform:translateY(80px);opacity:0;transition:all .3s;z-index:500;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* RESPONSIVE */
+@media(max-width:1000px){.calc-layout{grid-template-columns:1fr;}.result-panel{position:static;}.calc-fields{grid-template-columns:1fr;}.stats-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:700px){.sidebar{transform:translateX(-100%);}.sidebar.open{transform:translateX(0);}.main{margin-left:0;}.hambtn{display:flex;}.stats-grid{grid-template-columns:1fr;}.view{padding:16px;}.topbar{padding:12px 16px;}.proj-grid{grid-template-columns:1fr;}.calc-fields{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
 
-<div class="app">
+<!-- LOADING -->
+<div id="ls"><div class="ll">Sell<span>Sense</span></div><div class="lb"><div class="lf"></div></div><div style="font-size:13px;color:var(--muted);">Chargement...</div></div>
 
-  <!-- ════ SIDEBAR ════ -->
+<!-- TOAST -->
+<div class="toast" id="toast">✓ <span id="toast-msg">Sauvegardé</span></div>
+
+<!-- APP -->
+<div class="app" id="app" style="display:none;">
+
+  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
-    <div class="sidebar-logo">
-      Sell<span>Sense</span>
-      <small>Tableau de bord</small>
+    <div class="sl">
+      <a href="sellsense-landing.html" class="sl-logo">Sell<span>Sense</span></a>
+      <small class="sl-tag">Tableau de bord</small>
     </div>
-
-    <div class="nav-section">
-      <div class="nav-label">Menu</div>
-      <a class="nav-item active" href="#">
-        <span class="nav-icon">⬡</span> Vue d'ensemble
-      </a>
-      <a class="nav-item" href="#" onclick="alert('Disponible en version gratuite !')">
-        <span class="nav-icon">📊</span> Mes projets
-      </a>
-      <a class="nav-item" href="#" onclick="openUpgrade()">
-        <span class="nav-icon">📈</span> Analyses
-        <span class="lock-badge">Premium</span>
-      </a>
-      <a class="nav-item" href="#" onclick="openUpgrade()">
-        <span class="nav-icon">📅</span> Suivi journalier
-        <span class="lock-badge">Premium</span>
-      </a>
-      <a class="nav-item" href="#" onclick="openUpgrade()">
-        <span class="nav-icon">💡</span> Conseils IA
-        <span class="lock-badge">Premium</span>
-      </a>
-      <a class="nav-item" href="#" onclick="openUpgrade()">
-        <span class="nav-icon">📤</span> Export PDF
-        <span class="lock-badge">Premium</span>
-      </a>
-    </div>
-
-    <div class="nav-section" style="margin-top:auto; padding-bottom:0;">
-      <a class="nav-item" href="#">
-        <span class="nav-icon">⚙</span> Paramètres
-      </a>
-    </div>
-
-    <div class="sidebar-bottom">
-      <div class="user-pill">
-        <div class="user-avatar">K</div>
-        <div>
-          <div class="user-name">Karim</div>
-          <div class="user-plan">Plan Gratuit</div>
+    <nav class="nav">
+      <div class="nav-sec">
+        <span class="nav-label">Menu</span>
+        <a class="ni active" id="nav-overview" onclick="showView('overview')">
+          <span class="ni-icon">⬡</span>Vue d'ensemble
+        </a>
+        <a class="ni" id="nav-projects" onclick="showView('projects')">
+          <span class="ni-icon">📊</span>Mes projets
+        </a>
+        <a class="ni" onclick="showLockedView('Suivi journalier')">
+          <span class="ni-icon">📅</span>Suivi journalier<span class="ni-badge">Premium</span>
+        </a>
+        <a class="ni" onclick="showLockedView('Analyses')">
+          <span class="ni-icon">📈</span>Analyses<span class="ni-badge">Premium</span>
+        </a>
+        <a class="ni" onclick="showLockedView('Export PDF')">
+          <span class="ni-icon">📤</span>Export PDF<span class="ni-badge">Premium</span>
+        </a>
+      </div>
+      <div class="nav-sec" style="margin-top:auto;">
+        <a class="ni" href="sellsense-landing.html">
+          <span class="ni-icon">🏠</span>Accueil
+        </a>
+      </div>
+    </nav>
+    <div class="sb-bottom">
+      <div class="user-row">
+        <div class="user-av" id="user-av">A</div>
+        <div style="overflow:hidden;">
+          <div class="user-name" id="user-name">...</div>
+          <div class="user-plan" id="user-plan">Plan Gratuit</div>
         </div>
       </div>
-      <button class="upgrade-btn" onclick="openUpgrade()">⭐ Passer au Premium</button>
+      <button class="btn-upgrade" onclick="window.location.href='sellsense-payment.html'">⭐ Passer au Premium</button>
+      <button class="btn-logout" onclick="doLogout()">← Déconnexion</button>
     </div>
   </aside>
 
-  <!-- ════ MAIN ════ -->
+  <!-- MAIN -->
   <div class="main">
-
-    <!-- TOP BAR -->
     <div class="topbar">
       <div style="display:flex;align-items:center;gap:12px;">
-        <button onclick="toggleSidebar()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;display:none;" id="menu-btn">☰</button>
-        <div class="topbar-title">Vue d'ensemble</div>
+        <button class="hambtn" onclick="toggleSidebar()">☰</button>
+        <div class="topbar-title" id="topbar-title">Vue d'ensemble</div>
       </div>
       <div class="topbar-right">
-        <div class="demo-badge">✦ Démo interactive</div>
-        <button class="topbar-upgrade" onclick="openUpgrade()">⭐ Passer au Premium</button>
+        <div class="plan-badge" id="plan-badge">Plan Gratuit</div>
       </div>
     </div>
 
-    <!-- CONTENT -->
-    <div class="content">
-
-      <!-- WELCOME -->
-      <div class="welcome-banner">
-        <div class="welcome-text">
-          <h2>Bonjour Karim 👋</h2>
-          <p>Voici un aperçu de tes performances. <strong style="color:var(--accent)">Passe au Premium</strong> pour tout débloquer.</p>
+    <!-- ══ OVERVIEW ══ -->
+    <div class="view active" id="view-overview">
+      <div class="welcome-card">
+        <div>
+          <h2 id="welcome-name">Bonjour 👋</h2>
+          <p id="welcome-sub">Voici un résumé de tes projets actifs.</p>
         </div>
-        <div class="free-limit">
-          <strong id="proj-count">2 / 3</strong>
-          <span>projets gratuits utilisés</span>
+        <div class="proj-counter">
+          <strong id="proj-count">0 / 3</strong>
+          <span>projets utilisés</span>
         </div>
       </div>
 
-      <!-- STATS -->
       <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-label">Revenu total (ce mois)</div>
-          <div class="stat-val positive">12 400 $</div>
-          <div class="stat-change up">↑ +8% vs mois dernier</div>
+        <div class="stat-box">
+          <div class="stat-lbl">Chiffre d'affaires total</div>
+          <div class="stat-val pos" id="ov-rev">0</div>
+          <div class="stat-sub" id="ov-rev-cur">MAD</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-label">Profit net (ce mois)</div>
-          <div class="stat-val positive">3 820 $</div>
-          <div class="stat-change up">↑ +12%</div>
+        <div class="stat-box">
+          <div class="stat-lbl">Profit net total</div>
+          <div class="stat-val pos" id="ov-profit">0</div>
+          <div class="stat-sub" id="ov-profit-cur">MAD</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-label">Marge moyenne</div>
-          <div class="stat-val">30.8%</div>
-          <div class="stat-change">= Stable</div>
-        </div>
-        <div class="stat-card" onclick="openUpgrade()" style="cursor:pointer;position:relative;overflow:hidden;">
-          <div style="filter:blur(5px);user-select:none;pointer-events:none;">
-            <div class="stat-label">Meilleur mois</div>
-            <div class="stat-val positive">5 210 $</div>
-            <div class="stat-change up">↑ Juillet</div>
-          </div>
-          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;background:rgba(10,10,10,0.6);">
-            <span style="font-size:18px;">🔒</span>
-            <span style="font-size:12px;color:var(--premium);font-weight:600;">Premium</span>
-          </div>
+        <div class="stat-box">
+          <div class="stat-lbl">Marge moyenne</div>
+          <div class="stat-val" id="ov-margin">0%</div>
+          <div class="stat-sub">Tous projets</div>
         </div>
       </div>
 
-      <!-- PROJECTS TABLE -->
-      <div class="section-header">
-        <div class="section-title">Mes projets</div>
-        <button class="section-action" onclick="openAddProject()">+ Ajouter un projet</button>
+      <div class="sec-header">
+        <div class="sec-title">Mes projets</div>
+        <button class="btn-add-proj" onclick="openAddModal()">+ Nouveau projet</button>
       </div>
-      <div class="projects-card">
-        <table class="projects-table">
-          <thead>
-            <tr>
-              <th>Projet</th>
-              <th>Type</th>
-              <th>Revenu</th>
-              <th>Profit net</th>
-              <th>Marge</th>
-              <th>Mis à jour</th>
-            </tr>
-          </thead>
-          <tbody id="projects-body">
-            <tr>
-              <td><strong>Boutique Maroc COD</strong></td>
-              <td><span class="project-type-badge">📦 E-com</span></td>
-              <td>8 200 $</td>
-              <td class="profit-positive">+2 460 $</td>
-              <td>
-                <div class="margin-bar-wrap">
-                  <div class="margin-bar"><div class="margin-bar-fill" style="width:30%"></div></div>
-                  <div class="margin-val">30%</div>
-                </div>
-              </td>
-              <td style="color:var(--muted)">Aujourd'hui</td>
-            </tr>
-            <tr>
-              <td><strong>YouTube Gaming FR</strong></td>
-              <td><span class="project-type-badge">🎬 Créateur</span></td>
-              <td>4 200 $</td>
-              <td class="profit-positive">+1 360 $</td>
-              <td>
-                <div class="margin-bar-wrap">
-                  <div class="margin-bar"><div class="margin-bar-fill mid" style="width:32%"></div></div>
-                  <div class="margin-val">32%</div>
-                </div>
-              </td>
-              <td style="color:var(--muted)">Hier</td>
-            </tr>
-            <tr onclick="openUpgrade()" style="opacity:0.4;cursor:pointer;position:relative;">
-              <td colspan="6" style="text-align:center;padding:20px;">
-                <span style="font-size:13px;color:var(--muted);">🔒 Ajouter un 3ème projet — <span style="color:var(--premium)">Premium requis</span></span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="add-project-row" onclick="openAddProject()">
-          <span>+</span> Nouveau projet
+
+      <div id="overview-projects"></div>
+    </div>
+
+    <!-- ══ PROJECTS ══ -->
+    <div class="view" id="view-projects">
+      <div class="sec-header">
+        <div class="sec-title">Mes projets</div>
+        <button class="btn-add-proj" onclick="openAddModal()">+ Nouveau projet</button>
+      </div>
+      <div id="projects-list"></div>
+    </div>
+
+    <!-- ══ CALCULATOR ══ -->
+    <div class="view" id="view-calc">
+      <div class="calc-header">
+        <button class="back-btn" onclick="goBack()">← Retour</button>
+        <div>
+          <div class="calc-proj-title" id="calc-proj-name">Projet</div>
+          <div class="calc-proj-type" id="calc-proj-type">Type</div>
         </div>
       </div>
 
-      <!-- LOCKED PREMIUM SECTIONS -->
-      <div class="section-header">
-        <div class="section-title">Analyses & Insights <span style="font-size:12px;color:var(--premium);margin-left:8px;">✦ Premium</span></div>
-      </div>
-      <div class="locked-grid">
-
-        <!-- Locked: Evolution chart -->
-        <div class="locked-card">
-          <div class="locked-inner">
-            <div style="font-size:13px;color:var(--muted);margin-bottom:12px;">Évolution du profit — 6 mois</div>
-            <div class="fake-chart">
-              <div class="fake-bar" style="height:40%"></div>
-              <div class="fake-bar" style="height:55%"></div>
-              <div class="fake-bar" style="height:45%"></div>
-              <div class="fake-bar" style="height:70%"></div>
-              <div class="fake-bar" style="height:60%"></div>
-              <div class="fake-bar" style="height:85%"></div>
-            </div>
-            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px;">
-              <span>Fév</span><span>Mar</span><span>Avr</span><span>Mai</span><span>Jun</span><span>Jul</span>
-            </div>
-          </div>
-          <div class="locked-overlay">
-            <div class="lock-icon">📈</div>
-            <div class="lock-title">Évolution du profit</div>
-            <div class="lock-sub">Vois comment tes profits évoluent mois par mois</div>
-            <button class="lock-btn" onclick="openUpgrade()">Débloquer — Premium</button>
-          </div>
-        </div>
-
-        <!-- Locked: AI Tips -->
-        <div class="locked-card">
-          <div class="locked-inner">
-            <div style="font-size:13px;color:var(--muted);margin-bottom:12px;">Conseils personnalisés</div>
-            <div style="display:flex;flex-direction:column;gap:10px;">
-              <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:12px;font-size:13px;">💡 Ta marge sur la Boutique COD peut être améliorée de 8% en réduisant les frais de livraison...</div>
-              <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:12px;font-size:13px;">🎯 Tes revenus YouTube sont en hausse. Moment idéal pour négocier des sponsors...</div>
-            </div>
-          </div>
-          <div class="locked-overlay">
-            <div class="lock-icon">💡</div>
-            <div class="lock-title">Conseils IA personnalisés</div>
-            <div class="lock-sub">Des recommandations basées sur tes vrais chiffres</div>
-            <button class="lock-btn" onclick="openUpgrade()">Débloquer — Premium</button>
-          </div>
-        </div>
-
-        <!-- Locked: Daily tracking -->
-        <div class="locked-card">
-          <div class="locked-inner">
-            <div style="font-size:13px;color:var(--muted);margin-bottom:12px;">Suivi journalier</div>
-            <div style="display:flex;flex-direction:column;gap:8px;">
-              <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06)">
-                <span>Lundi 21 juil</span><span class="profit-positive">+320$</span>
-              </div>
-              <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06)">
-                <span>Mardi 22 juil</span><span class="profit-positive">+480$</span>
-              </div>
-              <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;">
-                <span>Mercredi 23 juil</span><span class="profit-negative">-120$</span>
-              </div>
-            </div>
-          </div>
-          <div class="locked-overlay">
-            <div class="lock-icon">📅</div>
-            <div class="lock-title">Suivi journalier</div>
-            <div class="lock-sub">Enregistre tes chiffres chaque jour, vois ta progression</div>
-            <button class="lock-btn" onclick="openUpgrade()">Débloquer — Premium</button>
-          </div>
-        </div>
-
-        <!-- Locked: Export -->
-        <div class="locked-card">
-          <div class="locked-inner">
-            <div style="font-size:13px;color:var(--muted);margin-bottom:12px;">Export & Rapports</div>
-            <div style="display:flex;flex-direction:column;gap:10px;">
-              <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:12px;display:flex;align-items:center;gap:10px;font-size:13px;">📄 Rapport mensuel — Juillet 2025.pdf</div>
-              <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:12px;display:flex;align-items:center;gap:10px;font-size:13px;">📊 Export Excel — Tous les projets.xlsx</div>
-            </div>
-          </div>
-          <div class="locked-overlay">
-            <div class="lock-icon">📤</div>
-            <div class="lock-title">Export PDF & Excel</div>
-            <div class="lock-sub">Génère des rapports professionnels en un clic</div>
-            <button class="lock-btn" onclick="openUpgrade()">Débloquer — Premium</button>
-          </div>
+      <!-- DEVISE -->
+      <div style="margin-bottom:20px;">
+        <div style="font-size:13px;color:var(--muted);margin-bottom:10px;">Devise</div>
+        <div class="devise-row">
+          <button class="devise-btn active" onclick="setDevise('MAD',this)">🇲🇦 MAD</button>
+          <button class="devise-btn" onclick="setDevise('USD',this)">🇺🇸 USD</button>
+          <button class="devise-btn" onclick="setDevise('EUR',this)">🇪🇺 EUR</button>
         </div>
       </div>
 
-      <!-- UPSELL BANNER -->
-      <div class="upsell-banner">
-        <div class="upsell-left">
-          <div class="upsell-eyebrow">✦ SellSense Premium</div>
-          <div class="upsell-title">Tout débloquer.<br/>Connaître chaque centime.</div>
-          <div class="upsell-features">
-            <div class="upsell-feat">Projets illimités (gratuit = 3 max)</div>
-            <div class="upsell-feat">Suivi journalier de tes profits</div>
-            <div class="upsell-feat">Graphiques & analyses avancées</div>
-            <div class="upsell-feat">Conseils IA personnalisés</div>
-            <div class="upsell-feat">Export PDF et Excel en 1 clic</div>
-            <div class="upsell-feat">Accès prioritaire aux nouvelles fonctions</div>
+      <div class="calc-layout">
+        <div class="calc-left" id="calc-fields-container"></div>
+        <div>
+          <!-- RESULT -->
+          <div class="result-panel">
+            <div class="result-label">Profit net</div>
+            <div class="result-amount pos" id="res-amount">0</div>
+            <div style="font-size:14px;color:var(--muted);margin-bottom:4px;" id="res-devise">MAD</div>
+            <div class="result-margin">Marge : <span id="res-margin">0%</span></div>
+            <div class="result-divider"></div>
+            <div class="result-row"><span class="rl">Chiffre d'affaires</span><span class="rv inc" id="rr-rev">0</span></div>
+            <div class="result-row"><span class="rl">Total charges</span><span class="rv exp" id="rr-exp">-0</span></div>
+            <div class="result-divider"></div>
+            <div class="result-row" style="font-weight:600;"><span class="rl" style="color:var(--white);">Profit net</span><span class="rv" id="rr-profit" style="color:var(--accent);">0</span></div>
+            <div class="health-box health-good" id="res-health" style="display:none;"></div>
+            <button class="btn-save" id="btn-save" onclick="saveCalc()">
+              <span class="bt">💾 Sauvegarder ce calcul</span>
+              <div class="sp"></div>
+            </button>
+            <div class="save-note">Sauvegarde ton profit pour le retrouver plus tard</div>
           </div>
-        </div>
-        <div class="upsell-right">
-          <div class="price-box">
-            <div class="price-old">19.99 $ / mois</div>
-            <div class="price-val">9<span style="font-size:22px;">.99$</span></div>
-            <div class="price-per">par mois · offre de lancement</div>
-          </div>
-          <button class="btn-upgrade-big" onclick="openUpgrade()">⭐ Passer au Premium →</button>
-          <div class="price-note">🔒 Paiement sécurisé · Annulable à tout moment</div>
         </div>
       </div>
+    </div>
 
-    </div><!-- /content -->
+    <!-- ══ LOCKED ══ -->
+    <div class="view" id="view-locked">
+      <div class="locked-section">
+        <div class="locked-icon">🔒</div>
+        <div class="locked-title" id="locked-title">Fonctionnalité Premium</div>
+        <div class="locked-sub">Cette fonctionnalité est disponible avec le plan Premium. Passe au Premium pour débloquer toutes les fonctionnalités.</div>
+        <button class="btn-unlock" onclick="window.location.href='sellsense-payment.html'">⭐ Passer au Premium — 9.99$/mois</button>
+      </div>
+    </div>
+
   </div><!-- /main -->
 </div><!-- /app -->
 
-<!-- ════ UPGRADE MODAL ════ -->
-<div class="modal-overlay" id="upgrade-modal" onclick="closeIfOverlay(event,'upgrade-modal')">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('upgrade-modal')">✕</button>
-    <div style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--premium);margin-bottom:8px;font-weight:500;">⭐ SellSense Premium</div>
-    <div class="modal-title">Passer au Premium</div>
-    <div class="modal-sub">9.99$ / mois · Annulable à tout moment</div>
-
-    <div class="card-logos">
-      <div class="card-logo">💳 Visa</div>
-      <div class="card-logo">💳 Mastercard</div>
-      <div class="card-logo">💳 Amex</div>
-    </div>
-
-    <div class="payment-field">
-      <label>Numéro de carte</label>
-      <input class="payment-input" type="text" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)"/>
-    </div>
-    <div class="card-row">
-      <div class="payment-field">
-        <label>Date d'expiration</label>
-        <input class="payment-input" type="text" placeholder="MM/AA" maxlength="5" oninput="formatExpiry(this)"/>
-      </div>
-      <div class="payment-field">
-        <label>CVV</label>
-        <input class="payment-input" type="text" placeholder="•••" maxlength="4"/>
-      </div>
-    </div>
-    <div class="payment-field">
-      <label>Nom sur la carte</label>
-      <input class="payment-input" type="text" placeholder="KARIM BENALI"/>
-    </div>
-
-    <div class="secure-note">
-      🔒 <span>Paiement sécurisé par Stripe · Données chiffrées SSL</span>
-    </div>
-
-    <button class="btn-pay" id="btn-pay" onclick="handlePayment()">
-      Payer 9.99$ et activer Premium →
-    </button>
-  </div>
-</div>
-
-<!-- ════ ADD PROJECT MODAL ════ -->
-<div class="modal-overlay" id="add-modal" onclick="closeIfOverlay(event,'add-modal')">
-  <div class="add-modal">
+<!-- ADD PROJECT MODAL -->
+<div class="modal-ov" id="add-modal" onclick="closeOv(event,'add-modal')">
+  <div class="modal-box">
     <button class="modal-close" onclick="closeModal('add-modal')">✕</button>
-    <div class="modal-title" style="font-size:20px;margin-bottom:4px;">Nouveau projet</div>
-    <div class="modal-sub" style="font-size:13px;">Il te reste <strong style="color:var(--accent)">1 projet gratuit</strong>. Passe au Premium pour des projets illimités.</div>
+    <div class="modal-title">Nouveau projet</div>
+    <div class="modal-sub">Crée un projet pour commencer à calculer tes profits.</div>
+    <div class="alert-box alert-err" id="add-err"></div>
 
-    <div class="payment-field">
-      <label>Nom du projet</label>
-      <input class="payment-input" id="new-proj-name" type="text" placeholder="ex: Boutique Vêtements"/>
-    </div>
-    <div class="payment-field">
-      <label>Type</label>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:4px;">
-        <div class="type-card" onclick="selectNewType('ecom',this)" style="border:1px solid var(--border);border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;transition:all 0.2s;">
-          <div style="font-size:18px;margin-bottom:4px;">📦</div>
-          <div style="font-size:11px;font-weight:500;">E-com</div>
+    <div style="margin-bottom:20px;">
+      <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:10px;">Quel est ton type d'activité ?</div>
+      <div class="type-cards">
+        <div class="type-card-opt" onclick="selType('ecom',this)">
+          <div class="tc-icon">📦</div>
+          <div class="tc-name">E-com / COD</div>
+          <div class="tc-sub">Dropshipping, boutique</div>
         </div>
-        <div class="type-card" onclick="selectNewType('creator',this)" style="border:1px solid var(--border);border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;transition:all 0.2s;">
-          <div style="font-size:18px;margin-bottom:4px;">🎬</div>
-          <div style="font-size:11px;font-weight:500;">Créateur</div>
+        <div class="type-card-opt" onclick="selType('creator',this)">
+          <div class="tc-icon">🎬</div>
+          <div class="tc-name">Créateur</div>
+          <div class="tc-sub">YouTube, TikTok, Insta</div>
         </div>
-        <div class="type-card" onclick="selectNewType('freelancer',this)" style="border:1px solid var(--border);border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;transition:all 0.2s;">
-          <div style="font-size:18px;margin-bottom:4px;">💻</div>
-          <div style="font-size:11px;font-weight:500;">Freelance</div>
+        <div class="type-card-opt" onclick="selType('freelancer',this)">
+          <div class="tc-icon">💻</div>
+          <div class="tc-name">Freelance</div>
+          <div class="tc-sub">Upwork, Fiverr, directs</div>
         </div>
       </div>
     </div>
-    <button class="btn-pay" style="margin-top:8px;" onclick="addProject()">Créer le projet →</button>
-  </div>
-</div>
 
-<!-- ════ SUCCESS MODAL ════ -->
-<div class="modal-overlay" id="success-modal">
-  <div class="modal" style="text-align:center;">
-    <div style="width:64px;height:64px;border-radius:50%;background:rgba(255,215,0,0.1);border:1px solid var(--premium-border);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px;">⭐</div>
-    <div class="modal-title" style="margin-bottom:8px;">Bienvenue dans Premium !</div>
-    <div class="modal-sub">Toutes les fonctionnalités sont maintenant débloquées. Profites-en !</div>
-    <button class="btn-pay" onclick="activatePremium()">Accéder à mon dashboard complet →</button>
+    <div class="m-field">
+      <label>Nom du projet</label>
+      <input class="m-input" type="text" id="proj-name-input" placeholder="ex: Boutique Vêtements Maroc"/>
+    </div>
+    <div class="m-field">
+      <label>Devise principale</label>
+      <select class="m-select" id="proj-devise">
+        <option value="MAD">🇲🇦 MAD — Dirham marocain</option>
+        <option value="USD">🇺🇸 USD — Dollar américain</option>
+        <option value="EUR">🇪🇺 EUR — Euro</option>
+      </select>
+    </div>
+
+    <button class="btn-modal-main" onclick="createProject()">Créer le projet →</button>
   </div>
 </div>
 
 <script>
-// ════════════════════════
-// MODALS
-// ════════════════════════
-function openUpgrade() { document.getElementById('upgrade-modal').classList.add('open'); }
-function openAddProject() { document.getElementById('add-modal').classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-function closeIfOverlay(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
+// ════════════════════════════════════
+// INIT
+// ════════════════════════════════════
+const {createClient} = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// ════════════════════════
-// CARD FORMAT
-// ════════════════════════
-function formatCard(el) {
-  let v = el.value.replace(/\D/g,'').substring(0,16);
-  el.value = v.match(/.{1,4}/g)?.join(' ') || v;
-}
-function formatExpiry(el) {
-  let v = el.value.replace(/\D/g,'').substring(0,4);
-  if (v.length > 2) v = v.substring(0,2) + '/' + v.substring(2);
-  el.value = v;
+let user = null, profile = null, projects = [], currentProject = null, currentDevise = 'MAD', newType = null;
+
+async function boot() {
+  const {data:{session}} = await sb.auth.getSession();
+  if (!session) { window.location.href = 'sellsense-auth.html'; return; }
+  user = session.user;
+  await loadProfile();
+  await loadProjects();
+  renderAll();
+  document.getElementById('ls').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
 }
 
-// ════════════════════════
-// PAYMENT
-// ════════════════════════
-function handlePayment() {
-  const btn = document.getElementById('btn-pay');
-  btn.classList.add('loading');
-  btn.textContent = 'Traitement en cours...';
-  setTimeout(() => {
-    closeModal('upgrade-modal');
-    document.getElementById('success-modal').classList.add('open');
-  }, 2000);
-}
-function activatePremium() {
-  closeModal('success-modal');
-  document.querySelector('.user-plan').textContent = '⭐ Premium';
-  document.querySelector('.demo-badge').textContent = '✦ Premium actif';
-  document.querySelector('.demo-badge').style.background = 'rgba(255,215,0,0.1)';
-  document.querySelector('.demo-badge').style.color = 'var(--premium)';
-  document.querySelector('.demo-badge').style.borderColor = 'var(--premium-border)';
-  document.querySelectorAll('.locked-overlay').forEach(o => {
-    o.style.display = 'none';
-  });
-  document.querySelectorAll('.locked-inner').forEach(i => {
-    i.style.filter = 'none';
-    i.style.pointerEvents = 'all';
-  });
-  document.querySelectorAll('.lock-badge').forEach(b => b.remove());
-  document.getElementById('proj-count').textContent = '2 / ∞';
+// ════════════════════════════════════
+// PROFILE
+// ════════════════════════════════════
+async function loadProfile() {
+  const {data} = await sb.from('profiles').select('*').eq('id', user.id).single();
+  if (data) {
+    profile = data;
+  } else {
+    const name = user.user_metadata?.full_name || user.email.split('@')[0];
+    await sb.from('profiles').upsert({id: user.id, full_name: name, email: user.email, currency: 'MAD'});
+    profile = {full_name: name, plan: 'free', currency: 'MAD'};
+  }
+  const name = profile.full_name || user.email.split('@')[0];
+  const first = name.split(' ')[0];
+  document.getElementById('user-av').textContent = name.charAt(0).toUpperCase();
+  document.getElementById('user-name').textContent = name;
+  document.getElementById('welcome-name').textContent = 'Bonjour ' + first + ' 👋';
+  if (profile.plan === 'premium') {
+    document.getElementById('user-plan').textContent = '⭐ Premium';
+    document.getElementById('plan-badge').textContent = '⭐ Premium';
+    document.getElementById('plan-badge').className = 'plan-badge premium';
+  }
 }
 
-// ════════════════════════
-// ADD PROJECT
-// ════════════════════════
-let newType = null;
-function selectNewType(t, el) {
-  newType = t;
-  document.querySelectorAll('#add-modal .type-card').forEach(c => {
-    c.style.borderColor = 'var(--border)';
-    c.style.background = 'transparent';
-  });
-  el.style.borderColor = 'var(--accent)';
-  el.style.background = 'rgba(200,255,0,0.06)';
+// ════════════════════════════════════
+// PROJECTS
+// ════════════════════════════════════
+async function loadProjects() {
+  const {data} = await sb.from('projects').select('*, calculations(id,revenue,net_profit,created_at)').eq('user_id', user.id).eq('is_archived', false).order('created_at', {ascending: false});
+  projects = data || [];
 }
-function addProject() {
-  const name = document.getElementById('new-proj-name').value.trim();
-  if (!name || !newType) { alert('Remplis le nom et le type.'); return; }
-  const icons = { ecom:'📦', creator:'🎬', freelancer:'💻' };
-  const labels = { ecom:'E-com', creator:'Créateur', freelancer:'Freelance' };
-  const body = document.getElementById('projects-body');
-  const lockedRow = body.querySelector('tr:last-child');
-  const newRow = document.createElement('tr');
-  newRow.innerHTML = `
-    <td><strong>${name}</strong></td>
-    <td><span class="project-type-badge">${icons[newType]} ${labels[newType]}</span></td>
-    <td>0 $</td>
-    <td class="profit-positive">0 $</td>
-    <td><div class="margin-bar-wrap"><div class="margin-bar"><div class="margin-bar-fill" style="width:0%"></div></div><div class="margin-val">0%</div></div></td>
-    <td style="color:var(--muted)">À l'instant</td>
-  `;
-  body.insertBefore(newRow, lockedRow);
-  document.getElementById('proj-count').textContent = '3 / 3';
-  closeModal('add-modal');
+
+function renderAll() {
+  renderOverview();
+  renderProjectsList();
+  updateTopStats();
+}
+
+function updateTopStats() {
+  const totalRev = projects.reduce((s,p) => s + getLatestCalc(p,'revenue'), 0);
+  const totalProfit = projects.reduce((s,p) => s + getLatestCalc(p,'net_profit'), 0);
+  const margin = totalRev > 0 ? ((totalProfit/totalRev)*100).toFixed(1) : '0.0';
+  const cur = profile?.currency || 'MAD';
+  const isPrem = profile?.plan === 'premium';
+  const limit = isPrem ? '∞' : '3';
+
+  document.getElementById('ov-rev').textContent = fmt(totalRev);
+  document.getElementById('ov-rev-cur').textContent = cur;
+  document.getElementById('ov-profit').textContent = fmt(totalProfit);
+  document.getElementById('ov-profit').className = 'stat-val ' + (totalProfit >= 0 ? 'pos' : 'neg');
+  document.getElementById('ov-profit-cur').textContent = cur;
+  document.getElementById('ov-margin').textContent = margin + '%';
+  document.getElementById('proj-count').textContent = projects.length + ' / ' + limit;
+}
+
+function getLatestCalc(p, field) {
+  if (!p.calculations || p.calculations.length === 0) return 0;
+  const sorted = [...p.calculations].sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+  return sorted[0][field] || 0;
+}
+
+function renderOverview() {
+  const c = document.getElementById('overview-projects');
+  if (projects.length === 0) {
+    c.innerHTML = `<div class="empty-projects"><div class="empty-icon">📊</div><div class="empty-title">Aucun projet pour l'instant</div><div class="empty-sub">Crée ton premier projet pour commencer à calculer tes profits. C'est simple et rapide.</div><button class="btn-add-proj" onclick="openAddModal()">+ Créer mon premier projet</button></div>`;
+    return;
+  }
+  c.innerHTML = '<div class="proj-grid">' + projects.map(p => projCardHTML(p)).join('') + '</div>';
+}
+
+function renderProjectsList() {
+  const c = document.getElementById('projects-list');
+  if (projects.length === 0) {
+    c.innerHTML = `<div class="empty-projects"><div class="empty-icon">📊</div><div class="empty-title">Aucun projet</div><div class="empty-sub">Crée un projet pour commencer.</div><button class="btn-add-proj" onclick="openAddModal()">+ Créer un projet</button></div>`;
+    return;
+  }
+  c.innerHTML = '<div class="proj-grid">' + projects.map(p => projCardHTML(p)).join('') + '</div>';
+}
+
+function projCardHTML(p) {
+  const rev = getLatestCalc(p, 'revenue');
+  const profit = getLatestCalc(p, 'net_profit');
+  const margin = rev > 0 ? ((profit/rev)*100).toFixed(1) : '0.0';
+  const profitClass = profit >= 0 ? 'pos' : 'neg';
+  const profitSign = profit >= 0 ? '+' : '';
+  const typeIcons = {ecom:'📦', creator:'🎬', freelancer:'💻'};
+  const typeLabels = {ecom:'E-com / COD', creator:'Créateur', freelancer:'Freelance'};
+  const hasCalc = p.calculations && p.calculations.length > 0;
+  return `
+    <div class="proj-card-item type-${p.business_type}" onclick="openCalc('${p.id}')">
+      <div class="proj-card-top">
+        <div class="proj-type-icon">${typeIcons[p.business_type]||'📁'}</div>
+        <div class="proj-type-badge ${p.business_type}">${typeLabels[p.business_type]||p.business_type}</div>
+      </div>
+      <div class="proj-name">${p.name}</div>
+      ${hasCalc ? `
+      <div class="proj-stats-row">
+        <div class="proj-stat"><div class="proj-stat-val neutral">${fmt(rev)}</div><div class="proj-stat-lbl">Revenu (${p.currency||'MAD'})</div></div>
+        <div class="proj-stat"><div class="proj-stat-val ${profitClass}">${profitSign}${fmt(profit)}</div><div class="proj-stat-lbl">Profit net</div></div>
+        <div class="proj-stat"><div class="proj-stat-val neutral">${margin}%</div><div class="proj-stat-lbl">Marge</div></div>
+      </div>` : `<div style="font-size:13px;color:var(--muted);padding:8px 0;">Aucun calcul encore — clique pour commencer</div>`}
+      <div class="proj-divider"></div>
+      <div class="proj-footer">
+        <span>Créé le ${new Date(p.created_at).toLocaleDateString('fr-FR')}</span>
+        <button class="proj-calc-btn">Calculer →</button>
+      </div>
+    </div>`;
+}
+
+// ════════════════════════════════════
+// CALCULATOR
+// ════════════════════════════════════
+function openCalc(projId) {
+  currentProject = projects.find(p => p.id === projId);
+  if (!currentProject) return;
+  currentDevise = currentProject.currency || 'MAD';
+
+  document.getElementById('calc-proj-name').textContent = currentProject.name;
+  const labels = {ecom:'E-commerce / COD / Dropshipping', creator:'Créateur de contenu', freelancer:'Freelance / Prestataire'};
+  document.getElementById('calc-proj-type').textContent = labels[currentProject.business_type] || currentProject.business_type;
+
+  // Update devise buttons
+  document.querySelectorAll('.devise-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.devise-btn').forEach(b => {
+    if (b.textContent.includes(currentDevise)) b.classList.add('active');
+  });
+  document.getElementById('res-devise').textContent = currentDevise;
+
+  buildCalcFields();
+  showView('calc');
+  document.getElementById('topbar-title').textContent = currentProject.name;
+}
+
+function buildCalcFields() {
+  const container = document.getElementById('calc-fields-container');
+  const type = currentProject.business_type;
+
+  const configs = {
+    ecom: [
+      {
+        title: '💰 Revenus', sub: 'Ce que tu encaisses',
+        fields: [
+          {id:'rev_total', label:'Chiffre d\'affaires total (ventes)', placeholder:'ex: 15000'},
+        ]
+      },
+      {
+        title: '📦 Coût des produits', sub: 'COGS — Ce que tu paies pour les produits',
+        fields: [
+          {id:'cogs', label:'Achat produits / COGS', placeholder:'ex: 5000'},
+        ]
+      },
+      {
+        title: '🚚 Livraison & Logistique', sub: '',
+        fields: [
+          {id:'shipping', label:'Frais de livraison (transporteur)', placeholder:'ex: 1500'},
+          {id:'returns', label:'Retours & remboursements', placeholder:'ex: 300'},
+          {id:'packaging', label:'Emballages & packaging', placeholder:'ex: 200'},
+        ]
+      },
+      {
+        title: '📣 Marketing & Publicité', sub: '',
+        fields: [
+          {id:'ads_fb', label:'Budget Facebook / TikTok Ads', placeholder:'ex: 2000'},
+          {id:'ads_other', label:'Autres frais marketing', placeholder:'ex: 0'},
+        ]
+      },
+      {
+        title: '💳 Frais plateforme & outils', sub: '',
+        fields: [
+          {id:'platform_fee', label:'Frais plateforme (Shopify, WooCommerce...)', placeholder:'ex: 300'},
+          {id:'payment_fee', label:'Frais paiement (CMI, PayPal, Stripe...)', placeholder:'ex: 150'},
+          {id:'tools', label:'Outils & abonnements', placeholder:'ex: 100'},
+        ]
+      },
+    ],
+    creator: [
+      {
+        title: '💰 Revenus', sub: 'Toutes tes sources de revenus',
+        fields: [
+          {id:'adsense', label:'Revenus AdSense (YouTube)', placeholder:'ex: 500'},
+          {id:'tiktok_rev', label:'Revenus TikTok Creator Fund', placeholder:'ex: 200'},
+          {id:'sponsors', label:'Sponsoring & partenariats', placeholder:'ex: 3000'},
+          {id:'merch', label:'Merch / Produits numériques', placeholder:'ex: 500'},
+          {id:'other_rev', label:'Autres revenus', placeholder:'ex: 0'},
+        ]
+      },
+      {
+        title: '🎬 Frais de production', sub: '',
+        fields: [
+          {id:'equipment', label:'Matériel & équipement', placeholder:'ex: 300'},
+          {id:'editing', label:'Montage & post-production', placeholder:'ex: 500'},
+          {id:'software', label:'Logiciels & abonnements', placeholder:'ex: 100'},
+        ]
+      },
+      {
+        title: '📣 Promotion', sub: '',
+        fields: [
+          {id:'ads_promo', label:'Promotion payante', placeholder:'ex: 500'},
+          {id:'agency', label:'Commission agence / manager (%)', placeholder:'ex: 0', suffix:'%'},
+        ]
+      },
+    ],
+    freelancer: [
+      {
+        title: '💰 Revenus', sub: 'Ce que tu factures à tes clients',
+        fields: [
+          {id:'gross_income', label:'Revenu brut facturé', placeholder:'ex: 10000'},
+        ]
+      },
+      {
+        title: '💳 Frais plateforme', sub: '',
+        fields: [
+          {id:'platform_cut', label:'Commission Upwork / Fiverr (%)', placeholder:'ex: 20', suffix:'%'},
+          {id:'payment_fee_f', label:'Frais virement / conversion', placeholder:'ex: 100'},
+        ]
+      },
+      {
+        title: '👥 Sous-traitance & équipe', sub: '',
+        fields: [
+          {id:'outsource', label:'Sous-traitants / collaborateurs', placeholder:'ex: 0'},
+        ]
+      },
+      {
+        title: '🛠️ Charges opérationnelles', sub: '',
+        fields: [
+          {id:'software_f', label:'Logiciels & outils', placeholder:'ex: 200'},
+          {id:'workspace', label:'Espace de travail / coworking', placeholder:'ex: 0'},
+          {id:'training', label:'Formation & amélioration', placeholder:'ex: 0'},
+          {id:'other_f', label:'Autres charges', placeholder:'ex: 0'},
+        ]
+      },
+    ]
+  };
+
+  const sections = configs[type] || configs.ecom;
+  container.innerHTML = sections.map(sec => `
+    <div class="calc-section">
+      <div class="calc-section-header">
+        <div class="calc-section-title">${sec.title}</div>
+        ${sec.sub ? `<div class="calc-section-sub">${sec.sub}</div>` : ''}
+      </div>
+      <div class="calc-fields">
+        ${sec.fields.map(f => `
+          <div class="calc-field ${f.full?'full':''}">
+            <label>${f.label}</label>
+            <div class="input-wrap">
+              <input class="calc-input" type="number" id="cf-${f.id}" placeholder="${f.placeholder}" min="0" step="any" oninput="recalc()"/>
+              <span class="input-suffix">${f.suffix || currentDevise}</span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  recalc();
+}
+
+function setDevise(d, btn) {
+  currentDevise = d;
+  document.querySelectorAll('.devise-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('res-devise').textContent = d;
+  document.querySelectorAll('.input-suffix').forEach(s => {
+    if (!['%'].includes(s.textContent)) s.textContent = d;
+  });
+  recalc();
+}
+
+function recalc() {
+  const type = currentProject?.business_type || 'ecom';
+  const val = id => parseFloat(document.getElementById('cf-'+id)?.value) || 0;
+  let rev = 0, costs = 0;
+
+  if (type === 'ecom') {
+    rev = val('rev_total');
+    const pfeeAmt = rev * (val('platform_fee') / 100);
+    costs = val('cogs') + val('shipping') + val('returns') + val('packaging') + val('ads_fb') + val('ads_other') + val('platform_fee') + val('payment_fee') + val('tools');
+    // Recalculate without percentage confusion - use raw values
+    costs = val('cogs') + val('shipping') + val('returns') + val('packaging') + val('ads_fb') + val('ads_other') + val('platform_fee') + val('payment_fee') + val('tools');
+  } else if (type === 'creator') {
+    rev = val('adsense') + val('tiktok_rev') + val('sponsors') + val('merch') + val('other_rev');
+    const agencyAmt = rev * (val('agency') / 100);
+    costs = val('equipment') + val('editing') + val('software') + val('ads_promo') + agencyAmt;
+  } else if (type === 'freelancer') {
+    rev = val('gross_income');
+    const platformAmt = rev * (val('platform_cut') / 100);
+    costs = platformAmt + val('payment_fee_f') + val('outsource') + val('software_f') + val('workspace') + val('training') + val('other_f');
+  }
+
+  const profit = rev - costs;
+  const margin = rev > 0 ? ((profit/rev)*100).toFixed(1) : '0.0';
+
+  const resEl = document.getElementById('res-amount');
+  resEl.textContent = fmt(Math.abs(profit));
+  resEl.className = 'result-amount ' + (profit >= 0 ? 'pos' : 'neg');
+
+  document.getElementById('res-margin').textContent = margin + '%';
+  document.getElementById('rr-rev').textContent = '+' + fmt(rev) + ' ' + currentDevise;
+  document.getElementById('rr-exp').textContent = '-' + fmt(costs) + ' ' + currentDevise;
+  document.getElementById('rr-profit').textContent = (profit >= 0 ? '+' : '') + fmt(profit) + ' ' + currentDevise;
+  document.getElementById('rr-profit').style.color = profit >= 0 ? 'var(--accent)' : 'var(--red)';
+
+  const h = document.getElementById('res-health');
+  const mp = parseFloat(margin);
+  if (rev > 0) {
+    h.style.display = 'block';
+    if (profit < 0) { h.className='health-box health-bad'; h.textContent='✗ Tu perds de l\'argent — revois tes charges'; }
+    else if (mp < 15) { h.className='health-box health-warn'; h.textContent='⚠ Marge serrée — regarde où réduire les coûts'; }
+    else if (mp < 30) { h.className='health-box health-warn'; h.textContent='~ Marge correcte — tu peux optimiser'; }
+    else { h.className='health-box health-good'; h.textContent='✓ Bonne marge — continue comme ça !'; }
+  } else {
+    h.style.display = 'none';
+  }
+
+  // Store values for save
+  window._calcData = {rev, costs, profit, margin: parseFloat(margin)};
+}
+
+async function saveCalc() {
+  if (!currentProject || !window._calcData) return;
+  const {rev, costs, profit, margin} = window._calcData;
+  const btn = document.getElementById('btn-save');
+  btn.classList.add('ld'); btn.disabled = true;
+
+  const details = {};
+  document.querySelectorAll('.calc-input').forEach(inp => {
+    const key = inp.id.replace('cf-','');
+    details[key] = parseFloat(inp.value) || 0;
+  });
+
+  const {error} = await sb.from('calculations').insert({
+    project_id: currentProject.id,
+    user_id: user.id,
+    revenue: rev,
+    expenses: costs,
+    net_profit: profit,
+    margin_percent: margin,
+    details: details,
+    calc_date: new Date().toISOString().split('T')[0]
+  });
+
+  btn.classList.remove('ld'); btn.disabled = false;
+
+  if (error) { showToast('Erreur : ' + error.message, true); return; }
+
+  // Update project last values
+  await sb.from('projects').update({
+    last_revenue: rev,
+    last_profit: profit
+  }).eq('id', currentProject.id).catch(()=>{});
+
+  // Update local state
+  const idx = projects.findIndex(p => p.id === currentProject.id);
+  if (idx >= 0) {
+    if (!projects[idx].calculations) projects[idx].calculations = [];
+    projects[idx].calculations.push({revenue: rev, net_profit: profit, created_at: new Date().toISOString()});
+    projects[idx].last_revenue = rev;
+    projects[idx].last_profit = profit;
+  }
+
+  showToast('✓ Calcul sauvegardé avec succès !');
+  updateTopStats();
+}
+
+// ════════════════════════════════════
+// PROJECT CRUD
+// ════════════════════════════════════
+function openAddModal() {
+  const isPrem = profile?.plan === 'premium';
+  if (!isPrem && projects.length >= 3) {
+    showToast('Limite de 3 projets atteinte. Passe au Premium pour des projets illimités.', true);
+    return;
+  }
   newType = null;
-  document.getElementById('new-proj-name').value = '';
+  document.getElementById('proj-name-input').value = '';
+  document.getElementById('proj-devise').value = 'MAD';
+  document.getElementById('add-err').classList.remove('show');
+  document.querySelectorAll('.type-card-opt').forEach(c => c.classList.remove('sel'));
+  document.getElementById('add-modal').classList.add('open');
 }
 
-// ════════════════════════
-// SIDEBAR MOBILE
-// ════════════════════════
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
+function selType(t, el) {
+  newType = t;
+  document.querySelectorAll('.type-card-opt').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
 }
-if (window.innerWidth <= 700) {
-  document.getElementById('menu-btn').style.display = 'block';
+
+async function createProject() {
+  const name = document.getElementById('proj-name-input').value.trim();
+  const devise = document.getElementById('proj-devise').value;
+  const err = document.getElementById('add-err');
+  err.classList.remove('show');
+
+  if (!newType) { err.textContent = 'Choisis un type d\'activité.'; err.classList.add('show'); return; }
+  if (!name) { err.textContent = 'Entre un nom pour le projet.'; err.classList.add('show'); return; }
+
+  const {data, error} = await sb.from('projects').insert({
+    user_id: user.id,
+    name, business_type: newType, currency: devise
+  }).select().single();
+
+  if (error) { err.textContent = error.message; err.classList.add('show'); return; }
+
+  data.calculations = [];
+  projects.unshift(data);
+  renderAll();
+  closeModal('add-modal');
+  showToast('✓ Projet créé ! Clique dessus pour calculer.');
+  setTimeout(() => openCalc(data.id), 800);
 }
-</script>
-<script>
-function toggleMobileMenu(){
-  var m=document.getElementById("mobile-menu");
-  if(m) m.classList.toggle("open");
+
+// ════════════════════════════════════
+// UI
+// ════════════════════════════════════
+function showView(v) {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-' + v).classList.add('active');
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
+  if (v === 'overview') { document.getElementById('nav-overview').classList.add('active'); document.getElementById('topbar-title').textContent = 'Vue d\'ensemble'; }
+  if (v === 'projects') { document.getElementById('nav-projects').classList.add('active'); document.getElementById('topbar-title').textContent = 'Mes projets'; }
+  // Close sidebar on mobile
+  if (window.innerWidth <= 700) document.getElementById('sidebar').classList.remove('open');
 }
-(function(){
-  var links=document.querySelectorAll(".nav-link,.mobile-link");
-  links.forEach(function(l){
-    var href=l.getAttribute("href");
-    if(href && window.location.href.indexOf(href)>-1) l.classList.add("active");
-  });
-})();
+
+function showLockedView(title) {
+  document.getElementById('locked-title').textContent = title + ' — Premium';
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-locked').classList.add('active');
+  document.getElementById('topbar-title').textContent = title;
+}
+
+function goBack() {
+  showView('overview');
+  loadProjects().then(() => renderAll());
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function closeOv(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+
+function showToast(msg, isError) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.style.borderColor = isError ? 'var(--red)' : 'var(--accent)';
+  t.style.color = isError ? 'var(--red)' : 'var(--accent)';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+function fmt(n) {
+  return Number(n).toLocaleString('fr-MA', {minimumFractionDigits: 0, maximumFractionDigits: 2});
+}
+
+async function doLogout() {
+  await sb.auth.signOut();
+  window.location.href = 'sellsense-auth.html';
+}
+
+// ════════════════════════════════════
+// START
+// ════════════════════════════════════
+boot();
 </script>
 </body>
 </html>
