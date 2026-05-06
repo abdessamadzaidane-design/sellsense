@@ -6,6 +6,17 @@
 <title>SellSense — Connexion</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <script>
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+async function checkAuth() {
+  const { data: { session } } = await supabase.auth.getSession();
+
+  if (!session) {
+    window.location.href = "sellsense-auth.html";
+  }
+}
+
+checkAuth();
 const SUPABASE_URL='https://fmlmkxbcfeebeqtlzzvn.supabase.co';
 const SUPABASE_ANON_KEY='sb_publishable_M68a1m8LRq_DHQUov2k5pw_e-qrAefU';
 </script>
