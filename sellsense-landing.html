@@ -1,454 +1,651 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
+
+<meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SellSense — Know exactly when to scale or stop</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+
+<title>SellSense — Know Your Real Profit</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{
-  --bg:#F8F9FC;--white:#fff;--text:#0F172A;--text2:#334155;--muted:#64748B;
-  --border:#E2E8F0;--blue:#2563EB;--blue2:#1D4ED8;--blue-l:#EFF6FF;
-  --green:#059669;--amber:#D97706;--red:#DC2626;
-  --sh:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
-  --sh2:0 4px 24px rgba(0,0,0,.08);--sh3:0 20px 60px rgba(0,0,0,.12);
-  --font:'Inter',system-ui,sans-serif;
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
 }
-html{scroll-behavior:smooth;}
-body{background:var(--white);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.65;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
 
-/* NAV */
-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 24px;}
-.nav-inner{max-width:1140px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:62px;}
-.logo{font-size:18px;font-weight:700;color:var(--text);text-decoration:none;letter-spacing:-.5px;}
-.logo span{color:var(--blue);}
-.nav-center{display:flex;align-items:center;gap:4px;}
-.nav-link{font-size:14px;color:var(--muted);text-decoration:none;padding:7px 13px;border-radius:8px;font-weight:500;transition:all .2s;}
-.nav-link:hover{color:var(--text);background:var(--bg);}
-.nav-right{display:flex;align-items:center;gap:10px;}
-/* LANG IN NAV */
-.lang-tog{display:flex;background:var(--border);border-radius:8px;padding:3px;gap:2px;}
-.lt{padding:4px 12px;border-radius:6px;border:none;background:transparent;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s;font-family:var(--font);}
-.lt.on{background:var(--white);color:var(--text);box-shadow:var(--sh);}
-.btn-login{font-size:14px;color:var(--muted);font-weight:500;text-decoration:none;padding:7px 13px;border-radius:8px;transition:all .2s;}
-.btn-login:hover{color:var(--text);background:var(--bg);}
-.btn-try{background:var(--blue);color:#fff;font-size:14px;font-weight:600;text-decoration:none;padding:9px 22px;border-radius:8px;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
-.btn-try:hover{background:var(--blue2);}
-.hambtn{display:none;background:none;border:1.5px solid var(--border);border-radius:8px;width:38px;height:38px;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--text);}
-.mob-nav{display:none;flex-direction:column;border-bottom:1px solid var(--border);background:var(--white);padding:12px 24px 20px;gap:4px;}
-.mob-nav.open{display:flex;}
-.mob-link{font-size:15px;color:var(--text2);text-decoration:none;padding:11px 13px;border-radius:10px;transition:all .2s;font-weight:400;}
-.mob-link:hover{background:var(--bg);}
-.mob-cta{margin-top:8px;background:var(--blue);color:#fff;font-weight:600;text-align:center;padding:14px;border-radius:10px;text-decoration:none;font-size:15px;}
+body{
+font-family:'Inter',sans-serif;
+background:#F7F4EE;
+color:#101828;
+overflow-x:hidden;
+}
 
-/* HERO */
-.hero{padding:80px 24px 72px;text-align:center;max-width:800px;margin:0 auto;}
-.hero-label{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);background:var(--blue-l);border:1px solid rgba(37,99,235,.15);padding:6px 16px;border-radius:40px;margin-bottom:28px;}
-.hero-dot{width:6px;height:6px;border-radius:50%;background:var(--blue);}
-h1{font-size:clamp(38px,7vw,72px);font-weight:800;letter-spacing:-2.5px;line-height:.96;margin-bottom:22px;color:var(--text);}
-h1 .hl{color:var(--blue);}
-.hero-sub{font-size:clamp(16px,2vw,19px);color:var(--muted);font-weight:400;max-width:520px;margin:0 auto 42px;line-height:1.65;}
-.hero-actions{display:flex;flex-direction:column;align-items:center;gap:12px;}
-.btn-hero-main{background:var(--blue);color:#fff;border:none;border-radius:10px;padding:16px 36px;font-size:16px;font-weight:700;cursor:pointer;font-family:var(--font);text-decoration:none;display:inline-block;transition:all .2s;}
-.btn-hero-main:hover{background:var(--blue2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(37,99,235,.25);}
-.btn-hero-sec{background:var(--white);color:var(--text);border:1.5px solid var(--border);border-radius:10px;padding:15px 28px;font-size:15px;font-weight:600;cursor:pointer;font-family:var(--font);text-decoration:none;display:inline-block;transition:all .2s;}
-.btn-hero-sec:hover{border-color:var(--blue);color:var(--blue);}
-.hero-note{font-size:13px;color:var(--muted);margin-top:8px;}
-.hero-btns-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+a{
+text-decoration:none;
+}
 
-/* SOCIAL PROOF */
-.social-proof{text-align:center;padding:32px 24px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg);}
-.sp-label{font-size:12px;color:var(--muted);font-weight:500;letter-spacing:.05em;margin-bottom:16px;}
-.sp-nums{display:flex;justify-content:center;gap:48px;flex-wrap:wrap;}
-.sp-num strong{display:block;font-size:26px;font-weight:800;letter-spacing:-1px;color:var(--text);}
-.sp-num span{font-size:12px;color:var(--muted);}
+.container{
+max-width:1280px;
+margin:auto;
+padding:0 24px;
+}
 
-/* DECISION DEMO */
-.demo-section{max-width:1140px;margin:0 auto;padding:80px 24px;}
-.section-label{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:14px;}
-.section-title{font-size:clamp(26px,4vw,42px);font-weight:800;letter-spacing:-1.5px;line-height:1.05;margin-bottom:14px;color:var(--text);}
-.section-sub{font-size:16px;color:var(--muted);max-width:480px;line-height:1.65;}
-.demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:48px;}
-.demo-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:22px;box-shadow:var(--sh);}
-.demo-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
-.demo-card-title{font-size:13px;font-weight:600;color:var(--text2);}
-.decision-badge{display:inline-flex;align-items:center;gap:6px;border-radius:50px;padding:5px 14px;font-size:12px;font-weight:700;}
-.db-scale{background:#ECFDF5;color:#059669;}
-.db-stop{background:#FEF2F2;color:#DC2626;}
-.db-opt{background:#FFFBEB;color:#D97706;}
-.demo-profit{font-size:36px;font-weight:800;letter-spacing:-1.5px;line-height:1;margin-bottom:4px;}
-.demo-profit.pos{color:#059669;}
-.demo-profit.neg{color:#DC2626;}
-.demo-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;}
-.dm{background:var(--bg);border-radius:8px;padding:10px 6px;text-align:center;}
-.dm-val{font-size:16px;font-weight:700;color:var(--text);letter-spacing:-.5px;}
-.dm-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:3px;}
-.insight{display:flex;align-items:flex-start;gap:8px;margin-top:10px;padding:9px 11px;border-radius:8px;font-size:12px;color:var(--text2);line-height:1.4;}
-.ins-scale{background:#ECFDF5;}
-.ins-stop{background:#FEF2F2;}
+header{
+padding:28px 0;
+position:sticky;
+top:0;
+z-index:100;
+background:rgba(247,244,238,.85);
+backdrop-filter:blur(14px);
+border-bottom:1px solid rgba(0,0,0,.05);
+}
 
-/* HOW IT WORKS */
-.how-section{background:var(--bg);padding:80px 24px;}
-.how-inner{max-width:1140px;margin:0 auto;}
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px;}
-.step{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:28px 24px;box-shadow:var(--sh);}
-.step-num{font-size:13px;font-weight:700;color:var(--blue);margin-bottom:14px;letter-spacing:.05em;}
-.step-icon{font-size:28px;margin-bottom:12px;display:block;}
-.step-title{font-size:16px;font-weight:700;margin-bottom:8px;color:var(--text);}
-.step-desc{font-size:14px;color:var(--muted);line-height:1.6;}
+.nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
 
-/* PRICING */
-.pricing-section{max-width:900px;margin:0 auto;padding:80px 24px;}
-.pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:48px;}
-.price-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:28px 26px;box-shadow:var(--sh);}
-.price-card.featured{border-color:var(--blue);box-shadow:0 8px 32px rgba(37,99,235,.15);position:relative;}
-.price-card-pop{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:11px;font-weight:700;padding:4px 16px;border-radius:20px;white-space:nowrap;}
-.price-name{font-size:16px;font-weight:700;margin-bottom:6px;color:var(--text);}
-.price-desc{font-size:13px;color:var(--muted);margin-bottom:20px;}
-.price-amount{font-size:40px;font-weight:800;letter-spacing:-1.5px;line-height:1;color:var(--text);}
-.price-per{font-size:13px;color:var(--muted);margin-bottom:20px;margin-top:4px;}
-.price-feats{display:flex;flex-direction:column;gap:9px;margin-bottom:22px;}
-.pf{display:flex;align-items:center;gap:9px;font-size:14px;color:var(--text2);}
-.pf-check{color:var(--green);font-weight:700;flex-shrink:0;}
-.pf-x{color:var(--muted);flex-shrink:0;}
-.pf.dim{color:var(--muted);}
-.btn-plan-free{width:100%;background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:12px;font-size:14px;font-weight:600;color:var(--text);cursor:pointer;font-family:var(--font);transition:all .2s;}
-.btn-plan-free:hover{border-color:var(--blue);color:var(--blue);}
-.btn-plan-pro{width:100%;background:var(--blue);border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;font-family:var(--font);transition:all .2s;}
-.btn-plan-pro:hover{background:var(--blue2);}
+.logo{
+font-family:'Syne',sans-serif;
+font-size:34px;
+font-weight:800;
+}
 
-/* FINAL CTA */
-.final-cta{background:#0F172A;padding:80px 24px;text-align:center;}
-.final-inner{max-width:580px;margin:0 auto;}
-.final-title{font-size:clamp(30px,5vw,52px);font-weight:800;letter-spacing:-1.5px;line-height:1.05;color:#fff;margin-bottom:16px;}
-.final-title em{color:#60A5FA;font-style:normal;}
-.final-sub{font-size:16px;color:rgba(255,255,255,.55);margin-bottom:36px;font-weight:400;}
-.btn-final{background:var(--blue);color:#fff;border:none;border-radius:10px;padding:16px 40px;font-size:16px;font-weight:700;cursor:pointer;font-family:var(--font);text-decoration:none;display:inline-block;transition:all .2s;}
-.btn-final:hover{background:#3B82F6;}
-.final-note{font-size:13px;color:rgba(255,255,255,.35);margin-top:14px;}
+.logo span{
+color:#1B3F7E;
+}
 
-/* FOOTER */
-footer{border-top:1px solid var(--border);padding:40px 24px 32px;text-align:center;}
-.footer-inner{max-width:1140px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
-.footer-logo{font-size:16px;font-weight:700;color:var(--text);text-decoration:none;letter-spacing:-.5px;}
-.footer-logo span{color:var(--blue);}
-.footer-links{display:flex;gap:20px;flex-wrap:wrap;}
-.footer-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .2s;}
-.footer-links a:hover{color:var(--text);}
-.footer-note{font-size:13px;color:var(--muted);}
+.nav-right{
+display:flex;
+gap:14px;
+align-items:center;
+}
 
-/* TEXT ELEMENTS */
-.text-center{text-align:center;}
+.lang-switch{
+display:flex;
+gap:8px;
+}
 
-/* ANIMATIONS */
-.fade-in{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}
-.fade-in.visible{opacity:1;transform:translateY(0);}
+.lang-btn{
+padding:8px 14px;
+border-radius:10px;
+background:white;
+border:1px solid #E4E7EC;
+cursor:pointer;
+font-size:14px;
+}
 
-@media(max-width:900px){.demo-grid,.steps,.pricing-grid{grid-template-columns:1fr;}}
-@media(max-width:768px){.nav-center,.btn-login,.btn-try{display:none;}.hambtn{display:flex;}.hero{padding:60px 24px 56px;}.sp-nums{gap:28px;}}
-@media(max-width:480px){.hero-btns-row{flex-direction:column;align-items:stretch;}}
+.btn-login{
+padding:12px 20px;
+border-radius:12px;
+background:white;
+border:1px solid #D0D5DD;
+color:#111827;
+font-weight:600;
+}
+
+.btn-primary{
+padding:14px 22px;
+border-radius:14px;
+background:#1B3F7E;
+color:white;
+font-weight:700;
+font-family:'Syne',sans-serif;
+}
+
+.hero{
+padding:110px 0 90px;
+}
+
+.hero-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:70px;
+align-items:center;
+}
+
+.badge{
+display:inline-flex;
+align-items:center;
+gap:10px;
+padding:10px 18px;
+background:#EEF2FF;
+border-radius:999px;
+font-size:13px;
+font-weight:700;
+margin-bottom:24px;
+color:#1B3F7E;
+}
+
+.hero h1{
+font-family:'Syne',sans-serif;
+font-size:76px;
+line-height:.95;
+letter-spacing:-3px;
+margin-bottom:24px;
+}
+
+.hero h1 span{
+color:#1B3F7E;
+}
+
+.subtitle{
+font-size:19px;
+line-height:1.8;
+color:#667085;
+margin-bottom:38px;
+max-width:620px;
+}
+
+.hero-actions{
+display:flex;
+gap:16px;
+margin-bottom:28px;
+}
+
+.hero-proof{
+display:flex;
+flex-wrap:wrap;
+gap:18px;
+color:#667085;
+font-size:14px;
+}
+
+.dashboard-preview{
+background:white;
+border-radius:30px;
+padding:28px;
+border:1px solid #EAECF0;
+box-shadow:0 40px 100px rgba(0,0,0,.08);
+}
+
+.preview-top{
+display:flex;
+gap:8px;
+margin-bottom:24px;
+}
+
+.dot{
+width:12px;
+height:12px;
+border-radius:50%;
+}
+
+.red{background:#F04438;}
+.yellow{background:#FDB022;}
+.green{background:#12B76A;}
+
+.big-card{
+background:linear-gradient(135deg,#1B3F7E,#2554A0);
+padding:30px;
+border-radius:24px;
+color:white;
+margin-bottom:20px;
+}
+
+.big-card small{
+opacity:.8;
+font-size:14px;
+}
+
+.big-card h2{
+font-size:58px;
+font-family:'Syne',sans-serif;
+margin:12px 0;
+}
+
+.big-card p{
+color:#D1FADF;
+font-size:14px;
+}
+
+.grid-mini{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:14px;
+margin-bottom:18px;
+}
+
+.mini{
+background:#F8FAFC;
+padding:22px;
+border-radius:18px;
+}
+
+.mini span{
+display:block;
+font-size:13px;
+color:#667085;
+margin-bottom:8px;
+}
+
+.mini strong{
+font-size:28px;
+font-family:'Syne',sans-serif;
+}
+
+.ai-box{
+background:#FFF7ED;
+border:1px solid #FED7AA;
+padding:22px;
+border-radius:18px;
+}
+
+.ai-box h4{
+margin-bottom:10px;
+}
+
+.ai-box p{
+color:#7C2D12;
+line-height:1.7;
+}
+
+.section{
+padding:110px 0;
+}
+
+.section-title{
+text-align:center;
+max-width:760px;
+margin:0 auto 70px;
+}
+
+.section-title h2{
+font-size:54px;
+font-family:'Syne',sans-serif;
+margin-bottom:18px;
+}
+
+.section-title p{
+font-size:18px;
+line-height:1.8;
+color:#667085;
+}
+
+.features{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:24px;
+}
+
+.feature-card{
+background:white;
+padding:34px;
+border-radius:24px;
+border:1px solid #EAECF0;
+}
+
+.feature-card h3{
+margin:18px 0 14px;
+font-size:24px;
+font-family:'Syne',sans-serif;
+}
+
+.feature-card p{
+line-height:1.8;
+color:#667085;
+}
+
+.pricing{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:26px;
+max-width:900px;
+margin:auto;
+}
+
+.price-card{
+background:white;
+border-radius:28px;
+padding:40px;
+border:1px solid #EAECF0;
+}
+
+.price-card.popular{
+border:2px solid #1B3F7E;
+transform:scale(1.03);
+}
+
+.price-card h3{
+font-size:30px;
+font-family:'Syne',sans-serif;
+margin-bottom:16px;
+}
+
+.price{
+font-size:62px;
+font-family:'Syne',sans-serif;
+margin-bottom:10px;
+}
+
+.price span{
+font-size:18px;
+color:#667085;
+}
+
+.price-features{
+margin:30px 0;
+display:flex;
+flex-direction:column;
+gap:14px;
+color:#667085;
+}
+
+.footer{
+padding:70px 0;
+text-align:center;
+border-top:1px solid rgba(0,0,0,.06);
+margin-top:100px;
+}
+
+@media(max-width:980px){
+
+.hero-grid{
+grid-template-columns:1fr;
+}
+
+.hero h1{
+font-size:54px;
+}
+
+.features{
+grid-template-columns:1fr;
+}
+
+.pricing{
+grid-template-columns:1fr;
+}
+
+}
+
 </style>
+
 </head>
+
 <body>
 
-<nav>
-  <div class="nav-inner">
-    <a href="index.html" class="logo">Sell<span>Sense</span></a>
-    <div class="nav-center">
-      <a href="#how" class="nav-link" id="nl-how">How it works</a>
-      <a href="#pricing" class="nav-link" id="nl-pricing">Pricing</a>
-    </div>
-    <div class="nav-right">
-      <div class="lang-tog">
-        <button class="lt on" id="lt-en" onclick="setL('en',this)">EN</button>
-        <button class="lt" id="lt-fr" onclick="setL('fr',this)">FR</button>
-      </div>
-      <a href="sellsense-auth.html" class="btn-login" id="nav-login">Sign in</a>
-      <a href="sellsense-auth.html" class="btn-try" id="nav-try">Try free →</a>
-    </div>
-    <button class="hambtn" onclick="document.getElementById('mob').classList.toggle('open')">☰</button>
-  </div>
-  <div class="mob-nav" id="mob">
-    <a href="#how" class="mob-link" id="mob-how">How it works</a>
-    <a href="#pricing" class="mob-link" id="mob-pricing">Pricing</a>
-    <a href="sellsense-auth.html" class="mob-link" id="mob-signin">Sign in</a>
-    <div class="lang-tog" style="margin:6px 13px;">
-      <button class="lt on" onclick="setL('en',document.getElementById('lt-en'))">EN</button>
-      <button class="lt" onclick="setL('fr',document.getElementById('lt-fr'))">FR</button>
-    </div>
-    <a href="sellsense-auth.html" class="mob-cta" id="mob-cta">Try free — 7 days →</a>
-  </div>
-</nav>
+<header>
 
-<!-- HERO -->
+<div class="container nav">
+
+<div class="logo">
+SellSense <span>🚀</span>
+</div>
+
+<div class="nav-right">
+
+<div class="lang-switch">
+<button class="lang-btn">EN</button>
+<button class="lang-btn">FR</button>
+</div>
+
+<a href="sellsense-auth.html" class="btn-login">
+Login
+</a>
+
+<a href="sellsense-auth.html" class="btn-primary">
+Start Free Trial
+</a>
+
+</div>
+
+</div>
+
+</header>
+
 <section class="hero">
-  <div class="hero-label"><span class="hero-dot"></span><span id="hero-badge">Decision Engine for E-commerce</span></div>
-  <h1 id="hero-h1">Know exactly when to<br/><span class="hl">scale or stop</span><br/>your campaigns.</h1>
-  <p class="hero-sub" id="hero-sub">SellSense analyzes your revenue, ad spend, logistics and fees — then tells you whether to scale, optimize, or cut the campaign.</p>
-  <div class="hero-btns-row">
-    <a href="sellsense-auth.html" class="btn-hero-main" id="hero-cta1">Start free — 7 days →</a>
-    <a href="#how" class="btn-hero-sec" id="hero-cta2">See how it works</a>
-  </div>
-  <div class="hero-note" id="hero-note">No credit card required · Up to 3 projects free · Cancel anytime</div>
+
+<div class="container hero-grid">
+
+<div>
+
+<div class="badge">
+⚡ AI Decision Engine for Ecommerce
+</div>
+
+<h1>
+Scale winning campaigns.<br>
+<span>Kill losing ones.</span>
+</h1>
+
+<p class="subtitle">
+SellSense helps ecommerce brands understand
+real profit after ads, shipping, fees,
+refunds and hidden costs — instantly.
+</p>
+
+<div class="hero-actions">
+
+<a href="sellsense-auth.html" class="btn-primary">
+Start 7-Day Trial
+</a>
+
+<a href="#pricing" class="btn-login">
+See Pricing
+</a>
+
+</div>
+
+<div class="hero-proof">
+
+<div>✅ 7-day free trial</div>
+<div>🌍 Multi-currency</div>
+<div>🔒 No card required</div>
+
+</div>
+
+</div>
+
+<div class="dashboard-preview">
+
+<div class="preview-top">
+<div class="dot red"></div>
+<div class="dot yellow"></div>
+<div class="dot green"></div>
+</div>
+
+<div class="big-card">
+
+<small>Net Profit</small>
+
+<h2>$12,480</h2>
+
+<p>+24% this week</p>
+
+</div>
+
+<div class="grid-mini">
+
+<div class="mini">
+<span>ROAS</span>
+<strong>4.2x</strong>
+</div>
+
+<div class="mini">
+<span>Margin</span>
+<strong>31%</strong>
+</div>
+
+<div class="mini">
+<span>CPA</span>
+<strong>$8.20</strong>
+</div>
+
+<div class="mini">
+<span>Warnings</span>
+<strong>2</strong>
+</div>
+
+</div>
+
+<div class="ai-box">
+
+<h4>🤖 AI Recommendation</h4>
+
+<p>
+TikTok Campaign A14 is highly profitable.
+Increase budget by 20%.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
 </section>
 
-<!-- SOCIAL PROOF -->
-<div class="social-proof">
-  <div class="sp-label" id="sp-label">Trusted by operators running profitable campaigns</div>
-  <div class="sp-nums">
-    <div class="sp-num"><strong>$9</strong><span id="sp1">/month after trial</span></div>
-    <div class="sp-num"><strong>3</strong><span id="sp2">projects free</span></div>
-    <div class="sp-num"><strong>7</strong><span id="sp3">day free trial</span></div>
-    <div class="sp-num"><strong>2min</strong><span id="sp4">to your first decision</span></div>
-  </div>
+<section class="section">
+
+<div class="container">
+
+<div class="section-title">
+
+<h2>
+Everything you need to scale profitably
+</h2>
+
+<p>
+Built for modern ecommerce operators, media buyers,
+dropshippers and DTC brands.
+</p>
+
 </div>
 
-<!-- DECISION DEMO -->
-<div class="demo-section fade-in">
-  <div class="section-label" id="demo-label">The Decision Engine</div>
-  <h2 class="section-title" id="demo-title">One panel. One verdict.<br/>No guessing.</h2>
-  <p class="section-sub" id="demo-sub">Every input feeds into a real-time decision. You see profit, margin, ROAS — and exactly what to do next.</p>
-  <div class="demo-grid">
-    <!-- Campaign A: Scale -->
-    <div class="demo-card">
-      <div class="demo-card-top">
-        <div class="demo-card-title" id="demo-camp-a">Campaign A</div>
-        <div class="decision-badge db-scale">🚀 <span id="demo-scale">Scale it</span></div>
-      </div>
-      <div class="demo-profit pos">+$4,280</div>
-      <div style="font-size:12px;color:var(--muted);margin-top:3px;" id="demo-net">Net profit</div>
-      <div class="demo-metrics">
-        <div class="dm"><div class="dm-val">34%</div><div class="dm-lbl" id="dm-mg">Margin</div></div>
-        <div class="dm"><div class="dm-val">4.2x</div><div class="dm-lbl">ROAS</div></div>
-        <div class="dm"><div class="dm-val">18%</div><div class="dm-lbl" id="dm-ad">Ads/Rev</div></div>
-      </div>
-      <div class="insight ins-scale">
-        <span>🚀</span>
-        <span id="ins-a">Strong ROAS + healthy margin. Increase ad budget 20–30% on best performers.</span>
-      </div>
-    </div>
-    <!-- Campaign B: Stop -->
-    <div class="demo-card">
-      <div class="demo-card-top">
-        <div class="demo-card-title" id="demo-camp-b">Campaign B</div>
-        <div class="decision-badge db-stop">❌ <span id="demo-stop">Stop campaign</span></div>
-      </div>
-      <div class="demo-profit neg">−$1,140</div>
-      <div style="font-size:12px;color:var(--muted);margin-top:3px;" id="demo-net2">Net profit</div>
-      <div class="demo-metrics">
-        <div class="dm"><div class="dm-val" style="color:#DC2626;">−9%</div><div class="dm-lbl" id="dm-mg2">Margin</div></div>
-        <div class="dm"><div class="dm-val" style="color:#DC2626;">1.4x</div><div class="dm-lbl">ROAS</div></div>
-        <div class="dm"><div class="dm-val" style="color:#D97706;">42%</div><div class="dm-lbl" id="dm-ad2">Ads/Rev</div></div>
-      </div>
-      <div class="insight ins-stop">
-        <span>🛑</span>
-        <span id="ins-b">Ad spend is 42% of revenue. ROAS below break-even. Pause immediately.</span>
-      </div>
-    </div>
-  </div>
+<div class="features">
+
+<div class="feature-card">
+
+<h3>📊 Real Profit Tracking</h3>
+
+<p>
+Track true profitability after ads, COGS,
+shipping, platform fees and returns.
+</p>
+
 </div>
 
-<!-- HOW IT WORKS -->
-<div id="how" class="how-section fade-in">
-  <div class="how-inner text-center">
-    <div class="section-label" id="how-label">How it works</div>
-    <h2 class="section-title" id="how-title">From data to decision<br/>in 2 minutes.</h2>
-  </div>
-  <div class="how-inner">
-    <div class="steps">
-      <div class="step">
-        <div class="step-num" id="step1-n">STEP 01</div>
-        <span class="step-icon">📦</span>
-        <div class="step-title" id="step1-t">Enter your campaign data</div>
-        <div class="step-desc" id="step1-d">Revenue, product cost, shipping, ad spend, platform fees. Organized in clean sections — not a spreadsheet.</div>
-      </div>
-      <div class="step">
-        <div class="step-num" id="step2-n">STEP 02</div>
-        <span class="step-icon">⚡</span>
-        <div class="step-title" id="step2-t">Get an instant decision</div>
-        <div class="step-desc" id="step2-d">The engine calculates your real profit, margin, and ROAS in real time — then gives you a clear verdict.</div>
-      </div>
-      <div class="step">
-        <div class="step-num" id="step3-n">STEP 03</div>
-        <span class="step-icon">🎯</span>
-        <div class="step-title" id="step3-t">Act with confidence</div>
-        <div class="step-desc" id="step3-d">Scale, optimize, or stop — backed by actual numbers, not gut feeling. Every decision is saved to your history.</div>
-      </div>
-    </div>
-  </div>
+<div class="feature-card">
+
+<h3>🤖 AI Decisions</h3>
+
+<p>
+Get scaling recommendations based on real-time
+campaign profitability signals.
+</p>
+
 </div>
 
-<!-- PRICING -->
-<div id="pricing" class="pricing-section fade-in text-center">
-  <div class="section-label" id="pricing-label">Pricing</div>
-  <h2 class="section-title" id="pricing-title">Simple. Honest. No surprises.</h2>
-  <p class="section-sub" id="pricing-sub" style="margin:0 auto;">Start free. Upgrade when you're ready. Cancel anytime.</p>
-  <div class="pricing-grid" style="margin-top:40px;">
-    <div class="price-card">
-      <div class="price-name" id="pc-free-name">Free Trial</div>
-      <div class="price-desc" id="pc-free-desc">7 days to explore. No card required.</div>
-      <div class="price-amount">$0</div>
-      <div class="price-per" id="pc-free-per">for 7 days</div>
-      <div class="price-feats">
-        <div class="pf"><span class="pf-check">✓</span><span id="pf1">Up to 3 projects</span></div>
-        <div class="pf"><span class="pf-check">✓</span><span id="pf2">E-commerce decision engine</span></div>
-        <div class="pf"><span class="pf-check">✓</span><span id="pf3">Profit, margin, ROAS in real time</span></div>
-        <div class="pf"><span class="pf-check">✓</span><span id="pf4">EN / FR — USD / EUR / GBP</span></div>
-        <div class="pf dim"><span class="pf-x">✗</span><span id="pf5">Unlimited projects</span></div>
-        <div class="pf dim"><span class="pf-x">✗</span><span id="pf6">Campaign history & tracking</span></div>
-      </div>
-      <button class="btn-plan-free" onclick="location.href='sellsense-auth.html'" id="btn-free">Start free trial</button>
-    </div>
-    <div class="price-card featured">
-      <div class="price-card-pop" id="pc-pop">Most popular</div>
-      <div class="price-name" id="pc-pro-name" style="color:var(--blue);">Pro</div>
-      <div class="price-desc" id="pc-pro-desc">For operators running multiple campaigns.</div>
-      <div class="price-amount" style="color:var(--blue);">$9</div>
-      <div class="price-per" id="pc-pro-per">/month · or $5/mo billed annually</div>
-      <div class="price-feats">
-        <div class="pf"><span class="pf-check">✓</span><span id="pp1">Everything in Free</span></div>
-        <div class="pf"><span class="pf-check">✓</span><span id="pp2">Unlimited projects</span></div>
-        <div class="pf"><span class="pf-check">✓</span><span id="pp3">Full campaign history</span></div>
-        <div class="pf"><span class="pf-check">✓</span><span id="pp4">Creator & Freelancer modes</span></div>
-        <div class="pf"><span class="pf-check">✓</span><span id="pp5">Priority support</span></div>
-        <div class="pf"><span class="pf-check">✓</span><span id="pp6">Export PDF & CSV</span></div>
-      </div>
-      <button class="btn-plan-pro" onclick="location.href='sellsense-payment.html'" id="btn-pro">Get Pro — $9/month →</button>
-    </div>
-  </div>
+<div class="feature-card">
+
+<h3>🌍 Global Ready</h3>
+
+<p>
+Multi-language and multi-currency support
+for international ecommerce brands.
+</p>
+
 </div>
 
-<!-- FINAL CTA -->
-<div class="final-cta fade-in">
-  <div class="final-inner">
-    <h2 class="final-title" id="final-title">Stop guessing.<br/>Start <em>deciding.</em></h2>
-    <p class="final-sub" id="final-sub">Your next campaign is either scaling or losing money right now. Know which one.</p>
-    <a href="sellsense-auth.html" class="btn-final" id="final-cta">Try free for 7 days →</a>
-    <div class="final-note" id="final-note">No credit card required. Cancel anytime.</div>
-  </div>
 </div>
 
-<footer>
-  <div class="footer-inner">
-    <a href="index.html" class="footer-logo">Sell<span>Sense</span></a>
-    <div class="footer-links">
-      <a href="#how" id="fl-how">How it works</a>
-      <a href="#pricing" id="fl-pricing">Pricing</a>
-      <a href="sellsense-auth.html" id="fl-signin">Sign in</a>
-      <a href="sellsense-auth.html" id="fl-try">Try free</a>
-    </div>
-    <div class="footer-note" id="fl-note">© 2025 SellSense. All rights reserved.</div>
-  </div>
+</div>
+
+</section>
+
+<section class="section" id="pricing">
+
+<div class="container">
+
+<div class="section-title">
+
+<h2>
+Simple SaaS Pricing
+</h2>
+
+<p>
+Start free. Upgrade only when you scale.
+</p>
+
+</div>
+
+<div class="pricing">
+
+<div class="price-card">
+
+<h3>Starter</h3>
+
+<div class="price">
+$5 <span>/month</span>
+</div>
+
+<div class="price-features">
+
+<div>✅ 3 projects</div>
+<div>✅ Profit calculator</div>
+<div>✅ Multi-currency</div>
+<div>✅ Basic analytics</div>
+
+</div>
+
+<a href="sellsense-auth.html" class="btn-primary">
+Start Free Trial
+</a>
+
+</div>
+
+<div class="price-card popular">
+
+<h3>Pro</h3>
+
+<div class="price">
+$9 <span>/month</span>
+</div>
+
+<div class="price-features">
+
+<div>✅ Unlimited projects</div>
+<div>✅ AI decision engine</div>
+<div>✅ Team collaboration</div>
+<div>✅ Advanced analytics</div>
+<div>✅ Priority support</div>
+
+</div>
+
+<a href="sellsense-auth.html" class="btn-primary">
+Start Free Trial
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<footer class="footer">
+
+<div class="container">
+
+<h3 style="font-family:'Syne',sans-serif;font-size:32px;margin-bottom:14px;">
+SellSense 🚀
+</h3>
+
+<p style="color:#667085;">
+Know your real profit.
+Scale smarter.
+</p>
+
+</div>
+
 </footer>
 
-<script>
-const T={
-en:{
-  badge:'Decision Engine for E-commerce',
-  h1:'Know exactly when to<br/><span class="hl">scale or stop</span><br/>your campaigns.',
-  sub:'SellSense analyzes your revenue, ad spend, logistics and fees — then tells you whether to scale, optimize, or cut the campaign.',
-  cta1:'Start free — 7 days →',cta2:'See how it works',
-  note:'No credit card required · Up to 3 projects free · Cancel anytime',
-  spLabel:'Trusted by operators running profitable campaigns',
-  sp1:'/month after trial',sp2:'projects free',sp3:'day free trial',sp4:'to your first decision',
-  demoLabel:'The Decision Engine',demoTitle:'One panel. One verdict.<br/>No guessing.',
-  demoSub:'Every input feeds into a real-time decision. You see profit, margin, ROAS — and exactly what to do next.',
-  campA:'Campaign A',campB:'Campaign B',
-  scale:'Scale it',stop:'Stop campaign',net:'Net profit',
-  dmMg:'Margin',dmAd:'Ads/Rev',
-  insA:'Strong ROAS + healthy margin. Increase ad budget 20–30% on best performers.',
-  insB:'Ad spend is 42% of revenue. ROAS below break-even. Pause immediately.',
-  howLabel:'How it works',howTitle:'From data to decision<br/>in 2 minutes.',
-  s1n:'STEP 01',s1t:'Enter your campaign data',s1d:'Revenue, product cost, shipping, ad spend, platform fees. Organized in clean sections — not a spreadsheet.',
-  s2n:'STEP 02',s2t:'Get an instant decision',s2d:'The engine calculates your real profit, margin, and ROAS in real time — then gives you a clear verdict.',
-  s3n:'STEP 03',s3t:'Act with confidence',s3d:'Scale, optimize, or stop — backed by actual numbers, not gut feeling. Every decision is saved to your history.',
-  pricingLabel:'Pricing',pricingTitle:'Simple. Honest. No surprises.',
-  pricingSub:'Start free. Upgrade when you\'re ready. Cancel anytime.',
-  pcFreeName:'Free Trial',pcFreeDesc:'7 days to explore. No card required.',pcFreePer:'for 7 days',
-  pf1:'Up to 3 projects',pf2:'E-commerce decision engine',pf3:'Profit, margin, ROAS in real time',pf4:'EN / FR — USD / EUR / GBP',pf5:'Unlimited projects',pf6:'Campaign history & tracking',
-  pcProName:'Pro',pcProDesc:'For operators running multiple campaigns.',pcProPer:'/month · or $5/mo billed annually',
-  pcPop:'Most popular',
-  pp1:'Everything in Free',pp2:'Unlimited projects',pp3:'Full campaign history',pp4:'Creator & Freelancer modes',pp5:'Priority support',pp6:'Export PDF & CSV',
-  btnFree:'Start free trial',btnPro:'Get Pro — $9/month →',
-  finalTitle:'Stop guessing.<br/>Start <em>deciding.</em>',
-  finalSub:'Your next campaign is either scaling or losing money right now. Know which one.',
-  finalCta:'Try free for 7 days →',finalNote:'No credit card required. Cancel anytime.',
-  navLogin:'Sign in',navTry:'Try free →',navHow:'How it works',navPricing:'Pricing',
-  flNote:'© 2025 SellSense. All rights reserved.',
-},
-fr:{
-  badge:'Moteur de décision pour l\'e-commerce',
-  h1:'Sachez exactement quand<br/><span class="hl">scaler ou stopper</span><br/>vos campagnes.',
-  sub:'SellSense analyse vos revenus, dépenses pub, logistique et frais — et vous dit si vous devez scaler, optimiser ou couper la campagne.',
-  cta1:'Essai gratuit — 7 jours →',cta2:'Voir comment ça marche',
-  note:'Sans carte bancaire · 3 projets gratuits · Annulez à tout moment',
-  spLabel:'Utilisé par des opérateurs qui font des campagnes rentables',
-  sp1:'/mois après l\'essai',sp2:'projets gratuits',sp3:'jours d\'essai',sp4:'vers votre 1ère décision',
-  demoLabel:'Le Moteur de Décision',demoTitle:'Un panneau. Un verdict.<br/>Zéro hésitation.',
-  demoSub:'Chaque donnée alimente une décision en temps réel. Vous voyez le profit, la marge, le ROAS — et exactement quoi faire.',
-  campA:'Campagne A',campB:'Campagne B',
-  scale:'Scaler',stop:'Arrêter la campagne',net:'Profit net',
-  dmMg:'Marge',dmAd:'Pub/CA',
-  insA:'ROAS solide + marge saine. Augmentez le budget pub de 20–30% sur les meilleures créas.',
-  insB:'La pub représente 42% du CA. ROAS en dessous du seuil de rentabilité. Pausez immédiatement.',
-  howLabel:'Comment ça marche',howTitle:'Des données à la décision<br/>en 2 minutes.',
-  s1n:'ÉTAPE 01',s1t:'Entrez vos données de campagne',s1d:'CA, coût produit, livraison, budget pub, frais plateforme. Organisé en sections claires — pas un tableur.',
-  s2n:'ÉTAPE 02',s2t:'Obtenez une décision instantanée',s2d:'Le moteur calcule votre vrai profit, marge et ROAS en temps réel — puis vous donne un verdict clair.',
-  s3n:'ÉTAPE 03',s3t:'Agissez avec confiance',s3d:'Scalez, optimisez ou stoppez — basé sur des chiffres réels, pas l\'intuition. Chaque décision est sauvegardée.',
-  pricingLabel:'Tarifs',pricingTitle:'Simple. Honnête. Sans surprises.',
-  pricingSub:'Commencez gratuitement. Passez Pro quand vous êtes prêt. Annulez à tout moment.',
-  pcFreeName:'Essai gratuit',pcFreeDesc:'7 jours pour explorer. Sans carte.',pcFreePer:'pendant 7 jours',
-  pf1:'Jusqu\'à 3 projets',pf2:'Moteur de décision e-commerce',pf3:'Profit, marge, ROAS en temps réel',pf4:'FR / EN — USD / EUR / GBP',pf5:'Projets illimités',pf6:'Historique & suivi des campagnes',
-  pcProName:'Pro',pcProDesc:'Pour les opérateurs qui gèrent plusieurs campagnes.',pcProPer:'/mois · ou 5$/mois en annuel',
-  pcPop:'Le plus populaire',
-  pp1:'Tout le plan gratuit',pp2:'Projets illimités',pp3:'Historique complet',pp4:'Modes Créateur & Freelance',pp5:'Support prioritaire',pp6:'Export PDF & CSV',
-  btnFree:'Commencer l\'essai gratuit',btnPro:'Passer Pro — 9$/mois →',
-  finalTitle:'Arrêtez de deviner.<br/>Commencez à <em>décider.</em>',
-  finalSub:'Votre prochaine campagne est soit en train de scaler, soit de perdre de l\'argent. Sachez lequel.',
-  finalCta:'Essai gratuit — 7 jours →',finalNote:'Sans carte bancaire. Annulable à tout moment.',
-  navLogin:'Se connecter',navTry:'Essai gratuit →',navHow:'Comment ça marche',navPricing:'Tarifs',
-  flNote:'© 2025 SellSense. Tous droits réservés.',
-}
-};
-
-let lang='en';
-function setL(l,btn){
-  lang=l;
-  document.getElementById('lt-en').classList.toggle('on',l==='en');
-  document.getElementById('lt-fr').classList.toggle('on',l==='fr');
-  const t=T[l];
-  const s=(id,v)=>{const e=document.getElementById(id);if(e)e.innerHTML=v;};
-  s('hero-badge',t.badge);s('hero-h1',t.h1);s('hero-sub',t.sub);
-  s('hero-cta1',t.cta1);s('hero-cta2',t.cta2);s('hero-note',t.note);
-  s('sp-label',t.spLabel);s('sp1',t.sp1);s('sp2',t.sp2);s('sp3',t.sp3);s('sp4',t.sp4);
-  s('demo-label',t.demoLabel);s('demo-title',t.demoTitle);s('demo-sub',t.demoSub);
-  s('demo-camp-a',t.campA);s('demo-camp-b',t.campB);
-  s('demo-scale',t.scale);s('demo-stop',t.stop);
-  s('demo-net',t.net);s('demo-net2',t.net);
-  s('dm-mg',t.dmMg);s('dm-ad',t.dmAd);s('dm-mg2',t.dmMg);s('dm-ad2',t.dmAd);
-  s('ins-a',t.insA);s('ins-b',t.insB);
-  s('how-label',t.howLabel);s('how-title',t.howTitle);
-  s('step1-n',t.s1n);s('step1-t',t.s1t);s('step1-d',t.s1d);
-  s('step2-n',t.s2n);s('step2-t',t.s2t);s('step2-d',t.s2d);
-  s('step3-n',t.s3n);s('step3-t',t.s3t);s('step3-d',t.s3d);
-  s('pricing-label',t.pricingLabel);s('pricing-title',t.pricingTitle);s('pricing-sub',t.pricingSub);
-  s('pc-free-name',t.pcFreeName);s('pc-free-desc',t.pcFreeDesc);s('pc-free-per',t.pcFreePer);
-  s('pf1',t.pf1);s('pf2',t.pf2);s('pf3',t.pf3);s('pf4',t.pf4);s('pf5',t.pf5);s('pf6',t.pf6);
-  s('pc-pro-name',t.pcProName);s('pc-pro-desc',t.pcProDesc);s('pc-pro-per',t.pcProPer);s('pc-pop',t.pcPop);
-  s('pp1',t.pp1);s('pp2',t.pp2);s('pp3',t.pp3);s('pp4',t.pp4);s('pp5',t.pp5);s('pp6',t.pp6);
-  s('btn-free',t.btnFree);s('btn-pro',t.btnPro);
-  s('final-title',t.finalTitle);s('final-sub',t.finalSub);s('final-cta',t.finalCta);s('final-note',t.finalNote);
-  s('nav-login',t.navLogin);s('nav-try',t.navTry);
-  s('nl-how',t.navHow);s('nl-pricing',t.navPricing);
-  s('mob-how',t.navHow);s('mob-pricing',t.navPricing);s('mob-signin',t.navLogin);
-  s('mob-cta',t.cta1);
-  s('fl-note',t.flNote);s('fl-how',t.navHow);s('fl-pricing',t.navPricing);s('fl-signin',t.navLogin);s('fl-try',t.cta1);
-}
-
-// Scroll animations
-const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:.08});
-document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
-</script>
 </body>
 </html>
