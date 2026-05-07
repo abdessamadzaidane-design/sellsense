@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SellSense — Decision Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script>
+const SUPABASE_URL='https://fmlmkxbcfeebeqtlzzvn.supabase.co';
+const SUPABASE_ANON_KEY='sb_publishable_M68a1m8LRq_DHQUov2k5pw_e-qrAefU';
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+--bg:#F8F9FC;--white:#fff;--sidebar:#0F172A;--text:#0F172A;--text2:#334155;
+--muted:#64748B;--muted2:#94A3B8;--border:#E2E8F0;
+--blue:#2563EB;--blue2:#1D4ED8;--blue-l:#EFF6FF;
+--green:#059669;--green-l:#ECFDF5;
+--amber:#D97706;--amber-l:#FFFBEB;
+--red:#DC2626;--red-l:#FEF2F2;
+--purple:#7C3AED;--purple-l:#F5F3FF;
+--sh:0 1px 3px rgba(0,0,0,.06);--sh2:0 4px 16px rgba(0,0,0,.08);--sh3:0 8px 32px rgba(0,0,0,.12);
+--font:'Inter',system-ui,sans-serif;--sw:240px;--r:10px;
+}
+html,body{height:100%;font-size:14px;}
+body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+#ls{position:fixed;inset:0;background:var(--sidebar);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;z-index:999;}
+.ll{font-size:26px;font-weight:700;color:#fff;letter-spacing:-.5px;}.ll span{color:#60A5FA;}
+.lb{width:160px;height:2px;background:rgba(255,255,255,.12);border-radius:2px;overflow:hidden;}
+.lf{height:100%;background:#60A5FA;animation:lf 1.2s ease forwards;}
+@keyframes lf{from{width:0}to{width:100%}}
+.app{display:flex;min-height:100vh;}
+/* SIDEBAR */
+.sb{width:var(--sw);flex-shrink:0;background:var(--sidebar);position:fixed;top:0;left:0;bottom:0;z-index:100;display:flex;flex-direction:column;transition:transform .3s;}
+.sb-brand{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.07);}
+.sb-logo{font-size:18px;font-weight:700;color:#fff;text-decoration:none;letter-spacing:-.5px;display:block;}
+.sb-logo span{color:#60A5FA;}
+.sb-tag{font-size:10px;color:rgba(255,255,255,.3);letter-spacing:.1em;text-transform:uppercase;margin-top:2px;display:block;}
+.sb-nav{padding:10px 8px;flex:1;}
+.sbl{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;font-size:13px;color:rgba(255,255,255,.55);cursor:pointer;text-decoration:none;transition:all .15s;margin-bottom:1px;}
+.sbl:hover{background:rgba(255,255,255,.06);color:#fff;}
+.sbl.active{background:rgba(37,99,235,.25);color:#93C5FD;}
+.sbl-icon{font-size:15px;width:20px;text-align:center;flex-shrink:0;}
+.sbl-badge{margin-left:auto;font-size:10px;background:rgba(124,58,237,.3);color:#C4B5FD;border-radius:20px;padding:2px 7px;}
+.sb-bot{padding:12px;border-top:1px solid rgba(255,255,255,.07);}
+.trial-box{background:rgba(5,150,105,.15);border:1px solid rgba(5,150,105,.25);border-radius:10px;padding:10px 12px;margin-bottom:10px;}
+.trial-lbl{font-size:11px;color:#34D399;font-weight:600;display:flex;align-items:center;gap:5px;margin-bottom:1px;}
+.trial-sub{font-size:11px;color:rgba(255,255,255,.4);}
+.btn-up{width:100%;background:linear-gradient(135deg,#2563EB,#7C3AED);border:none;border-radius:8px;padding:10px;font-size:13px;font-weight:600;color:#fff;cursor:pointer;margin-bottom:8px;font-family:var(--font);}
+.sb-user{display:flex;align-items:center;gap:8px;padding:6px 8px;}
+.sb-av{width:30px;height:30px;border-radius:50%;background:rgba(37,99,235,.3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#93C5FD;flex-shrink:0;}
+.sb-uname{font-size:12px;color:rgba(255,255,255,.65);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.sb-out{font-size:11px;color:rgba(255,255,255,.3);cursor:pointer;background:none;border:none;font-family:var(--font);}
+.sb-out:hover{color:#F87171;}
+/* MAIN */
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:11px 22px;border-bottom:1px solid var(--border);background:rgba(248,249,252,.95);backdrop-filter:blur(12px);position:sticky;top:0;z-index:50;}
+.tb-title{font-size:15px;font-weight:600;color:var(--text);}
+.tb-right{display:flex;align-items:center;gap:10px;}
+/* LANG TOGGLE — prominent */
+.lang-tog{display:flex;background:var(--border);border-radius:8px;padding:3px;gap:2px;}
+.lt{padding:5px 14px;border-radius:6px;border:none;background:transparent;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s;font-family:var(--font);}
+.lt.on{background:var(--white);color:var(--text);box-shadow:var(--sh);}
+.cur-sel{border:1.5px solid var(--border);border-radius:8px;padding:5px 10px;font-size:13px;font-weight:500;color:var(--text);background:var(--white);cursor:pointer;font-family:var(--font);}
+.ham{display:none;background:none;border:1.5px solid var(--border);border-radius:8px;width:36px;height:36px;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--text);}
+.plan-pill{font-size:12px;padding:4px 12px;border-radius:20px;border:1px solid var(--border);color:var(--muted);background:var(--white);font-weight:500;}
+.plan-pill.pro{background:var(--purple-l);color:var(--purple);border-color:rgba(124,58,237,.2);}
+/* VIEWS */
+.view{display:none;padding:22px;flex:1;}
+.view.on{display:block;}
+/* CALC */
+.calc-hdr{margin-bottom:18px;}
+.calc-h1{font-size:20px;font-weight:700;color:var(--text);letter-spacing:-.3px;margin-bottom:3px;}
+.calc-h2{font-size:13px;color:var(--muted);}
+.calc-lay{display:grid;grid-template-columns:1fr 340px;gap:18px;align-items:start;}
+.inp-stack{display:flex;flex-direction:column;gap:10px;}
+/* INPUT CARDS */
+.ic{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);}
+.ic-hdr{padding:11px 15px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;background:var(--bg);}
+.ic-hdr span{font-size:13px;font-weight:600;color:var(--text);}
+.ic-body{padding:13px 15px;display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.f{display:flex;flex-direction:column;gap:4px;}
+.f label{font-size:12px;font-weight:500;color:var(--text2);}
+.f label small{color:var(--muted);font-weight:400;}
+.iw{position:relative;}
+.isym{position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--muted);font-weight:500;pointer-events:none;}
+.isuf{position:absolute;right:9px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--muted2);pointer-events:none;}
+input[type="number"]{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:9px 10px;font-size:14px;font-weight:500;color:var(--text);background:var(--white);font-family:var(--font);transition:all .2s;}
+input[type="number"].hs{padding-left:26px;}
+input[type="number"].hsuf{padding-right:32px;}
+input[type="number"]:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.08);}
+input[type="number"]::placeholder{color:var(--muted2);font-weight:400;}
+/* DECISION PANEL */
+.dp{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);position:sticky;top:68px;box-shadow:var(--sh2);overflow:hidden;}
+.dp-top{padding:18px;border-bottom:1px solid var(--border);text-align:center;}
+.dp-vbadge{display:inline-flex;align-items:center;gap:7px;border-radius:50px;padding:7px 16px;font-size:13px;font-weight:700;margin-bottom:12px;}
+.vb-scale{background:var(--green-l);color:var(--green);}
+.vb-opt{background:var(--amber-l);color:var(--amber);}
+.vb-rev{background:var(--purple-l);color:var(--purple);}
+.vb-stop{background:var(--red-l);color:var(--red);}
+.vb-wait{background:#F1F5F9;color:var(--muted);}
+.dp-profit{font-size:40px;font-weight:700;letter-spacing:-1.5px;line-height:1;margin-bottom:2px;}
+.dp-profit.pos{color:var(--green);}
+.dp-profit.neg{color:var(--red);}
+.dp-plbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+.dp-metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border-bottom:1px solid var(--border);}
+.dp-m{background:var(--white);padding:11px 6px;text-align:center;}
+.dp-mv{font-size:17px;font-weight:700;color:var(--text);letter-spacing:-.5px;line-height:1;}
+.dp-mv.pos{color:var(--green);}
+.dp-mv.neg{color:var(--red);}
+.dp-mv.warn{color:var(--amber);}
+.dp-ml{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:3px;}
+.dp-brkd{padding:13px 15px;border-bottom:1px solid var(--border);}
+.dp-r{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:4px 0;border-bottom:1px solid var(--border);}
+.dp-r:last-child{border:none;}
+.dp-r .dl{color:var(--muted);}
+.dp-r .dv{font-weight:600;}
+.dv-inc{color:var(--green);}
+.dv-exp{color:var(--text2);}
+.dv-tot{color:var(--blue);font-size:14px;}
+/* INSIGHTS */
+.dp-ins{padding:12px 15px;}
+.ins-title{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
+.ins-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;padding:8px 10px;border-radius:8px;}
+.ii-stop{background:var(--red-l);}
+.ii-warn{background:var(--amber-l);}
+.ii-ok{background:var(--green-l);}
+.ii-info{background:var(--blue-l);}
+.ii-ico{font-size:13px;flex-shrink:0;margin-top:1px;}
+.ii-t{font-size:12px;line-height:1.4;color:var(--text2);}
+/* SAVE BTN */
+.btn-save-wrap{padding:0 15px 15px;}
+.btn-sv{width:100%;background:var(--blue);color:#fff;border:none;border-radius:8px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);position:relative;}
+.btn-sv:hover{background:var(--blue2);}
+.btn-sv:disabled{opacity:.5;cursor:not-allowed;}
+.btn-sv .sp{display:none;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto;}
+.btn-sv.ld .bt{display:none;}.btn-sv.ld .sp{display:block;}
+/* PROJECTS */
+.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:13px;margin-top:18px;}
+.pc{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);padding:17px;cursor:pointer;transition:all .2s;box-shadow:var(--sh);}
+.pc:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:var(--sh2);}
+.pc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;}
+.pc-badge{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600;background:var(--blue-l);color:var(--blue);}
+.pc-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:11px;}
+.pc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
+.ps{text-align:center;padding:8px 4px;background:var(--bg);border-radius:8px;}
+.ps-v{font-size:14px;font-weight:700;color:var(--text);}
+.ps-v.pos{color:var(--green);}.ps-v.neg{color:var(--red);}
+.ps-l{font-size:10px;color:var(--muted);margin-top:2px;}
+.pc-foot{display:flex;align-items:center;justify-content:space-between;margin-top:11px;padding-top:9px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);}
+.pc-open{color:var(--blue);font-weight:600;font-size:12px;background:none;border:none;cursor:pointer;font-family:var(--font);}
+.empty{text-align:center;padding:60px 24px;}
+.ei{font-size:44px;margin-bottom:14px;}
+.et{font-size:18px;font-weight:700;margin-bottom:8px;color:var(--text);}
+.es{font-size:13px;color:var(--muted);margin-bottom:20px;max-width:320px;margin-left:auto;margin-right:auto;}
+/* HISTORY */
+.hl{display:flex;flex-direction:column;gap:9px;margin-top:18px;}
+.hi{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--sh);}
+.hi-pn{font-size:14px;font-weight:600;color:var(--text);}
+.hi-dt{font-size:12px;color:var(--muted);}
+.hi-pr{font-size:17px;font-weight:700;}
+.hi-pr.pos{color:var(--green);}.hi-pr.neg{color:var(--red);}
+.hi-mt{font-size:12px;color:var(--muted);}
+/* MODAL */
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);z-index:300;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .2s;}
+.mov.open{opacity:1;pointer-events:all;}
+.mbox{background:var(--white);border-radius:14px;width:100%;max-width:420px;padding:26px;position:relative;transform:translateY(14px);transition:transform .2s;box-shadow:var(--sh3);}
+.mov.open .mbox{transform:translateY(0);}
+.mcl{position:absolute;top:13px;right:13px;background:var(--bg);border:none;border-radius:6px;width:27px;height:27px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:var(--muted);}
+.mt{font-size:17px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.ms{font-size:13px;color:var(--muted);margin-bottom:18px;}
+.tg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
+.to{border:1.5px solid var(--border);border-radius:8px;padding:13px 8px;cursor:pointer;transition:all .2s;text-align:center;background:var(--bg);}
+.to:hover{border-color:var(--blue);}
+.to.sel{border-color:var(--blue);background:var(--blue-l);}
+.to-ic{font-size:20px;margin-bottom:5px;}
+.to-nm{font-size:12px;font-weight:600;color:var(--text);}
+.mf{margin-bottom:13px;}
+.mf label{display:block;font-size:13px;font-weight:500;color:var(--text2);margin-bottom:5px;}
+.mi{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;color:var(--text);background:var(--white);font-family:var(--font);}
+.mi:focus{outline:none;border-color:var(--blue);}
+.mi::placeholder{color:var(--muted2);}
+.btn-cr{width:100%;background:var(--blue);color:#fff;border:none;border-radius:8px;padding:11px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);}
+.merr{background:var(--red-l);border:1px solid #FECACA;border-radius:8px;padding:9px 12px;font-size:13px;color:var(--red);margin-bottom:12px;display:none;}
+.merr.on{display:block;}
+/* TOAST */
+.toast{position:fixed;bottom:22px;right:22px;background:var(--text);border-radius:10px;padding:11px 16px;font-size:13px;color:#fff;display:flex;align-items:center;gap:8px;transform:translateY(80px);opacity:0;transition:all .3s;z-index:500;box-shadow:var(--sh3);}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.ok{background:#059669;}
+.toast.err{background:var(--red);}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:1100px){.calc-lay{grid-template-columns:1fr;}.dp{position:static;}.ic-body{grid-template-columns:1fr;}}
+@media(max-width:768px){.sb{transform:translateX(-100%);}.sb.open{transform:translateX(0);}.main{margin-left:0;}.ham{display:flex;}.view{padding:14px;}.topbar{padding:10px 14px;}.pg{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div id="ls"><div class="ll">Sell<span>Sense</span></div><div class="lb"><div class="lf"></div></div><div style="font-size:12px;color:rgba(255,255,255,.35);" id="ls-t">Loading workspace...</div></div>
+<div class="toast" id="toast"><span id="toast-msg"></span></div>
+<div class="app" id="app" style="display:none;">
+<aside class="sb" id="sb">
+  <div class="sb-brand"><a href="sellsense-landing.html" class="sb-logo">Sell<span>Sense</span></a><small class="sb-tag" id="sb-tag">Decision Engine</small></div>
+  <nav class="sb-nav">
+    <a class="sbl active" id="nav-c" onclick="gv('calc')"><span class="sbl-icon">⚡</span><span data-t="navCalc">New Calculation</span></a>
+    <a class="sbl" id="nav-p" onclick="gv('projs')"><span class="sbl-icon">📊</span><span data-t="navProjs">My Projects</span></a>
+    <a class="sbl" id="nav-h" onclick="gv('hist')"><span class="sbl-icon">🕐</span><span data-t="navHist">History</span></a>
+    <a class="sbl" href="sellsense-payment.html"><span class="sbl-icon">⭐</span><span data-t="navUp">Upgrade to Pro</span><span class="sbl-badge" data-t="navBadge">Pro</span></a>
+  </nav>
+  <div class="sb-bot">
+    <div class="trial-box" id="trial-box">
+      <div class="trial-lbl">🟢 <span data-t="trialActive">Trial Active</span></div>
+      <div class="trial-sub" data-t="trialSub">7 days · Up to 3 projects</div>
+    </div>
+    <button class="btn-up" onclick="location.href='sellsense-payment.html'">⭐ <span data-t="upgrade">Upgrade — $9/mo</span></button>
+    <div class="sb-user"><div class="sb-av" id="uav">U</div><div class="sb-uname" id="uname">...</div><button class="sb-out" onclick="doLogout()">↩</button></div>
+  </div>
+</aside>
+<div class="main">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button class="ham" onclick="document.getElementById('sb').classList.toggle('open')">☰</button>
+      <div class="tb-title" id="tb-title">New Calculation</div>
+    </div>
+    <div class="tb-right">
+      <!-- LANG TOGGLE — always visible, prominent -->
+      <div class="lang-tog">
+        <button class="lt on" id="lt-en" onclick="setL('en',this)">EN</button>
+        <button class="lt" id="lt-fr" onclick="setL('fr',this)">FR</button>
+      </div>
+      <select class="cur-sel" id="cur-sel" onchange="setCur(this.value)">
+        <option value="USD">$ USD</option>
+        <option value="EUR">€ EUR</option>
+        <option value="GBP">£ GBP</option>
+        <option value="MAD">MAD</option>
+      </select>
+      <div class="plan-pill" id="plan-pill">Trial</div>
+    </div>
+  </div>
+
+  <!-- CALCULATOR -->
+  <div class="view on" id="view-calc">
+    <div class="calc-hdr">
+      <div class="calc-h1" data-t="navCalc">Campaign Analysis</div>
+      <div class="calc-h2" data-t="calcSub">Enter your numbers to get a clear decision.</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+      <select id="psel" style="border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;font-size:13px;font-weight:500;color:var(--text);background:var(--white);cursor:pointer;font-family:var(--font);min-width:200px;"></select>
+      <button onclick="openM()" style="background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:8px 15px;font-size:13px;font-weight:600;color:var(--blue);cursor:pointer;font-family:var(--font);" data-t="newProj">+ New</button>
+    </div>
+    <div class="calc-lay">
+      <div class="inp-stack">
+        <div class="ic"><div class="ic-hdr"><span>💰</span><span data-t="secRev">Revenue</span></div>
+          <div class="ic-body" style="grid-template-columns:1fr;">
+            <div class="f"><label data-t="fRev">Total Revenue</label><div class="iw"><span class="isym" id="s0">$</span><input type="number" id="f0" class="hs" placeholder="0" oninput="calc()"/></div></div>
+          </div>
+        </div>
+        <div class="ic"><div class="ic-hdr"><span>📦</span><span data-t="secCogs">Product Cost (COGS)</span></div>
+          <div class="ic-body" style="grid-template-columns:1fr;">
+            <div class="f"><label data-t="fCogs">Cost of Goods Sold</label><div class="iw"><span class="isym" id="s1">$</span><input type="number" id="f1" class="hs" placeholder="0" oninput="calc()"/></div></div>
+          </div>
+        </div>
+        <div class="ic"><div class="ic-hdr"><span>🚚</span><span data-t="secLog">Logistics</span></div>
+          <div class="ic-body">
+            <div class="f"><label data-t="fShip">Shipping</label><div class="iw"><span class="isym" id="s2">$</span><input type="number" id="f2" class="hs" placeholder="0" oninput="calc()"/></div></div>
+            <div class="f"><label data-t="fRet">Returns / Failed</label><div class="iw"><span class="isym" id="s3">$</span><input type="number" id="f3" class="hs" placeholder="0" oninput="calc()"/></div></div>
+            <div class="f"><label data-t="fPack">Packaging</label><div class="iw"><span class="isym" id="s4">$</span><input type="number" id="f4" class="hs" placeholder="0" oninput="calc()"/></div></div>
+          </div>
+        </div>
+        <div class="ic"><div class="ic-hdr"><span>📣</span><span data-t="secMkt">Marketing</span></div>
+          <div class="ic-body">
+            <div class="f"><label>Facebook Ads</label><div class="iw"><span class="isym" id="s5">$</span><input type="number" id="f5" class="hs" placeholder="0" oninput="calc()"/></div></div>
+            <div class="f"><label>TikTok Ads</label><div class="iw"><span class="isym" id="s6">$</span><input type="number" id="f6" class="hs" placeholder="0" oninput="calc()"/></div></div>
+            <div class="f"><label data-t="fOAds">Other Ads</label><div class="iw"><span class="isym" id="s7">$</span><input type="number" id="f7" class="hs" placeholder="0" oninput="calc()"/></div></div>
+          </div>
+        </div>
+        <div class="ic"><div class="ic-hdr"><span>💳</span><span data-t="secFees">Platform & Fees</span></div>
+          <div class="ic-body">
+            <div class="f"><label data-t="fPlat">Platform fee <small>(Shopify...)</small></label><div class="iw"><span class="isym" id="s8">$</span><input type="number" id="f8" class="hs" placeholder="0" oninput="calc()"/></div></div>
+            <div class="f"><label data-t="fPayPct">Payment processor <small>(%)</small></label><div class="iw"><input type="number" id="f9" class="hsuf" placeholder="2.9" step="0.1" min="0" max="15" oninput="calc()"/><span class="isuf">%</span></div></div>
+          </div>
+        </div>
+      </div>
+      <!-- DECISION PANEL -->
+      <div class="dp">
+        <div class="dp-top">
+          <div class="dp-vbadge vb-wait" id="dp-badge"><span id="dp-bi">—</span><span id="dp-bt" data-t="await">Awaiting data</span></div>
+          <div class="dp-profit" id="dp-profit">$0</div>
+          <div class="dp-plbl" data-t="netProfit">NET PROFIT</div>
+        </div>
+        <div class="dp-metrics">
+          <div class="dp-m"><div class="dp-mv" id="dp-mg">0%</div><div class="dp-ml" data-t="margin">MARGIN</div></div>
+          <div class="dp-m"><div class="dp-mv" id="dp-roas">—</div><div class="dp-ml">ROAS</div></div>
+          <div class="dp-m"><div class="dp-mv" id="dp-ap">—</div><div class="dp-ml" data-t="adRev">ADS/REV</div></div>
+        </div>
+        <div class="dp-brkd">
+          <div class="dp-r"><span class="dl" data-t="revenue">Revenue</span><span class="dv dv-inc" id="br0">$0</span></div>
+          <div class="dp-r"><span class="dl">COGS</span><span class="dv dv-exp" id="br1">$0</span></div>
+          <div class="dp-r"><span class="dl" data-t="logistics">Logistics</span><span class="dv dv-exp" id="br2">$0</span></div>
+          <div class="dp-r"><span class="dl" data-t="marketing">Marketing</span><span class="dv dv-exp" id="br3">$0</span></div>
+          <div class="dp-r"><span class="dl" data-t="fees">Fees</span><span class="dv dv-exp" id="br4">$0</span></div>
+          <div class="dp-r" style="border-top:2px solid var(--border);margin-top:4px;padding-top:7px;"><span class="dl" style="font-weight:600;color:var(--text);" data-t="netProfit">Net Profit</span><span class="dv dv-tot" id="br5">$0</span></div>
+        </div>
+        <div class="dp-ins">
+          <div class="ins-title" data-t="intelligence">Intelligence</div>
+          <div id="ins-list"><div class="ins-item ii-info"><span class="ii-ico">💡</span><span class="ii-t" data-t="insWait">Enter your data to get insights.</span></div></div>
+        </div>
+        <div class="btn-save-wrap">
+          <button class="btn-sv" id="btn-sv" onclick="saveCa()">
+            <span class="bt" data-t="saveCalc">Save calculation</span>
+            <div class="sp"></div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <div class="view" id="view-projs">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div><div style="font-size:20px;font-weight:700;letter-spacing:-.3px;" data-t="navProjs">My Projects</div><div style="font-size:13px;color:var(--muted);margin-top:3px;" data-t="projsSub">Track campaigns and businesses.</div></div>
+      <button onclick="openM()" style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);" data-t="newProj">+ New Project</button>
+    </div>
+    <div id="projs-c"></div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="view" id="view-hist">
+    <div style="font-size:20px;font-weight:700;letter-spacing:-.3px;" data-t="navHist">History</div>
+    <div style="font-size:13px;color:var(--muted);margin-top:3px;" data-t="histSub">All saved calculations.</div>
+    <div class="hl" id="hist-c"></div>
+  </div>
+</div>
+</div>
+
+<!-- MODAL -->
+<div class="mov" id="modal" onclick="if(event.target===this)cm()">
+  <div class="mbox">
+    <button class="mcl" onclick="cm()">✕</button>
+    <div class="mt" data-t="newProj">New Project</div>
+    <div class="ms" data-t="newProjSub">Select your business type.</div>
+    <div class="merr" id="merr"></div>
+    <div class="tg">
+      <div class="to" onclick="sT('ecom',this)"><div class="to-ic">📦</div><div class="to-nm" data-t="typeEcom">E-commerce</div></div>
+      <div class="to" onclick="sT('creator',this)"><div class="to-ic">🎬</div><div class="to-nm" data-t="typeCr">Creator</div></div>
+      <div class="to" onclick="sT('freelancer',this)"><div class="to-ic">💻</div><div class="to-nm" data-t="typeFr">Freelancer</div></div>
+    </div>
+    <div class="mf"><label data-t="projName">Project name</label><input class="mi" type="text" id="mn" placeholder="e.g. Summer Sale 2025"/></div>
+    <button class="btn-cr" onclick="cP()" data-t="createProj">Create project →</button>
+  </div>
+</div>
+
+<script>
+const {createClient}=supabase;
+const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+const SYMS={USD:'$',EUR:'€',GBP:'£',MAD:'د.م.'};
+const T={
+en:{navCalc:'Campaign Analysis',navProjs:'My Projects',navHist:'History',navUp:'Upgrade to Pro',navBadge:'Pro',trialActive:'Trial Active',trialSub:'7 days · Up to 3 projects',upgrade:'Upgrade — $9/mo',secRev:'Revenue',secCogs:'Product Cost (COGS)',secLog:'Logistics',secMkt:'Marketing',secFees:'Platform & Fees',fRev:'Total Revenue',fCogs:'Cost of Goods Sold',fShip:'Shipping',fRet:'Returns / Failed deliveries',fPack:'Packaging',fOAds:'Other Ads',fPlat:'Platform fee',fPayPct:'Payment processor',netProfit:'NET PROFIT',margin:'MARGIN',adRev:'ADS/REV',revenue:'Revenue',logistics:'Logistics',marketing:'Marketing',fees:'Fees',intelligence:'Intelligence',insWait:'Enter your data above to get actionable insights.',saveCalc:'Save calculation',await:'Awaiting data',navProjs:'My Projects',projsSub:'Track campaigns and businesses.',newProj:'New Project',newProjSub:'Select your business type.',projName:'Project name',createProj:'Create project →',typeEcom:'E-commerce',typeCr:'Creator',typeFr:'Freelancer',navHist:'History',histSub:'All saved calculations.',noProjs:'No projects yet',noProjsSub:'Create your first project to start analyzing campaigns.',noCalc:'No data yet',openCalc:'Analyze →',calcSub:'Enter your numbers to get a clear decision.',
+vScale:'🚀 Scale it',vOpt:'⚠️ Optimize',vRev:'🔍 Review',vStop:'❌ Stop campaign',
+iStop:'You\'re losing money on this campaign. Pause and audit costs immediately.',iLowROAS:'ROAS below 2x — your ads aren\'t paying for themselves. Optimize targeting or creatives.',iHighAds:'Ad spend exceeds 30% of revenue. Reduce budget or improve conversion rate.',iHighCOGS:'COGS is over 50% of revenue. Renegotiate with supplier or increase selling price.',iHighRet:'Returns are eating into margins. Improve product quality or descriptions.',iLowMg:'Margin below 15%. Identify your largest cost and reduce it first.',iScale:'Strong margin + ROAS. Good signal to scale ad spend by 20–30%.',iOk:'Healthy profitability. Focus on scaling what\'s working.',},
+fr:{navCalc:'Analyse de campagne',navProjs:'Mes projets',navHist:'Historique',navUp:'Passer Pro',navBadge:'Pro',trialActive:'Essai actif',trialSub:'7 jours · 3 projets max',upgrade:'Passer Pro — 9$/mois',secRev:'Revenus',secCogs:'Coût des produits (COGS)',secLog:'Logistique',secMkt:'Marketing',secFees:'Plateforme & Frais',fRev:'Chiffre d\'affaires total',fCogs:'Coût des marchandises (COGS)',fShip:'Livraison',fRet:'Retours / Non-livrés',fPack:'Emballage',fOAds:'Autres publicités',fPlat:'Frais plateforme',fPayPct:'Processeur de paiement',netProfit:'PROFIT NET',margin:'MARGE',adRev:'PUB/CA',revenue:'Chiffre d\'affaires',logistics:'Logistique',marketing:'Marketing',fees:'Frais',intelligence:'Intelligence',insWait:'Remplis tes données pour obtenir des insights.',saveCalc:'Sauvegarder l\'analyse',await:'En attente de données',projsSub:'Suivre campagnes et activités.',newProj:'Nouveau projet',newProjSub:'Sélectionne ton type d\'activité.',projName:'Nom du projet',createProj:'Créer le projet →',typeEcom:'E-commerce',typeCr:'Créateur',typeFr:'Freelance',navHist:'Historique',histSub:'Toutes les analyses sauvegardées.',noProjs:'Aucun projet pour l\'instant',noProjsSub:'Crée ton premier projet pour analyser tes campagnes.',noCalc:'Aucune donnée',openCalc:'Analyser →',calcSub:'Entre tes chiffres pour obtenir une décision claire.',
+vScale:'🚀 Scale',vOpt:'⚠️ Optimise',vRev:'🔍 À revoir',vStop:'❌ Arrête la campagne',
+iStop:'Tu perds de l\'argent sur cette campagne. Pause et audite tes coûts immédiatement.',iLowROAS:'ROAS en dessous de 2x — tes pubs ne se rentabilisent pas. Optimise le ciblage ou les créas.',iHighAds:'Le budget pub dépasse 30% du CA. Réduis ou améliore le taux de conversion.',iHighCOGS:'Le COGS dépasse 50% du CA. Renégocie avec ton fournisseur ou augmente tes prix.',iHighRet:'Les retours mangent ta marge. Améliore la qualité produit ou les descriptions.',iLowMg:'Marge en dessous de 15%. Identifie ton plus gros coût et réduis-le en priorité.',iScale:'Bonne marge + ROAS solide. Signal pour augmenter le budget pub de 20–30%.',iOk:'Rentabilité saine. Concentre-toi sur ce qui fonctionne et scale.',}
+};
+let lang='en',cur='USD',sym='$',user=null,profile=null,projs=[],nType=null;
+
+async function boot(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){location.href='sellsense-auth.html';return;}
+  user=session.user;
+  await loadP();await loadPr();
+  fillSel();renderPr();applyT();
+  document.getElementById('ls').style.display='none';
+  document.getElementById('app').style.display='flex';
+}
+
+async function loadP(){
+  const {data}=await sb.from('profiles').select('*').eq('id',user.id).single();
+  profile=data||{full_name:user.user_metadata?.full_name||user.email.split('@')[0],plan:'free'};
+  if(!data)await sb.from('profiles').upsert({id:user.id,full_name:profile.full_name,email:user.email,currency:'USD'});
+  const n=profile.full_name||user.email.split('@')[0];
+  document.getElementById('uav').textContent=n.charAt(0).toUpperCase();
+  document.getElementById('uname').textContent=n;
+  if(profile.plan==='premium'){document.getElementById('plan-pill').textContent='Pro';document.getElementById('plan-pill').className='plan-pill pro';document.getElementById('trial-box').style.display='none';}
+}
+
+async function loadPr(){
+  const {data}=await sb.from('projects').select('*,calculations(id,revenue,expenses,net_profit,margin_percent,created_at)').eq('user_id',user.id).eq('is_archived',false).order('created_at',{ascending:false});
+  projs=data||[];
+}
+
+function fillSel(){
+  const s=document.getElementById('psel'),cv=s.value;
+  const t=T[lang];
+  s.innerHTML=`<option value="">— ${lang==='fr'?'Sélectionner un projet':'Select a project'} —</option>`+projs.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+  if(cv)s.value=cv;
+}
+
+function v(id){return parseFloat(document.getElementById(id)?.value)||0;}
+function fmt(n){const a=Math.abs(n);return (n<0?'-':'')+sym+a.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:2});}
+
+function calc(){
+  const rev=v('f0'),cogs=v('f1'),ship=v('f2'),ret=v('f3'),pack=v('f4');
+  const fb=v('f5'),tik=v('f6'),ads=v('f7'),plat=v('f8'),payPct=v('f9');
+  const log=ship+ret+pack,mkt=fb+tik+ads,fees=plat+(rev*(payPct/100));
+  const tc=cogs+log+mkt+fees,pr=rev-tc;
+  const mg=rev>0?(pr/rev)*100:0,roas=mkt>0?rev/mkt:0,ap=rev>0?(mkt/rev)*100:0;
+  document.getElementById('br0').textContent=fmt(rev);
+  document.getElementById('br1').textContent=fmt(cogs);
+  document.getElementById('br2').textContent=fmt(log);
+  document.getElementById('br3').textContent=fmt(mkt);
+  document.getElementById('br4').textContent=fmt(fees);
+  document.getElementById('br5').textContent=fmt(pr);
+  document.getElementById('dp-profit').textContent=fmt(pr);
+  document.getElementById('dp-profit').className='dp-profit '+(pr>=0?'pos':'neg');
+  const mgEl=document.getElementById('dp-mg');mgEl.textContent=mg.toFixed(1)+'%';mgEl.className='dp-mv '+(mg>20?'pos':mg<0?'neg':mg<15?'warn':'');
+  const roasEl=document.getElementById('dp-roas');roasEl.textContent=roas>0?roas.toFixed(1)+'x':'—';roasEl.className='dp-mv '+(roas>=3?'pos':roas>0&&roas<2?'neg':'');
+  const apEl=document.getElementById('dp-ap');apEl.textContent=mkt>0?ap.toFixed(0)+'%':'—';apEl.className='dp-mv '+(ap>30?'warn':'');
+  const t=T[lang];
+  if(rev===0)setBadge('vb-wait','—',t.await);
+  else if(pr<0)setBadge('vb-stop','❌',t.vStop);
+  else if(mg<15)setBadge('vb-opt','⚠️',t.vOpt);
+  else if(mg<30)setBadge('vb-rev','🔍',t.vRev);
+  else setBadge('vb-scale','🚀',t.vScale);
+  const ins=[];
+  if(rev===0)ins.push({c:'ii-info',i:'💡',t:t.insWait});
+  else{
+    if(pr<0)ins.push({c:'ii-stop',i:'🛑',t:t.iStop});
+    if(roas>0&&roas<2)ins.push({c:'ii-stop',i:'📉',t:t.iLowROAS});
+    if(ap>30)ins.push({c:'ii-warn',i:'📣',t:t.iHighAds});
+    if(rev>0&&(cogs/rev)>0.5)ins.push({c:'ii-warn',i:'📦',t:t.iHighCOGS});
+    if(rev>0&&(ret/rev)>0.1)ins.push({c:'ii-warn',i:'↩️',t:t.iHighRet});
+    if(pr>0&&mg<15)ins.push({c:'ii-warn',i:'⚠️',t:t.iLowMg});
+    if(mg>=30&&roas>=3)ins.push({c:'ii-ok',i:'🚀',t:t.iScale});
+    else if(pr>0&&mg>=15)ins.push({c:'ii-ok',i:'✅',t:t.iOk});
+  }
+  document.getElementById('ins-list').innerHTML=ins.map(x=>`<div class="ins-item ${x.c}"><span class="ii-ico">${x.i}</span><span class="ii-t">${x.t}</span></div>`).join('');
+  window._cd={rev,cogs,log,mkt,fees,pr,mg,roas,ap,payPct,det:{ship,ret,pack,fb,tik,ads,plat,payPct}};
+}
+
+function setBadge(cls,icon,txt){
+  const b=document.getElementById('dp-badge');b.className='dp-vbadge '+cls;
+  document.getElementById('dp-bi').textContent=icon;
+  document.getElementById('dp-bt').textContent=txt;
+}
+
+async function saveCa(){
+  const pid=document.getElementById('psel').value;
+  if(!pid){toast(lang==='fr'?'Sélectionne un projet':'Select a project','err');return;}
+  if(!window._cd||window._cd.rev===0){toast(lang==='fr'?'Entre tes données':'Enter data first','err');return;}
+  const d=window._cd,btn=document.getElementById('btn-sv');
+  btn.classList.add('ld');btn.disabled=true;
+  const {error}=await sb.from('calculations').insert({project_id:pid,user_id:user.id,revenue:d.rev,expenses:d.rev-d.pr,net_profit:d.pr,margin_percent:d.mg,details:d.det,calc_date:new Date().toISOString().split('T')[0]});
+  btn.classList.remove('ld');btn.disabled=false;
+  if(error){toast(error.message,'err');return;}
+  toast(T[lang].saveCalc.includes('Save')?'✓ Saved':'✓ Sauvegardé','ok');
+}
+
+function renderPr(){
+  const t=T[lang],c=document.getElementById('projs-c');
+  if(!projs.length){c.innerHTML=`<div class="empty"><div class="ei">📊</div><div class="et">${t.noProjs}</div><div class="es">${t.noProjsSub}</div><button onclick="openM()" style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:10px 22px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);">${t.newProj}</button></div>`;return;}
+  const icons={ecom:'📦',creator:'🎬',freelancer:'💻'};
+  const typeLbl={ecom:t.typeEcom,creator:t.typeCr,freelancer:t.typeFr};
+  c.innerHTML='<div class="pg">'+projs.map(p=>{
+    const cs=p.calculations||[];
+    const l=cs.length?[...cs].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))[0]:null;
+    const pr=l?.net_profit||0,mg=l?.margin_percent||0,rv=l?.revenue||0;
+    return `<div class="pc" onclick="lpj('${p.id}')">
+      <div class="pc-top"><div class="pc-badge">${typeLbl[p.business_type]||p.business_type}</div><span style="font-size:20px;">${icons[p.business_type]||'📁'}</span></div>
+      <div class="pc-name">${p.name}</div>
+      ${l?`<div class="pc-stats"><div class="ps"><div class="ps-v">${sym}${Math.round(rv).toLocaleString()}</div><div class="ps-l">${t.revenue}</div></div><div class="ps"><div class="ps-v ${pr>=0?'pos':'neg'}">${pr>=0?'+':''}${sym}${Math.round(Math.abs(pr)).toLocaleString()}</div><div class="ps-l">${t.netProfit}</div></div><div class="ps"><div class="ps-v">${mg.toFixed(1)}%</div><div class="ps-l">${t.margin}</div></div></div>`:
+      `<div style="font-size:12px;color:var(--muted);padding:6px 0;">${t.noCalc}</div>`}
+      <div class="pc-foot"><span>${new Date(p.created_at).toLocaleDateString()}</span><button class="pc-open">${t.openCalc}</button></div>
+    </div>`;
+  }).join('')+'</div>';
+}
+
+function lpj(pid){document.getElementById('psel').value=pid;gv('calc');}
+
+async function loadH(){
+  const {data}=await sb.from('calculations').select('*,projects(name)').eq('user_id',user.id).order('created_at',{ascending:false}).limit(50);
+  const t=T[lang],c=document.getElementById('hist-c');
+  if(!data||!data.length){c.innerHTML=`<div class="empty" style="margin-top:16px;"><div class="ei">🕐</div><div class="et">${t.navHist}</div><div class="es">${t.histSub}</div></div>`;return;}
+  c.innerHTML=data.map(d=>{
+    const pr=d.net_profit||0;
+    const dt=new Date(d.created_at).toLocaleDateString(lang==='fr'?'fr-FR':'en-US',{day:'numeric',month:'short',year:'numeric'});
+    return `<div class="hi"><div><div class="hi-pn">${d.projects?.name||'—'}</div><div class="hi-dt">${dt}</div></div><div style="text-align:right;"><div class="hi-pr ${pr>=0?'pos':'neg'}">${pr>=0?'+':''}${sym}${Math.abs(pr).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:2})}</div><div class="hi-mt">${(d.margin_percent||0).toFixed(1)}% · ${sym}${(d.revenue||0).toLocaleString()}</div></div></div>`;
+  }).join('');
+}
+
+function openM(){
+  const isPrem=profile?.plan==='premium';
+  if(!isPrem&&projs.length>=3){toast(lang==='fr'?'Limite 3 projets — passe Pro !':'3 project limit — go Pro!','err');return;}
+  nType=null;document.getElementById('mn').value='';
+  document.getElementById('merr').classList.remove('on');
+  document.querySelectorAll('.to').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('modal').classList.add('open');
+}
+function sT(t,el){nType=t;document.querySelectorAll('.to').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
+async function cP(){
+  const n=document.getElementById('mn').value.trim(),err=document.getElementById('merr');
+  err.classList.remove('on');
+  if(!nType){err.textContent=lang==='fr'?'Choisis un type.':'Choose a type.';err.classList.add('on');return;}
+  if(!n){err.textContent=lang==='fr'?'Entre un nom.':'Enter a name.';err.classList.add('on');return;}
+  const {data,error}=await sb.from('projects').insert({user_id:user.id,name:n,business_type:nType,currency:cur}).select().single();
+  if(error){err.textContent=error.message;err.classList.add('on');return;}
+  data.calculations=[];projs.unshift(data);fillSel();document.getElementById('psel').value=data.id;
+  renderPr();cm();toast(lang==='fr'?'✓ Projet créé !':'✓ Project created!','ok');gv('calc');
+}
+
+function setCur(c){cur=c;sym=SYMS[c]||c+' ';document.querySelectorAll('.isym').forEach(s=>s.textContent=sym);calc();}
+
+function setL(l,btn){
+  lang=l;
+  document.getElementById('lt-en').classList.toggle('on',l==='en');
+  document.getElementById('lt-fr').classList.toggle('on',l==='fr');
+  applyT();if(user){renderPr();fillSel();if(window._cd&&window._cd.rev>0)calc();}
+}
+
+function applyT(){
+  const t=T[lang];
+  document.querySelectorAll('[data-t]').forEach(el=>{const k=el.getAttribute('data-t');if(t[k]!==undefined)el.textContent=t[k];});
+}
+
+function gv(v){
+  document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));
+  document.getElementById('view-'+v).classList.add('on');
+  document.querySelectorAll('.sbl').forEach(n=>n.classList.remove('active'));
+  const m={calc:'nav-c',projs:'nav-p',hist:'nav-h'};
+  if(m[v])document.getElementById(m[v]).classList.add('active');
+  const t=T[lang];
+  const titles={calc:t.navCalc,projs:t.navProjs,hist:t.navHist};
+  document.getElementById('tb-title').textContent=titles[v]||'';
+  if(window.innerWidth<=768)document.getElementById('sb').classList.remove('open');
+  if(v==='hist')loadH();
+}
+
+function cm(){document.getElementById('modal').classList.remove('open');}
+function toast(msg,type){const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;t.className='toast '+(type||'')+' show';setTimeout(()=>t.classList.remove('show'),3000);}
+async function doLogout(){await sb.auth.signOut();location.href='sellsense-auth.html';}
+boot();
+</script>
+</body>
+</html>

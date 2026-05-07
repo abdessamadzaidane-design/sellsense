@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SellSense — Premium</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--cream:#FBF8F3;--cream2:#F5F0E8;--blue:#1B3F7E;--blue2:#2554A0;--bl:#EEF2FF;--terra:#C84B31;--tl:#FFF0ED;--gold:#C8960C;--gl:#FFF8E1;--teal:#007A6E;--tel:#E6F4F3;--text:#1A1A2E;--text2:#3D3D52;--muted:#7C7C8A;--white:#FFF;--border:#E8E2D9;--border2:#D4CBBA;--red:#DC2626;--green:#16A34A;--fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;}
+html,body{min-height:100%;}
+body{background:var(--cream);color:var(--text);font-family:var(--fb);font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased;}
+[dir="rtl"]{direction:rtl;text-align:right;}
+nav{background:rgba(251,248,243,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 24px;position:sticky;top:0;z-index:100;}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px;}
+.logo{font-family:var(--fd);font-size:20px;font-weight:800;text-decoration:none;color:var(--text);}
+.logo span{color:var(--blue);}
+.nav-secure{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+.lang-sw{display:flex;gap:6px;}
+.lbtn{background:none;border:1.5px solid var(--border2);color:var(--muted);padding:6px 10px;border-radius:8px;font-family:var(--fb);font-size:12px;cursor:pointer;transition:all .2s;}
+.lbtn:hover,.lbtn.active{border-color:var(--blue);color:var(--blue);background:var(--bl);}
+.page{max-width:1100px;margin:0 auto;padding:56px 24px 80px;}
+.page-hdr{text-align:center;margin-bottom:48px;}
+.stag{display:inline-block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--terra);font-weight:700;background:var(--tl);padding:5px 14px;border-radius:40px;margin-bottom:14px;}
+.ptitle{font-family:var(--fd);font-size:clamp(32px,5vw,56px);font-weight:800;letter-spacing:-2px;line-height:1.0;margin-bottom:14px;color:var(--text);}
+.ptitle em{color:var(--blue);font-style:normal;}
+.psub{font-size:17px;color:var(--muted);font-weight:300;max-width:480px;margin:0 auto;}
+
+/* BILLING TOGGLE */
+.btog{display:inline-flex;background:var(--white);border:1.5px solid var(--border2);border-radius:40px;padding:5px;margin:28px 0 48px;}
+.topt{font-size:14px;font-weight:500;padding:10px 24px;border-radius:40px;cursor:pointer;transition:all .2s;color:var(--muted);border:none;background:none;font-family:var(--fb);}
+.topt.on{background:var(--blue);color:#fff;font-weight:700;font-family:var(--fd);}
+.save-pill{font-size:10px;font-weight:700;background:var(--terra);color:#fff;padding:3px 8px;border-radius:20px;margin-left:4px;}
+
+/* URGENCY */
+.urg{background:var(--tl);border:1.5px solid rgba(200,75,49,0.2);border-radius:14px;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:40px;flex-wrap:wrap;}
+.urg-l{display:flex;align-items:center;gap:10px;}
+.udot{width:7px;height:7px;border-radius:50%;background:var(--terra);animation:blink 1s infinite;flex-shrink:0;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.utxt{font-size:14px;font-weight:500;color:var(--text);}
+.utxt em{color:var(--terra);font-style:normal;font-weight:700;}
+.cdown{display:flex;gap:6px;align-items:center;}
+.cb{background:var(--white);border:1.5px solid var(--border2);border-radius:10px;padding:8px 14px;text-align:center;min-width:52px;}
+.cn{font-family:var(--fd);font-size:20px;font-weight:800;color:var(--terra);line-height:1;display:block;}
+.cl{font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;}
+.csp{color:var(--muted);font-size:16px;align-self:flex-start;padding-top:9px;}
+
+/* PLANS GRID */
+.plans{display:grid;grid-template-columns:1fr 1.05fr 1fr;gap:18px;margin-bottom:56px;align-items:start;}
+.plan{background:var(--white);border:1.5px solid var(--border);border-radius:20px;padding:32px 26px;transition:all .2s;position:relative;}
+.plan.featured{border-color:var(--blue);box-shadow:0 12px 48px rgba(27,63,126,0.14);}
+.plan-pop{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:11px;font-weight:700;padding:5px 16px;border-radius:20px;white-space:nowrap;letter-spacing:.05em;}
+.plan-name{font-family:var(--fd);font-size:18px;font-weight:700;margin-bottom:4px;color:var(--text);}
+.plan-desc{font-size:13px;color:var(--muted);margin-bottom:22px;}
+.plan-price{margin-bottom:8px;}
+.plan-old{font-size:13px;color:var(--muted);text-decoration:line-through;height:18px;margin-bottom:4px;}
+.plan-val{font-family:var(--fd);font-size:42px;font-weight:800;letter-spacing:-2px;line-height:1;color:var(--text);}
+.plan-val.blue{color:var(--blue);}
+.plan-val small{font-size:16px;font-weight:400;color:var(--muted);letter-spacing:0;}
+.plan-per{font-size:13px;color:var(--muted);margin-bottom:24px;}
+.plan-divider{height:1px;background:var(--border);margin-bottom:18px;}
+.plan-feats{display:flex;flex-direction:column;gap:10px;margin-bottom:26px;}
+.pf{display:flex;align-items:flex-start;gap:9px;font-size:14px;color:var(--text2);}
+.pf-check{color:var(--teal);font-weight:700;flex-shrink:0;margin-top:1px;}
+.pf-x{color:var(--muted);flex-shrink:0;margin-top:1px;}
+.pf-txt.dim{color:var(--muted);}
+.btn-plan{width:100%;border-radius:12px;padding:13px;font-family:var(--fd);font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;border:none;}
+.btn-plan.outline{background:transparent;border:1.5px solid var(--border2);color:var(--text);}
+.btn-plan.outline:hover{border-color:var(--blue);color:var(--blue);}
+.btn-plan.primary{background:var(--blue);color:#fff;}
+.btn-plan.primary:hover{background:var(--blue2);transform:translateY(-1px);}
+.btn-plan.gold{background:var(--gold);color:#fff;}
+.btn-plan.gold:hover{background:#A97B0A;}
+
+/* PAYMENT SECTION */
+.pay-layout{display:grid;grid-template-columns:1fr 420px;gap:36px;align-items:start;}
+.pay-sum h2{font-family:var(--fd);font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px;color:var(--text);}
+.pay-sum p{color:var(--muted);font-size:14px;margin-bottom:28px;}
+.sum-card{background:var(--white);border:1.5px solid var(--border);border-radius:16px;padding:22px;margin-bottom:18px;box-shadow:0 4px 24px rgba(27,63,126,0.06);}
+.sum-row{display:flex;justify-content:space-between;font-size:14px;padding:9px 0;border-bottom:1px solid var(--border);}
+.sum-row:last-child{border-bottom:none;}
+.sum-row .sl{color:var(--muted);}
+.sum-row.total .sl{font-weight:700;color:var(--text);font-size:15px;}
+.sum-row.total .sv{color:var(--blue);font-family:var(--fd);font-size:22px;font-weight:800;}
+.promo-row{display:flex;gap:10px;margin-bottom:18px;}
+.promo-inp{flex:1;background:var(--cream);border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:var(--fb);font-size:14px;transition:all .2s;}
+.promo-inp:focus{outline:none;border-color:var(--blue);}
+.promo-inp::placeholder{color:var(--muted);}
+.promo-btn{background:var(--cream2);border:1.5px solid var(--border2);border-radius:10px;padding:11px 18px;font-family:var(--fb);font-size:14px;color:var(--text);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.promo-btn:hover{border-color:var(--blue);color:var(--blue);}
+.promo-ok{font-size:13px;color:var(--teal);margin-bottom:14px;display:none;}
+.guarantees{display:flex;flex-direction:column;gap:10px;}
+.guarantee{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--muted);}
+
+/* FORM */
+.pay-form{background:var(--white);border:1.5px solid var(--border);border-radius:20px;padding:32px;box-shadow:0 12px 48px rgba(27,63,126,0.10);}
+.pay-form::before{content:'';display:block;height:3px;background:linear-gradient(90deg,var(--blue),var(--teal));border-radius:3px;margin-bottom:22px;}
+.form-title{font-family:var(--fd);font-size:19px;font-weight:800;margin-bottom:4px;color:var(--text);}
+.form-sub{font-size:13px;color:var(--muted);margin-bottom:20px;}
+.card-logos{display:flex;gap:8px;margin-bottom:20px;}
+.card-logo{background:var(--cream2);border:1.5px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--text2);font-weight:500;}
+.mf{margin-bottom:14px;}
+.mf label{display:block;font-size:13px;color:var(--text2);font-weight:500;margin-bottom:7px;}
+.minput{width:100%;background:var(--cream);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:var(--fb);font-size:15px;transition:all .2s;}
+.minput:focus{outline:none;border-color:var(--blue);background:var(--bl);}
+.minput::placeholder{color:var(--muted);}
+.mf-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.card-visual{background:linear-gradient(135deg,var(--blue),var(--blue2));border-radius:14px;padding:20px;margin-bottom:22px;position:relative;overflow:hidden;}
+.cv-num{font-family:var(--fd);font-size:16px;font-weight:600;color:rgba(255,255,255,0.8);letter-spacing:3px;margin-bottom:10px;}
+.cv-meta{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,0.5);}
+.cv-meta span{color:#fff;font-size:13px;font-weight:600;}
+.btn-pay{width:100%;background:var(--blue);color:#fff;border:none;border-radius:12px;padding:16px;font-family:var(--fd);font-size:16px;font-weight:700;cursor:pointer;transition:all .2s;margin-bottom:12px;position:relative;}
+.btn-pay:hover{background:var(--blue2);}
+.btn-pay .sp{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto;}
+.btn-pay.ld .bt{display:none;}.btn-pay.ld .sp{display:block;}
+.secure-row{display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--muted);}
+.sview{display:none;text-align:center;padding:20px 0;}
+.sicon{width:68px;height:68px;border-radius:50%;background:var(--tel);border:2px solid rgba(0,122,110,0.2);display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 20px;}
+.s-title{font-family:var(--fd);font-size:26px;font-weight:800;margin-bottom:8px;color:var(--text);}
+.s-sub{font-size:15px;color:var(--muted);margin-bottom:28px;}
+.s-feats{background:var(--tel);border:1.5px solid rgba(0,122,110,0.15);border-radius:16px;padding:22px;text-align:left;margin-bottom:24px;}
+.sf{display:flex;align-items:center;gap:10px;font-size:14px;padding:8px 0;border-bottom:1px solid rgba(0,122,110,0.1);color:var(--text2);}
+.sf:last-child{border-bottom:none;}
+.sf-icon{color:var(--teal);font-size:16px;}
+.btn-dash{background:var(--blue);color:#fff;border:none;border-radius:12px;padding:15px 40px;font-family:var(--fd);font-size:16px;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-dash:hover{background:var(--blue2);}
+
+/* FAQ */
+.faq{max-width:680px;margin:70px auto 0;}
+.faq-title{font-family:var(--fd);font-size:28px;font-weight:800;text-align:center;margin-bottom:32px;color:var(--text);}
+.fq{border-bottom:1px solid var(--border);padding:18px 0;cursor:pointer;}
+.fq-q{display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:600;color:var(--text);}
+.fq-icon{color:var(--muted);font-size:18px;transition:transform .2s;}
+.fq.open .fq-icon{transform:rotate(45deg);}
+.fq-a{font-size:14px;color:var(--muted);max-height:0;overflow:hidden;transition:max-height .3s,padding .3s;line-height:1.65;}
+.fq.open .fq-a{max-height:200px;padding-top:10px;}
+
+footer{border-top:1px solid var(--border);text-align:center;padding:32px 24px;color:var(--muted);font-size:13px;margin-top:60px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:900px){.plans{grid-template-columns:1fr;max-width:420px;margin:0 auto 48px;}.pay-layout{grid-template-columns:1fr;}.pay-sum{order:2;}.pay-form{order:1;}}
+@media(max-width:600px){.urg{flex-direction:column;align-items:flex-start;}.mf-row{grid-template-columns:1fr;}.btog{flex-direction:column;gap:4px;border-radius:16px;}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="sellsense-landing.html" class="logo">Sell<span>Sense</span></a>
+    <div class="nav-secure">🔒 <span id="secure-txt">Paiement sécurisé</span></div>
+    <div class="lang-sw">
+      <button class="lbtn active" onclick="setL('fr',this)">FR</button>
+      <button class="lbtn" onclick="setL('en',this)">EN</button>
+      <button class="lbtn" onclick="setL('ar',this)">عر</button>
+    </div>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="page-hdr">
+    <div class="stag" id="stag">⭐ SellSense Premium</div>
+    <h1 class="ptitle" id="ptitle">Gratuit pour démarrer.<br/><em>Premium</em> pour dominer.</h1>
+    <p class="psub" id="psub">Commence sans carte. Passe au Premium quand tu veux.</p>
+    <div style="text-align:center;">
+      <div class="btog">
+        <button class="topt on" id="bm" onclick="setBill('m')"><span id="bm-txt">Mensuel</span></button>
+        <button class="topt" id="by" onclick="setBill('y')"><span id="by-txt">Annuel</span> <span class="save-pill">−40%</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- URGENCY -->
+  <div class="urg">
+    <div class="urg-l"><div class="udot"></div><div class="utxt" id="urg-txt">Offre de lancement — <em>−50% sur le Premium</em>. Expire dans</div></div>
+    <div class="cdown">
+      <div class="cb"><span class="cn" id="ch">23</span><span class="cl">Hrs</span></div>
+      <span class="csp">:</span>
+      <div class="cb"><span class="cn" id="cm">47</span><span class="cl">Min</span></div>
+      <span class="csp">:</span>
+      <div class="cb"><span class="cn" id="cs">12</span><span class="cl">Sec</span></div>
+    </div>
+  </div>
+
+  <!-- PLANS -->
+  <div class="plans">
+    <!-- FREE -->
+    <div class="plan">
+      <div class="plan-name" id="plan-free-name">Gratuit</div>
+      <div class="plan-desc" id="plan-free-desc">Pour découvrir SellSense</div>
+      <div class="plan-price"><div class="plan-old">&nbsp;</div><div class="plan-val">0 <small id="mad-txt">MAD</small></div></div>
+      <div class="plan-per" id="plan-free-per">Essai 7 jours — sans carte</div>
+      <div class="plan-divider"></div>
+      <div class="plan-feats">
+        <div class="pf"><span class="pf-check">✓</span><span class="pf-txt" id="f1">3 projets maximum</span></div>
+        <div class="pf"><span class="pf-check">✓</span><span class="pf-txt" id="f2">3 calculateurs (COD, Créateur, Freelance)</span></div>
+        <div class="pf"><span class="pf-check">✓</span><span class="pf-txt" id="f3">Profit net en temps réel</span></div>
+        <div class="pf"><span class="pf-check">✓</span><span class="pf-txt" id="f4">MAD / USD / EUR</span></div>
+        <div class="pf"><span class="pf-x">✗</span><span class="pf-txt dim" id="f5">Suivi journalier</span></div>
+        <div class="pf"><span class="pf-x">✗</span><span class="pf-txt dim" id="f6">Graphiques & analyses</span></div>
+        <div class="pf"><span class="pf-x">✗</span><span class="pf-txt dim" id="f7">Export PDF/Excel</span></div>
+      </div>
+      <button class="btn-plan outline" onclick="location.href='sellsense-auth.html'" id="btn-free-txt">Commencer gratuitement</button>
+    </div>
+
+    <!-- PREMIUM -->
+    <div class="plan featured">
+      <div class="plan-pop" id="pop-txt">⭐ LE PLUS POPULAIRE</div>
+      <div class="plan-name" id="plan-prem-name" style="color:var(--blue);">Premium</div>
+      <div class="plan-desc" id="plan-prem-desc">Pour les entrepreneurs sérieux</div>
+      <div class="plan-price">
+        <div class="plan-old" id="op">99 MAD / mois</div>
+        <div class="plan-val blue" id="mp">49 <small id="mad-txt2">MAD</small></div>
+      </div>
+      <div class="plan-per" id="pp">/mois · Annulable à tout moment</div>
+      <div class="plan-divider"></div>
+      <div class="plan-feats">
+        <div class="pf"><span class="pf-check">✓</span><span class="pf-txt" id="p1">Projets <strong>illimités</strong></span></div>
+        <div class="pf"><span class="pf-check">✓</span><span class="pf-txt" id="p2">Tout le plan gratuit</span></div>
+        <div class="pf"><span class="pf-check">✓</span><span class="pf-txt" id="p3">Suivi journalier complet</span></div>
+        <div class="pf"><span class="pf-check">✓</span><span class="pf-txt" id="p4">Graphiques d'évolution (6 mois)</span></div>
+        <div class="pf"><span class="pf-check">✓</span><span class="pf-txt" id="p5">Export PDF & Excel pro</span></div>
+        <div class="pf"><span class="pf-check">✓</span><span class="pf-txt" id="p6">Historique complet</span></div>
+        <div class="pf"><span class="pf-check">✓</span><span class="pf-txt" id="p7">Support prioritaire</span></div>
+      </div>
+      <button class="btn-plan primary" onclick="scrollToPay()" id="btn-prem-txt">Commencer — 49 MAD/mois →</button>
+    </div>
+
+    <!-- TEAM -->
+    <div class="plan">
+      <div class="plan-name" id="plan-team-name">Équipe</div>
+      <div class="plan-desc" id="plan-team-desc">Agences & équipes</div>
+      <div class="plan-price"><div class="plan-old">&nbsp;</div><div class="plan-val">199 <small id="mad-txt3">MAD</small></div></div>
+      <div class="plan-per" id="plan-team-per">/mois · Jusqu'à 5 membres</div>
+      <div class="plan-divider"></div>
+      <div class="plan-feats">
+        <div class="pf"><span class="pf-check">✓</span><span class="pf-txt" id="t1">Tout le plan Premium</span></div>
+        <div class="pf"><span class="pf-check">✓</span><span class="pf-txt" id="t2">5 comptes membres</span></div>
+        <div class="pf"><span class="pf-check">✓</span><span class="pf-txt" id="t3">Dashboard partagé</span></div>
+        <div class="pf"><span class="pf-check">✓</span><span class="pf-txt" id="t4">Rapports d'équipe</span></div>
+        <div class="pf"><span class="pf-check">✓</span><span class="pf-txt" id="t5">Gestion des rôles</span></div>
+      </div>
+      <button class="btn-plan gold" onclick="alert('support@sellsenseapp.com')" id="btn-team-txt">Nous contacter</button>
+    </div>
+  </div>
+
+  <!-- PAYMENT SECTION -->
+  <div class="pay-layout" id="pay-anchor">
+    <!-- LEFT -->
+    <div class="pay-sum">
+      <h2 id="sum-title">Récapitulatif</h2>
+      <p id="sum-sub">Tu es à 2 minutes d'avoir une vue complète sur tous tes profits.</p>
+      <div class="sum-card">
+        <div class="sum-row"><span class="sl" id="sl-plan">Plan</span><span class="sv">SellSense Premium</span></div>
+        <div class="sum-row"><span class="sl" id="sl-bill">Facturation</span><span class="sv" id="sv-bill">Mensuelle</span></div>
+        <div class="sum-row"><span class="sl" id="sl-normal">Prix normal</span><span class="sv" style="text-decoration:line-through;color:var(--muted);" id="sv-old">99 MAD</span></div>
+        <div class="sum-row"><span class="sl" id="sl-discount">Réduction lancement</span><span class="sv" style="color:var(--terra);" id="sv-disc">−50 MAD</span></div>
+        <div class="sum-row total"><span class="sl" id="sl-total">Total aujourd'hui</span><span class="sv" id="sv-total">49 MAD</span></div>
+      </div>
+      <div class="promo-row">
+        <input class="promo-inp" type="text" id="promo" placeholder="Code promo (ex: MAROC50)" />
+        <button class="promo-btn" onclick="applyPromo()" id="promo-btn-txt">Appliquer</button>
+      </div>
+      <div class="promo-ok" id="promo-ok" id="promo-ok-txt">✓ Code appliqué !</div>
+      <div class="guarantees">
+        <div class="guarantee">🔒 <span id="g1">Paiement 100% sécurisé par Stripe. Données chiffrées SSL.</span></div>
+        <div class="guarantee">↩️ <span id="g2">Annulation à tout moment — aucun engagement.</span></div>
+        <div class="guarantee">💬 <span id="g3">Questions ? <strong>support@sellsenseapp.com</strong></span></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: FORM -->
+    <div class="pay-form" id="pay-form">
+      <div class="form-title" id="form-title">Informations de paiement</div>
+      <div class="form-sub" id="form-sub">Sécurisé et chiffré par Stripe</div>
+      <div class="card-logos">
+        <div class="card-logo">💙 Visa</div>
+        <div class="card-logo">🟠 Mastercard</div>
+        <div class="card-logo">💳 Amex</div>
+      </div>
+      <div class="card-visual">
+        <div class="cv-num" id="cv-num">•••• •••• •••• ••••</div>
+        <div class="cv-meta">
+          <div><small>Titulaire</small><br/><span id="cv-name">TON NOM</span></div>
+          <div><small>Expire</small><br/><span id="cv-exp">MM/AA</span></div>
+          <div style="text-align:right;"><small>SellSense</small><br/><span style="color:#93C5FD;">Premium</span></div>
+        </div>
+      </div>
+      <div class="mf"><label id="lbl-name">Nom sur la carte</label><input class="minput" type="text" id="f-name" placeholder="YOUSSEF AMRANI" oninput="document.getElementById('cv-name').textContent=this.value.toUpperCase()||'TON NOM'"/></div>
+      <div class="mf"><label id="lbl-card">Numéro de carte</label><input class="minput" type="text" id="f-card" placeholder="1234 5678 9012 3456" maxlength="19" oninput="fmtCard(this)"/></div>
+      <div class="mf-row">
+        <div class="mf"><label id="lbl-exp">Date d'expiration</label><input class="minput" type="text" id="f-exp" placeholder="MM/AA" maxlength="5" oninput="fmtExp(this)"/></div>
+        <div class="mf"><label id="lbl-cvv">CVV</label><input class="minput" type="text" id="f-cvv" placeholder="•••" maxlength="4" oninput="this.value=this.value.replace(/\D/g,'')"/></div>
+      </div>
+      <div class="mf"><label id="lbl-email">E-mail de confirmation</label><input class="minput" type="email" id="f-email" placeholder="toi@exemple.com"/></div>
+      <button class="btn-pay" id="btn-pay" onclick="handlePay()">
+        <span class="bt" id="btn-pay-txt">🔒 Payer 49 MAD et activer Premium</span>
+        <div class="sp"></div>
+      </button>
+      <div class="secure-row" id="secure-row-txt">🔒 SSL · Stripe · Remboursement 14 jours</div>
+
+      <!-- SUCCESS -->
+      <div class="sview" id="sview">
+        <div class="sicon">⭐</div>
+        <div class="s-title" id="s-title">Bienvenue dans Premium !</div>
+        <div class="s-sub" id="s-sub">Ton accès est activé instantanément.</div>
+        <div class="s-feats">
+          <div class="sf"><span class="sf-icon">📦</span>Projets illimités débloqués</div>
+          <div class="sf"><span class="sf-icon">📈</span>Graphiques & analyses actifs</div>
+          <div class="sf"><span class="sf-icon">📅</span>Suivi journalier disponible</div>
+          <div class="sf"><span class="sf-icon">📤</span>Export PDF & Excel prêt</div>
+        </div>
+        <button class="btn-dash" onclick="location.href='sellsense-dashboard.html'" id="btn-dash-txt">Aller à mon dashboard →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq">
+    <div class="faq-title" id="faq-title">Questions fréquentes</div>
+    <div class="fq" onclick="this.classList.toggle('open')"><div class="fq-q"><span id="fq1">Puis-je annuler à tout moment ?</span><span class="fq-icon">+</span></div><div class="fq-a" id="fa1">Oui. Annulation depuis ton dashboard en 1 clic, à tout moment, sans frais ni préavis. Tu gardes l'accès jusqu'à la fin de la période payée.</div></div>
+    <div class="fq" onclick="this.classList.toggle('open')"><div class="fq-q"><span id="fq2">Quels moyens de paiement ?</span><span class="fq-icon">+</span></div><div class="fq-a" id="fa2">Visa, Mastercard, American Express. Les paiements en MAD sont supportés via Stripe.</div></div>
+    <div class="fq" onclick="this.classList.toggle('open')"><div class="fq-q"><span id="fq3">C'est quoi l'essai gratuit 7 jours ?</span><span class="fq-icon">+</span></div><div class="fq-a" id="fa3">Tu as 7 jours pour tester toutes les fonctionnalités gratuitement, sans carte bancaire. Après 7 jours, tu restes sur le plan gratuit (3 projets) sauf si tu choisis le Premium.</div></div>
+    <div class="fq" onclick="this.classList.toggle('open')"><div class="fq-q"><span id="fq4">Différence mensuel vs annuel ?</span><span class="fq-icon">+</span></div><div class="fq-a" id="fa4">L'annuel = 499 MAD / an (≈ 41 MAD/mois) au lieu de 49 MAD/mois. Tu économises 40% sur l'année.</div></div>
+  </div>
+</div>
+
+<footer>© 2025 SellSense · sellsenseapp.com · Fait pour le Maroc 🇲🇦 · <a href="sellsense-landing.html" style="color:var(--muted);">Accueil</a></footer>
+
+<script>
+let lang='fr',isYear=false,promoApplied=false;
+
+const TX={
+  fr:{secure:'Paiement sécurisé',monthly:'Mensuel',annual:'Annuel',urgency:'Offre de lancement — −50% sur le Premium. Expire dans',planFreeName:'Gratuit',planFreeDesc:'Pour découvrir SellSense',planFreePer:'Essai 7 jours — sans carte',planPremName:'Premium',planPremDesc:'Pour les entrepreneurs sérieux',planTeamName:'Équipe',planTeamDesc:'Agences & équipes',planTeamPer:'/mois · Jusqu\'à 5 membres',popular:'⭐ LE PLUS POPULAIRE',btnFree:'Commencer gratuitement',btnPrem:'Commencer — 49 MAD/mois →',btnTeam:'Nous contacter',sumTitle:'Récapitulatif',sumSub:'Tu es à 2 minutes d\'avoir une vue complète.',slPlan:'Plan',slBill:'Facturation',slNormal:'Prix normal',slDiscount:'Réduction',slTotal:'Total aujourd\'hui',promoBtnTxt:'Appliquer',promoOk:'✓ Code appliqué !',formTitle:'Informations de paiement',formSub:'Sécurisé et chiffré par Stripe',lblName:'Nom sur la carte',lblCard:'Numéro de carte',lblExp:'Date d\'expiration',lblCvv:'CVV',lblEmail:'E-mail de confirmation',btnPay:'🔒 Payer 49 MAD et activer Premium',secureRow:'🔒 SSL · Stripe · Remboursement 14 jours',sTitle:'Bienvenue dans Premium !',sSub:'Ton accès est activé instantanément.',btnDash:'Aller à mon dashboard →',faqTitle:'Questions fréquentes',g1:'Paiement 100% sécurisé par Stripe. Données chiffrées SSL.',g2:'Annulation à tout moment — aucun engagement.',g3:'Questions ? support@sellsenseapp.com'},
+  en:{secure:'Secure payment',monthly:'Monthly',annual:'Annual',urgency:'Launch offer — −50% on Premium. Expires in',planFreeName:'Free',planFreeDesc:'To discover SellSense',planFreePer:'7-day trial — no card required',planPremName:'Premium',planPremDesc:'For serious entrepreneurs',planTeamName:'Team',planTeamDesc:'Agencies & teams',planTeamPer:'/month · Up to 5 members',popular:'⭐ MOST POPULAR',btnFree:'Start free',btnPrem:'Start — 49 MAD/month →',btnTeam:'Contact us',sumTitle:'Summary',sumSub:'2 minutes away from full profit visibility.',slPlan:'Plan',slBill:'Billing',slNormal:'Regular price',slDiscount:'Discount',slTotal:'Total today',promoBtnTxt:'Apply',promoOk:'✓ Code applied!',formTitle:'Payment information',formSub:'Secured and encrypted by Stripe',lblName:'Name on card',lblCard:'Card number',lblExp:'Expiry date',lblCvv:'CVV',lblEmail:'Confirmation email',btnPay:'🔒 Pay 49 MAD and activate Premium',secureRow:'🔒 SSL · Stripe · 14-day refund',sTitle:'Welcome to Premium!',sSub:'Your access is activated instantly.',btnDash:'Go to my dashboard →',faqTitle:'Frequently asked questions',g1:'100% secure payment by Stripe. SSL encrypted data.',g2:'Cancel anytime — no commitment.',g3:'Questions? support@sellsenseapp.com'},
+  ar:{secure:'دفع آمن',monthly:'شهري',annual:'سنوي',urgency:'عرض الإطلاق — −50% على البريميوم. ينتهي في',planFreeName:'مجاني',planFreeDesc:'لاكتشاف SellSense',planFreePer:'تجربة 7 أيام — بدون بطاقة',planPremName:'بريميوم',planPremDesc:'لأصحاب المشاريع الجادين',planTeamName:'فريق',planTeamDesc:'الوكالات والفرق',planTeamPer:'/شهر · حتى 5 أعضاء',popular:'⭐ الأكثر شعبية',btnFree:'ابدأ مجاناً',btnPrem:'ابدأ — 49 درهم/شهر ←',btnTeam:'تواصل معنا',sumTitle:'الملخص',sumSub:'على بُعد دقيقتين من رؤية أرباحك كاملة.',slPlan:'الخطة',slBill:'الفوترة',slNormal:'السعر العادي',slDiscount:'الخصم',slTotal:'الإجمالي اليوم',promoBtnTxt:'تطبيق',promoOk:'✓ تم تطبيق الكود!',formTitle:'معلومات الدفع',formSub:'مؤمّن ومشفّر بواسطة Stripe',lblName:'الاسم على البطاقة',lblCard:'رقم البطاقة',lblExp:'تاريخ الانتهاء',lblCvv:'CVV',lblEmail:'البريد الإلكتروني للتأكيد',btnPay:'🔒 دفع 49 درهم وتفعيل البريميوم',secureRow:'🔒 SSL · Stripe · استرداد خلال 14 يوماً',sTitle:'مرحباً في البريميوم!',sSub:'تم تفعيل وصولك فوراً.',btnDash:'الذهاب إلى لوحتي ←',faqTitle:'الأسئلة الشائعة',g1:'دفع آمن 100% عبر Stripe. بيانات مشفرة SSL.',g2:'إلغاء في أي وقت — بدون التزام.',g3:'أسئلة؟ support@sellsenseapp.com'}
+};
+
+function setL(l,btn){lang=l;document.querySelectorAll('.lbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.body.setAttribute('dir',l==='ar'?'rtl':'ltr');document.documentElement.setAttribute('lang',l);applyTX();}
+function applyTX(){const t=TX[lang];document.getElementById('secure-txt').textContent=t.secure;document.getElementById('bm-txt').textContent=t.monthly;document.getElementById('by-txt').textContent=t.annual;document.getElementById('urg-txt').innerHTML=t.urgency;document.getElementById('plan-free-name').textContent=t.planFreeName;document.getElementById('plan-free-desc').textContent=t.planFreeDesc;document.getElementById('plan-free-per').textContent=t.planFreePer;document.getElementById('plan-prem-name').textContent=t.planPremName;document.getElementById('plan-prem-desc').textContent=t.planPremDesc;document.getElementById('plan-team-name').textContent=t.planTeamName;document.getElementById('plan-team-desc').textContent=t.planTeamDesc;document.getElementById('plan-team-per').textContent=t.planTeamPer;document.getElementById('pop-txt').textContent=t.popular;document.getElementById('btn-free-txt').textContent=t.btnFree;document.getElementById('btn-prem-txt').textContent=t.btnPrem;document.getElementById('btn-team-txt').textContent=t.btnTeam;document.getElementById('sum-title').textContent=t.sumTitle;document.getElementById('sum-sub').textContent=t.sumSub;document.getElementById('sl-plan').textContent=t.slPlan;document.getElementById('sl-bill').textContent=t.slBill;document.getElementById('sl-normal').textContent=t.slNormal;document.getElementById('sl-discount').textContent=t.slDiscount;document.getElementById('sl-total').textContent=t.slTotal;document.getElementById('promo-btn-txt').textContent=t.promoBtnTxt;document.getElementById('form-title').textContent=t.formTitle;document.getElementById('form-sub').textContent=t.formSub;document.getElementById('lbl-name').textContent=t.lblName;document.getElementById('lbl-card').textContent=t.lblCard;document.getElementById('lbl-exp').textContent=t.lblExp;document.getElementById('lbl-cvv').textContent=t.lblCvv;document.getElementById('lbl-email').textContent=t.lblEmail;document.getElementById('btn-pay-txt').textContent=t.btnPay;document.getElementById('secure-row-txt').textContent=t.secureRow;document.getElementById('s-title').textContent=t.sTitle;document.getElementById('s-sub').textContent=t.sSub;document.getElementById('btn-dash-txt').textContent=t.btnDash;document.getElementById('faq-title').textContent=t.faqTitle;document.getElementById('g1').textContent=t.g1;document.getElementById('g2').textContent=t.g2;document.getElementById('g3').innerHTML=t.g3;}
+
+function setBill(t){isYear=t==='y';document.getElementById('bm').classList.toggle('on',!isYear);document.getElementById('by').classList.toggle('on',isYear);const price=isYear?(promoApplied?'24 MAD':'29 MAD'):(promoApplied?'24 MAD':'49 MAD');const old=isYear?'499 MAD':'99 MAD';const disc=isYear?'−168 MAD':'−50 MAD';const per=isYear?'/mois · Facturé annuellement (499 MAD/an)':'/mois · Annulable à tout moment';document.getElementById('mp').innerHTML=isYear?(promoApplied?'299':'499')+' <small id="mad-txt2">MAD</small>':price.replace(' MAD','')+' <small id="mad-txt2">MAD</small>';document.getElementById('op').textContent=old+' / '+(isYear?'an':'mois');document.getElementById('pp').textContent=per;document.getElementById('sv-bill').textContent=isYear?'Annuelle':'Mensuelle';document.getElementById('sv-old').textContent=isYear?'499 MAD':'99 MAD';document.getElementById('sv-disc').textContent=isYear?'−168 MAD':'−50 MAD';document.getElementById('sv-total').textContent=isYear?(promoApplied?'299 MAD':'499 MAD'):(promoApplied?'24 MAD':'49 MAD');document.getElementById('btn-pay-txt').textContent='🔒 Payer '+(isYear?(promoApplied?'299':'499'):(promoApplied?'24':'49'))+' MAD et activer Premium';}
+
+function applyPromo(){const code=document.getElementById('promo').value.trim().toUpperCase();if(code==='MAROC50'||code==='SELLSENSE'){promoApplied=true;document.getElementById('promo-ok').style.display='block';setBill(isYear?'y':'m');}else{document.getElementById('promo').style.borderColor='var(--red)';setTimeout(()=>document.getElementById('promo').style.borderColor='',1500);}}
+
+function fmtCard(el){let v=el.value.replace(/\D/g,'').substring(0,16);el.value=v.match(/.{1,4}/g)?.join(' ')||v;const d=v.padEnd(16,'•').replace(/(.{4})/g,'$1 ').trim();document.getElementById('cv-num').textContent=d;}
+function fmtExp(el){let v=el.value.replace(/\D/g,'').substring(0,4);if(v.length>2)v=v.substring(0,2)+'/'+v.substring(2);el.value=v;document.getElementById('cv-exp').textContent=v||'MM/AA';}
+
+function handlePay(){
+  const btn=document.getElementById('btn-pay');
+  btn.classList.add('ld');btn.disabled=true;
+  setTimeout(()=>{document.getElementById('pay-form').querySelector('.form-title').style.display='none';document.getElementById('pay-form').querySelector('.form-sub').style.display='none';document.querySelectorAll('.card-logos,.card-visual,.mf,.mf-row,.btn-pay,.secure-row-txt,.promo-row').forEach(e=>e.style.display='none');document.getElementById('sview').style.display='block';},2000);
+}
+
+function scrollToPay(){document.getElementById('pay-anchor').scrollIntoView({behavior:'smooth',block:'start'});}
+
+var end=Date.now()+23*3600000+47*60000+12000;
+function tick(){var d=Math.max(0,end-Date.now());var h=Math.floor(d/3600000),m=Math.floor((d%3600000)/60000),s=Math.floor((d%60000)/1000);document.getElementById('ch').textContent=String(h).padStart(2,'0');document.getElementById('cm').textContent=String(m).padStart(2,'0');document.getElementById('cs').textContent=String(s).padStart(2,'0');}
+setInterval(tick,1000);tick();
+</script>
+</body>
+</html>
