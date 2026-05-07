@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SellSense — Decision Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script>
+const SB_URL = 'https://fmlmkxbcfeebeqtlzzvn.supabase.co';
+const SB_KEY = 'sb_publishable_M68a1m8LRq_DHQUov2k5pw_e-qrAefU';
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+/* ─────────────────────────────────────────
+   DESIGN SYSTEM
+───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --sidebar-bg: #0F172A;
+  --sidebar-border: rgba(255,255,255,0.07);
+  --sidebar-text: rgba(255,255,255,0.55);
+  --sidebar-active-bg: rgba(37,99,235,0.2);
+  --sidebar-active-text: #93C5FD;
+  --page-bg: #F9FAFB;
+  --white: #FFFFFF;
+  --text: #111827;
+  --text-2: #374151;
+  --muted: #6B7280;
+  --muted-2: #9CA3AF;
+  --border: #E5E7EB;
+  --border-2: #D1D5DB;
+  --blue: #2563EB;
+  --blue-hover: #1D4ED8;
+  --blue-light: #EFF6FF;
+  --green: #059669;
+  --green-light: #ECFDF5;
+  --amber: #D97706;
+  --amber-light: #FFFBEB;
+  --red: #DC2626;
+  --red-light: #FEF2F2;
+  --purple: #7C3AED;
+  --purple-light: #F5F3FF;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+  --radius: 10px;
+  --font: 'Inter', system-ui, -apple-system, sans-serif;
+  --sidebar-w: 256px;
+}
+
+html, body { height: 100%; font-size: 14px; }
+body { font-family: var(--font); background: var(--page-bg); color: var(--text); line-height: 1.6; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+input, select, button { font-family: var(--font); }
+input[type="number"] { -moz-appearance: textfield; }
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+/* ─────────────────────────────────────────
+   LOADING SCREEN
+───────────────────────────────────────── */
+#loading {
+  position: fixed; inset: 0; background: var(--sidebar-bg);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 16px; z-index: 9999;
+}
+#loading .logo { font-size: 24px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+#loading .logo span { color: #60A5FA; }
+#loading .bar { width: 160px; height: 2px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+#loading .bar-fill { height: 100%; background: #60A5FA; animation: loadbar 1.2s ease forwards; }
+#loading .sub { font-size: 12px; color: rgba(255,255,255,0.35); }
+@keyframes loadbar { from { width: 0; } to { width: 100%; } }
+
+/* ─────────────────────────────────────────
+   LAYOUT
+───────────────────────────────────────── */
+#app { display: flex; min-height: 100vh; }
+
+/* ─────────────────────────────────────────
+   SIDEBAR
+───────────────────────────────────────── */
+.sidebar {
+  width: var(--sidebar-w); flex-shrink: 0;
+  background: var(--sidebar-bg); position: fixed;
+  top: 0; left: 0; bottom: 0; z-index: 200;
+  display: flex; flex-direction: column;
+  transition: transform 0.3s;
+}
+.sidebar-header { padding: 18px 16px 14px; border-bottom: 1px solid var(--sidebar-border); }
+.sidebar-logo { font-size: 18px; font-weight: 800; color: #fff; text-decoration: none; letter-spacing: -0.5px; display: block; }
+.sidebar-logo span { color: #60A5FA; }
+.sidebar-tagline { font-size: 10px; color: rgba(255,255,255,0.28); text-transform: uppercase; letter-spacing: 0.12em; margin-top: 2px; display: block; }
+
+/* Project Selector */
+.sidebar-project { padding: 12px 14px; border-bottom: 1px solid var(--sidebar-border); }
+.sidebar-project-label { font-size: 10px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; display: block; }
+.project-select-wrap { position: relative; }
+.project-select {
+  width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px; padding: 9px 32px 9px 11px; font-size: 13px; font-weight: 500;
+  color: #fff; cursor: pointer; appearance: none;
+}
+.project-select option { background: #1E293B; }
+.project-select-chevron { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.3); pointer-events: none; font-size: 11px; }
+.btn-new-project {
+  width: 100%; background: rgba(37,99,235,0.18); border: 1px solid rgba(37,99,235,0.3);
+  border-radius: 8px; padding: 8px; font-size: 12px; font-weight: 600;
+  color: #93C5FD; cursor: pointer; margin-top: 7px; transition: all 0.2s;
+}
+.btn-new-project:hover { background: rgba(37,99,235,0.28); }
+
+/* Navigation */
+.sidebar-nav { flex: 1; padding: 10px 10px; overflow-y: auto; }
+.nav-item {
+  display: flex; align-items: center; gap: 9px; padding: 9px 10px;
+  border-radius: 8px; font-size: 13px; color: var(--sidebar-text);
+  cursor: pointer; text-decoration: none; transition: all 0.15s; margin-bottom: 2px;
+}
+.nav-item:hover { background: rgba(255,255,255,0.06); color: #fff; }
+.nav-item.active { background: var(--sidebar-active-bg); color: var(--sidebar-active-text); font-weight: 500; }
+.nav-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
+.nav-badge { margin-left: auto; font-size: 10px; background: rgba(124,58,237,0.25); color: #C4B5FD; border-radius: 20px; padding: 2px 7px; }
+
+/* Trial Box */
+.sidebar-bottom { padding: 12px 14px; border-top: 1px solid var(--sidebar-border); }
+.trial-box { background: rgba(5,150,105,0.12); border: 1px solid rgba(5,150,105,0.22); border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; }
+.trial-label { font-size: 11px; font-weight: 600; color: #34D399; margin-bottom: 2px; }
+.trial-sub { font-size: 11px; color: rgba(255,255,255,0.38); }
+.btn-upgrade {
+  width: 100%; background: linear-gradient(135deg, #2563EB, #7C3AED);
+  border: none; border-radius: 8px; padding: 10px; font-size: 13px;
+  font-weight: 600; color: #fff; cursor: pointer; margin-bottom: 8px; transition: opacity 0.2s;
+}
+.btn-upgrade:hover { opacity: 0.9; }
+.user-row { display: flex; align-items: center; gap: 8px; padding: 6px; }
+.user-avatar {
+  width: 30px; height: 30px; border-radius: 50%; background: rgba(37,99,235,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: #93C5FD; flex-shrink: 0;
+}
+.user-name { font-size: 12px; color: rgba(255,255,255,0.6); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.btn-logout { background: none; border: none; color: rgba(255,255,255,0.25); font-size: 11px; cursor: pointer; }
+.btn-logout:hover { color: #F87171; }
+
+/* ─────────────────────────────────────────
+   MAIN AREA
+───────────────────────────────────────── */
+.main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+/* ─────────────────────────────────────────
+   TOPBAR
+───────────────────────────────────────── */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 56px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(249,250,251,0.95); backdrop-filter: blur(10px);
+  position: sticky; top: 0; z-index: 100;
+}
+.topbar-left { display: flex; align-items: center; gap: 12px; }
+.topbar-title { font-size: 15px; font-weight: 600; color: var(--text); }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+
+/* Lang Toggle */
+.lang-toggle { display: flex; background: var(--border); border-radius: 8px; padding: 3px; gap: 2px; }
+.lang-btn {
+  padding: 5px 14px; border-radius: 6px; border: none; background: transparent;
+  font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer; transition: all 0.2s;
+}
+.lang-btn.active { background: var(--white); color: var(--text); box-shadow: var(--shadow-sm); }
+
+/* Currency */
+.currency-select { border: 1.5px solid var(--border); border-radius: 8px; padding: 5px 10px; font-size: 13px; font-weight: 500; color: var(--text); background: var(--white); cursor: pointer; }
+
+/* Plan badge */
+.plan-badge { font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border); color: var(--muted); background: var(--white); font-weight: 500; }
+.plan-badge.pro { background: var(--purple-light); color: var(--purple); border-color: rgba(124,58,237,0.2); }
+
+/* Save status */
+.save-status { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--muted-2); }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted-2); flex-shrink: 0; }
+.status-dot.saved { background: var(--green); }
+.status-dot.unsaved { background: var(--amber); animation: blink 1.2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* Ham button */
+.ham { display: none; background: none; border: 1.5px solid var(--border); border-radius: 8px; width: 36px; height: 36px; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; }
+
+/* ─────────────────────────────────────────
+   VIEWS (pages within main)
+───────────────────────────────────────── */
+.view { display: none; flex: 1; padding: 24px; }
+.view.active { display: block; }
+
+/* ─────────────────────────────────────────
+   CAMPAIGN VIEW
+───────────────────────────────────────── */
+.campaign-header { margin-bottom: 20px; }
+.campaign-header h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; color: var(--text); margin-bottom: 4px; }
+.campaign-header p { font-size: 13px; color: var(--muted); }
+.campaign-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+
+.btn-primary {
+  background: var(--blue); color: #fff; border: none; border-radius: 8px;
+  padding: 9px 20px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; gap: 6px; position: relative;
+}
+.btn-primary:hover { background: var(--blue-hover); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary .spinner {
+  display: none; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite;
+}
+.btn-primary.loading .btn-label { display: none; }
+.btn-primary.loading .spinner { display: block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.btn-secondary {
+  background: var(--white); color: var(--text-2); border: 1.5px solid var(--border);
+  border-radius: 8px; padding: 9px 18px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s;
+}
+.btn-secondary:hover { border-color: var(--blue); color: var(--blue); }
+
+/* Campaign Layout */
+.campaign-layout { display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start; }
+
+/* Input Sections */
+.input-sections { display: flex; flex-direction: column; gap: 12px; }
+.section-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
+.section-header { display: flex; align-items: center; gap: 8px; padding: 12px 16px; background: var(--page-bg); border-bottom: 1px solid var(--border); }
+.section-icon { font-size: 14px; }
+.section-title { font-size: 13px; font-weight: 600; color: var(--text); }
+.section-body { padding: 14px 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.section-body.single-col { grid-template-columns: 1fr; }
+.section-body.three-col { grid-template-columns: 1fr 1fr 1fr; }
+
+/* Input Fields */
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label { font-size: 12px; font-weight: 500; color: var(--text-2); }
+.field label em { font-style: normal; color: var(--muted-2); font-weight: 400; font-size: 11px; }
+.input-wrapper { position: relative; }
+.input-prefix { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 13px; color: var(--muted-2); font-weight: 500; pointer-events: none; }
+.input-suffix { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--muted-2); pointer-events: none; }
+.field-input {
+  width: 100%; border: 1.5px solid var(--border); border-radius: 8px;
+  padding: 9px 10px; font-size: 14px; font-weight: 500; color: var(--text);
+  background: var(--white); transition: border-color 0.2s;
+}
+.field-input.has-prefix { padding-left: 26px; }
+.field-input.has-suffix { padding-right: 30px; }
+.field-input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.08); }
+.field-input::placeholder { color: var(--muted-2); font-weight: 400; }
+
+/* No project state */
+.no-project-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 24px; text-align: center; }
+.no-project-state .nps-icon { font-size: 48px; margin-bottom: 16px; }
+.no-project-state h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+.no-project-state p { font-size: 14px; color: var(--muted); margin-bottom: 24px; max-width: 360px; }
+
+/* ─────────────────────────────────────────
+   DECISION PANEL
+───────────────────────────────────────── */
+.decision-panel { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius); position: sticky; top: 72px; box-shadow: var(--shadow-md); overflow: hidden; }
+
+/* Verdict */
+.panel-verdict { padding: 18px; border-bottom: 1px solid var(--border); }
+.verdict-badge { display: inline-flex; align-items: center; gap: 7px; border-radius: 50px; padding: 7px 16px; font-size: 13px; font-weight: 700; margin-bottom: 14px; }
+.verdict-badge.waiting { background: #F3F4F6; color: var(--muted-2); }
+.verdict-badge.kill { background: var(--red-light); color: var(--red); }
+.verdict-badge.optimize { background: var(--amber-light); color: var(--amber); }
+.verdict-badge.scale { background: var(--green-light); color: var(--green); }
+.profit-amount { font-size: 42px; font-weight: 800; letter-spacing: -2px; line-height: 1; margin-bottom: 4px; }
+.profit-amount.positive { color: var(--green); }
+.profit-amount.negative { color: var(--red); }
+.profit-label { font-size: 11px; color: var(--muted-2); text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* Confidence */
+.panel-confidence { padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--page-bg); }
+.confidence-label { font-size: 11px; color: var(--muted); font-weight: 500; margin-bottom: 6px; }
+.confidence-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 4px; }
+.confidence-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+.confidence-fill.high { background: var(--green); }
+.confidence-fill.medium { background: var(--amber); }
+.confidence-fill.low { background: var(--red); }
+.confidence-text { font-size: 12px; font-weight: 600; color: var(--text-2); }
+
+/* Metrics */
+.panel-metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; border-bottom: 1px solid var(--border); }
+.metric-cell { padding: 12px 8px; text-align: center; border-right: 1px solid var(--border); }
+.metric-cell:last-child { border-right: none; }
+.metric-value { font-size: 18px; font-weight: 700; letter-spacing: -0.5px; line-height: 1; color: var(--text); }
+.metric-value.positive { color: var(--green); }
+.metric-value.negative { color: var(--red); }
+.metric-value.warning { color: var(--amber); }
+.metric-label { font-size: 10px; color: var(--muted-2); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+
+/* Breakdown */
+.panel-breakdown { padding: 14px 16px; border-bottom: 1px solid var(--border); }
+.breakdown-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; font-size: 13px; border-bottom: 1px solid var(--border); }
+.breakdown-row:last-child { border-bottom: none; border-top: 2px solid var(--border); margin-top: 4px; padding-top: 8px; }
+.breakdown-label { color: var(--muted); }
+.breakdown-value { font-weight: 600; }
+.breakdown-value.revenue { color: var(--green); }
+.breakdown-value.total { color: var(--blue); font-size: 14px; }
+
+/* Explanation */
+.panel-explanation { padding: 14px 16px; border-bottom: 1px solid var(--border); background: var(--page-bg); }
+.explanation-title { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+.explanation-text { font-size: 13px; color: var(--text-2); line-height: 1.6; }
+
+/* Insights */
+.panel-insights { padding: 12px 16px; }
+.insights-title { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+.insight-item { display: flex; align-items: flex-start; gap: 9px; padding: 9px 10px; border-radius: 8px; margin-bottom: 6px; }
+.insight-item.danger { background: var(--red-light); }
+.insight-item.warning { background: var(--amber-light); }
+.insight-item.good { background: var(--green-light); }
+.insight-item.info { background: var(--blue-light); }
+.insight-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+.insight-text { font-size: 12px; line-height: 1.5; color: var(--text-2); }
+
+/* Save button */
+.panel-footer { padding: 14px 16px 16px; }
+.btn-save-calc { width: 100%; background: var(--blue); color: #fff; border: none; border-radius: 8px; padding: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; position: relative; }
+.btn-save-calc:hover { background: var(--blue-hover); }
+.btn-save-calc:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-save-calc .spinner { display: none; width: 15px; height: 15px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto; }
+.btn-save-calc.loading .btn-label { display: none; }
+.btn-save-calc.loading .spinner { display: block; }
+.save-note { font-size: 11px; color: var(--muted-2); text-align: center; margin-top: 6px; }
+
+/* ─────────────────────────────────────────
+   HISTORY VIEW
+───────────────────────────────────────── */
+.view-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+.view-title { font-size: 20px; font-weight: 800; letter-spacing: -0.3px; }
+.view-subtitle { font-size: 13px; color: var(--muted); margin-top: 3px; }
+.history-list { display: flex; flex-direction: column; gap: 10px; }
+.history-item {
+  background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius);
+  padding: 16px 20px; display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow-sm);
+}
+.history-item:hover { border-color: var(--blue); transform: translateX(3px); }
+.history-left .history-date { font-size: 12px; color: var(--muted); margin-bottom: 5px; }
+.history-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { font-size: 12px; background: var(--page-bg); border: 1px solid var(--border); border-radius: 6px; padding: 3px 9px; color: var(--text-2); }
+.history-right { text-align: right; }
+.history-profit { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+.history-profit.pos { color: var(--green); }
+.history-profit.neg { color: var(--red); }
+.history-verdict { font-size: 12px; margin-top: 2px; font-weight: 600; }
+.history-verdict.scale { color: var(--green); }
+.history-verdict.optimize { color: var(--amber); }
+.history-verdict.kill { color: var(--red); }
+.load-hint { font-size: 11px; color: var(--muted-2); margin-top: 4px; }
+
+/* ─────────────────────────────────────────
+   PROJECTS VIEW
+───────────────────────────────────────── */
+.projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; margin-top: 20px; }
+.project-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 18px; cursor: pointer; transition: all 0.22s; box-shadow: var(--shadow-sm); }
+.project-card:hover { border-color: var(--blue); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.project-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.type-pill { font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
+.type-pill.ecom { background: var(--blue-light); color: var(--blue); }
+.type-pill.creator { background: var(--amber-light); color: var(--amber); }
+.type-pill.freelancer { background: var(--green-light); color: var(--green); }
+.project-name { font-size: 15px; font-weight: 700; margin-bottom: 12px; }
+.project-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.proj-stat { text-align: center; padding: 8px 4px; background: var(--page-bg); border-radius: 7px; }
+.proj-stat-val { font-size: 14px; font-weight: 700; }
+.proj-stat-val.pos { color: var(--green); }
+.proj-stat-val.neg { color: var(--red); }
+.proj-stat-label { font-size: 10px; color: var(--muted-2); margin-top: 2px; }
+.project-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); }
+.btn-open-project { background: none; border: none; color: var(--blue); font-weight: 600; font-size: 12px; cursor: pointer; }
+
+/* ─────────────────────────────────────────
+   EMPTY STATE
+───────────────────────────────────────── */
+.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 64px 24px; text-align: center; }
+.empty-icon { font-size: 48px; margin-bottom: 16px; }
+.empty-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+.empty-body { font-size: 14px; color: var(--muted); margin-bottom: 24px; max-width: 340px; line-height: 1.6; }
+
+/* ─────────────────────────────────────────
+   MODAL
+───────────────────────────────────────── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+  z-index: 500; display: flex; align-items: center; justify-content: center;
+  padding: 24px; opacity: 0; pointer-events: none; transition: opacity 0.25s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal-box {
+  background: var(--white); border-radius: 14px; width: 100%; max-width: 440px;
+  padding: 28px; position: relative;
+  transform: translateY(16px); transition: transform 0.25s; box-shadow: var(--shadow-lg);
+}
+.modal-overlay.open .modal-box { transform: translateY(0); }
+.modal-close {
+  position: absolute; top: 14px; right: 14px; background: var(--page-bg);
+  border: none; border-radius: 6px; width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 14px; color: var(--muted);
+}
+.modal-close:hover { background: var(--border); }
+.modal-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+.modal-subtitle { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+.type-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
+.type-card { border: 1.5px solid var(--border); border-radius: 8px; padding: 14px 8px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--page-bg); }
+.type-card:hover { border-color: var(--blue); }
+.type-card.selected { border-color: var(--blue); background: var(--blue-light); }
+.type-card-icon { font-size: 22px; margin-bottom: 6px; }
+.type-card-name { font-size: 12px; font-weight: 600; color: var(--text); }
+.type-card-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.modal-field { margin-bottom: 14px; }
+.modal-field label { display: block; font-size: 13px; font-weight: 500; color: var(--text-2); margin-bottom: 6px; }
+.modal-input {
+  width: 100%; border: 1.5px solid var(--border); border-radius: 8px;
+  padding: 10px 13px; font-size: 14px; color: var(--text); background: var(--white); transition: border-color 0.2s;
+}
+.modal-input:focus { outline: none; border-color: var(--blue); }
+.modal-input::placeholder { color: var(--muted-2); }
+.modal-select {
+  width: 100%; border: 1.5px solid var(--border); border-radius: 8px;
+  padding: 10px 13px; font-size: 14px; color: var(--text); background: var(--white); cursor: pointer; appearance: none;
+}
+.modal-error { background: var(--red-light); border: 1px solid #FECACA; border-radius: 8px; padding: 10px 13px; font-size: 13px; color: var(--red); margin-bottom: 12px; display: none; }
+.modal-error.visible { display: block; }
+.btn-create-project { width: 100%; background: var(--blue); color: #fff; border: none; border-radius: 8px; padding: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+.btn-create-project:hover { background: var(--blue-hover); }
+
+/* ─────────────────────────────────────────
+   TOAST
+───────────────────────────────────────── */
+.toast {
+  position: fixed; bottom: 24px; right: 24px; border-radius: 10px;
+  padding: 12px 18px; font-size: 13px; font-weight: 500; color: #fff;
+  transform: translateY(80px); opacity: 0; transition: all 0.3s;
+  z-index: 9999; box-shadow: var(--shadow-lg); background: var(--text);
+}
+.toast.visible { transform: translateY(0); opacity: 1; }
+.toast.success { background: var(--green); }
+.toast.error { background: var(--red); }
+
+/* ─────────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .campaign-layout { grid-template-columns: 1fr; }
+  .decision-panel { position: static; }
+  .section-body { grid-template-columns: 1fr; }
+  .section-body.three-col { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .ham { display: flex; }
+  .view { padding: 16px; }
+  .topbar { padding: 0 16px; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .type-cards { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading">
+  <div class="logo">Sell<span>Sense</span></div>
+  <div class="bar"><div class="bar-fill"></div></div>
+  <div class="sub" id="loading-text">Loading your workspace...</div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- APP -->
+<div id="app" style="display:none;">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="sellsense-landing.html" class="sidebar-logo">Sell<span>Sense</span></a>
+      <small class="sidebar-tagline" id="t-decision-engine">Decision Engine</small>
+    </div>
+
+    <!-- PROJECT SELECTOR -->
+    <div class="sidebar-project">
+      <span class="sidebar-project-label" id="t-active-project">Active Project</span>
+      <div class="project-select-wrap">
+        <select class="project-select" id="project-select" onchange="onProjectChange(this.value)">
+          <option value="">— Select project —</option>
+        </select>
+        <span class="project-select-chevron">▾</span>
+      </div>
+      <button class="btn-new-project" onclick="openModal()" id="t-new-project">+ New project</button>
+    </div>
+
+    <!-- NAVIGATION -->
+    <nav class="sidebar-nav">
+      <div class="nav-item active" id="nav-campaign" onclick="showView('campaign')">
+        <span class="nav-icon">⚡</span><span id="t-nav-campaign">Campaign</span>
+      </div>
+      <div class="nav-item" id="nav-history" onclick="showView('history')">
+        <span class="nav-icon">📋</span><span id="t-nav-history">History</span>
+      </div>
+      <div class="nav-item" id="nav-projects" onclick="showView('projects')">
+        <span class="nav-icon">📁</span><span id="t-nav-projects">All Projects</span>
+      </div>
+      <a class="nav-item" href="sellsense-payment.html">
+        <span class="nav-icon">⭐</span><span id="t-nav-upgrade">Upgrade to Pro</span>
+        <span class="nav-badge">Pro</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="trial-box" id="trial-box">
+        <div class="trial-label" id="t-trial-label">🟢 Trial Active</div>
+        <div class="trial-sub" id="t-trial-sub">7 days · Up to 3 projects</div>
+      </div>
+      <button class="btn-upgrade" onclick="location.href='sellsense-payment.html'" id="t-btn-upgrade">⭐ Upgrade — $9/mo</button>
+      <div class="user-row">
+        <div class="user-avatar" id="user-avatar">U</div>
+        <span class="user-name" id="user-name">...</span>
+        <button class="btn-logout" onclick="doLogout()">↩</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="ham" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+        <div class="topbar-title" id="topbar-title">Campaign</div>
+      </div>
+      <div class="topbar-right">
+        <!-- LANGUAGE — always visible -->
+        <div class="lang-toggle">
+          <button class="lang-btn active" id="lang-en" onclick="setLanguage('en')">EN</button>
+          <button class="lang-btn" id="lang-fr" onclick="setLanguage('fr')">FR</button>
+        </div>
+        <!-- CURRENCY -->
+        <select class="currency-select" id="currency-select" onchange="onCurrencyChange(this.value)">
+          <option value="USD">$ USD</option>
+          <option value="EUR">€ EUR</option>
+          <option value="GBP">£ GBP</option>
+          <option value="MAD">MAD</option>
+        </select>
+        <!-- SAVE STATUS -->
+        <div class="save-status">
+          <div class="status-dot" id="status-dot"></div>
+          <span id="status-text">—</span>
+        </div>
+        <div class="plan-badge" id="plan-badge">Trial</div>
+      </div>
+    </header>
+
+    <!-- ═══ VIEW: CAMPAIGN ═══ -->
+    <div class="view active" id="view-campaign">
+
+      <!-- No project selected -->
+      <div id="no-project-state" class="no-project-state">
+        <div class="nps-icon">⚡</div>
+        <h3 id="t-no-proj-title">Select or create a project</h3>
+        <p id="t-no-proj-sub">Each project tracks one business or campaign. Select one from the sidebar to start analyzing.</p>
+        <button class="btn-primary" onclick="openModal()">
+          <span class="btn-label" id="t-create-first">+ Create first project</span>
+        </button>
+      </div>
+
+      <!-- Campaign content (shown when project selected) -->
+      <div id="campaign-content" style="display:none;">
+        <div class="campaign-header">
+          <h1 id="campaign-project-name">Project</h1>
+          <p id="campaign-project-type">Type</p>
+          <div class="campaign-actions">
+            <button class="btn-secondary" onclick="showView('history')" id="t-view-history">View history</button>
+            <button class="btn-save-calc" id="btn-save" onclick="saveCalculation()">
+              <span class="btn-label" id="t-save">Save calculation</span>
+              <div class="spinner"></div>
+            </button>
+          </div>
+        </div>
+
+        <div class="campaign-layout">
+          <!-- INPUT SECTIONS (built dynamically) -->
+          <div class="input-sections" id="input-sections"></div>
+
+          <!-- DECISION PANEL -->
+          <div class="decision-panel">
+
+            <!-- Verdict -->
+            <div class="panel-verdict">
+              <div class="verdict-badge waiting" id="verdict-badge">
+                <span id="verdict-icon">—</span>
+                <span id="verdict-text">Awaiting data</span>
+              </div>
+              <div class="profit-amount" id="profit-amount">$0</div>
+              <div class="profit-label" id="t-net-profit">NET PROFIT</div>
+            </div>
+
+            <!-- Confidence -->
+            <div class="panel-confidence" id="panel-confidence" style="display:none;">
+              <div class="confidence-label" id="t-confidence">Decision confidence</div>
+              <div class="confidence-bar"><div class="confidence-fill" id="confidence-fill" style="width:0%"></div></div>
+              <div class="confidence-text" id="confidence-text"></div>
+            </div>
+
+            <!-- Metrics -->
+            <div class="panel-metrics">
+              <div class="metric-cell">
+                <div class="metric-value" id="metric-margin">0%</div>
+                <div class="metric-label" id="t-margin">MARGIN</div>
+              </div>
+              <div class="metric-cell">
+                <div class="metric-value" id="metric-roas">—</div>
+                <div class="metric-label">ROAS</div>
+              </div>
+              <div class="metric-cell">
+                <div class="metric-value" id="metric-adpct">—</div>
+                <div class="metric-label" id="t-ads-rev">ADS / REV</div>
+              </div>
+            </div>
+
+            <!-- Breakdown -->
+            <div class="panel-breakdown">
+              <div class="breakdown-row"><span class="breakdown-label" id="t-revenue">Revenue</span><span class="breakdown-value revenue" id="br-revenue">$0</span></div>
+              <div class="breakdown-row"><span class="breakdown-label">COGS</span><span class="breakdown-value" id="br-cogs">$0</span></div>
+              <div class="breakdown-row"><span class="breakdown-label" id="t-logistics">Logistics</span><span class="breakdown-value" id="br-logistics">$0</span></div>
+              <div class="breakdown-row"><span class="breakdown-label" id="t-marketing">Marketing</span><span class="breakdown-value" id="br-marketing">$0</span></div>
+              <div class="breakdown-row"><span class="breakdown-label" id="t-fees">Fees</span><span class="breakdown-value" id="br-fees">$0</span></div>
+              <div class="breakdown-row"><span class="breakdown-label" id="t-net-profit-2" style="font-weight:600;color:var(--text);">Net Profit</span><span class="breakdown-value total" id="br-profit">$0</span></div>
+            </div>
+
+            <!-- Explanation -->
+            <div class="panel-explanation" id="panel-explanation" style="display:none;">
+              <div class="explanation-title" id="t-analysis">Analysis</div>
+              <div class="explanation-text" id="explanation-text"></div>
+            </div>
+
+            <!-- Insights -->
+            <div class="panel-insights">
+              <div class="insights-title" id="t-intelligence">Intelligence</div>
+              <div id="insights-container">
+                <div class="insight-item info">
+                  <span class="insight-icon">💡</span>
+                  <span class="insight-text" id="t-insight-wait">Enter your campaign data to receive actionable insights.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Save -->
+            <div class="panel-footer">
+              <button class="btn-save-calc" id="btn-save-panel" onclick="saveCalculation()">
+                <span class="btn-label" id="t-save-2">Save calculation</span>
+                <div class="spinner"></div>
+              </button>
+              <div class="save-note" id="t-save-note">Saved calculations reload automatically on your next visit.</div>
+            </div>
+
+          </div><!-- /decision-panel -->
+        </div><!-- /campaign-layout -->
+      </div><!-- /campaign-content -->
+    </div><!-- /view-campaign -->
+
+    <!-- ═══ VIEW: HISTORY ═══ -->
+    <div class="view" id="view-history">
+      <div class="view-header">
+        <div>
+          <div class="view-title" id="history-title">History</div>
+          <div class="view-subtitle" id="t-history-sub">Click any calculation to reload it.</div>
+        </div>
+      </div>
+      <div id="history-container"></div>
+    </div>
+
+    <!-- ═══ VIEW: PROJECTS ═══ -->
+    <div class="view" id="view-projects">
+      <div class="view-header">
+        <div>
+          <div class="view-title" id="t-all-projects">All Projects</div>
+          <div class="view-subtitle" id="t-projects-sub">Each project = one business or campaign.</div>
+        </div>
+        <button class="btn-primary" onclick="openModal()">
+          <span class="btn-label" id="t-new-proj-btn">+ New Project</span>
+        </button>
+      </div>
+      <div id="projects-container"></div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- NEW PROJECT MODAL -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title" id="t-modal-title">New Project</div>
+    <div class="modal-subtitle" id="t-modal-sub">Choose your business type to get the right input structure.</div>
+    <div class="modal-error" id="modal-error"></div>
+
+    <!-- Type cards -->
+    <div class="type-cards">
+      <div class="type-card" id="type-ecom" onclick="selectType('ecom', this)">
+        <div class="type-card-icon">📦</div>
+        <div class="type-card-name" id="t-type-ecom">E-commerce</div>
+        <div class="type-card-sub">COD · Dropshipping · Store</div>
+      </div>
+      <div class="type-card" id="type-creator" onclick="selectType('creator', this)">
+        <div class="type-card-icon">🎬</div>
+        <div class="type-card-name" id="t-type-creator">Creator</div>
+        <div class="type-card-sub">YouTube · TikTok · Insta</div>
+      </div>
+      <div class="type-card" id="type-freelancer" onclick="selectType('freelancer', this)">
+        <div class="type-card-icon">💻</div>
+        <div class="type-card-name" id="t-type-freelancer">Freelancer</div>
+        <div class="type-card-sub">Upwork · Fiverr · Direct</div>
+      </div>
+    </div>
+
+    <div class="modal-field">
+      <label id="t-project-name">Project name</label>
+      <input class="modal-input" type="text" id="modal-project-name" placeholder="e.g. Summer Campaign 2025"/>
+    </div>
+    <div class="modal-field">
+      <label id="t-currency-label">Currency</label>
+      <select class="modal-select" id="modal-currency">
+        <option value="USD">$ USD — US Dollar</option>
+        <option value="EUR">€ EUR — Euro</option>
+        <option value="GBP">£ GBP — British Pound</option>
+        <option value="MAD">MAD — Moroccan Dirham</option>
+      </select>
+    </div>
+    <button class="btn-create-project" onclick="createProject()" id="t-create-project">Create project →</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// INITIALIZATION
+// ═══════════════════════════════════════════════════════════════════
+const { createClient } = supabase;
+const sb = createClient(SB_URL, SB_KEY);
+
+const CURRENCY_SYMBOLS = { USD: '$', EUR: '€', GBP: '£', MAD: 'MAD ' };
+
+// ── State ──
+const state = {
+  lang: 'en',
+  currency: 'USD',
+  symbol: '$',
+  user: null,
+  profile: null,
+  projects: [],
+  activeProjectId: null,
+  selectedType: null,    // for modal
+  lastCalcResult: null,  // for saving
+};
+
+// ── i18n translations ──
+const TRANSLATIONS = {
+  en: {
+    // Loading
+    'loading': 'Loading your workspace...',
+    // Sidebar
+    'decision-engine': 'Decision Engine',
+    'active-project': 'Active Project',
+    'new-project': '+ New project',
+    'nav-campaign': 'Campaign',
+    'nav-history': 'History',
+    'nav-projects': 'All Projects',
+    'nav-upgrade': 'Upgrade to Pro',
+    'trial-label': '🟢 Trial Active',
+    'trial-sub': '7 days · Up to 3 projects',
+    'btn-upgrade': '⭐ Upgrade — $9/mo',
+    // No project
+    'no-proj-title': 'Select or create a project',
+    'no-proj-sub': 'Each project tracks one business or campaign. Select one from the sidebar to start analyzing.',
+    'create-first': '+ Create first project',
+    // Campaign
+    'view-history': 'View history',
+    'save': 'Save calculation',
+    // Panel
+    'net-profit': 'NET PROFIT',
+    'confidence': 'Decision confidence',
+    'margin': 'MARGIN',
+    'ads-rev': 'ADS / REV',
+    'revenue': 'Revenue',
+    'logistics': 'Logistics',
+    'marketing': 'Marketing',
+    'fees': 'Fees',
+    'net-profit-2': 'Net Profit',
+    'analysis': 'Analysis',
+    'intelligence': 'Intelligence',
+    'insight-wait': 'Enter your campaign data to receive actionable insights.',
+    'save-2': 'Save calculation',
+    'save-note': 'Saved calculations reload automatically on your next visit.',
+    // History
+    'history-sub': 'Click any calculation to reload it.',
+    // Projects
+    'all-projects': 'All Projects',
+    'projects-sub': 'Each project = one business or campaign.',
+    'new-proj-btn': '+ New Project',
+    // Modal
+    'modal-title': 'New Project',
+    'modal-sub': 'Choose your business type to get the right input structure.',
+    'project-name': 'Project name',
+    'currency-label': 'Currency',
+    'create-project': 'Create project →',
+    'type-ecom': 'E-commerce',
+    'type-creator': 'Creator',
+    'type-freelancer': 'Freelancer',
+    // Verdicts
+    'verdict-scale': 'Scale it',
+    'verdict-optimize': 'Optimize',
+    'verdict-kill': 'Kill campaign',
+    'verdict-await': 'Awaiting data',
+    // Confidence
+    'conf-high': 'High confidence',
+    'conf-medium': 'Medium confidence',
+    'conf-low': 'Low confidence',
+    // Field labels — Ecom
+    'sec-revenue': 'Revenue',
+    'sec-cogs': 'Product Cost (COGS)',
+    'sec-logistics': 'Logistics',
+    'sec-marketing': 'Marketing',
+    'sec-fees': 'Platform & Fees',
+    'f-total-revenue': 'Total Revenue',
+    'f-cogs': 'Cost of Goods Sold',
+    'f-shipping': 'Shipping',
+    'f-returns': 'Returns / Failed deliveries',
+    'f-packaging': 'Packaging',
+    'f-fb-ads': 'Facebook Ads',
+    'f-tik-ads': 'TikTok Ads',
+    'f-other-ads': 'Other Ads',
+    'f-platform-fee': 'Platform fee',
+    'f-payment-pct': 'Payment processor',
+    // Field labels — Creator
+    'sec-creator-revenue': 'Revenue',
+    'sec-creator-costs': 'Production & Costs',
+    'sec-creator-promo': 'Promotion',
+    'f-adsense': 'AdSense (YouTube)',
+    'f-tiktok-rev': 'TikTok Creator Fund',
+    'f-sponsorships': 'Sponsorships',
+    'f-merch': 'Merch / Digital products',
+    'f-other-rev': 'Other revenue',
+    'f-equipment': 'Equipment',
+    'f-software': 'Software & tools',
+    'f-production': 'Editing / Production',
+    'f-promotion': 'Paid promotion',
+    'f-agency-pct': 'Agency commission',
+    // Field labels — Freelancer
+    'sec-freelancer-revenue': 'Revenue',
+    'sec-freelancer-fees': 'Platform & Fees',
+    'sec-freelancer-costs': 'Operating Costs',
+    'f-invoiced': 'Total invoiced',
+    'f-platform-pct': 'Platform commission',
+    'f-transfer-fees': 'Transfer fees',
+    'f-subcontractors': 'Subcontractors',
+    'f-coworking': 'Coworking / workspace',
+    'f-other-costs': 'Other costs',
+    // Topbar
+    'topbar-campaign': 'Campaign',
+    'topbar-history': 'History',
+    'topbar-projects': 'All Projects',
+    // Empty
+    'empty-history': 'No calculations yet',
+    'empty-history-sub': 'Save a calculation in the Campaign view to see your history here.',
+    'empty-projects': 'No projects yet',
+    'empty-projects-sub': 'Create your first project to start analyzing campaigns.',
+    // Toasts
+    'toast-saved': 'Calculation saved',
+    'toast-loaded': 'Data loaded from history',
+    'toast-created': 'Project created',
+    'toast-limit': '3 project limit reached. Upgrade to Pro for unlimited projects.',
+    'toast-select-proj': 'Please select a project first',
+    'toast-enter-data': 'Please enter some data first',
+    // Status
+    'status-saved': 'Saved',
+    'status-unsaved': 'Unsaved changes',
+    // History item
+    'load-hint': 'Click to reload',
+    // Explanation templates
+    'exp-kill': 'Your campaign is unprofitable. Total costs exceed revenue by {loss}. The biggest cost driver is {driver} at {pct}% of revenue. Pause this campaign immediately and audit your cost structure before relaunching.',
+    'exp-scale': 'Strong fundamentals. Your {margin}% margin and {roas}x ROAS indicate a profitable, scalable campaign. You have room to increase ad spend by 20–30% while maintaining profitability.',
+    'exp-optimize': 'Profitable but with a thin margin of {margin}%. There is limited room for scaling. Your biggest cost driver is {driver} ({pct}% of revenue). Reduce this before increasing spend.',
+    'exp-await': 'Enter your campaign data above to receive a decision.',
+  },
+  fr: {
+    'loading': 'Chargement de votre espace...',
+    'decision-engine': 'Moteur de décision',
+    'active-project': 'Projet actif',
+    'new-project': '+ Nouveau projet',
+    'nav-campaign': 'Campagne',
+    'nav-history': 'Historique',
+    'nav-projects': 'Tous les projets',
+    'nav-upgrade': 'Passer Pro',
+    'trial-label': '🟢 Essai actif',
+    'trial-sub': '7 jours · 3 projets max',
+    'btn-upgrade': '⭐ Passer Pro — 9$/mois',
+    'no-proj-title': 'Sélectionne ou crée un projet',
+    'no-proj-sub': 'Chaque projet suit un business ou une campagne. Sélectionne-en un dans la barre latérale pour commencer.',
+    'create-first': '+ Créer mon premier projet',
+    'view-history': 'Voir l\'historique',
+    'save': 'Sauvegarder le calcul',
+    'net-profit': 'PROFIT NET',
+    'confidence': 'Niveau de confiance',
+    'margin': 'MARGE',
+    'ads-rev': 'PUB / CA',
+    'revenue': 'Chiffre d\'affaires',
+    'logistics': 'Logistique',
+    'marketing': 'Marketing',
+    'fees': 'Frais',
+    'net-profit-2': 'Profit net',
+    'analysis': 'Analyse',
+    'intelligence': 'Intelligence',
+    'insight-wait': 'Entre tes données de campagne pour recevoir des insights.',
+    'save-2': 'Sauvegarder le calcul',
+    'save-note': 'Les calculs sauvegardés se rechargent automatiquement à la prochaine visite.',
+    'history-sub': 'Clique sur un calcul pour le recharger.',
+    'all-projects': 'Tous les projets',
+    'projects-sub': 'Chaque projet = un business ou une campagne.',
+    'new-proj-btn': '+ Nouveau projet',
+    'modal-title': 'Nouveau projet',
+    'modal-sub': 'Choisis ton type d\'activité pour obtenir la bonne structure de saisie.',
+    'project-name': 'Nom du projet',
+    'currency-label': 'Devise',
+    'create-project': 'Créer le projet →',
+    'type-ecom': 'E-commerce',
+    'type-creator': 'Créateur',
+    'type-freelancer': 'Freelance',
+    'verdict-scale': 'Scaler',
+    'verdict-optimize': 'Optimiser',
+    'verdict-kill': 'Stopper la campagne',
+    'verdict-await': 'En attente de données',
+    'conf-high': 'Haute confiance',
+    'conf-medium': 'Confiance moyenne',
+    'conf-low': 'Faible confiance',
+    'sec-revenue': 'Revenus',
+    'sec-cogs': 'Coût des produits (COGS)',
+    'sec-logistics': 'Logistique',
+    'sec-marketing': 'Marketing',
+    'sec-fees': 'Plateforme & Frais',
+    'f-total-revenue': 'Chiffre d\'affaires total',
+    'f-cogs': 'Coût des marchandises',
+    'f-shipping': 'Livraison',
+    'f-returns': 'Retours / Non-livrés',
+    'f-packaging': 'Emballage',
+    'f-fb-ads': 'Facebook Ads',
+    'f-tik-ads': 'TikTok Ads',
+    'f-other-ads': 'Autres publicités',
+    'f-platform-fee': 'Frais plateforme',
+    'f-payment-pct': 'Processeur de paiement',
+    'sec-creator-revenue': 'Revenus',
+    'sec-creator-costs': 'Production & Charges',
+    'sec-creator-promo': 'Promotion',
+    'f-adsense': 'AdSense (YouTube)',
+    'f-tiktok-rev': 'TikTok Creator Fund',
+    'f-sponsorships': 'Sponsoring',
+    'f-merch': 'Merch / Produits numériques',
+    'f-other-rev': 'Autres revenus',
+    'f-equipment': 'Matériel',
+    'f-software': 'Logiciels & outils',
+    'f-production': 'Montage / Production',
+    'f-promotion': 'Promotion payante',
+    'f-agency-pct': 'Commission agence',
+    'sec-freelancer-revenue': 'Revenus',
+    'sec-freelancer-fees': 'Plateforme & Frais',
+    'sec-freelancer-costs': 'Charges opérationnelles',
+    'f-invoiced': 'Montant facturé',
+    'f-platform-pct': 'Commission plateforme',
+    'f-transfer-fees': 'Frais de virement',
+    'f-subcontractors': 'Sous-traitants',
+    'f-coworking': 'Coworking / espace de travail',
+    'f-other-costs': 'Autres charges',
+    'topbar-campaign': 'Campagne',
+    'topbar-history': 'Historique',
+    'topbar-projects': 'Tous les projets',
+    'empty-history': 'Aucun calcul pour l\'instant',
+    'empty-history-sub': 'Sauvegarde un calcul dans la vue Campagne pour voir l\'historique ici.',
+    'empty-projects': 'Aucun projet pour l\'instant',
+    'empty-projects-sub': 'Crée ton premier projet pour analyser tes campagnes.',
+    'toast-saved': 'Calcul sauvegardé',
+    'toast-loaded': 'Données chargées depuis l\'historique',
+    'toast-created': 'Projet créé',
+    'toast-limit': 'Limite de 3 projets atteinte. Passe Pro pour des projets illimités.',
+    'toast-select-proj': 'Sélectionne d\'abord un projet',
+    'toast-enter-data': 'Entre des données d\'abord',
+    'status-saved': 'Sauvegardé',
+    'status-unsaved': 'Modifications non sauvegardées',
+    'load-hint': 'Cliquer pour recharger',
+    'exp-kill': 'Ta campagne est déficitaire. Les coûts dépassent les revenus de {loss}. Le principal poste de coût est {driver} à {pct}% du CA. Mets cette campagne en pause immédiatement et audite ta structure de coûts avant de relancer.',
+    'exp-scale': 'Bons fondamentaux. Ta marge de {margin}% et ton ROAS de {roas}x indiquent une campagne rentable et scalable. Tu as la capacité d\'augmenter ton budget pub de 20–30% tout en maintenant la rentabilité.',
+    'exp-optimize': 'Rentable mais avec une marge fine de {margin}%. La capacité de scaling est limitée. Ton principal poste de coût est {driver} ({pct}% du CA). Réduis-le avant d\'augmenter les dépenses.',
+    'exp-await': 'Entre tes données de campagne ci-dessus pour recevoir une décision.',
+  }
+};
+
+function t(key) {
+  return TRANSLATIONS[state.lang][key] || key;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// BOOT — APP ENTRY POINT
+// ═══════════════════════════════════════════════════════════════════
+async function boot() {
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { window.location.href = 'sellsense-auth.html'; return; }
+    state.user = session.user;
+    await loadProfile();
+    await loadProjects();
+    renderApp();
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    // Auto-select first project
+    if (state.projects.length > 0) {
+      activateProject(state.projects[0].id);
+    }
+  } catch (err) {
+    console.error('Boot error:', err);
+    showToast('Failed to load. Please refresh.', 'error');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PHASE 1: PROFILE LOADING
+// ═══════════════════════════════════════════════════════════════════
+async function loadProfile() {
+  const { data } = await sb.from('profiles').select('*').eq('id', state.user.id).single();
+  if (data) {
+    state.profile = data;
+  } else {
+    const name = state.user.user_metadata?.full_name || state.user.email.split('@')[0];
+    state.profile = { full_name: name, plan: 'free', currency: 'USD' };
+    await sb.from('profiles').upsert({ id: state.user.id, full_name: name, email: state.user.email, currency: 'USD' });
+  }
+  // Set currency from profile
+  state.currency = state.profile.currency || 'USD';
+  state.symbol = CURRENCY_SYMBOLS[state.currency] || state.currency + ' ';
+  document.getElementById('currency-select').value = state.currency;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PHASE 2: PROJECT LOADING (with last calculation details)
+// ═══════════════════════════════════════════════════════════════════
+async function loadProjects() {
+  const { data } = await sb
+    .from('projects')
+    .select(`
+      id, name, business_type, currency, created_at, is_archived,
+      calculations (
+        id, revenue, expenses, net_profit, margin_percent, details, created_at
+      )
+    `)
+    .eq('user_id', state.user.id)
+    .eq('is_archived', false)
+    .order('created_at', { ascending: false });
+  state.projects = data || [];
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PHASE 1: PROJECT SYSTEM — activate a project
+// This is the core function: loads project + restores last inputs
+// ═══════════════════════════════════════════════════════════════════
+function activateProject(projectId) {
+  if (!projectId) return;
+  state.activeProjectId = projectId;
+  const project = state.projects.find(p => p.id === projectId);
+  if (!project) return;
+
+  // Update sidebar selector
+  document.getElementById('project-select').value = projectId;
+
+  // Update campaign header
+  document.getElementById('campaign-project-name').textContent = project.name;
+  const typeLabels = { ecom: t('type-ecom'), creator: t('type-creator'), freelancer: t('type-freelancer') };
+  document.getElementById('campaign-project-type').textContent = typeLabels[project.business_type] || project.business_type;
+
+  // Set currency from project
+  if (project.currency) {
+    state.currency = project.currency;
+    state.symbol = CURRENCY_SYMBOLS[state.currency] || state.currency + ' ';
+    document.getElementById('currency-select').value = state.currency;
+  }
+
+  // PHASE 2: Build correct input structure for this business type
+  buildInputSections(project.business_type);
+
+  // PHASE 2: PERSISTENCE — load last saved inputs
+  const calculations = project.calculations || [];
+  if (calculations.length > 0) {
+    const lastCalc = [...calculations].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
+    if (lastCalc.details && typeof lastCalc.details === 'object') {
+      restoreInputValues(lastCalc.details);
+    }
+  }
+
+  // Run the calculation engine
+  runCalculation();
+  setSaveStatus('saved');
+
+  // Show campaign content
+  document.getElementById('no-project-state').style.display = 'none';
+  document.getElementById('campaign-content').style.display = 'block';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PHASE 2: BUILD INPUT SECTIONS (per business type)
+// ═══════════════════════════════════════════════════════════════════
+function buildInputSections(type) {
+  const container = document.getElementById('input-sections');
+  const S = state.symbol;
+
+  let html = '';
+
+  if (type === 'ecom') {
+    html = [
+      section('sec-revenue', '💰', 'single-col', [
+        numField('revenue', 'f-total-revenue', S, null, '0', false)
+      ]),
+      section('sec-cogs', '📦', 'single-col', [
+        numField('cogs', 'f-cogs', S, null, '0', false)
+      ]),
+      section('sec-logistics', '🚚', '', [
+        numField('shipping', 'f-shipping', S, null, '0', false),
+        numField('returns', 'f-returns', S, null, '0', false),
+        numField('packaging', 'f-packaging', S, null, '0', false),
+      ]),
+      section('sec-marketing', '📣', '', [
+        numField('fb_ads', 'f-fb-ads', S, null, '0', false),
+        numField('tik_ads', 'f-tik-ads', S, null, '0', false),
+        numField('other_ads', 'f-other-ads', S, null, '0', false),
+      ]),
+      section('sec-fees', '💳', '', [
+        numField('platform_fee', 'f-platform-fee', S, null, '0', false),
+        numField('payment_pct', 'f-payment-pct', null, '%', '2.9', true),
+      ]),
+    ].join('');
+
+  } else if (type === 'creator') {
+    html = [
+      section('sec-creator-revenue', '💰', '', [
+        numField('adsense', 'f-adsense', S, null, '0', false),
+        numField('tiktok_rev', 'f-tiktok-rev', S, null, '0', false),
+        numField('sponsorships', 'f-sponsorships', S, null, '0', false),
+        numField('merch', 'f-merch', S, null, '0', false),
+        numField('other_rev', 'f-other-rev', S, null, '0', false),
+      ]),
+      section('sec-creator-costs', '🎬', '', [
+        numField('equipment', 'f-equipment', S, null, '0', false),
+        numField('software', 'f-software', S, null, '0', false),
+        numField('production', 'f-production', S, null, '0', false),
+      ]),
+      section('sec-creator-promo', '📣', '', [
+        numField('promotion', 'f-promotion', S, null, '0', false),
+        numField('agency_pct', 'f-agency-pct', null, '%', '0', true),
+      ]),
+    ].join('');
+
+  } else if (type === 'freelancer') {
+    html = [
+      section('sec-freelancer-revenue', '💰', 'single-col', [
+        numField('invoiced', 'f-invoiced', S, null, '0', false),
+      ]),
+      section('sec-freelancer-fees', '💳', '', [
+        numField('platform_pct', 'f-platform-pct', null, '%', '20', true),
+        numField('transfer_fees', 'f-transfer-fees', S, null, '0', false),
+      ]),
+      section('sec-freelancer-costs', '🛠️', '', [
+        numField('subcontractors', 'f-subcontractors', S, null, '0', false),
+        numField('software', 'f-software', S, null, '0', false),
+        numField('coworking', 'f-coworking', S, null, '0', false),
+        numField('other_costs', 'f-other-costs', S, null, '0', false),
+      ]),
+    ].join('');
+  }
+
+  container.innerHTML = html;
+}
+
+// HTML builders
+function section(titleKey, icon, extraClass, fields) {
+  return `<div class="section-card">
+    <div class="section-header">
+      <span class="section-icon">${icon}</span>
+      <span class="section-title">${t(titleKey)}</span>
+    </div>
+    <div class="section-body ${extraClass}">${fields.join('')}</div>
+  </div>`;
+}
+
+function numField(fieldId, labelKey, prefix, suffix, placeholder, hasSuffix) {
+  const prefixHtml = prefix ? `<span class="input-prefix">${prefix}</span>` : '';
+  const suffixHtml = suffix ? `<span class="input-suffix">${suffix}</span>` : '';
+  const prefixClass = prefix ? 'has-prefix' : '';
+  const suffixClass = hasSuffix ? 'has-suffix' : '';
+  return `<div class="field">
+    <label>${t(labelKey)}${suffix ? ` <em>(${suffix})</em>` : ''}</label>
+    <div class="input-wrapper">
+      ${prefixHtml}
+      <input type="number" id="field_${fieldId}" class="field-input ${prefixClass} ${suffixClass}"
+        placeholder="${placeholder}" min="0" step="any"
+        oninput="onFieldInput()"/>
+      ${suffixHtml}
+    </div>
+  </div>`;
+}
+
+// PHASE 2: Restore input values from saved details object
+function restoreInputValues(details) {
+  Object.entries(details).forEach(([fieldId, value]) => {
+    const el = document.getElementById('field_' + fieldId);
+    if (el && value !== null && value !== undefined) {
+      el.value = value > 0 ? value : '';
+    }
+  });
+}
+
+// Read all current input values
+function getAllInputValues() {
+  const values = {};
+  document.querySelectorAll('[id^="field_"]').forEach(el => {
+    const key = el.id.replace('field_', '');
+    values[key] = parseFloat(el.value) || 0;
+  });
+  return values;
+}
+
+function getVal(fieldId) {
+  const el = document.getElementById('field_' + fieldId);
+  return el ? (parseFloat(el.value) || 0) : 0;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PHASE 3: CALCULATION ENGINE
+// ═══════════════════════════════════════════════════════════════════
+function onFieldInput() {
+  runCalculation();
+  setSaveStatus('unsaved');
+}
+
+function runCalculation() {
+  const project = state.projects.find(p => p.id === state.activeProjectId);
+  if (!project) return;
+
+  const result = computeFinancials(project.business_type);
+  const decision = makeDecision(result, project.business_type);
+
+  updateDecisionPanel(result, decision);
+  state.lastCalcResult = { result, decision, details: getAllInputValues() };
+}
+
+// Core math per business type
+function computeFinancials(type) {
+  let revenue = 0, cogs = 0, logistics = 0, marketing = 0, fees = 0;
+
+  if (type === 'ecom') {
+    revenue = getVal('revenue');
+    cogs = getVal('cogs');
+    logistics = getVal('shipping') + getVal('returns') + getVal('packaging');
+    marketing = getVal('fb_ads') + getVal('tik_ads') + getVal('other_ads');
+    const paymentFees = revenue * (getVal('payment_pct') / 100);
+    fees = getVal('platform_fee') + paymentFees;
+
+  } else if (type === 'creator') {
+    revenue = getVal('adsense') + getVal('tiktok_rev') + getVal('sponsorships') + getVal('merch') + getVal('other_rev');
+    cogs = getVal('equipment') + getVal('software') + getVal('production');
+    marketing = getVal('promotion');
+    fees = revenue * (getVal('agency_pct') / 100);
+    logistics = 0;
+
+  } else if (type === 'freelancer') {
+    revenue = getVal('invoiced');
+    const platformCut = revenue * (getVal('platform_pct') / 100);
+    fees = platformCut + getVal('transfer_fees');
+    cogs = getVal('subcontractors') + getVal('software') + getVal('coworking') + getVal('other_costs');
+    marketing = 0;
+    logistics = 0;
+  }
+
+  const totalCosts = cogs + logistics + marketing + fees;
+  const profit = revenue - totalCosts;
+  const margin = revenue > 0 ? (profit / revenue) * 100 : 0;
+  const adSpend = marketing;
+  const roas = adSpend > 0 ? revenue / adSpend : 0;
+  const adPct = revenue > 0 ? (adSpend / revenue) * 100 : 0;
+  const returnsPct = revenue > 0 ? (getVal('returns') / revenue) * 100 : 0;
+  const cogsPct = revenue > 0 ? (cogs / revenue) * 100 : 0;
+
+  return { revenue, cogs, logistics, marketing, fees, totalCosts, profit, margin, roas, adPct, returnsPct, cogsPct };
+}
+
+// PHASE 3: DECISION ENGINE — core logic
+function makeDecision(r, type) {
+  const { revenue, profit, margin, roas, adPct, returnsPct, cogsPct, cogs, logistics, marketing, fees } = r;
+
+  if (revenue === 0) {
+    return { verdict: 'await', confidence: 0, confLevel: 'low', explanation: t('exp-await'), insights: [] };
+  }
+
+  // Data completeness → confidence
+  const allFields = document.querySelectorAll('[id^="field_"]');
+  const filledFields = [...allFields].filter(f => parseFloat(f.value) > 0).length;
+  const confidence = Math.min(95, Math.round((filledFields / Math.max(allFields.length, 1)) * 100));
+  const confLevel = confidence >= 70 ? 'high' : confidence >= 40 ? 'medium' : 'low';
+
+  // Primary cost driver
+  const costMap = { 'COGS': cogs, 'Marketing': marketing, 'Logistics': logistics, 'Fees': fees };
+  const sortedCosts = Object.entries(costMap).sort((a, b) => b[1] - a[1]);
+  const topDriver = sortedCosts[0][0];
+  const topDriverPct = revenue > 0 ? ((sortedCosts[0][1] / revenue) * 100).toFixed(0) : 0;
+
+  // Verdict
+  let verdict, explanation;
+
+  if (profit < 0) {
+    verdict = 'kill';
+    const loss = fmt(Math.abs(profit));
+    explanation = t('exp-kill')
+      .replace('{loss}', loss)
+      .replace('{driver}', topDriver)
+      .replace('{pct}', topDriverPct);
+
+  } else if (margin >= 25 && (type !== 'ecom' || roas >= 3)) {
+    verdict = 'scale';
+    explanation = t('exp-scale')
+      .replace('{margin}', margin.toFixed(1))
+      .replace('{roas}', roas > 0 ? roas.toFixed(1) : 'N/A');
+
+  } else {
+    verdict = 'optimize';
+    explanation = t('exp-optimize')
+      .replace('{margin}', margin.toFixed(1))
+      .replace('{driver}', topDriver)
+      .replace('{pct}', topDriverPct);
+  }
+
+  // PHASE 3: INSIGHT SYSTEM — specific, data-driven
+  const insights = [];
+
+  if (profit < 0) {
+    insights.push({ type: 'danger', icon: '🛑', text: `Loss of ${fmt(Math.abs(profit))} detected. Pause all ad spend immediately. Review every cost line before relaunching.` });
+  }
+  if (roas > 0 && roas < 2) {
+    insights.push({ type: 'danger', icon: '📉', text: `ROAS of ${roas.toFixed(1)}x is below the 2x break-even threshold. Your ads are destroying margin, not building it.` });
+  }
+  if (adPct > 30) {
+    insights.push({ type: 'warning', icon: '📣', text: `Ad spend is ${adPct.toFixed(0)}% of revenue — above the 30% benchmark. Reduce budget or improve conversion rate to protect margin.` });
+  }
+  if (cogsPct > 50) {
+    insights.push({ type: 'warning', icon: '📦', text: `COGS at ${cogsPct.toFixed(0)}% of revenue is too high. Renegotiate supplier pricing or increase your selling price by at least ${(cogsPct - 40).toFixed(0)}%.` });
+  }
+  if (returnsPct > 10) {
+    insights.push({ type: 'warning', icon: '↩️', text: `${returnsPct.toFixed(0)}% return rate is eroding profitability. This signals a product-market fit problem. Review listings and product quality.` });
+  }
+  if (margin < 15 && profit > 0) {
+    insights.push({ type: 'warning', icon: '⚠️', text: `Margin of ${margin.toFixed(1)}% gives you almost no buffer. A 10% spike in ad costs would push you into losses. Fix ${topDriver} first.` });
+  }
+  if (verdict === 'scale') {
+    insights.push({ type: 'good', icon: '🚀', text: `${margin.toFixed(1)}% margin + ${roas.toFixed(1)}x ROAS is the signal to scale. Increase budget by 20% on your best-performing ad sets and monitor closely.` });
+  }
+  if (profit > 0 && margin >= 15 && insights.length === 0) {
+    insights.push({ type: 'good', icon: '✅', text: `Solid fundamentals. You're profitable with room to optimize. Test reducing ${topDriver} costs to unlock scaling potential.` });
+  }
+
+  return { verdict, confidence, confLevel, explanation, insights };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PHASE 4: UPDATE DECISION PANEL (real-time)
+// ═══════════════════════════════════════════════════════════════════
+function updateDecisionPanel(r, decision) {
+  const { revenue, cogs, logistics, marketing, fees, profit, margin, roas, adPct } = r;
+  const { verdict, confidence, confLevel, explanation, insights } = decision;
+
+  // Profit
+  const profitEl = document.getElementById('profit-amount');
+  profitEl.textContent = fmt(profit);
+  profitEl.className = 'profit-amount ' + (profit >= 0 ? 'positive' : 'negative');
+
+  // Verdict badge
+  const badgeEl = document.getElementById('verdict-badge');
+  const verdictMap = { await: 'waiting', kill: 'kill', optimize: 'optimize', scale: 'scale' };
+  badgeEl.className = 'verdict-badge ' + (verdictMap[verdict] || 'waiting');
+  document.getElementById('verdict-icon').textContent = { await: '—', kill: '❌', optimize: '⚠️', scale: '🚀' }[verdict] || '—';
+  document.getElementById('verdict-text').textContent = { await: t('verdict-await'), kill: t('verdict-kill'), optimize: t('verdict-optimize'), scale: t('verdict-scale') }[verdict] || '';
+
+  // Confidence bar
+  const confEl = document.getElementById('panel-confidence');
+  if (verdict !== 'await') {
+    confEl.style.display = 'block';
+    document.getElementById('confidence-fill').style.width = confidence + '%';
+    document.getElementById('confidence-fill').className = 'confidence-fill ' + confLevel;
+    const confLabels = { high: t('conf-high'), medium: t('conf-medium'), low: t('conf-low') };
+    document.getElementById('confidence-text').textContent = `${confLabels[confLevel]} — ${confidence}%`;
+  } else {
+    confEl.style.display = 'none';
+  }
+
+  // Metrics
+  const mgEl = document.getElementById('metric-margin');
+  mgEl.textContent = revenue > 0 ? margin.toFixed(1) + '%' : '—';
+  mgEl.className = 'metric-value ' + (margin > 20 ? 'positive' : margin < 0 ? 'negative' : margin < 15 ? 'warning' : '');
+
+  const roasEl = document.getElementById('metric-roas');
+  roasEl.textContent = roas > 0 ? roas.toFixed(1) + 'x' : '—';
+  roasEl.className = 'metric-value ' + (roas >= 3 ? 'positive' : roas > 0 && roas < 2 ? 'negative' : '');
+
+  const apEl = document.getElementById('metric-adpct');
+  apEl.textContent = marketing > 0 ? adPct.toFixed(0) + '%' : '—';
+  apEl.className = 'metric-value ' + (adPct > 30 ? 'warning' : '');
+
+  // Breakdown
+  document.getElementById('br-revenue').textContent = fmt(revenue);
+  document.getElementById('br-cogs').textContent = fmt(cogs);
+  document.getElementById('br-logistics').textContent = fmt(logistics);
+  document.getElementById('br-marketing').textContent = fmt(marketing);
+  document.getElementById('br-fees').textContent = fmt(fees);
+  document.getElementById('br-profit').textContent = fmt(profit);
+  document.getElementById('br-profit').className = 'breakdown-value total ' + (profit >= 0 ? 'positive' : '');
+
+  // Explanation
+  const expEl = document.getElementById('panel-explanation');
+  if (verdict !== 'await') {
+    expEl.style.display = 'block';
+    document.getElementById('explanation-text').textContent = explanation;
+  } else {
+    expEl.style.display = 'none';
+  }
+
+  // Insights
+  const insContainer = document.getElementById('insights-container');
+  if (verdict === 'await' || insights.length === 0) {
+    insContainer.innerHTML = `<div class="insight-item info"><span class="insight-icon">💡</span><span class="insight-text">${t('insight-wait')}</span></div>`;
+  } else {
+    const typeMap = { danger: 'danger', warning: 'warning', good: 'good', info: 'info' };
+    insContainer.innerHTML = insights.map(ins =>
+      `<div class="insight-item ${typeMap[ins.type] || 'info'}">
+        <span class="insight-icon">${ins.icon}</span>
+        <span class="insight-text">${ins.text}</span>
+      </div>`
+    ).join('');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PHASE 2: SAVE CALCULATION — persist to database
+// ═══════════════════════════════════════════════════════════════════
+async function saveCalculation() {
+  if (!state.activeProjectId) { showToast(t('toast-select-proj'), 'error'); return; }
+  if (!state.lastCalcResult || state.lastCalcResult.result.revenue === 0) { showToast(t('toast-enter-data'), 'error'); return; }
+
+  const { result, details } = state.lastCalcResult;
+  const { revenue, totalCosts, profit, margin } = result;
+
+  const btn1 = document.getElementById('btn-save');
+  const btn2 = document.getElementById('btn-save-panel');
+  [btn1, btn2].forEach(b => { if (b) { b.classList.add('loading'); b.disabled = true; } });
+
+  const { data, error } = await sb.from('calculations').insert({
+    project_id: state.activeProjectId,
+    user_id: state.user.id,
+    revenue: revenue,
+    expenses: totalCosts,
+    net_profit: profit,
+    margin_percent: margin,
+    details: details,   // ← stores ALL input values for restoration
+    calc_date: new Date().toISOString().split('T')[0]
+  }).select().single();
+
+  [btn1, btn2].forEach(b => { if (b) { b.classList.remove('loading'); b.disabled = false; } });
+
+  if (error) { showToast(error.message, 'error'); return; }
+
+  // Update local state
+  const proj = state.projects.find(p => p.id === state.activeProjectId);
+  if (proj) {
+    if (!proj.calculations) proj.calculations = [];
+    proj.calculations.unshift(data);
+  }
+
+  setSaveStatus('saved');
+  showToast(t('toast-saved'), 'success');
+  renderProjectsView();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PHASE 4: HISTORY VIEW — load and display
+// ═══════════════════════════════════════════════════════════════════
+async function loadHistoryView() {
+  const container = document.getElementById('history-container');
+  document.getElementById('history-title').textContent =
+    state.activeProjectId
+      ? (state.projects.find(p => p.id === state.activeProjectId)?.name || 'History')
+      : 'History';
+
+  if (!state.activeProjectId) {
+    container.innerHTML = emptyState('📋', t('empty-history'), t('empty-history-sub'));
+    return;
+  }
+
+  const { data } = await sb
+    .from('calculations')
+    .select('*')
+    .eq('project_id', state.activeProjectId)
+    .eq('user_id', state.user.id)
+    .order('created_at', { ascending: false })
+    .limit(50);
+
+  if (!data || data.length === 0) {
+    container.innerHTML = emptyState('📋', t('empty-history'), t('empty-history-sub'));
+    return;
+  }
+
+  const verdictFor = (mg, pr) => {
+    if (pr < 0) return { text: t('verdict-kill'), cls: 'kill' };
+    if (mg >= 25) return { text: t('verdict-scale'), cls: 'scale' };
+    return { text: t('verdict-optimize'), cls: 'optimize' };
+  };
+
+  container.innerHTML = '<div class="history-list">' + data.map(calc => {
+    const pr = calc.net_profit || 0;
+    const mg = calc.margin_percent || 0;
+    const rv = calc.revenue || 0;
+    const vd = verdictFor(mg, pr);
+    const roas = calc.details && (calc.details.fb_ads || calc.details.tik_ads)
+      ? rv / ((calc.details.fb_ads || 0) + (calc.details.tik_ads || 0))
+      : 0;
+    const dateStr = new Date(calc.created_at).toLocaleDateString(state.lang === 'fr' ? 'fr-FR' : 'en-US', {
+      weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'
+    });
+    return `<div class="history-item" onclick="loadHistoryEntry('${calc.id}')">
+      <div class="history-left">
+        <div class="history-date">${dateStr}</div>
+        <div class="history-chips">
+          <span class="chip">${t('revenue')}: ${fmt(rv)}</span>
+          <span class="chip">${t('margin')}: ${mg.toFixed(1)}%</span>
+          ${roas > 0 ? `<span class="chip">ROAS: ${roas.toFixed(1)}x</span>` : ''}
+        </div>
+        <div class="load-hint">${t('load-hint')} →</div>
+      </div>
+      <div class="history-right">
+        <div class="history-profit ${pr >= 0 ? 'pos' : 'neg'}">${pr >= 0 ? '+' : ''}${fmt(pr)}</div>
+        <div class="history-verdict ${vd.cls}">${vd.text}</div>
+      </div>
+    </div>`;
+  }).join('') + '</div>';
+}
+
+// Load a historical entry back into the form
+async function loadHistoryEntry(calcId) {
+  const { data } = await sb.from('calculations').select('*').eq('id', calcId).single();
+  if (!data || !data.details) return;
+  restoreInputValues(data.details);
+  runCalculation();
+  setSaveStatus('unsaved');
+  showView('campaign');
+  showToast(t('toast-loaded'), 'success');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PROJECTS VIEW
+// ═══════════════════════════════════════════════════════════════════
+function renderProjectsView() {
+  const container = document.getElementById('projects-container');
+  if (!state.projects.length) {
+    container.innerHTML = emptyState('📁', t('empty-projects'), t('empty-projects-sub'));
+    return;
+  }
+  const typeLabels = { ecom: t('type-ecom'), creator: t('type-creator'), freelancer: t('type-freelancer') };
+  container.innerHTML = '<div class="projects-grid">' + state.projects.map(project => {
+    const calcs = project.calculations || [];
+    const lastCalc = calcs.length > 0
+      ? [...calcs].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0]
+      : null;
+    const pr = lastCalc?.net_profit || 0;
+    const mg = lastCalc?.margin_percent || 0;
+    const rv = lastCalc?.revenue || 0;
+    const icons = { ecom: '📦', creator: '🎬', freelancer: '💻' };
+    return `<div class="project-card" onclick="activateProject('${project.id}'); showView('campaign')">
+      <div class="project-card-top">
+        <span class="type-pill ${project.business_type}">${typeLabels[project.business_type] || project.business_type}</span>
+        <span style="font-size:22px;">${icons[project.business_type] || '📁'}</span>
+      </div>
+      <div class="project-name">${project.name}</div>
+      ${lastCalc ? `<div class="project-stats">
+        <div class="proj-stat"><div class="proj-stat-val">${fmt(rv)}</div><div class="proj-stat-label">${t('revenue')}</div></div>
+        <div class="proj-stat"><div class="proj-stat-val ${pr >= 0 ? 'pos' : 'neg'}">${pr >= 0 ? '+' : ''}${fmt(Math.abs(pr))}</div><div class="proj-stat-label">${t('net-profit')}</div></div>
+        <div class="proj-stat"><div class="proj-stat-val">${mg.toFixed(1)}%</div><div class="proj-stat-label">${t('margin')}</div></div>
+      </div>` : `<p style="font-size:13px;color:var(--muted-2);padding:8px 0;">${t('empty-history')}</p>`}
+      <div class="project-footer">
+        <span>${new Date(project.created_at).toLocaleDateString()}</span>
+        <button class="btn-open-project">${t('nav-campaign')} →</button>
+      </div>
+    </div>`;
+  }).join('') + '</div>';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RENDER — initial app render
+// ═══════════════════════════════════════════════════════════════════
+function renderApp() {
+  applyLanguage();
+  // User info
+  const name = state.profile.full_name || state.user.email.split('@')[0];
+  document.getElementById('user-avatar').textContent = name.charAt(0).toUpperCase();
+  document.getElementById('user-name').textContent = name;
+  // Plan
+  if (state.profile.plan === 'premium') {
+    document.getElementById('plan-badge').textContent = 'Pro';
+    document.getElementById('plan-badge').className = 'plan-badge pro';
+    document.getElementById('trial-box').style.display = 'none';
+  }
+  // Project selector
+  fillProjectSelector();
+  // Projects view
+  renderProjectsView();
+}
+
+function fillProjectSelector() {
+  const sel = document.getElementById('project-select');
+  const prev = sel.value;
+  sel.innerHTML = `<option value="">— ${state.lang === 'fr' ? 'Sélectionner' : 'Select a project'} —</option>` +
+    state.projects.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+  if (prev && state.projects.find(p => p.id === prev)) sel.value = prev;
+  else if (state.activeProjectId) sel.value = state.activeProjectId;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════════════
+function showView(viewName) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + viewName).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const navEl = document.getElementById('nav-' + viewName);
+  if (navEl) navEl.classList.add('active');
+  const titleMap = { campaign: t('topbar-campaign'), history: t('topbar-history'), projects: t('topbar-projects') };
+  document.getElementById('topbar-title').textContent = titleMap[viewName] || '';
+  if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
+  if (viewName === 'history') loadHistoryView();
+}
+
+function onProjectChange(projectId) {
+  if (!projectId) return;
+  activateProject(projectId);
+  showView('campaign');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CREATE PROJECT
+// ═══════════════════════════════════════════════════════════════════
+function openModal() {
+  const isPro = state.profile?.plan === 'premium';
+  if (!isPro && state.projects.length >= 3) { showToast(t('toast-limit'), 'error'); return; }
+  state.selectedType = null;
+  document.getElementById('modal-project-name').value = '';
+  document.getElementById('modal-error').classList.remove('visible');
+  document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+function selectType(type, el) {
+  state.selectedType = type;
+  document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+async function createProject() {
+  const name = document.getElementById('modal-project-name').value.trim();
+  const currency = document.getElementById('modal-currency').value;
+  const errEl = document.getElementById('modal-error');
+  errEl.classList.remove('visible');
+  if (!state.selectedType) { errEl.textContent = state.lang === 'fr' ? 'Choisis un type d\'activité.' : 'Please choose a business type.'; errEl.classList.add('visible'); return; }
+  if (!name) { errEl.textContent = state.lang === 'fr' ? 'Entre un nom de projet.' : 'Please enter a project name.'; errEl.classList.add('visible'); return; }
+  const { data, error } = await sb.from('projects').insert({
+    user_id: state.user.id, name, business_type: state.selectedType, currency, is_archived: false
+  }).select().single();
+  if (error) { errEl.textContent = error.message; errEl.classList.add('visible'); return; }
+  data.calculations = [];
+  state.projects.unshift(data);
+  fillProjectSelector();
+  renderProjectsView();
+  closeModal();
+  activateProject(data.id);
+  showView('campaign');
+  showToast(t('toast-created'), 'success');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// LANGUAGE SYSTEM
+// ═══════════════════════════════════════════════════════════════════
+function setLanguage(lang) {
+  state.lang = lang;
+  document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+  document.getElementById('lang-fr').classList.toggle('active', lang === 'fr');
+  applyLanguage();
+  // Rebuild inputs if project active (labels change)
+  if (state.activeProjectId) {
+    const project = state.projects.find(p => p.id === state.activeProjectId);
+    if (project) {
+      const currentValues = getAllInputValues();
+      buildInputSections(project.business_type);
+      restoreInputValues(currentValues);
+      runCalculation();
+    }
+  }
+  renderProjectsView();
+}
+
+function applyLanguage() {
+  // Map element IDs to translation keys
+  const mapping = {
+    'loading-text': 'loading',
+    't-decision-engine': 'decision-engine',
+    't-active-project': 'active-project',
+    't-new-project': 'new-project',
+    't-nav-campaign': 'nav-campaign',
+    't-nav-history': 'nav-history',
+    't-nav-projects': 'nav-projects',
+    't-nav-upgrade': 'nav-upgrade',
+    't-trial-label': 'trial-label',
+    't-trial-sub': 'trial-sub',
+    't-btn-upgrade': 'btn-upgrade',
+    't-no-proj-title': 'no-proj-title',
+    't-no-proj-sub': 'no-proj-sub',
+    't-create-first': 'create-first',
+    't-view-history': 'view-history',
+    't-save': 'save',
+    't-net-profit': 'net-profit',
+    't-confidence': 'confidence',
+    't-margin': 'margin',
+    't-ads-rev': 'ads-rev',
+    't-revenue': 'revenue',
+    't-logistics': 'logistics',
+    't-marketing': 'marketing',
+    't-fees': 'fees',
+    't-net-profit-2': 'net-profit-2',
+    't-analysis': 'analysis',
+    't-intelligence': 'intelligence',
+    't-insight-wait': 'insight-wait',
+    't-save-2': 'save-2',
+    't-save-note': 'save-note',
+    't-history-sub': 'history-sub',
+    't-all-projects': 'all-projects',
+    't-projects-sub': 'projects-sub',
+    't-new-proj-btn': 'new-proj-btn',
+    't-modal-title': 'modal-title',
+    't-modal-sub': 'modal-sub',
+    't-project-name': 'project-name',
+    't-currency-label': 'currency-label',
+    't-create-project': 'create-project',
+    't-type-ecom': 'type-ecom',
+    't-type-creator': 'type-creator',
+    't-type-freelancer': 'type-freelancer',
+  };
+  Object.entries(mapping).forEach(([id, key]) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = t(key);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CURRENCY
+// ═══════════════════════════════════════════════════════════════════
+function onCurrencyChange(cur) {
+  state.currency = cur;
+  state.symbol = CURRENCY_SYMBOLS[cur] || cur + ' ';
+  // Rebuild input sections to update prefix symbols
+  if (state.activeProjectId) {
+    const project = state.projects.find(p => p.id === state.activeProjectId);
+    if (project) {
+      const currentValues = getAllInputValues();
+      buildInputSections(project.business_type);
+      restoreInputValues(currentValues);
+      runCalculation();
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════════════════
+function fmt(n) {
+  const abs = Math.abs(n);
+  const sym = state.symbol;
+  const formatted = abs.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+  return (n < 0 ? '-' : '') + sym + formatted;
+}
+
+function setSaveStatus(status) {
+  const dot = document.getElementById('status-dot');
+  const txt = document.getElementById('status-text');
+  if (status === 'saved') { dot.className = 'status-dot saved'; txt.textContent = t('status-saved'); }
+  else if (status === 'unsaved') { dot.className = 'status-dot unsaved'; txt.textContent = t('status-unsaved'); }
+  else { dot.className = 'status-dot'; txt.textContent = '—'; }
+}
+
+function showToast(msg, type = '') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast visible ' + type;
+  setTimeout(() => { el.className = 'toast'; }, 3500);
+}
+
+function emptyState(icon, title, body) {
+  return `<div class="empty-state"><div class="empty-icon">${icon}</div><div class="empty-title">${title}</div><div class="empty-body">${body}</div></div>`;
+}
+
+async function doLogout() { await sb.auth.signOut(); window.location.href = 'sellsense-auth.html'; }
+
+// ═══════════════════════════════════════════════════════════════════
+// START
+// ═══════════════════════════════════════════════════════════════════
+boot();
+</script>
+</body>
+</html>

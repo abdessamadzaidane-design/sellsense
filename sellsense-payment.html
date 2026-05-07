@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SellSense — Upgrade to Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#F9FAFB;--white:#fff;--text:#111827;--text-2:#374151;--muted:#6B7280;--muted-2:#9CA3AF;--border:#E5E7EB;--blue:#2563EB;--blue-h:#1D4ED8;--blue-l:#EFF6FF;--green:#059669;--green-l:#ECFDF5;--amber:#D97706;--amber-l:#FFFBEB;--red:#DC2626;--red-l:#FEF2F2;--dark:#0F172A;--sh:0 1px 3px rgba(0,0,0,.08);--sh-md:0 4px 16px rgba(0,0,0,.08);--sh-lg:0 12px 40px rgba(0,0,0,.12);--font:'Inter',system-ui,sans-serif;}
+html,body{min-height:100%;font-size:14px;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;}
+/* TOPBAR */
+.topbar{background:rgba(255,255,255,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 24px;position:sticky;top:0;z-index:100;}
+.topbar-inner{max-width:1140px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:62px;}
+.logo{font-size:18px;font-weight:800;color:var(--text);text-decoration:none;letter-spacing:-.5px;}
+.logo span{color:var(--blue);}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.lang-tog{display:flex;background:var(--border);border-radius:8px;padding:3px;gap:2px;}
+.lt{padding:4px 12px;border-radius:6px;border:none;background:transparent;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s;font-family:var(--font);}
+.lt.on{background:var(--white);color:var(--text);box-shadow:var(--sh);}
+.secure-badge{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:5px;}
+/* PAGE */
+.page{max-width:1140px;margin:0 auto;padding:60px 24px 80px;}
+/* HEADER */
+.page-header{text-align:center;margin-bottom:52px;}
+.page-eyebrow{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:14px;}
+.page-title{font-size:clamp(32px,5vw,52px);font-weight:900;letter-spacing:-2px;line-height:1.05;margin-bottom:14px;}
+.page-sub{font-size:16px;color:var(--muted);max-width:440px;margin:0 auto;}
+/* BILLING TOGGLE */
+.billing-toggle{display:inline-flex;background:var(--white);border:1.5px solid var(--border);border-radius:40px;padding:4px;margin:28px 0;gap:2px;}
+.bt-btn{padding:9px 22px;border-radius:40px;border:none;background:transparent;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s;font-family:var(--font);}
+.bt-btn.on{background:var(--blue);color:#fff;}
+.save-tag{font-size:10px;font-weight:700;background:var(--green);color:#fff;padding:3px 8px;border-radius:20px;margin-left:4px;}
+/* URGENCY */
+.urgency{background:var(--amber-l);border:1.5px solid rgba(217,119,6,.25);border-radius:12px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:44px;flex-wrap:wrap;}
+.urg-left{display:flex;align-items:center;gap:10px;}
+.urg-dot{width:8px;height:8px;border-radius:50%;background:var(--amber);animation:blink 1s infinite;flex-shrink:0;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.urg-text{font-size:14px;font-weight:500;}
+.urg-text em{font-style:normal;font-weight:700;color:var(--amber);}
+.countdown{display:flex;gap:6px;align-items:center;}
+.cd-block{background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:8px 13px;text-align:center;min-width:50px;}
+.cd-num{font-size:20px;font-weight:800;color:var(--amber);letter-spacing:-.5px;display:block;line-height:1;}
+.cd-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;}
+.cd-sep{color:var(--muted);font-size:16px;align-self:flex-start;padding-top:9px;}
+/* MAIN LAYOUT */
+.main-layout{display:grid;grid-template-columns:1fr 420px;gap:36px;align-items:start;}
+/* PLANS */
+.plans-col{display:flex;flex-direction:column;gap:16px;}
+.plan-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:28px;box-shadow:var(--sh);position:relative;transition:all .2s;}
+.plan-card:hover{border-color:var(--blue);}
+.plan-card.featured{border-color:var(--blue);box-shadow:0 8px 32px rgba(37,99,235,.14);}
+.plan-popular{position:absolute;top:-13px;left:28px;background:var(--blue);color:#fff;font-size:11px;font-weight:700;padding:4px 14px;border-radius:20px;}
+.plan-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;}
+.plan-name{font-size:17px;font-weight:700;}
+.plan-desc{font-size:13px;color:var(--muted);margin-top:3px;}
+.plan-pricing{text-align:right;}
+.plan-old-price{font-size:13px;color:var(--muted-2);text-decoration:line-through;}
+.plan-price{font-size:36px;font-weight:800;letter-spacing:-1.5px;color:var(--text);}
+.plan-price.blue{color:var(--blue);}
+.plan-per{font-size:12px;color:var(--muted);}
+.plan-divider{height:1px;background:var(--border);margin:16px 0;}
+.plan-features{display:flex;flex-direction:column;gap:9px;margin-bottom:20px;}
+.pf{display:flex;align-items:center;gap:9px;font-size:14px;color:var(--text-2);}
+.pf-check{color:var(--green);font-weight:700;flex-shrink:0;}
+.pf-x{color:var(--muted-2);flex-shrink:0;}
+.pf.dim{color:var(--muted-2);}
+.btn-select-plan{width:100%;border-radius:8px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font);border:none;}
+.btn-select-free{background:var(--white);border:1.5px solid var(--border)!important;color:var(--text);}
+.btn-select-free:hover{border-color:var(--blue);color:var(--blue);}
+.btn-select-pro{background:var(--blue);color:#fff;}
+.btn-select-pro:hover{background:var(--blue-h);}
+/* PAYMENT FORM */
+.payment-col{position:sticky;top:80px;}
+.payment-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:28px;box-shadow:var(--sh-md);}
+.payment-card-top{height:3px;background:linear-gradient(90deg,var(--blue),#7C3AED);border-radius:3px 3px 0 0;margin:-28px -28px 24px;}
+.payment-title{font-size:18px;font-weight:700;margin-bottom:4px;}
+.payment-sub{font-size:13px;color:var(--muted);margin-bottom:20px;}
+/* ORDER SUMMARY */
+.order-summary{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:20px;}
+.os-row{display:flex;justify-content:space-between;font-size:14px;padding:6px 0;border-bottom:1px solid var(--border);}
+.os-row:last-child{border-bottom:none;font-weight:700;font-size:15px;}
+.os-label{color:var(--muted);}
+.os-value{font-weight:600;}
+.os-row.total .os-label{color:var(--text);font-weight:700;}
+.os-row.total .os-value{color:var(--blue);font-size:18px;font-weight:800;}
+/* PROMO */
+.promo-row{display:flex;gap:8px;margin-bottom:16px;}
+.promo-input{flex:1;border:1.5px solid var(--border);border-radius:8px;padding:10px 13px;font-size:14px;color:var(--text);font-family:var(--font);transition:border-color .2s;}
+.promo-input:focus{outline:none;border-color:var(--blue);}
+.promo-input::placeholder{color:var(--muted-2);}
+.btn-promo{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:10px 16px;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;white-space:nowrap;font-family:var(--font);transition:all .2s;}
+.btn-promo:hover{border-color:var(--blue);color:var(--blue);}
+.promo-ok{font-size:13px;color:var(--green);margin-bottom:12px;display:none;}
+/* PAYMENT FIELDS */
+.pay-field{margin-bottom:14px;}
+.pay-field label{display:block;font-size:13px;font-weight:500;color:var(--text-2);margin-bottom:6px;}
+.pay-input{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:11px 13px;font-size:14px;color:var(--text);font-family:var(--font);transition:border-color .2s;}
+.pay-input:focus{outline:none;border-color:var(--blue);}
+.pay-input::placeholder{color:var(--muted-2);}
+.pay-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+/* CARD VISUAL */
+.card-visual{background:linear-gradient(135deg,#1E293B,#334155);border-radius:12px;padding:20px;margin-bottom:20px;position:relative;overflow:hidden;}
+.cv-chips{display:flex;gap:8px;margin-bottom:16px;}
+.cv-chip{font-size:12px;font-weight:600;color:rgba(255,255,255,.7);background:rgba(255,255,255,.1);padding:4px 10px;border-radius:6px;}
+.cv-number{font-size:16px;font-weight:600;color:rgba(255,255,255,.8);letter-spacing:3px;margin-bottom:12px;}
+.cv-meta{display:flex;justify-content:space-between;}
+.cv-meta-item label{font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:2px;}
+.cv-meta-item span{font-size:13px;font-weight:600;color:#fff;}
+/* SUBMIT */
+.btn-pay{width:100%;background:var(--blue);color:#fff;border:none;border-radius:8px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;font-family:var(--font);position:relative;margin-bottom:10px;}
+.btn-pay:hover{background:var(--blue-h);}
+.btn-pay:disabled{opacity:.5;cursor:not-allowed;}
+.btn-pay .sp{display:none;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto;}
+.btn-pay.loading .btn-lbl{display:none;}
+.btn-pay.loading .sp{display:block;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.trust-row{display:flex;align-items:center;justify-content:center;gap:16px;font-size:12px;color:var(--muted-2);flex-wrap:wrap;}
+/* SUCCESS */
+.success-panel{display:none;text-align:center;padding:24px 0;}
+.success-icon-lg{font-size:56px;margin-bottom:16px;}
+.success-title-lg{font-size:26px;font-weight:800;margin-bottom:8px;}
+.success-sub-lg{font-size:15px;color:var(--muted);margin-bottom:28px;}
+.unlocked-list{background:var(--green-l);border:1px solid rgba(5,150,105,.2);border-radius:12px;padding:20px;margin-bottom:24px;text-align:left;}
+.ul-item{display:flex;align-items:center;gap:10px;font-size:14px;padding:8px 0;border-bottom:1px solid rgba(5,150,105,.12);}
+.ul-item:last-child{border-bottom:none;}
+.ul-check{color:var(--green);font-size:16px;flex-shrink:0;}
+.btn-goto-dash{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font);}
+/* FAQ */
+.faq-section{max-width:700px;margin:64px auto 0;}
+.faq-title{font-size:24px;font-weight:800;text-align:center;margin-bottom:28px;letter-spacing:-.5px;}
+.fq{border-bottom:1px solid var(--border);padding:18px 0;cursor:pointer;}
+.fq-q{display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:600;}
+.fq-icon{color:var(--muted);font-size:18px;transition:transform .2s;}
+.fq.open .fq-icon{transform:rotate(45deg);}
+.fq-a{font-size:14px;color:var(--muted);max-height:0;overflow:hidden;transition:max-height .3s,padding .3s;line-height:1.65;}
+.fq.open .fq-a{max-height:200px;padding-top:10px;}
+/* FOOTER */
+footer{border-top:1px solid var(--border);text-align:center;padding:32px 24px;color:var(--muted-2);font-size:13px;margin-top:60px;}
+@media(max-width:900px){.main-layout{grid-template-columns:1fr;}.payment-col{position:static;}.pay-row{grid-template-columns:1fr;}.urgency{flex-direction:column;align-items:flex-start;}}
+@media(max-width:600px){.page-title{letter-spacing:-1.5px;}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="sellsense-landing.html" class="logo">Sell<span>Sense</span></a>
+    <div class="topbar-right">
+      <div class="secure-badge">🔒 <span id="t-secure">Secure checkout</span></div>
+      <div class="lang-tog">
+        <button class="lt on" id="lt-en" onclick="setL('en',this)">EN</button>
+        <button class="lt" id="lt-fr" onclick="setL('fr',this)">FR</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+  <div class="page-header">
+    <div class="page-eyebrow" id="t-eyebrow">⭐ SellSense Pro</div>
+    <h1 class="page-title" id="t-title">Upgrade to Pro.<br/>Scale with confidence.</h1>
+    <p class="page-sub" id="t-sub">Start with 7 days free. Upgrade when ready. Cancel anytime.</p>
+    <div style="text-align:center;">
+      <div class="billing-toggle">
+        <button class="bt-btn on" id="bt-m" onclick="setBilling('m')"><span id="t-monthly">Monthly</span></button>
+        <button class="bt-btn" id="bt-y" onclick="setBilling('y')"><span id="t-annual">Annual</span> <span class="save-tag">−40%</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- URGENCY -->
+  <div class="urgency">
+    <div class="urg-left">
+      <div class="urg-dot"></div>
+      <div class="urg-text" id="t-urgency">Launch offer — <em>50% off Pro</em>. Expires in</div>
+    </div>
+    <div class="countdown">
+      <div class="cd-block"><span class="cd-num" id="cd-h">23</span><span class="cd-lbl">Hrs</span></div>
+      <span class="cd-sep">:</span>
+      <div class="cd-block"><span class="cd-num" id="cd-m">47</span><span class="cd-lbl">Min</span></div>
+      <span class="cd-sep">:</span>
+      <div class="cd-block"><span class="cd-num" id="cd-s">12</span><span class="cd-lbl">Sec</span></div>
+    </div>
+  </div>
+
+  <div class="main-layout">
+
+    <!-- PLANS -->
+    <div class="plans-col">
+
+      <!-- FREE -->
+      <div class="plan-card">
+        <div class="plan-header">
+          <div><div class="plan-name" id="t-free-name">Free Trial</div><div class="plan-desc" id="t-free-desc">7 days · No card required</div></div>
+          <div class="plan-pricing"><div class="plan-price">$0</div><div class="plan-per" id="t-free-per">for 7 days</div></div>
+        </div>
+        <div class="plan-divider"></div>
+        <div class="plan-features">
+          <div class="pf"><span class="pf-check">✓</span><span id="tf1">Up to 3 projects</span></div>
+          <div class="pf"><span class="pf-check">✓</span><span id="tf2">Kill / Optimize / Scale decisions</span></div>
+          <div class="pf"><span class="pf-check">✓</span><span id="tf3">Real-time profit & ROAS</span></div>
+          <div class="pf"><span class="pf-check">✓</span><span id="tf4">EN / FR · USD / EUR / GBP</span></div>
+          <div class="pf dim"><span class="pf-x">✗</span><span id="tf5">Unlimited projects</span></div>
+          <div class="pf dim"><span class="pf-x">✗</span><span id="tf6">Full history & reload</span></div>
+          <div class="pf dim"><span class="pf-x">✗</span><span id="tf7">Creator & Freelancer modes</span></div>
+        </div>
+        <button class="btn-select-plan btn-select-free" onclick="location.href='sellsense-auth.html'" id="t-btn-free">Start free trial</button>
+      </div>
+
+      <!-- PRO -->
+      <div class="plan-card featured" id="pro-card">
+        <div class="plan-popular" id="t-popular">⭐ Most popular</div>
+        <div class="plan-header">
+          <div><div class="plan-name" style="color:var(--blue);" id="t-pro-name">Pro</div><div class="plan-desc" id="t-pro-desc">For serious operators</div></div>
+          <div class="plan-pricing">
+            <div class="plan-old-price" id="old-price">$18/mo</div>
+            <div class="plan-price blue" id="pro-price">$9</div>
+            <div class="plan-per" id="pro-per">/month · Cancel anytime</div>
+          </div>
+        </div>
+        <div class="plan-divider"></div>
+        <div class="plan-features">
+          <div class="pf"><span class="pf-check">✓</span><span id="pp1">Everything in Free</span></div>
+          <div class="pf"><span class="pf-check">✓</span><span id="pp2">Unlimited projects</span></div>
+          <div class="pf"><span class="pf-check">✓</span><span id="pp3">Full campaign history & data reload</span></div>
+          <div class="pf"><span class="pf-check">✓</span><span id="pp4">E-commerce, Creator & Freelancer modes</span></div>
+          <div class="pf"><span class="pf-check">✓</span><span id="pp5">Confidence scoring & plain-English analysis</span></div>
+          <div class="pf"><span class="pf-check">✓</span><span id="pp6">Priority support</span></div>
+        </div>
+        <button class="btn-select-plan btn-select-pro" onclick="scrollToPay()" id="t-btn-pro">Get Pro — $9/month →</button>
+      </div>
+
+    </div>
+
+    <!-- PAYMENT FORM -->
+    <div class="payment-col">
+      <div class="payment-card" id="pay-card">
+        <div class="payment-card-top"></div>
+        <div class="payment-title" id="t-pay-title">Payment details</div>
+        <div class="payment-sub" id="t-pay-sub">Secured by Stripe · SSL encrypted</div>
+
+        <!-- ORDER SUMMARY -->
+        <div class="order-summary">
+          <div class="os-row"><span class="os-label" id="t-plan-label">Plan</span><span class="os-value">SellSense Pro</span></div>
+          <div class="os-row"><span class="os-label" id="t-billing-label">Billing</span><span class="os-value" id="os-billing">Monthly</span></div>
+          <div class="os-row"><span class="os-label" id="t-regular">Regular price</span><span class="os-value" style="text-decoration:line-through;color:var(--muted-2);" id="os-old">$18/mo</span></div>
+          <div class="os-row"><span class="os-label" id="t-discount">Launch discount</span><span class="os-value" style="color:var(--green);" id="os-disc">−$9/mo</span></div>
+          <div class="os-row total"><span class="os-label" id="t-total">Total today</span><span class="os-value" id="os-total">$9</span></div>
+        </div>
+
+        <!-- PROMO -->
+        <div class="promo-row">
+          <input class="promo-input" type="text" id="promo-input" placeholder="Promo code"/>
+          <button class="btn-promo" onclick="applyPromo()" id="t-apply">Apply</button>
+        </div>
+        <div class="promo-ok" id="promo-ok" id="t-promo-ok">✓ Promo code applied!</div>
+
+        <!-- CARD VISUAL -->
+        <div class="card-visual">
+          <div class="cv-chips"><span class="cv-chip">VISA</span><span class="cv-chip">Mastercard</span><span class="cv-chip">Amex</span></div>
+          <div class="cv-number" id="cv-number">•••• •••• •••• ••••</div>
+          <div class="cv-meta">
+            <div class="cv-meta-item"><label id="t-cardholder">Cardholder</label><span id="cv-name">YOUR NAME</span></div>
+            <div class="cv-meta-item"><label id="t-expires">Expires</label><span id="cv-exp">MM/YY</span></div>
+            <div class="cv-meta-item" style="text-align:right;"><label>Plan</label><span style="color:#93C5FD;">Pro</span></div>
+          </div>
+        </div>
+
+        <!-- FIELDS -->
+        <div class="pay-field">
+          <label id="t-lbl-name">Name on card</label>
+          <input class="pay-input" type="text" id="f-name" placeholder="JANE SMITH" oninput="document.getElementById('cv-name').textContent=this.value.toUpperCase()||'YOUR NAME'"/>
+        </div>
+        <div class="pay-field">
+          <label id="t-lbl-email">Email</label>
+          <input class="pay-input" type="email" id="f-email" placeholder="you@example.com"/>
+        </div>
+        <div class="pay-field">
+          <label id="t-lbl-card">Card number</label>
+          <input class="pay-input" type="text" id="f-card" placeholder="1234 5678 9012 3456" maxlength="19" oninput="fmtCard(this)"/>
+        </div>
+        <div class="pay-row">
+          <div class="pay-field">
+            <label id="t-lbl-exp">Expiry</label>
+            <input class="pay-input" type="text" id="f-exp" placeholder="MM/YY" maxlength="5" oninput="fmtExp(this)"/>
+          </div>
+          <div class="pay-field">
+            <label>CVV</label>
+            <input class="pay-input" type="text" id="f-cvv" placeholder="•••" maxlength="4" oninput="this.value=this.value.replace(/\D/g,'')"/>
+          </div>
+        </div>
+
+        <button class="btn-pay" id="btn-pay" onclick="handlePay()">
+          <span class="btn-lbl" id="t-btn-pay">🔒 Pay $9 and activate Pro</span>
+          <div class="sp"></div>
+        </button>
+        <div class="trust-row">
+          <span>🔒 SSL</span><span>↩️ <span id="t-refund">14-day refund</span></span><span>✓ <span id="t-cancel">Cancel anytime</span></span>
+        </div>
+
+        <!-- SUCCESS STATE -->
+        <div class="success-panel" id="success-panel">
+          <div class="success-icon-lg">⭐</div>
+          <div class="success-title-lg" id="t-success-title">Welcome to Pro!</div>
+          <div class="success-sub-lg" id="t-success-sub">Your access is activated instantly.</div>
+          <div class="unlocked-list">
+            <div class="ul-item"><span class="ul-check">✓</span><span id="ul1">Unlimited projects unlocked</span></div>
+            <div class="ul-item"><span class="ul-check">✓</span><span id="ul2">Full history & data persistence</span></div>
+            <div class="ul-item"><span class="ul-check">✓</span><span id="ul3">All 3 business modes active</span></div>
+            <div class="ul-item"><span class="ul-check">✓</span><span id="ul4">Priority support active</span></div>
+          </div>
+          <button class="btn-goto-dash" onclick="location.href='sellsense-dashboard.html'" id="t-goto-dash">Go to dashboard →</button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq-section">
+    <div class="faq-title" id="t-faq">Frequently asked questions</div>
+    <div class="fq" onclick="this.classList.toggle('open')"><div class="fq-q"><span id="fq1">Can I cancel anytime?</span><span class="fq-icon">+</span></div><div class="fq-a" id="fa1">Yes. Cancel from your dashboard in one click, at any time, no questions asked. You keep access until the end of your billing period.</div></div>
+    <div class="fq" onclick="this.classList.toggle('open')"><div class="fq-q"><span id="fq2">What happens after the 7-day trial?</span><span class="fq-icon">+</span></div><div class="fq-a" id="fa2">After 7 days, you stay on the free plan (3 projects max) unless you choose to upgrade. No automatic charges.</div></div>
+    <div class="fq" onclick="this.classList.toggle('open')"><div class="fq-q"><span id="fq3">Monthly vs Annual — what's the difference?</span><span class="fq-icon">+</span></div><div class="fq-a" id="fa3">Annual billing = $5/month (billed as $60/year) instead of $9/month. You save 40% compared to monthly.</div></div>
+    <div class="fq" onclick="this.classList.toggle('open')"><div class="fq-q"><span id="fq4">Is my payment secure?</span><span class="fq-icon">+</span></div><div class="fq-a" id="fa4">Yes. All payments are processed by Stripe, the industry standard for secure payment infrastructure. We never store your card details.</div></div>
+  </div>
+</div>
+
+<footer>© 2025 SellSense · <a href="sellsense-landing.html" style="color:inherit;">Home</a> · <a href="sellsense-auth.html" style="color:inherit;">Sign in</a></footer>
+
+<script>
+let lang='en',isAnnual=false,promoApplied=false;
+const TX={
+en:{
+  't-secure':'Secure checkout','t-eyebrow':'⭐ SellSense Pro','t-title':'Upgrade to Pro.<br/>Scale with confidence.',
+  't-sub':'Start with 7 days free. Upgrade when ready. Cancel anytime.',
+  't-monthly':'Monthly','t-annual':'Annual',
+  't-urgency':'Launch offer — <em>50% off Pro</em>. Expires in',
+  't-free-name':'Free Trial','t-free-desc':'7 days · No card required','t-free-per':'for 7 days',
+  'tf1':'Up to 3 projects','tf2':'Kill / Optimize / Scale decisions','tf3':'Real-time profit & ROAS','tf4':'EN / FR · USD / EUR / GBP','tf5':'Unlimited projects','tf6':'Full history & reload','tf7':'Creator & Freelancer modes',
+  't-btn-free':'Start free trial',
+  't-popular':'⭐ Most popular','t-pro-name':'Pro','t-pro-desc':'For serious operators',
+  'pp1':'Everything in Free','pp2':'Unlimited projects','pp3':'Full campaign history & data reload',
+  'pp4':'E-commerce, Creator & Freelancer modes','pp5':'Confidence scoring & plain-English analysis','pp6':'Priority support',
+  't-btn-pro':'Get Pro — $9/month →',
+  't-pay-title':'Payment details','t-pay-sub':'Secured by Stripe · SSL encrypted',
+  't-plan-label':'Plan','t-billing-label':'Billing','t-regular':'Regular price','t-discount':'Launch discount','t-total':'Total today',
+  't-apply':'Apply','t-promo-ok':'✓ Promo code applied!',
+  't-cardholder':'Cardholder','t-expires':'Expires',
+  't-lbl-name':'Name on card','t-lbl-email':'Email','t-lbl-card':'Card number','t-lbl-exp':'Expiry',
+  't-btn-pay':'🔒 Pay $9 and activate Pro',
+  't-refund':'14-day refund','t-cancel':'Cancel anytime',
+  't-success-title':'Welcome to Pro!','t-success-sub':'Your access is activated instantly.',
+  'ul1':'Unlimited projects unlocked','ul2':'Full history & data persistence','ul3':'All 3 business modes active','ul4':'Priority support active',
+  't-goto-dash':'Go to dashboard →',
+  't-faq':'Frequently asked questions',
+  'fq1':'Can I cancel anytime?','fa1':'Yes. Cancel from your dashboard in one click, at any time, no questions asked. You keep access until the end of your billing period.',
+  'fq2':'What happens after the 7-day trial?','fa2':'After 7 days, you stay on the free plan (3 projects max) unless you choose to upgrade. No automatic charges.',
+  'fq3':'Monthly vs Annual — what\'s the difference?','fa3':'Annual billing = $5/month (billed as $60/year) instead of $9/month. You save 40% compared to monthly.',
+  'fq4':'Is my payment secure?','fa4':'Yes. All payments are processed by Stripe, the industry standard for secure payment infrastructure. We never store your card details.',
+},
+fr:{
+  't-secure':'Paiement sécurisé','t-eyebrow':'⭐ SellSense Pro','t-title':'Passez Pro.<br/>Scalez avec confiance.',
+  't-sub':'Commencez avec 7 jours gratuits. Passez Pro quand vous êtes prêt. Annulez à tout moment.',
+  't-monthly':'Mensuel','t-annual':'Annuel',
+  't-urgency':'Offre de lancement — <em>−50% sur Pro</em>. Expire dans',
+  't-free-name':'Essai gratuit','t-free-desc':'7 jours · Sans carte bancaire','t-free-per':'pendant 7 jours',
+  'tf1':'3 projets maximum','tf2':'Décisions Stop / Optimiser / Scaler','tf3':'Profit et ROAS en temps réel','tf4':'FR / EN · USD / EUR / GBP','tf5':'Projets illimités','tf6':'Historique complet et rechargement','tf7':'Modes Créateur & Freelance',
+  't-btn-free':'Commencer l\'essai gratuit',
+  't-popular':'⭐ Le plus populaire','t-pro-name':'Pro','t-pro-desc':'Pour les opérateurs sérieux',
+  'pp1':'Tout le plan gratuit','pp2':'Projets illimités','pp3':'Historique complet & rechargement des données',
+  'pp4':'Modes E-commerce, Créateur et Freelance','pp5':'Score de confiance & analyse en langage naturel','pp6':'Support prioritaire',
+  't-btn-pro':'Passer Pro — 9$/mois →',
+  't-pay-title':'Informations de paiement','t-pay-sub':'Sécurisé par Stripe · Chiffrement SSL',
+  't-plan-label':'Plan','t-billing-label':'Facturation','t-regular':'Prix habituel','t-discount':'Remise de lancement','t-total':'Total aujourd\'hui',
+  't-apply':'Appliquer','t-promo-ok':'✓ Code promo appliqué !',
+  't-cardholder':'Titulaire','t-expires':'Expire',
+  't-lbl-name':'Nom sur la carte','t-lbl-email':'Email','t-lbl-card':'Numéro de carte','t-lbl-exp':'Date d\'expiration',
+  't-btn-pay':'🔒 Payer 9$ et activer Pro',
+  't-refund':'Remboursement 14 jours','t-cancel':'Annulable à tout moment',
+  't-success-title':'Bienvenue dans Pro !','t-success-sub':'Votre accès est activé instantanément.',
+  'ul1':'Projets illimités débloqués','ul2':'Historique et persistance des données','ul3':'3 modes d\'activité actifs','ul4':'Support prioritaire activé',
+  't-goto-dash':'Accéder au tableau de bord →',
+  't-faq':'Questions fréquentes',
+  'fq1':'Puis-je annuler à tout moment ?','fa1':'Oui. Annulation depuis votre tableau de bord en un clic, à tout moment. Vous gardez l\'accès jusqu\'à la fin de la période payée.',
+  'fq2':'Que se passe-t-il après l\'essai de 7 jours ?','fa2':'Après 7 jours, vous restez sur le plan gratuit (3 projets max) sauf si vous choisissez de passer Pro. Aucune facturation automatique.',
+  'fq3':'Mensuel vs Annuel — quelle différence ?','fa3':'Facturation annuelle = 5$/mois (facturé 60$/an) au lieu de 9$/mois. Vous économisez 40% par rapport au mensuel.',
+  'fq4':'Mon paiement est-il sécurisé ?','fa4':'Oui. Tous les paiements sont traités par Stripe, la référence mondiale pour les paiements sécurisés. Nous ne stockons jamais vos données bancaires.',
+}
+};
+
+function setL(l,btn){
+  lang=l;
+  document.getElementById('lt-en').classList.toggle('on',l==='en');
+  document.getElementById('lt-fr').classList.toggle('on',l==='fr');
+  const t=TX[l];
+  Object.entries(t).forEach(([id,val])=>{const e=document.getElementById(id);if(e)e.innerHTML=val;});
+  updateBillingDisplay();
+}
+
+function setBilling(m){
+  isAnnual=m==='y';
+  document.getElementById('bt-m').classList.toggle('on',!isAnnual);
+  document.getElementById('bt-y').classList.toggle('on',isAnnual);
+  updateBillingDisplay();
+}
+
+function updateBillingDisplay(){
+  const price=isAnnual?(promoApplied?'$3':lang==='fr'?'5$':'$5'):(promoApplied?'$4.50':lang==='fr'?'9$':'$9');
+  const oldP=isAnnual?(lang==='fr'?'10$/mois':'$10/mo'):(lang==='fr'?'18$/mois':'$18/mo');
+  const per=isAnnual?(lang==='fr'?'/mois · Facturé annuellement':'/month · Billed annually'):(lang==='fr'?'/mois · Annulable à tout moment':'/month · Cancel anytime');
+  document.getElementById('pro-price').textContent=price;
+  document.getElementById('old-price').textContent=oldP;
+  document.getElementById('pro-per').textContent=per;
+  document.getElementById('os-billing').textContent=isAnnual?(lang==='fr'?'Annuelle':'Annual'):(lang==='fr'?'Mensuelle':'Monthly');
+  document.getElementById('os-old').textContent=oldP;
+  document.getElementById('os-disc').textContent=isAnnual?'−50%':'−50%';
+  document.getElementById('os-total').textContent=price;
+  document.getElementById('t-btn-pay').textContent=`🔒 ${lang==='fr'?'Payer':'Pay'} ${price} ${lang==='fr'?'et activer Pro':'and activate Pro'}`;
+}
+
+function applyPromo(){
+  const code=document.getElementById('promo-input').value.trim().toUpperCase();
+  if(code==='SELLSENSE'||code==='LAUNCH50'){
+    promoApplied=true;
+    document.getElementById('promo-ok').style.display='block';
+    updateBillingDisplay();
+  } else {
+    document.getElementById('promo-input').style.borderColor='var(--red)';
+    setTimeout(()=>document.getElementById('promo-input').style.borderColor='',1500);
+  }
+}
+
+function fmtCard(el){let v=el.value.replace(/\D/g,'').substring(0,16);el.value=v.match(/.{1,4}/g)?.join(' ')||v;const d=v.padEnd(16,'•').replace(/(.{4})/g,'$1 ').trim();document.getElementById('cv-number').textContent=d;}
+function fmtExp(el){let v=el.value.replace(/\D/g,'').substring(0,4);if(v.length>2)v=v.substring(0,2)+'/'+v.substring(2);el.value=v;document.getElementById('cv-exp').textContent=v||'MM/YY';}
+
+function scrollToPay(){document.getElementById('pay-card').scrollIntoView({behavior:'smooth',block:'start'});}
+
+function handlePay(){
+  const btn=document.getElementById('btn-pay');
+  btn.classList.add('loading');btn.disabled=true;
+  setTimeout(()=>{
+    // Hide form fields, show success
+    document.querySelector('.card-visual').style.display='none';
+    document.querySelectorAll('.pay-field,.pay-row,.btn-pay,.trust-row,.promo-row,.order-summary,.payment-title,.payment-sub').forEach(e=>e.style.display='none');
+    document.querySelector('.promo-ok').style.display='none';
+    document.getElementById('success-panel').style.display='block';
+  },2000);
+}
+
+// Countdown
+const end=Date.now()+23*3600000+47*60000+12000;
+function tick(){
+  const d=Math.max(0,end-Date.now());
+  const h=Math.floor(d/3600000),m=Math.floor((d%3600000)/60000),s=Math.floor((d%60000)/1000);
+  document.getElementById('cd-h').textContent=String(h).padStart(2,'0');
+  document.getElementById('cd-m').textContent=String(m).padStart(2,'0');
+  document.getElementById('cd-s').textContent=String(s).padStart(2,'0');
+}
+setInterval(tick,1000);tick();
+</script>
+</body>
+</html>
