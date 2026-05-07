@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SellSense — Decision Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script>
+const SUPABASE_URL='https://fmlmkxbcfeebeqtlzzvn.supabase.co';
+const SUPABASE_ANON_KEY='sb_publishable_M68a1m8LRq_DHQUov2k5pw_e-qrAefU';
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#F8F9FC;--white:#fff;--dark:#0F172A;--text:#0F172A;--text2:#334155;
+  --muted:#64748B;--muted2:#94A3B8;--border:#E2E8F0;--border2:#CBD5E1;
+  --blue:#2563EB;--blue2:#1D4ED8;--blue-l:#EFF6FF;
+  --green:#059669;--green-l:#ECFDF5;--green-b:rgba(5,150,105,.2);
+  --amber:#D97706;--amber-l:#FFFBEB;--amber-b:rgba(217,119,6,.2);
+  --red:#DC2626;--red-l:#FEF2F2;--red-b:rgba(220,38,38,.2);
+  --purple:#7C3AED;--purple-l:#F5F3FF;
+  --sh:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --sh2:0 4px 20px rgba(0,0,0,.08);--sh3:0 12px 40px rgba(0,0,0,.14);
+  --font:'Inter',system-ui,sans-serif;--sw:248px;--r:10px;
+}
+html,body{height:100%;font-size:14px;}
+body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+
+/* ── LOADING ── */
+#ls{position:fixed;inset:0;background:var(--dark);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;z-index:999;}
+.ll{font-size:26px;font-weight:700;color:#fff;letter-spacing:-.5px;}.ll em{color:#60A5FA;font-style:normal;}
+.lb{width:160px;height:2px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;}
+.lf{height:100%;background:#60A5FA;animation:lf 1.2s ease forwards;}
+@keyframes lf{from{width:0}to{width:100%}}
+
+/* ── APP ── */
+.app{display:flex;min-height:100vh;}
+
+/* ── SIDEBAR ── */
+.sb{width:var(--sw);flex-shrink:0;background:var(--dark);position:fixed;top:0;left:0;bottom:0;z-index:100;display:flex;flex-direction:column;transition:transform .3s;}
+.sb-brand{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.07);}
+.sb-logo{font-size:18px;font-weight:700;color:#fff;letter-spacing:-.5px;text-decoration:none;display:block;}
+.sb-logo em{color:#60A5FA;font-style:normal;}
+.sb-tag{font-size:10px;color:rgba(255,255,255,.28);letter-spacing:.12em;text-transform:uppercase;margin-top:2px;display:block;}
+/* PROJECT SELECTOR IN SIDEBAR */
+.sb-proj{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.07);}
+.sb-proj-label{font-size:10px;color:rgba(255,255,255,.3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;display:block;}
+.proj-sel-wrap{position:relative;}
+.proj-sel{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:9px 32px 9px 11px;font-size:13px;color:#fff;cursor:pointer;font-family:var(--font);appearance:none;}
+.proj-sel option{background:#1E293B;color:#fff;}
+.proj-sel-icon{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.3);pointer-events:none;font-size:11px;}
+.btn-new-proj{width:100%;background:rgba(37,99,235,.2);border:1px solid rgba(37,99,235,.3);border-radius:8px;padding:8px;font-size:12px;font-weight:600;color:#93C5FD;cursor:pointer;font-family:var(--font);margin-top:6px;transition:all .2s;}
+.btn-new-proj:hover{background:rgba(37,99,235,.3);}
+/* NAV */
+.sb-nav{padding:8px 10px;flex:1;}
+.sbl{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;font-size:13px;color:rgba(255,255,255,.5);cursor:pointer;text-decoration:none;transition:all .15s;margin-bottom:1px;}
+.sbl:hover{background:rgba(255,255,255,.06);color:#fff;}
+.sbl.active{background:rgba(37,99,235,.2);color:#93C5FD;}
+.sbl-i{font-size:14px;width:18px;text-align:center;flex-shrink:0;}
+.sbl-badge{margin-left:auto;font-size:10px;background:rgba(124,58,237,.25);color:#C4B5FD;border-radius:20px;padding:2px 7px;}
+/* TRIAL */
+.sb-bot{padding:10px 12px;border-top:1px solid rgba(255,255,255,.07);}
+.trial-box{background:rgba(5,150,105,.12);border:1px solid rgba(5,150,105,.2);border-radius:8px;padding:9px 11px;margin-bottom:8px;}
+.trial-lbl{font-size:11px;color:#34D399;font-weight:600;margin-bottom:1px;}
+.trial-sub{font-size:11px;color:rgba(255,255,255,.35);}
+.btn-up{width:100%;background:linear-gradient(135deg,#2563EB,#7C3AED);border:none;border-radius:8px;padding:9px;font-size:12px;font-weight:600;color:#fff;cursor:pointer;margin-bottom:7px;font-family:var(--font);}
+.sb-user{display:flex;align-items:center;gap:8px;padding:6px 8px;}
+.sb-av{width:29px;height:29px;border-radius:50%;background:rgba(37,99,235,.25);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#93C5FD;flex-shrink:0;}
+.sb-un{font-size:12px;color:rgba(255,255,255,.6);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.sb-lo{font-size:11px;color:rgba(255,255,255,.25);cursor:pointer;background:none;border:none;font-family:var(--font);}
+.sb-lo:hover{color:#F87171;}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:11px 22px;border-bottom:1px solid var(--border);background:rgba(248,249,252,.95);backdrop-filter:blur(12px);position:sticky;top:0;z-index:50;}
+.tb-left{display:flex;align-items:center;gap:10px;}
+.tb-title{font-size:15px;font-weight:600;color:var(--text);}
+.tb-right{display:flex;align-items:center;gap:10px;}
+.lang-tog{display:flex;background:var(--border);border-radius:8px;padding:3px;}
+.lt{padding:5px 13px;border-radius:6px;border:none;background:transparent;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s;font-family:var(--font);}
+.lt.on{background:var(--white);color:var(--text);box-shadow:var(--sh);}
+.cur-s{border:1.5px solid var(--border);border-radius:8px;padding:5px 10px;font-size:13px;font-weight:500;color:var(--text);background:var(--white);cursor:pointer;font-family:var(--font);}
+.plan-pill{font-size:12px;padding:4px 12px;border-radius:20px;border:1px solid var(--border);color:var(--muted);background:var(--white);font-weight:500;}
+.plan-pill.pro{background:var(--purple-l);color:var(--purple);border-color:rgba(124,58,237,.2);}
+.ham{display:none;background:none;border:1.5px solid var(--border);border-radius:8px;width:36px;height:36px;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--text);}
+/* AUTOSAVE INDICATOR */
+.autosave{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);}
+.autosave-dot{width:6px;height:6px;border-radius:50%;background:var(--muted2);}
+.autosave-dot.saving{background:var(--amber);animation:pulse .8s infinite;}
+.autosave-dot.saved{background:var(--green);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── VIEWS ── */
+.view{display:none;padding:22px;flex:1;}
+.view.on{display:block;}
+
+/* ── CAMPAIGN VIEW ── */
+.camp-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
+.camp-title{font-size:20px;font-weight:700;color:var(--text);letter-spacing:-.3px;}
+.camp-sub{font-size:13px;color:var(--muted);margin-top:2px;}
+.camp-actions{display:flex;gap:8px;}
+.btn-hist{background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:8px 14px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;font-family:var(--font);transition:all .2s;}
+.btn-hist:hover{border-color:var(--blue);color:var(--blue);}
+.btn-save-calc{background:var(--blue);border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;color:#fff;cursor:pointer;font-family:var(--font);transition:all .2s;position:relative;}
+.btn-save-calc:hover{background:var(--blue2);}
+.btn-save-calc:disabled{opacity:.5;cursor:not-allowed;}
+.btn-save-calc .sp{display:none;width:13px;height:13px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto;}
+.btn-save-calc.ld .bt{display:none;}.btn-save-calc.ld .sp{display:block;}
+
+/* INPUT SECTIONS */
+.calc-lay{display:grid;grid-template-columns:1fr 340px;gap:18px;align-items:start;}
+.inp-stack{display:flex;flex-direction:column;gap:10px;}
+.ic{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);}
+.ic-hdr{padding:11px 15px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;background:var(--bg);}
+.ic-hdr-icon{font-size:13px;}
+.ic-hdr-title{font-size:13px;font-weight:600;color:var(--text);}
+.ic-body{padding:14px 15px;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.ic-body.single{grid-template-columns:1fr;}
+.f{display:flex;flex-direction:column;gap:4px;}
+.f label{font-size:12px;font-weight:500;color:var(--text2);}
+.f label small{color:var(--muted);font-weight:400;}
+.iw{position:relative;}
+.isym{position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--muted);font-weight:500;pointer-events:none;}
+.isuf{position:absolute;right:9px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--muted2);pointer-events:none;}
+input[type="number"]{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:9px 10px;font-size:14px;font-weight:500;color:var(--text);background:var(--white);font-family:var(--font);transition:border-color .2s;-moz-appearance:textfield;}
+input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;}
+input[type="number"].hs{padding-left:26px;}
+input[type="number"].hsuf{padding-right:30px;}
+input[type="number"]:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.08);}
+input[type="number"]::placeholder{color:var(--muted2);font-weight:400;}
+
+/* ── DECISION PANEL ── */
+.dp{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);position:sticky;top:68px;box-shadow:var(--sh2);overflow:hidden;}
+/* VERDICT */
+.dp-verdict{padding:18px 18px 16px;border-bottom:1px solid var(--border);}
+.dp-v-badge{display:inline-flex;align-items:center;gap:7px;border-radius:50px;padding:6px 14px;font-size:13px;font-weight:700;margin-bottom:12px;}
+.vb-scale{background:var(--green-l);color:var(--green);}
+.vb-opt{background:var(--amber-l);color:var(--amber);}
+.vb-stop{background:var(--red-l);color:var(--red);}
+.vb-wait{background:#F1F5F9;color:var(--muted);}
+.dp-profit{font-size:40px;font-weight:800;letter-spacing:-1.5px;line-height:1;margin-bottom:2px;}
+.dp-profit.pos{color:var(--green);}
+.dp-profit.neg{color:var(--red);}
+.dp-profit-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+/* CONFIDENCE */
+.dp-confidence{margin-top:12px;padding:10px 12px;border-radius:8px;border:1px solid var(--border);}
+.dp-conf-label{font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:500;}
+.conf-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:4px;}
+.conf-fill{height:100%;border-radius:3px;transition:width .5s ease;}
+.conf-fill.high{background:var(--green);}
+.conf-fill.med{background:var(--amber);}
+.conf-fill.low{background:var(--red);}
+.conf-text{font-size:12px;font-weight:600;color:var(--text2);}
+/* METRICS */
+.dp-metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border-bottom:1px solid var(--border);}
+.dp-m{background:var(--white);padding:12px 6px;text-align:center;}
+.dp-mv{font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.5px;line-height:1;}
+.dp-mv.pos{color:var(--green);}
+.dp-mv.neg{color:var(--red);}
+.dp-mv.warn{color:var(--amber);}
+.dp-ml{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:3px;}
+/* BREAKDOWN */
+.dp-brkd{padding:14px 15px;border-bottom:1px solid var(--border);}
+.dp-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:4px 0;border-bottom:1px solid var(--border);}
+.dp-row:last-child{border:none;}
+.dl{color:var(--muted);}
+.dv{font-weight:600;}
+.dv-r{color:var(--green);}
+.dv-e{color:var(--text2);}
+.dv-t{color:var(--blue);font-size:14px;}
+/* EXPLANATION — the key new piece */
+.dp-explain{padding:14px 15px;border-bottom:1px solid var(--border);background:var(--bg);}
+.exp-title{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
+.exp-text{font-size:13px;color:var(--text2);line-height:1.55;}
+/* INSIGHTS */
+.dp-ins{padding:12px 15px;}
+.ins-title{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
+.ins-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;padding:8px 10px;border-radius:8px;}
+.ii-stop{background:var(--red-l);}
+.ii-warn{background:var(--amber-l);}
+.ii-ok{background:var(--green-l);}
+.ii-info{background:var(--blue-l);}
+.ii-ico{font-size:13px;flex-shrink:0;margin-top:1px;}
+.ii-t{font-size:12px;line-height:1.4;color:var(--text2);}
+
+/* ── HISTORY VIEW ── */
+.hist-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.hist-proj-title{font-size:18px;font-weight:700;color:var(--text);}
+.hist-list{display:flex;flex-direction:column;gap:10px;}
+.hi{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);padding:16px 20px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;box-shadow:var(--sh);cursor:pointer;transition:all .2s;}
+.hi:hover{border-color:var(--blue);transform:translateX(2px);}
+.hi-left .hi-date{font-size:12px;color:var(--muted);margin-bottom:4px;}
+.hi-meta{display:flex;gap:10px;flex-wrap:wrap;}
+.hi-chip{font-size:12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:3px 8px;color:var(--text2);}
+.hi-right{text-align:right;}
+.hi-profit{font-size:20px;font-weight:700;}
+.hi-profit.pos{color:var(--green);}
+.hi-profit.neg{color:var(--red);}
+.hi-verdict{font-size:12px;margin-top:2px;}
+.hi-verdict.v-scale{color:var(--green);}
+.hi-verdict.v-opt{color:var(--amber);}
+.hi-verdict.v-stop{color:var(--red);}
+
+/* ── PROJECTS VIEW ── */
+.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;margin-top:18px;}
+.pc{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);padding:18px;cursor:pointer;transition:all .22s;box-shadow:var(--sh);}
+.pc:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:var(--sh2);}
+.pc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;}
+.pc-badge{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600;}
+.pc-badge.ecom{background:var(--blue-l);color:var(--blue);}
+.pc-badge.creator{background:var(--amber-l);color:var(--amber);}
+.pc-badge.freelancer{background:var(--green-l);color:var(--green);}
+.pc-name{font-size:15px;font-weight:700;color:var(--text);margin-bottom:11px;}
+.pc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.ps{text-align:center;padding:8px 4px;background:var(--bg);border-radius:7px;}
+.ps-v{font-size:14px;font-weight:700;color:var(--text);}
+.ps-v.pos{color:var(--green);}
+.ps-v.neg{color:var(--red);}
+.ps-l{font-size:10px;color:var(--muted);margin-top:2px;}
+.pc-foot{display:flex;align-items:center;justify-content:space-between;margin-top:11px;padding-top:10px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);}
+.pc-open{color:var(--blue);font-weight:600;font-size:12px;background:none;border:none;cursor:pointer;font-family:var(--font);}
+/* empty */
+.empty-s{text-align:center;padding:60px 24px;}
+.ei{font-size:44px;margin-bottom:14px;}
+.et{font-size:18px;font-weight:700;margin-bottom:8px;color:var(--text);}
+.es{font-size:13px;color:var(--muted);margin-bottom:20px;max-width:320px;margin-left:auto;margin-right:auto;}
+
+/* ── MODAL ── */
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);z-index:300;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .22s;}
+.mov.open{opacity:1;pointer-events:all;}
+.mbox{background:var(--white);border-radius:14px;width:100%;max-width:420px;padding:26px;position:relative;transform:translateY(14px);transition:transform .22s;box-shadow:var(--sh3);}
+.mov.open .mbox{transform:translateY(0);}
+.mcl{position:absolute;top:13px;right:13px;background:var(--bg);border:none;border-radius:6px;width:27px;height:27px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:var(--muted);}
+.mt{font-size:17px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.ms{font-size:13px;color:var(--muted);margin-bottom:18px;}
+.tg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
+.to{border:1.5px solid var(--border);border-radius:8px;padding:14px 8px;cursor:pointer;transition:all .2s;text-align:center;background:var(--bg);}
+.to:hover{border-color:var(--blue);}
+.to.sel{border-color:var(--blue);background:var(--blue-l);}
+.to-ic{font-size:22px;margin-bottom:5px;}
+.to-nm{font-size:12px;font-weight:600;color:var(--text);}
+.mf{margin-bottom:13px;}
+.mf label{display:block;font-size:13px;font-weight:500;color:var(--text2);margin-bottom:5px;}
+.mi{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;color:var(--text);background:var(--white);font-family:var(--font);transition:border-color .2s;}
+.mi:focus{outline:none;border-color:var(--blue);}
+.mi::placeholder{color:var(--muted2);}
+.msel{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;color:var(--text);background:var(--white);font-family:var(--font);cursor:pointer;}
+.btn-cr{width:100%;background:var(--blue);color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .2s;}
+.btn-cr:hover{background:var(--blue2);}
+.merr{background:var(--red-l);border:1px solid #FECACA;border-radius:8px;padding:9px 12px;font-size:13px;color:var(--red);margin-bottom:12px;display:none;}
+.merr.on{display:block;}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;right:22px;background:var(--dark);border-radius:10px;padding:11px 16px;font-size:13px;color:#fff;transform:translateY(80px);opacity:0;transition:all .3s;z-index:500;box-shadow:var(--sh3);}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.ok{background:#059669;}
+.toast.err{background:var(--red);}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:1100px){.calc-lay{grid-template-columns:1fr;}.dp{position:static;}.ic-body{grid-template-columns:1fr;}}
+@media(max-width:768px){.sb{transform:translateX(-100%);}.sb.open{transform:translateX(0);}.main{margin-left:0;}.ham{display:flex;}.view{padding:14px;}.topbar{padding:10px 14px;}.pg{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div id="ls"><div class="ll">Sell<em>Sense</em></div><div class="lb"><div class="lf"></div></div><div style="font-size:12px;color:rgba(255,255,255,.3);margin-top:4px;" id="ls-t">Loading workspace...</div></div>
+<div class="toast" id="toast"></div>
+
+<div class="app" id="app" style="display:none;">
+
+  <!-- SIDEBAR -->
+  <aside class="sb" id="sb">
+    <div class="sb-brand">
+      <a href="sellsense-landing.html" class="sb-logo">Sell<em>Sense</em></a>
+      <small class="sb-tag" id="sb-tag">Decision Engine</small>
+    </div>
+    <!-- PROJECT SELECTOR -->
+    <div class="sb-proj">
+      <span class="sb-proj-label" id="lbl-proj">Active Project</span>
+      <div class="proj-sel-wrap">
+        <select class="proj-sel" id="proj-sel" onchange="switchProject(this.value)">
+          <option value="">— Select project —</option>
+        </select>
+        <span class="proj-sel-icon">▾</span>
+      </div>
+      <button class="btn-new-proj" onclick="openM()" id="btn-np">+ New project</button>
+    </div>
+    <nav class="sb-nav">
+      <a class="sbl active" id="nav-c" onclick="gv('calc')"><span class="sbl-i">⚡</span><span data-t="navCalc">Campaign</span></a>
+      <a class="sbl" id="nav-h" onclick="gv('hist')"><span class="sbl-i">🕐</span><span data-t="navHist">History</span></a>
+      <a class="sbl" id="nav-p" onclick="gv('projs')"><span class="sbl-i">📊</span><span data-t="navProjs">All Projects</span></a>
+      <a class="sbl" href="sellsense-payment.html"><span class="sbl-i">⭐</span><span data-t="navUp">Upgrade</span><span class="sbl-badge">Pro</span></a>
+    </nav>
+    <div class="sb-bot">
+      <div class="trial-box" id="trial-box">
+        <div class="trial-lbl" id="trial-lbl">🟢 Trial Active</div>
+        <div class="trial-sub" id="trial-sub">7 days · Up to 3 projects</div>
+      </div>
+      <button class="btn-up" onclick="location.href='sellsense-payment.html'" id="btn-up">⭐ Upgrade — $9/mo</button>
+      <div class="sb-user">
+        <div class="sb-av" id="uav">U</div>
+        <div class="sb-un" id="uname">...</div>
+        <button class="sb-lo" onclick="doLogout()">↩</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="tb-left">
+        <button class="ham" onclick="document.getElementById('sb').classList.toggle('open')">☰</button>
+        <div class="tb-title" id="tb-title">Campaign Analysis</div>
+      </div>
+      <div class="tb-right">
+        <!-- LANG — always visible -->
+        <div class="lang-tog">
+          <button class="lt on" id="lt-en" onclick="setL('en',this)">EN</button>
+          <button class="lt" id="lt-fr" onclick="setL('fr',this)">FR</button>
+        </div>
+        <select class="cur-s" id="cur-s" onchange="setCur(this.value)">
+          <option value="USD">$ USD</option>
+          <option value="EUR">€ EUR</option>
+          <option value="GBP">£ GBP</option>
+          <option value="MAD">MAD</option>
+        </select>
+        <!-- AUTOSAVE STATUS -->
+        <div class="autosave" id="autosave">
+          <div class="autosave-dot" id="autosave-dot"></div>
+          <span id="autosave-txt">—</span>
+        </div>
+        <div class="plan-pill" id="plan-pill">Trial</div>
+      </div>
+    </div>
+
+    <!-- ══ CAMPAIGN ══ -->
+    <div class="view on" id="view-calc">
+      <div class="camp-bar">
+        <div>
+          <div class="camp-title" id="camp-title">Select a project</div>
+          <div class="camp-sub" id="camp-sub">Enter campaign data and get a decision.</div>
+        </div>
+        <div class="camp-actions">
+          <button class="btn-hist" onclick="gv('hist')" id="btn-hist">View history</button>
+          <button class="btn-save-calc" id="btn-sv" onclick="saveCalc()">
+            <span class="bt" id="save-txt">Save calculation</span>
+            <div class="sp"></div>
+          </button>
+        </div>
+      </div>
+
+      <div class="calc-lay">
+        <div class="inp-stack" id="inp-stack">
+          <!-- Rendered by buildInputs() -->
+        </div>
+        <!-- DECISION PANEL -->
+        <div class="dp">
+          <!-- VERDICT -->
+          <div class="dp-verdict">
+            <div class="dp-v-badge vb-wait" id="dp-badge">
+              <span id="dp-bi">—</span>
+              <span id="dp-bt" data-t="await">Awaiting data</span>
+            </div>
+            <div class="dp-profit" id="dp-profit">$0</div>
+            <div class="dp-profit-lbl" data-t="netProfit">NET PROFIT</div>
+            <!-- CONFIDENCE BAR -->
+            <div class="dp-confidence" id="dp-conf" style="display:none;">
+              <div class="dp-conf-label" data-t="confidence">Decision confidence</div>
+              <div class="conf-bar"><div class="conf-fill" id="conf-fill" style="width:0%"></div></div>
+              <div class="conf-text" id="conf-text">—</div>
+            </div>
+          </div>
+          <!-- METRICS -->
+          <div class="dp-metrics">
+            <div class="dp-m"><div class="dp-mv" id="dp-mg">0%</div><div class="dp-ml" data-t="margin">MARGIN</div></div>
+            <div class="dp-m"><div class="dp-mv" id="dp-roas">—</div><div class="dp-ml">ROAS</div></div>
+            <div class="dp-m"><div class="dp-mv" id="dp-ap">—</div><div class="dp-ml" data-t="adRev">ADS/REV</div></div>
+          </div>
+          <!-- BREAKDOWN -->
+          <div class="dp-brkd">
+            <div class="dp-row"><span class="dl" data-t="revenue">Revenue</span><span class="dv dv-r" id="br0">$0</span></div>
+            <div class="dp-row"><span class="dl">COGS</span><span class="dv dv-e" id="br1">$0</span></div>
+            <div class="dp-row"><span class="dl" data-t="logistics">Logistics</span><span class="dv dv-e" id="br2">$0</span></div>
+            <div class="dp-row"><span class="dl" data-t="marketing">Marketing</span><span class="dv dv-e" id="br3">$0</span></div>
+            <div class="dp-row"><span class="dl" data-t="fees">Fees</span><span class="dv dv-e" id="br4">$0</span></div>
+            <div class="dp-row" style="border-top:2px solid var(--border);margin-top:4px;padding-top:7px;">
+              <span class="dl" style="font-weight:600;color:var(--text);" data-t="netProfit">Net Profit</span>
+              <span class="dv dv-t" id="br5">$0</span>
+            </div>
+          </div>
+          <!-- EXPLANATION — new -->
+          <div class="dp-explain" id="dp-explain" style="display:none;">
+            <div class="exp-title" data-t="analysis">Analysis</div>
+            <div class="exp-text" id="exp-text"></div>
+          </div>
+          <!-- INSIGHTS -->
+          <div class="dp-ins">
+            <div class="ins-title" data-t="intelligence">Intelligence</div>
+            <div id="ins-list">
+              <div class="ins-item ii-info">
+                <span class="ii-ico">💡</span>
+                <span class="ii-t" data-t="insWait">Select a project and enter your campaign data.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ HISTORY ══ -->
+    <div class="view" id="view-hist">
+      <div class="hist-header">
+        <div>
+          <div class="hist-proj-title" id="hist-title">History</div>
+          <div style="font-size:13px;color:var(--muted);margin-top:3px;" id="hist-sub">Past calculations for this project</div>
+        </div>
+      </div>
+      <div class="hist-list" id="hist-list"></div>
+    </div>
+
+    <!-- ══ PROJECTS ══ -->
+    <div class="view" id="view-projs">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-size:20px;font-weight:700;letter-spacing:-.3px;" data-t="navProjs">All Projects</div>
+          <div style="font-size:13px;color:var(--muted);margin-top:3px;" data-t="projsSub">Each project tracks a business or campaign.</div>
+        </div>
+        <button onclick="openM()" style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);" data-t="newProj">+ New Project</button>
+      </div>
+      <div id="projs-c"></div>
+    </div>
+  </div>
+</div>
+
+<!-- NEW PROJECT MODAL -->
+<div class="mov" id="modal" onclick="if(event.target===this)cm()">
+  <div class="mbox">
+    <button class="mcl" onclick="cm()">✕</button>
+    <div class="mt" data-t="newProj">New Project</div>
+    <div class="ms" data-t="newProjSub">Select your business type to get the right inputs.</div>
+    <div class="merr" id="merr"></div>
+    <div class="tg">
+      <div class="to" onclick="sT('ecom',this)"><div class="to-ic">📦</div><div class="to-nm" data-t="typeEcom">E-commerce</div></div>
+      <div class="to" onclick="sT('creator',this)"><div class="to-ic">🎬</div><div class="to-nm" data-t="typeCr">Creator</div></div>
+      <div class="to" onclick="sT('freelancer',this)"><div class="to-ic">💻</div><div class="to-nm" data-t="typeFr">Freelancer</div></div>
+    </div>
+    <div class="mf"><label data-t="projName">Project name</label><input class="mi" type="text" id="mn" placeholder="e.g. Summer Campaign 2025"/></div>
+    <div class="mf">
+      <label data-t="currency">Currency</label>
+      <select class="msel" id="mc">
+        <option value="USD">$ USD</option>
+        <option value="EUR">€ EUR</option>
+        <option value="GBP">£ GBP</option>
+        <option value="MAD">MAD</option>
+      </select>
+    </div>
+    <button class="btn-cr" onclick="cP()" data-t="createProj">Create project →</button>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════
+// CORE SYSTEM
+// ════════════════════════════════════════════════
+const {createClient}=supabase;
+const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+const SYMS={USD:'$',EUR:'€',GBP:'£',MAD:'د.م.'};
+
+// ── i18n ──
+const T={
+en:{
+  loading:'Loading workspace...',navCalc:'Campaign',navHist:'History',navProjs:'All Projects',navUp:'Upgrade',
+  lbl_proj:'Active Project',btn_np:'+ New project',
+  await:'Awaiting data',netProfit:'NET PROFIT',margin:'MARGIN',adRev:'ADS/REV',
+  revenue:'Revenue',logistics:'Logistics',marketing:'Marketing',fees:'Fees',
+  confidence:'Decision confidence',analysis:'Analysis',intelligence:'Intelligence',
+  insWait:'Select a project and enter your campaign data.',
+  saveCalc:'Save calculation',saving:'Saving...',saved:'✓ Saved',
+  viewHist:'View history',
+  navProjs:'All Projects',projsSub:'Each project tracks a business or campaign.',
+  newProj:'New Project',newProjSub:'Select your business type to get the right inputs.',
+  projName:'Project name',currency:'Currency',createProj:'Create project →',
+  typeEcom:'E-commerce',typeCr:'Creator',typeFr:'Freelancer',
+  noProjs:'No projects yet',noProjsSub:'Create your first project to start analyzing.',
+  noCalc:'No calculations yet',noHistDesc:'Save a calculation to see your history here.',
+  openCalc:'Analyze →',lbl_proj:'Active Project',
+  sb_tag:'Decision Engine',trial_lbl:'🟢 Trial Active',trial_sub:'7 days · Up to 3 projects',
+  btn_up:'⭐ Upgrade — $9/mo',
+  // FIELDS
+  secRev:'Revenue',secCogs:'Product Cost (COGS)',secLog:'Logistics',secMkt:'Marketing',secFees:'Platform & Fees',
+  fRev:'Total Revenue',fCogs:'Cost of Goods Sold',
+  fShip:'Shipping',fRet:'Returns / Failed deliveries',fPack:'Packaging',
+  fFb:'Facebook Ads',fTik:'TikTok Ads',fOAds:'Other Ads',
+  fPlat:'Platform fee (Shopify...)',fPayPct:'Payment processor',
+  // CREATOR
+  secCreatorRev:'Revenue',fAds:'AdSense revenue',fTikRev:'TikTok Creator Fund',fSpon:'Sponsorships',fMerch:'Merch / Digital products',fOthRev:'Other revenue',
+  secCreatorCosts:'Production & Costs',fEquip:'Equipment',fLog:'Software & tools',fMont:'Editing / Production',fPromo:'Paid promotion',fComm:'Agency/Manager commission',
+  // FREELANCER
+  secFreelRev:'Revenue',fFact:'Amount invoiced',
+  secFreelCosts:'Fees & Costs',fPlat2:'Platform commission (Upwork=20%, Fiverr=20%)',fVir:'Transfer fees',fST:'Subcontractors',fLogF:'Software',fCow:'Coworking',fOthF:'Other',
+  // VERDICTS
+  vScale:'🚀 Scale it',vOpt:'⚠️ Optimize',vStop:'❌ Stop campaign',vReview:'🔍 Review',
+  // EXPLANATIONS
+  eStop:'Your campaign is losing money. Total costs exceed revenue. The primary driver is {reason}. Pause this campaign and audit each cost line before relaunching.',
+  eOpt:'Your campaign is profitable but margin is too thin for scaling. At {margin}%, any increase in ad spend or returns could push you into losses. Focus on reducing {reason} first.',
+  eScale:'Strong fundamentals. Margin of {margin}% and ROAS of {roas}x signal a healthy campaign. You have room to increase ad budget by 20–30% while maintaining profitability.',
+  eReview:'Moderate performance. Profitable but not optimized. Review your ad spend efficiency and consider running a COGS reduction test.',
+  // INSIGHTS
+  iStop:'Losing money — pause immediately and audit all costs.',
+  iLowROAS:'ROAS below 2x. Ads are not paying for themselves. Fix targeting or creatives first.',
+  iHighAds:'Ad spend is {pct}% of revenue — too high. Industry benchmark is under 30%.',
+  iHighCOGS:'COGS is {pct}% of revenue. Renegotiate with supplier or increase selling price.',
+  iHighRet:'Returns are {pct}% of revenue. Improve product quality or listing descriptions.',
+  iLowMg:'Margin is {mg}%. Identify the biggest cost driver and reduce it before scaling.',
+  iGoodMg:'Healthy margin. Focus on scaling what\'s working.',
+  iScale:'Strong ROAS ({roas}x) + good margin. Ideal conditions to increase budget.',
+  confHigh:'High confidence',confMed:'Medium confidence',confLow:'Low confidence',
+},
+fr:{
+  loading:'Chargement...',navCalc:'Campagne',navHist:'Historique',navProjs:'Projets',navUp:'Passer Pro',
+  lbl_proj:'Projet actif',btn_np:'+ Nouveau projet',
+  await:'En attente',netProfit:'PROFIT NET',margin:'MARGE',adRev:'PUB/CA',
+  revenue:'CA',logistics:'Logistique',marketing:'Marketing',fees:'Frais',
+  confidence:'Niveau de confiance',analysis:'Analyse',intelligence:'Intelligence',
+  insWait:'Sélectionne un projet et entre tes données.',
+  saveCalc:'Sauvegarder',saving:'Sauvegarde...',saved:'✓ Sauvegardé',
+  viewHist:'Voir l\'historique',
+  navProjs:'Tous les projets',projsSub:'Chaque projet suit un business ou une campagne.',
+  newProj:'Nouveau projet',newProjSub:'Choisis ton type d\'activité.',
+  projName:'Nom du projet',currency:'Devise',createProj:'Créer →',
+  typeEcom:'E-commerce',typeCr:'Créateur',typeFr:'Freelance',
+  noProjs:'Aucun projet',noProjsSub:'Crée ton premier projet pour commencer.',
+  noCalc:'Aucun calcul',noHistDesc:'Sauvegarde un calcul pour voir l\'historique ici.',
+  openCalc:'Analyser →',lbl_proj:'Projet actif',
+  sb_tag:'Moteur de décision',trial_lbl:'🟢 Essai actif',trial_sub:'7 jours · 3 projets max',
+  btn_up:'⭐ Passer Pro — 9$/mois',
+  secRev:'Revenus',secCogs:'Coût des produits (COGS)',secLog:'Logistique',secMkt:'Marketing',secFees:'Plateforme & Frais',
+  fRev:'Chiffre d\'affaires total',fCogs:'Coût des marchandises',
+  fShip:'Livraison',fRet:'Retours / Non-livrés',fPack:'Emballage',
+  fFb:'Facebook Ads',fTik:'TikTok Ads',fOAds:'Autres publicités',
+  fPlat:'Frais plateforme (Shopify...)',fPayPct:'Processeur de paiement',
+  secCreatorRev:'Revenus',fAds:'AdSense (YouTube)',fTikRev:'TikTok Creator Fund',fSpon:'Sponsoring',fMerch:'Merch / Produits numériques',fOthRev:'Autres revenus',
+  secCreatorCosts:'Production & Charges',fEquip:'Matériel',fLog:'Logiciels & outils',fMont:'Montage / Production',fPromo:'Promotion payante',fComm:'Commission agence/manager',
+  secFreelRev:'Revenus',fFact:'Montant facturé',
+  secFreelCosts:'Frais & Charges',fPlat2:'Commission plateforme (Upwork=20%, Fiverr=20%)',fVir:'Frais virement',fST:'Sous-traitants',fLogF:'Logiciels',fCow:'Coworking',fOthF:'Autres',
+  vScale:'🚀 Scale',vOpt:'⚠️ Optimise',vStop:'❌ Stop campagne',vReview:'🔍 À revoir',
+  eStop:'Ta campagne perd de l\'argent. Les coûts dépassent les revenus. Le principal facteur est {reason}. Mets en pause et audite chaque ligne de coût avant de relancer.',
+  eOpt:'Ta campagne est rentable mais la marge est trop fine pour scaler. À {margin}%, toute hausse du budget pub ou des retours peut te mettre en perte. Réduis d\'abord {reason}.',
+  eScale:'Bons fondamentaux. Une marge de {margin}% et un ROAS de {roas}x signalent une campagne saine. Tu peux augmenter le budget pub de 20–30% tout en restant rentable.',
+  eReview:'Performance moyenne. Rentable mais pas optimisé. Revois l\'efficacité de ton budget pub.',
+  iStop:'Perte d\'argent — mets en pause et audite tous les coûts immédiatement.',
+  iLowROAS:'ROAS en dessous de 2x. Les pubs ne se rentabilisent pas. Fixe le ciblage ou les créas.',
+  iHighAds:'Budget pub = {pct}% du CA — trop élevé. Benchmark : sous 30%.',
+  iHighCOGS:'COGS = {pct}% du CA. Renégocie avec ton fournisseur ou augmente tes prix.',
+  iHighRet:'Retours = {pct}% du CA. Améliore la qualité produit ou la description.',
+  iLowMg:'Marge = {mg}%. Identifie le plus gros coût et réduis-le avant de scaler.',
+  iGoodMg:'Marge saine. Concentre-toi sur ce qui fonctionne.',
+  iScale:'Bon ROAS ({roas}x) + bonne marge. Conditions idéales pour augmenter le budget.',
+  confHigh:'Haute confiance',confMed:'Confiance moyenne',confLow:'Faible confiance',
+}
+};
+
+// ════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════
+let lang='en', cur='USD', sym='$';
+let user=null, profile=null, projs=[], curProjId=null, nType=null;
+let autoSaveTimer=null;
+
+// ════════════════════════════════════════════════
+// BOOT — THE ENTRY POINT
+// ════════════════════════════════════════════════
+async function boot(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){location.href='sellsense-auth.html';return;}
+  user=session.user;
+  await loadProfile();
+  await loadAllProjects();
+  applyT();
+  setAutosave(null);
+  document.getElementById('ls').style.display='none';
+  document.getElementById('app').style.display='flex';
+  // Auto-open last project
+  if(projs.length>0)switchProject(projs[0].id,false);
+}
+
+// ════════════════════════════════════════════════
+// PROFILE
+// ════════════════════════════════════════════════
+async function loadProfile(){
+  const {data}=await sb.from('profiles').select('*').eq('id',user.id).single();
+  profile=data||{full_name:user.user_metadata?.full_name||user.email.split('@')[0],plan:'free',currency:'USD'};
+  if(!data)await sb.from('profiles').upsert({id:user.id,full_name:profile.full_name,email:user.email,currency:'USD'});
+  const n=profile.full_name||user.email.split('@')[0];
+  document.getElementById('uav').textContent=n.charAt(0).toUpperCase();
+  document.getElementById('uname').textContent=n;
+  if(profile.plan==='premium'){
+    document.getElementById('plan-pill').textContent='Pro';
+    document.getElementById('plan-pill').className='plan-pill pro';
+    document.getElementById('trial-box').style.display='none';
+  }
+  // Set currency from profile
+  if(profile.currency){
+    cur=profile.currency;sym=SYMS[cur]||cur+' ';
+    document.getElementById('cur-s').value=cur;
+  }
+}
+
+// ════════════════════════════════════════════════
+// PROJECTS — load ALL with last calculation
+// ════════════════════════════════════════════════
+async function loadAllProjects(){
+  const {data}=await sb
+    .from('projects')
+    .select('*, calculations(id,revenue,expenses,net_profit,margin_percent,details,created_at)')
+    .eq('user_id',user.id)
+    .eq('is_archived',false)
+    .order('created_at',{ascending:false});
+  projs=data||[];
+  fillProjSelector();
+  renderProjsView();
+}
+
+function fillProjSelector(){
+  const t=T[lang];
+  const sel=document.getElementById('proj-sel');
+  const prev=sel.value;
+  sel.innerHTML=`<option value="">— ${lang==='fr'?'Sélectionner':'Select a project'} —</option>`+
+    projs.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+  if(prev&&projs.find(p=>p.id===prev))sel.value=prev;
+  else if(curProjId)sel.value=curProjId;
+}
+
+// ════════════════════════════════════════════════
+// SWITCH PROJECT — loads last saved inputs
+// ════════════════════════════════════════════════
+async function switchProject(pid, updateSel=true){
+  if(!pid){clearInputs();curProjId=null;document.getElementById('camp-title').textContent='Select a project';return;}
+  curProjId=pid;
+  if(updateSel)document.getElementById('proj-sel').value=pid;
+  const proj=projs.find(p=>p.id===pid);
+  if(!proj)return;
+  // Set currency from project
+  if(proj.currency){cur=proj.currency;sym=SYMS[cur]||cur+' ';document.getElementById('cur-s').value=cur;}
+  document.getElementById('camp-title').textContent=proj.name;
+  const t=T[lang];
+  const typeLabel={ecom:t.typeEcom,creator:t.typeCr,freelancer:t.typeFr};
+  document.getElementById('camp-sub').textContent=typeLabel[proj.business_type]||proj.business_type;
+  // Build inputs for this project type
+  buildInputs(proj.business_type);
+  // LOAD LAST SAVED INPUTS
+  const calcs=proj.calculations||[];
+  if(calcs.length>0){
+    const last=[...calcs].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))[0];
+    if(last.details)loadInputs(last.details);
+  }
+  calc();
+  setAutosave('saved');
+}
+
+// ════════════════════════════════════════════════
+// BUILD INPUTS — per business type
+// ════════════════════════════════════════════════
+function buildInputs(type){
+  const t=T[lang];
+  const S=sym;
+  const sec=(title,icon,body,single)=>
+    `<div class="ic"><div class="ic-hdr"><span class="ic-hdr-icon">${icon}</span><span class="ic-hdr-title">${title}</span></div>
+     <div class="ic-body${single?' single':''}">${body}</div></div>`;
+  const f=(id,label,sym2,suf,ph,small)=>
+    `<div class="f"><label>${label}${small?` <small>(${small})</small>`:''}</label>
+     <div class="iw">${sym2?`<span class="isym">${sym2}</span>`:''}<input type="number" id="f-${id}" class="${sym2?'hs':''} ${suf?'hsuf':''}" placeholder="${ph||'0'}" min="0" step="any" oninput="onInput()"/>${suf?`<span class="isuf">${suf}</span>`:''}</div></div>`;
+
+  let html='';
+  if(type==='ecom'){
+    html=sec(t.secRev,'💰',f('rev',t.fRev,S,'',0),true)+
+      sec(t.secCogs,'📦',f('cogs',t.fCogs,S,'',0),true)+
+      sec(t.secLog,'🚚',f('ship',t.fShip,S,'',0)+f('ret',t.fRet,S,'',0)+f('pack',t.fPack,S,'',0))+
+      sec(t.secMkt,'📣',f('fb',t.fFb,S,'',0)+f('tik',t.fTik,S,'',0)+f('oads',t.fOAds,S,'',0))+
+      sec(t.secFees,'💳',f('plat',t.fPlat,S,'',0)+f('paypct',t.fPayPct,'','%',2.9));
+  } else if(type==='creator'){
+    html=sec(t.secCreatorRev,'💰',
+      f('ads2',t.fAds,S,'',0)+f('tikrev',t.fTikRev,S,'',0)+
+      f('spon',t.fSpon,S,'',0)+f('merch',t.fMerch,S,'',0)+f('othrev',t.fOthRev,S,'',0))+
+      sec(t.secCreatorCosts,'🎬',
+        f('equip',t.fEquip,S,'',0)+f('logsw',t.fLog,S,'',0)+
+        f('mont',t.fMont,S,'',0)+f('promo',t.fPromo,S,'',0)+f('comm',t.fComm,'','%',10));
+  } else if(type==='freelancer'){
+    html=sec(t.secFreelRev,'💰',f('fact',t.fFact,S,'',0),true)+
+      sec(t.secFreelCosts,'💳',
+        f('platpct',t.fPlat2,'','%',20)+f('vir',t.fVir,S,'',0)+
+        f('st',t.fST,S,'',0)+f('logf',t.fLogF,S,'',0)+f('cow',t.fCow,S,'',0)+f('othf',t.fOthF,S,'',0));
+  }
+  document.getElementById('inp-stack').innerHTML=html;
+}
+
+// ════════════════════════════════════════════════
+// LOAD SAVED INPUTS into form fields
+// ════════════════════════════════════════════════
+function loadInputs(details){
+  Object.entries(details).forEach(([key,val])=>{
+    const el=document.getElementById('f-'+key);
+    if(el&&val)el.value=val;
+  });
+}
+
+function clearInputs(){
+  document.getElementById('inp-stack').innerHTML='<div style="padding:40px;text-align:center;color:var(--muted);font-size:14px;">Select or create a project to start analyzing.</div>';
+}
+
+// ════════════════════════════════════════════════
+// READ ALL INPUTS from form
+// ════════════════════════════════════════════════
+function getInputs(){
+  const fields={};
+  document.querySelectorAll('#inp-stack input[id^="f-"]').forEach(el=>{
+    fields[el.id.replace('f-','')]=parseFloat(el.value)||0;
+  });
+  return fields;
+}
+
+function v(id){return parseFloat(document.getElementById('f-'+id)?.value)||0;}
+
+// ════════════════════════════════════════════════
+// CALCULATION ENGINE
+// ════════════════════════════════════════════════
+function onInput(){
+  calc();
+  // Debounced autosave indication
+  setAutosave('unsaved');
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer=setTimeout(()=>setAutosave('unsaved'),500);
+}
+
+function calc(){
+  const proj=projs.find(p=>p.id===curProjId);
+  if(!proj)return;
+  const type=proj.business_type;
+  let rev=0,cogs=0,log=0,mkt=0,fees=0;
+  if(type==='ecom'){
+    rev=v('rev');cogs=v('cogs');
+    log=v('ship')+v('ret')+v('pack');
+    mkt=v('fb')+v('tik')+v('oads');
+    fees=v('plat')+(rev*(v('paypct')/100));
+  } else if(type==='creator'){
+    rev=v('ads2')+v('tikrev')+v('spon')+v('merch')+v('othrev');
+    mkt=v('promo');
+    const agencyAmt=rev*(v('comm')/100);
+    fees=agencyAmt;
+    cogs=v('equip')+v('logsw')+v('mont');
+  } else if(type==='freelancer'){
+    rev=v('fact');
+    const platAmt=rev*(v('platpct')/100);
+    fees=platAmt+v('vir');
+    cogs=v('st')+v('logf')+v('cow')+v('othf');
+  }
+  const tc=cogs+log+mkt+fees;
+  const profit=rev-tc;
+  const mg=rev>0?(profit/rev)*100:0;
+  const roas=mkt>0?rev/mkt:0;
+  const ap=rev>0?(mkt/rev)*100:0;
+  const retPct=rev>0?(v('ret')/rev)*100:0;
+  const cogsPct=rev>0?(cogs/rev)*100:0;
+
+  // Update breakdown
+  document.getElementById('br0').textContent=fmt(rev);
+  document.getElementById('br1').textContent=fmt(cogs);
+  document.getElementById('br2').textContent=fmt(log);
+  document.getElementById('br3').textContent=fmt(mkt);
+  document.getElementById('br4').textContent=fmt(fees);
+  document.getElementById('br5').textContent=fmt(profit);
+
+  // Profit display
+  document.getElementById('dp-profit').textContent=fmt(profit);
+  document.getElementById('dp-profit').className='dp-profit '+(profit>=0?'pos':'neg');
+
+  // Metrics
+  setMetric('dp-mg',mg.toFixed(1)+'%',mg>20?'pos':mg<0?'neg':mg<15?'warn':'');
+  setMetric('dp-roas',roas>0?roas.toFixed(1)+'x':'—',roas>=3?'pos':roas>0&&roas<2?'neg':'');
+  setMetric('dp-ap',mkt>0?ap.toFixed(0)+'%':'—',ap>30?'warn':'');
+
+  if(rev===0){
+    setBadge('vb-wait','—',T[lang].await);
+    document.getElementById('dp-conf').style.display='none';
+    document.getElementById('dp-explain').style.display='none';
+    document.getElementById('ins-list').innerHTML=`<div class="ins-item ii-info"><span class="ii-ico">💡</span><span class="ii-t">${T[lang].insWait}</span></div>`;
+    window._cd=null;return;
+  }
+
+  // ── DECISION ENGINE ──
+  const decision=decisionEngine(profit,mg,roas,ap,retPct,cogsPct,rev,cogs,mkt,fees,log);
+  setBadge(decision.badgeClass,decision.icon,T[lang][decision.verdict]);
+  setConfidence(decision.confidence,decision.confidenceLevel);
+  setExplanation(decision.explanation,mg,roas,decision.reason);
+  setInsights(profit,mg,roas,ap,retPct,cogsPct,rev);
+
+  window._cd={rev,cogs,log,mkt,fees,profit,mg,roas,ap,details:getInputs()};
+}
+
+// ── THE DECISION ENGINE ──
+function decisionEngine(profit,mg,roas,ap,retPct,cogsPct,rev,cogs,mkt,fees,log){
+  const t=T[lang];
+  // Determine primary cost driver
+  const costs={COGS:cogs,Logistics:log,Marketing:mkt,Fees:fees};
+  const topCostKey=Object.keys(costs).reduce((a,b)=>costs[a]>costs[b]?a:b);
+  // Score inputs for confidence: more non-zero data = higher confidence
+  const inputs=document.querySelectorAll('#inp-stack input[id^="f-"]');
+  const filledCount=[...inputs].filter(i=>parseFloat(i.value)>0).length;
+  const confidence=Math.min(95,Math.round((filledCount/inputs.length)*100));
+  const confLevel=confidence>70?'high':confidence>40?'med':'low';
+
+  if(profit<0){
+    const reason=lang==='fr'?`les charges de ${topCostKey} sont trop élevées`:`${topCostKey} costs are too high`;
+    return {badgeClass:'vb-stop',icon:'❌',verdict:'vStop',confidence,confidenceLevel:confLevel,reason,explanation:'eStop'};
+  }
+  if(mg>=30&&roas>=3){
+    return {badgeClass:'vb-scale',icon:'🚀',verdict:'vScale',confidence,confidenceLevel:confLevel,reason:'',explanation:'eScale'};
+  }
+  if(mg>=15){
+    const reason=lang==='fr'?`le ROAS (${roas.toFixed(1)}x) doit être amélioré`:`ROAS (${roas.toFixed(1)}x) needs improvement`;
+    return {badgeClass:'vb-rev',icon:'🔍',verdict:'vReview',confidence,confidenceLevel:confLevel,reason,explanation:'eReview'};
+  }
+  const reason=lang==='fr'?
+    `${topCostKey==='Marketing'?'le budget pub':'les charges de '+(topCostKey==='COGS'?'produits':'logistique')}`+' est trop élevé':
+    `${topCostKey==='Marketing'?'ad spend':'your '+(topCostKey==='COGS'?'product cost':'logistics')} is too high`;
+  return {badgeClass:'vb-opt',icon:'⚠️',verdict:'vOpt',confidence,confidenceLevel:confLevel,reason,explanation:'eOpt'};
+}
+
+function setConfidence(pct,level){
+  const t=T[lang];
+  const confEl=document.getElementById('dp-conf');
+  confEl.style.display='block';
+  const fill=document.getElementById('conf-fill');
+  fill.style.width=pct+'%';
+  fill.className='conf-fill '+level;
+  const labels={high:t.confHigh,med:t.confMed,low:t.confLow};
+  document.getElementById('conf-text').textContent=`${labels[level]} — ${pct}%`;
+}
+
+function setExplanation(key,mg,roas,reason){
+  const t=T[lang];
+  const expEl=document.getElementById('dp-explain');
+  expEl.style.display='block';
+  let txt=t[key]||'';
+  txt=txt.replace('{margin}',mg.toFixed(1)).replace('{roas}',roas.toFixed(1)).replace('{reason}',reason);
+  document.getElementById('exp-text').textContent=txt;
+}
+
+function setInsights(profit,mg,roas,ap,retPct,cogsPct,rev){
+  const t=T[lang];
+  const ins=[];
+  const fi=(id,cls)=>document.getElementById('f-'+id)?.value>0;
+  if(profit<0)ins.push({c:'ii-stop',i:'🛑',t:t.iStop});
+  if(roas>0&&roas<2)ins.push({c:'ii-stop',i:'📉',t:t.iLowROAS});
+  if(ap>30)ins.push({c:'ii-warn',i:'📣',t:t.iHighAds.replace('{pct}',ap.toFixed(0))});
+  if(cogsPct>50)ins.push({c:'ii-warn',i:'📦',t:t.iHighCOGS.replace('{pct}',cogsPct.toFixed(0))});
+  if(retPct>10)ins.push({c:'ii-warn',i:'↩️',t:t.iHighRet.replace('{pct}',retPct.toFixed(0))});
+  if(profit>0&&mg<15)ins.push({c:'ii-warn',i:'⚠️',t:t.iLowMg.replace('{mg}',mg.toFixed(1))});
+  if(mg>=30&&roas>=3)ins.push({c:'ii-ok',i:'🚀',t:t.iScale.replace('{roas}',roas.toFixed(1))});
+  else if(profit>0&&mg>=20)ins.push({c:'ii-ok',i:'✅',t:t.iGoodMg});
+  if(!ins.length)ins.push({c:'ii-info',i:'💡',t:lang==='fr'?'Bonne structure. Ajoute plus de données pour des insights précis.':'Good structure. Add more data for precise insights.'});
+  document.getElementById('ins-list').innerHTML=ins.map(x=>`<div class="ins-item ${x.c}"><span class="ii-ico">${x.i}</span><span class="ii-t">${x.t}</span></div>`).join('');
+}
+
+// ════════════════════════════════════════════════
+// SAVE CALCULATION — persists to Supabase
+// ════════════════════════════════════════════════
+async function saveCalc(){
+  if(!curProjId){toast(lang==='fr'?'Sélectionne un projet':'Select a project first','err');return;}
+  if(!window._cd){toast(lang==='fr'?'Entre des données d\'abord':'Enter data first','err');return;}
+  const d=window._cd,btn=document.getElementById('btn-sv');
+  btn.classList.add('ld');btn.disabled=true;
+  const {data,error}=await sb.from('calculations').insert({
+    project_id:curProjId,user_id:user.id,
+    revenue:d.rev,expenses:d.rev-d.profit,net_profit:d.profit,
+    margin_percent:d.mg,details:d.details,
+    calc_date:new Date().toISOString().split('T')[0]
+  }).select().single();
+  btn.classList.remove('ld');btn.disabled=false;
+  if(error){toast(error.message,'err');return;}
+  // Update local state so history is current
+  const idx=projs.findIndex(p=>p.id===curProjId);
+  if(idx>=0){
+    if(!projs[idx].calculations)projs[idx].calculations=[];
+    projs[idx].calculations.unshift(data);
+  }
+  setAutosave('saved');
+  toast(T[lang].saved,'ok');
+  renderProjsView();
+}
+
+// ════════════════════════════════════════════════
+// HISTORY — per project
+// ════════════════════════════════════════════════
+async function loadHistory(){
+  const proj=projs.find(p=>p.id===curProjId);
+  const title=proj?proj.name:(lang==='fr'?'Historique':'History');
+  document.getElementById('hist-title').textContent=title;
+  const t=T[lang];
+  if(!curProjId){document.getElementById('hist-list').innerHTML=`<div class="empty-s"><div class="ei">🕐</div><div class="et">${t.noCalc}</div><div class="es">${t.noHistDesc}</div></div>`;return;}
+  const {data}=await sb.from('calculations').select('*').eq('project_id',curProjId).eq('user_id',user.id).order('created_at',{ascending:false}).limit(50);
+  if(!data||!data.length){document.getElementById('hist-list').innerHTML=`<div class="empty-s" style="padding:40px 0;"><div class="ei">🕐</div><div class="et">${t.noCalc}</div><div class="es">${t.noHistDesc}</div></div>`;return;}
+  const verdictOf=(mg,pr)=>{
+    if(pr<0)return {cls:'v-stop',txt:t.vStop};
+    if(mg>=30)return {cls:'v-scale',txt:t.vScale};
+    if(mg>=15)return {cls:'v-opt',txt:t.vReview||t.vOpt};
+    return {cls:'v-opt',txt:t.vOpt};
+  };
+  document.getElementById('hist-list').innerHTML=data.map(d=>{
+    const pr=d.net_profit||0,mg=d.margin_percent||0,rv=d.revenue||0;
+    const vd=verdictOf(mg,pr);
+    const dt=new Date(d.created_at).toLocaleDateString(lang==='fr'?'fr-FR':'en-US',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+    return `<div class="hi" onclick="loadHistoryEntry('${d.id}')">
+      <div class="hi-left">
+        <div class="hi-date">${dt}</div>
+        <div class="hi-meta">
+          <span class="hi-chip">${t.revenue}: ${sym}${Math.round(rv).toLocaleString()}</span>
+          <span class="hi-chip">${t.margin}: ${mg.toFixed(1)}%</span>
+          ${d.details?.fb||d.details?.tik?`<span class="hi-chip">ROAS: ${rv>0&&(d.details?.fb+d.details?.tik)>0?(rv/(d.details.fb+d.details.tik)).toFixed(1)+'x':'—'}</span>`:''}
+        </div>
+      </div>
+      <div class="hi-right">
+        <div class="hi-profit ${pr>=0?'pos':'neg'}">${pr>=0?'+':''}${sym}${Math.abs(pr).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:2})}</div>
+        <div class="hi-verdict ${vd.cls}">${vd.txt}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Load a historical entry back into inputs
+async function loadHistoryEntry(calcId){
+  const {data}=await sb.from('calculations').select('*').eq('id',calcId).single();
+  if(!data||!data.details)return;
+  loadInputs(data.details);
+  calc();
+  gv('calc');
+  toast(lang==='fr'?'Données chargées depuis l\'historique':'Historical data loaded','ok');
+}
+
+// ════════════════════════════════════════════════
+// PROJECTS VIEW
+// ════════════════════════════════════════════════
+function renderProjsView(){
+  const t=T[lang],c=document.getElementById('projs-c');
+  if(!projs.length){c.innerHTML=`<div class="empty-s"><div class="ei">📊</div><div class="et">${t.noProjs}</div><div class="es">${t.noProjsSub}</div><button onclick="openM()" style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:10px 22px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);">${t.newProj}</button></div>`;return;}
+  const icons={ecom:'📦',creator:'🎬',freelancer:'💻'};
+  const bCls={ecom:'ecom',creator:'creator',freelancer:'freelancer'};
+  const typeLbls={ecom:t.typeEcom,creator:t.typeCr,freelancer:t.typeFr};
+  c.innerHTML='<div class="pg">'+projs.map(p=>{
+    const cs=p.calculations||[];
+    const last=cs.length?[...cs].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))[0]:null;
+    const pr=last?.net_profit||0,mg=last?.margin_percent||0,rv=last?.revenue||0;
+    return `<div class="pc" onclick="switchProject('${p.id}');gv('calc')">
+      <div class="pc-top"><div class="pc-badge ${bCls[p.business_type]||''}">${typeLbls[p.business_type]||p.business_type}</div><span style="font-size:20px;">${icons[p.business_type]||'📁'}</span></div>
+      <div class="pc-name">${p.name}</div>
+      ${last?`<div class="pc-stats">
+        <div class="ps"><div class="ps-v">${sym}${Math.round(rv).toLocaleString()}</div><div class="ps-l">${t.revenue}</div></div>
+        <div class="ps"><div class="ps-v ${pr>=0?'pos':'neg'}">${pr>=0?'+':''}${sym}${Math.abs(Math.round(pr)).toLocaleString()}</div><div class="ps-l">${t.netProfit}</div></div>
+        <div class="ps"><div class="ps-v">${mg.toFixed(1)}%</div><div class="ps-l">${t.margin}</div></div>
+      </div>`:`<div style="font-size:12px;color:var(--muted);padding:7px 0;">${t.noCalc}</div>`}
+      <div class="pc-foot"><span>${new Date(p.created_at).toLocaleDateString()}</span><button class="pc-open">${t.openCalc}</button></div>
+    </div>`;
+  }).join('')+'</div>';
+}
+
+// ════════════════════════════════════════════════
+// CREATE PROJECT
+// ════════════════════════════════════════════════
+function openM(){
+  const isPrem=profile?.plan==='premium';
+  if(!isPrem&&projs.length>=3){toast(lang==='fr'?'Limite 3 projets — passe Pro !':'3 project limit — upgrade to Pro!','err');return;}
+  nType=null;
+  document.getElementById('mn').value='';
+  document.getElementById('merr').classList.remove('on');
+  document.querySelectorAll('.to').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('modal').classList.add('open');
+}
+function sT(t,el){nType=t;document.querySelectorAll('.to').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
+async function cP(){
+  const name=document.getElementById('mn').value.trim();
+  const mc=document.getElementById('mc').value;
+  const err=document.getElementById('merr');
+  err.classList.remove('on');
+  if(!nType){err.textContent=lang==='fr'?'Choisis un type.':'Choose a type.';err.classList.add('on');return;}
+  if(!name){err.textContent=lang==='fr'?'Entre un nom.':'Enter a name.';err.classList.add('on');return;}
+  const {data,error}=await sb.from('projects').insert({user_id:user.id,name,business_type:nType,currency:mc}).select().single();
+  if(error){err.textContent=error.message;err.classList.add('on');return;}
+  data.calculations=[];
+  projs.unshift(data);
+  fillProjSelector();
+  renderProjsView();
+  cm();
+  switchProject(data.id);
+  gv('calc');
+  toast(lang==='fr'?'✓ Projet créé !':'✓ Project created!','ok');
+}
+
+// ════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════
+function setBadge(cls,icon,txt){
+  const b=document.getElementById('dp-badge');b.className='dp-v-badge '+cls;
+  document.getElementById('dp-bi').textContent=icon;
+  document.getElementById('dp-bt').textContent=txt;
+}
+function setMetric(id,val,cls){
+  const el=document.getElementById(id);el.textContent=val;
+  el.className='dp-mv '+(cls||'');
+}
+function fmt(n){
+  const a=Math.abs(n);
+  return (n<0?'-':'')+sym+a.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:2});
+}
+function setAutosave(state){
+  const dot=document.getElementById('autosave-dot');
+  const txt=document.getElementById('autosave-txt');
+  if(!state||state===null){dot.className='autosave-dot';txt.textContent='—';}
+  else if(state==='saving'){dot.className='autosave-dot saving';txt.textContent=T[lang].saving||'Saving...';}
+  else if(state==='saved'){dot.className='autosave-dot saved';txt.textContent=T[lang].saved||'✓ Saved';}
+  else if(state==='unsaved'){dot.className='autosave-dot';txt.textContent=lang==='fr'?'Non sauvegardé':'Unsaved';}
+}
+function setCur(c){
+  cur=c;sym=SYMS[c]||c+' ';
+  document.querySelectorAll('.isym').forEach(s=>s.textContent=sym);
+  calc();
+}
+function gv(v){
+  document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));
+  document.getElementById('view-'+v).classList.add('on');
+  document.querySelectorAll('.sbl').forEach(n=>n.classList.remove('active'));
+  const m={calc:'nav-c',hist:'nav-h',projs:'nav-p'};
+  if(m[v])document.getElementById(m[v]).classList.add('active');
+  const t=T[lang];
+  const titles={calc:curProjId?projs.find(p=>p.id===curProjId)?.name||t.navCalc:t.navCalc,hist:t.navHist,projs:t.navProjs};
+  document.getElementById('tb-title').textContent=titles[v]||'';
+  if(window.innerWidth<=768)document.getElementById('sb').classList.remove('open');
+  if(v==='hist')loadHistory();
+}
+function cm(){document.getElementById('modal').classList.remove('open');}
+function toast(msg,type){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast '+(type||'')+' show';
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+async function doLogout(){await sb.auth.signOut();location.href='sellsense-auth.html';}
+
+// ════════════════════════════════════════════════
+// LANG
+// ════════════════════════════════════════════════
+function setL(l,btn){
+  lang=l;
+  document.getElementById('lt-en').classList.toggle('on',l==='en');
+  document.getElementById('lt-fr').classList.toggle('on',l==='fr');
+  applyT();
+  if(curProjId)switchProject(curProjId,false);
+  renderProjsView();
+}
+function applyT(){
+  const t=T[lang];
+  document.querySelectorAll('[data-t]').forEach(el=>{const k=el.getAttribute('data-t');if(t[k]!==undefined)el.textContent=t[k];});
+}
+
+boot();
+</script>
+</body>
+</html>
