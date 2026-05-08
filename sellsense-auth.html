@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>SellSense — Sign in</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script>const SB_URL='https://fmlmkxbcfeebeqtlzzvn.supabase.co',SB_KEY='sb_publishable_M68a1m8LRq_DHQUov2k5pw_e-qrAefU';</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#08080F;--ink2:#0F0F1C;--ink3:#16162A;--ink4:#1E1E35;--br:rgba(255,255,255,.07);--br2:rgba(255,255,255,.12);--br3:rgba(255,255,255,.2);--v:#7C3AED;--v2:#6D28D9;--vd:rgba(124,58,237,.18);--cy:#22D3EE;--em:#10B981;--emd:rgba(16,185,129,.12);--rs:#F43F5E;--rsd:rgba(244,63,94,.12);--tx:#FAFAFE;--tx2:#9090B0;--mu:#5A5A7A;--fd:'Bricolage Grotesque',sans-serif;--fb:'DM Sans',sans-serif}
+html,body{min-height:100%;font-size:14px}
+body{font-family:var(--fb);background:var(--ink);color:var(--tx);display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+/* TOPBAR */
+.topbar{background:rgba(8,8,15,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--br);padding:0 24px}
+.top-inner{max-width:1160px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-family:var(--fd);font-size:18px;font-weight:800;letter-spacing:-.5px;text-decoration:none;color:var(--tx)}
+.logo em{font-style:normal;background:linear-gradient(135deg,var(--v),var(--cy));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.lang-tog{display:flex;background:var(--ink3);border:1px solid var(--br2);border-radius:8px;padding:3px;gap:2px}
+.lt{padding:5px 13px;border-radius:6px;border:none;background:transparent;font-size:12px;font-weight:600;color:var(--mu);cursor:pointer;transition:all .2s;font-family:var(--fb)}
+.lt.on{background:var(--ink4);color:var(--tx)}
+/* MAIN */
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:48px 24px;position:relative;overflow:hidden}
+.bg-mesh{position:absolute;inset:0;background:radial-gradient(ellipse 700px 500px at 50% -50px,rgba(124,58,237,.18),transparent 70%);pointer-events:none}
+.bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+/* AUTH CARD */
+.auth-card{background:var(--ink2);border:1px solid var(--br2);border-radius:18px;width:100%;max-width:420px;position:relative;z-index:1;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.5)}
+.card-accent{height:2px;background:linear-gradient(90deg,var(--v),var(--cy))}
+.card-body{padding:32px}
+/* TRIAL BADGE */
+.trial-banner{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:10px;padding:12px 16px;margin-bottom:24px;display:flex;align-items:flex-start;gap:10px}
+.tb-icon{font-size:18px;flex-shrink:0}
+.tb-label{font-size:13px;font-weight:600;color:#34D399;margin-bottom:2px}
+.tb-sub{font-size:12px;color:var(--tx2)}
+/* TABS */
+.tabs{display:flex;background:var(--ink3);border-radius:10px;padding:4px;gap:2px;margin-bottom:24px}
+.tab{flex:1;text-align:center;padding:9px;border-radius:8px;border:none;background:transparent;font-size:13px;font-weight:600;cursor:pointer;color:var(--mu);transition:all .2s;font-family:var(--fb)}
+.tab.on{background:linear-gradient(135deg,var(--v),var(--cy));color:#fff}
+/* FORM */
+.form-title{font-family:var(--fd);font-size:21px;font-weight:800;letter-spacing:-.4px;margin-bottom:4px;color:var(--tx)}
+.form-sub{font-size:13px;color:var(--tx2);margin-bottom:20px}
+/* GOOGLE */
+.btn-google{width:100%;background:var(--ink3);border:1px solid var(--br2);border-radius:9px;padding:12px;font-size:14px;font-weight:500;color:var(--tx);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .2s;margin-bottom:8px;font-family:var(--fb)}
+.btn-google:hover{border-color:var(--br3);background:var(--ink4)}
+.divider{display:flex;align-items:center;gap:12px;color:var(--mu);font-size:12px;margin:16px 0}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--br2)}
+/* FIELDS */
+.field{margin-bottom:13px}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--tx2);margin-bottom:6px;letter-spacing:.02em}
+.fi{width:100%;background:var(--ink3);border:1px solid var(--br2);border-radius:9px;padding:11px 13px;font-size:14px;color:var(--tx);transition:all .2s;font-family:var(--fb)}
+.fi:focus{outline:none;border-color:var(--v);box-shadow:0 0 0 3px rgba(124,58,237,.12)}
+.fi::placeholder{color:var(--mu)}
+/* TYPE CARDS */
+.type-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:13px}
+.tc{border:1px solid var(--br2);border-radius:9px;padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s;background:var(--ink3)}
+.tc:hover{border-color:var(--br3)}
+.tc.sel{border-color:var(--v);background:var(--vd)}
+.tc-ic{font-size:20px;margin-bottom:5px}
+.tc-nm{font-size:11px;font-weight:600;color:var(--tx)}
+/* BUTTONS */
+.btn-submit{width:100%;background:linear-gradient(135deg,var(--v),var(--cy));border:none;border-radius:9px;padding:13px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;transition:all .2s;margin-top:6px;font-family:var(--fd);letter-spacing:.02em;position:relative}
+.btn-submit:hover{opacity:.9}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed}
+.btn-submit .sp{display:none;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
+.btn-submit.ld .bl{display:none}.btn-submit.ld .sp{display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.form-foot{font-size:13px;color:var(--tx2);text-align:center;margin-top:14px}
+.form-foot a{color:#A78BFA;cursor:pointer;text-decoration:none}
+.form-foot a:hover{text-decoration:underline}
+.btn-forgot{display:block;text-align:right;font-size:11px;color:var(--mu);cursor:pointer;background:none;border:none;font-family:var(--fb);margin-top:-8px;margin-bottom:12px}
+.btn-forgot:hover{color:var(--tx2)}
+/* ALERTS */
+.alert{border-radius:9px;padding:11px 14px;font-size:13px;margin-bottom:13px;display:none}
+.alert.on{display:block}
+.a-err{background:var(--rsd);border:1px solid rgba(244,63,94,.3);color:#FDA4AF}
+.a-ok{background:var(--emd);border:1px solid rgba(16,185,129,.25);color:#34D399}
+/* SUCCESS */
+.success-view{text-align:center;padding:16px 0;display:none}
+.sv-icon{width:64px;height:64px;border-radius:50%;background:var(--emd);border:1.5px solid rgba(16,185,129,.3);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 18px}
+.sv-title{font-family:var(--fd);font-size:24px;font-weight:800;margin-bottom:8px;color:var(--tx)}
+.sv-sub{font-size:14px;color:var(--tx2);margin-bottom:24px}
+.btn-dash{background:linear-gradient(135deg,var(--v),var(--cy));color:#fff;border:none;border-radius:9px;padding:13px 32px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--fd)}
+/* FOOTER */
+footer{border-top:1px solid var(--br);text-align:center;padding:22px;color:var(--mu);font-size:12px}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="top-inner">
+    <a href="sellsense-landing.html" class="logo">Sell<em>Sense</em></a>
+    <div class="lang-tog">
+      <button class="lt on" id="lt-en" onclick="setL('en')">EN</button>
+      <button class="lt" id="lt-fr" onclick="setL('fr')">FR</button>
+    </div>
+  </div>
+</div>
+<main>
+  <div class="bg-mesh"></div>
+  <div class="bg-grid"></div>
+  <div class="auth-card">
+    <div class="card-accent"></div>
+    <div class="card-body">
+      <div class="trial-banner">
+        <div class="tb-icon">🎁</div>
+        <div><div class="tb-label" id="t-trial-lbl">7-day free trial — no credit card required</div><div class="tb-sub" id="t-trial-sub">Full access to all features for 7 days</div></div>
+      </div>
+      <div class="tabs">
+        <button class="tab on" id="tab-login" onclick="switchTab('login')" id="t-tab-login">Sign in</button>
+        <button class="tab" id="tab-signup" onclick="switchTab('signup')" id="t-tab-signup">Create account</button>
+      </div>
+      <div class="alert a-err" id="a-err"></div>
+      <div class="alert a-ok" id="a-ok"></div>
+      <!-- LOGIN -->
+      <div id="f-login">
+        <div class="form-title" id="t-login-title">Welcome back</div>
+        <div class="form-sub" id="t-login-sub">Sign in to your workspace.</div>
+        <button class="btn-google" onclick="doGoogle()">
+          <svg width="18" height="18" viewBox="0 0 18 18"><path d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.91C16.36 14.25 17.64 11.92 17.64 9.2Z" fill="#4285F4"/><path d="M9 18c2.43 0 4.47-.81 5.96-2.18l-2.91-2.26c-.81.54-1.84.86-3.05.86-2.34 0-4.33-1.58-5.04-3.71H.96v2.33A9 9 0 0 0 9 18Z" fill="#34A853"/><path d="M3.96 10.71A5.41 5.41 0 0 1 3.68 9c0-.59.1-1.17.28-1.71V4.96H.96A9 9 0 0 0 0 9c0 1.45.35 2.83.96 4.04l3.01-2.33Z" fill="#FBBC05"/><path d="M9 3.58c1.32 0 2.51.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.96L3.96 7.3C4.67 5.16 6.66 3.58 9 3.58Z" fill="#EA4335"/></svg>
+          <span id="t-google">Continue with Google</span>
+        </button>
+        <div class="divider"><span id="t-or">or</span></div>
+        <div class="field"><label id="t-lbl-email">EMAIL</label><input class="fi" type="email" id="l-email" placeholder="you@example.com"/></div>
+        <div class="field"><label id="t-lbl-pass">PASSWORD</label><input class="fi" type="password" id="l-pass" placeholder="••••••••"/></div>
+        <button class="btn-forgot" onclick="switchTab('forgot')" id="t-forgot">Forgot password?</button>
+        <button class="btn-submit" id="btn-login" onclick="doLogin()"><span class="bl" id="t-btn-login">Sign in →</span><div class="sp"></div></button>
+        <div class="form-foot" id="t-no-acc">No account? <a onclick="switchTab('signup')" id="t-go-signup">Create one free</a></div>
+      </div>
+      <!-- SIGNUP -->
+      <div id="f-signup" style="display:none">
+        <div class="form-title" id="t-signup-title">Create your account</div>
+        <div class="form-sub" id="t-signup-sub">7 days free. No credit card.</div>
+        <button class="btn-google" onclick="doGoogle()">
+          <svg width="18" height="18" viewBox="0 0 18 18"><path d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.91C16.36 14.25 17.64 11.92 17.64 9.2Z" fill="#4285F4"/><path d="M9 18c2.43 0 4.47-.81 5.96-2.18l-2.91-2.26c-.81.54-1.84.86-3.05.86-2.34 0-4.33-1.58-5.04-3.71H.96v2.33A9 9 0 0 0 9 18Z" fill="#34A853"/><path d="M3.96 10.71A5.41 5.41 0 0 1 3.68 9c0-.59.1-1.17.28-1.71V4.96H.96A9 9 0 0 0 0 9c0 1.45.35 2.83.96 4.04l3.01-2.33Z" fill="#FBBC05"/><path d="M9 3.58c1.32 0 2.51.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.96L3.96 7.3C4.67 5.16 6.66 3.58 9 3.58Z" fill="#EA4335"/></svg>
+          <span id="t-google2">Continue with Google</span>
+        </button>
+        <div class="divider"><span id="t-or2">or</span></div>
+        <div class="field"><label id="t-lbl-name">FULL NAME</label><input class="fi" type="text" id="s-name" placeholder="Jane Smith"/></div>
+        <div class="field"><label id="t-lbl-email2">EMAIL</label><input class="fi" type="email" id="s-email" placeholder="you@example.com"/></div>
+        <div class="field"><label id="t-lbl-pass2">PASSWORD <span style="color:var(--mu);font-weight:400">(min. 8 chars)</span></label><input class="fi" type="password" id="s-pass" placeholder="••••••••"/></div>
+        <div class="field">
+          <label id="t-lbl-type">I AM A…</label>
+          <div class="type-cards">
+            <div class="tc" onclick="selType('ecom',this)"><div class="tc-ic">📦</div><div class="tc-nm" id="t-type-ecom">E-commerce</div></div>
+            <div class="tc" onclick="selType('creator',this)"><div class="tc-ic">🎬</div><div class="tc-nm" id="t-type-creator">Creator</div></div>
+            <div class="tc" onclick="selType('freelancer',this)"><div class="tc-ic">💻</div><div class="tc-nm" id="t-type-freelancer">Freelancer</div></div>
+          </div>
+        </div>
+        <button class="btn-submit" id="btn-signup" onclick="doSignup()"><span class="bl" id="t-btn-signup">Create account — free →</span><div class="sp"></div></button>
+        <div class="form-foot" id="t-have-acc">Have an account? <a onclick="switchTab('login')" id="t-go-login">Sign in</a></div>
+      </div>
+      <!-- FORGOT -->
+      <div id="f-forgot" style="display:none">
+        <div class="form-title" id="t-forgot-title">Reset password</div>
+        <div class="form-sub" id="t-forgot-sub">Enter your email to receive a reset link.</div>
+        <div class="field"><label id="t-lbl-reset">EMAIL</label><input class="fi" type="email" id="r-email" placeholder="you@example.com"/></div>
+        <button class="btn-submit" id="btn-reset" onclick="doReset()"><span class="bl" id="t-btn-reset">Send reset link →</span><div class="sp"></div></button>
+        <div class="form-foot"><a onclick="switchTab('login')" id="t-back-login">← Back to sign in</a></div>
+      </div>
+      <!-- SUCCESS -->
+      <div id="f-success" class="success-view">
+        <div class="sv-icon">✓</div>
+        <div class="sv-title" id="t-sv-title">You're in!</div>
+        <div class="sv-sub" id="t-sv-sub">Redirecting to your workspace…</div>
+        <button class="btn-dash" onclick="location.href='sellsense-dashboard.html'" id="t-btn-dash">Go to dashboard →</button>
+      </div>
+    </div>
+  </div>
+</main>
+<footer>© 2025 SellSense</footer>
+<script>
+const {createClient}=supabase;
+const sb=createClient(SB_URL,SB_KEY);
+let lang='en',selT=null;
+const TX={
+en:{'t-trial-lbl':'7-day free trial — no credit card required','t-trial-sub':'Full access to all features for 7 days','t-tab-login':'Sign in','t-tab-signup':'Create account','t-login-title':'Welcome back','t-login-sub':'Sign in to your workspace.','t-google':'Continue with Google','t-google2':'Continue with Google','t-or':'or','t-or2':'or','t-lbl-email':'EMAIL','t-lbl-pass':'PASSWORD','t-forgot':'Forgot password?','t-btn-login':'Sign in →','t-no-acc':null,'t-go-signup':'Create one free','t-signup-title':'Create your account','t-signup-sub':'7 days free. No credit card.','t-lbl-name':'FULL NAME','t-lbl-email2':'EMAIL','t-lbl-pass2':'PASSWORD','t-lbl-type':'I AM A…','t-type-ecom':'E-commerce','t-type-creator':'Creator','t-type-freelancer':'Freelancer','t-btn-signup':'Create account — free →','t-have-acc':null,'t-go-login':'Sign in','t-forgot-title':'Reset password','t-forgot-sub':'Enter your email to receive a reset link.','t-lbl-reset':'EMAIL','t-btn-reset':'Send reset link →','t-back-login':'← Back to sign in','t-sv-title':"You're in!",'t-sv-sub':'Redirecting to your workspace…','t-btn-dash':'Go to dashboard →'},
+fr:{'t-trial-lbl':'Essai gratuit 7 jours — sans carte bancaire','t-trial-sub':'Accès complet à toutes les fonctionnalités','t-tab-login':'Se connecter','t-tab-signup':'Créer un compte','t-login-title':'Content de vous revoir','t-login-sub':'Connectez-vous à votre espace.','t-google':'Continuer avec Google','t-google2':'Continuer avec Google','t-or':'ou','t-or2':'ou','t-lbl-email':'EMAIL','t-lbl-pass':'MOT DE PASSE','t-forgot':'Mot de passe oublié ?','t-btn-login':'Se connecter →','t-go-signup':'Créer un compte','t-signup-title':'Créez votre compte','t-signup-sub':'7 jours gratuits. Sans carte bancaire.','t-lbl-name':'NOM COMPLET','t-lbl-email2':'EMAIL','t-lbl-pass2':'MOT DE PASSE','t-lbl-type':'JE SUIS…','t-type-ecom':'E-commerce','t-type-creator':'Créateur','t-type-freelancer':'Freelance','t-btn-signup':'Créer mon compte — gratuit →','t-go-login':'Se connecter','t-forgot-title':'Réinitialiser le mot de passe','t-forgot-sub':'Entrez votre email pour recevoir un lien de réinitialisation.','t-lbl-reset':'EMAIL','t-btn-reset':'Envoyer le lien →','t-back-login':'← Retour à la connexion','t-sv-title':'Vous êtes connecté !','t-sv-sub':'Redirection vers votre espace…','t-btn-dash':'Accéder au tableau de bord →'}
+};
+function setL(l){lang=l;document.getElementById('lt-en').classList.toggle('on',l==='en');document.getElementById('lt-fr').classList.toggle('on',l==='fr');const t=TX[l];Object.entries(t).forEach(([id,v])=>{if(v===null)return;const e=document.getElementById(id);if(e)e.textContent=v});const na=document.getElementById('t-no-acc');if(na)na.innerHTML=l==='fr'?'Pas de compte ? <a onclick="switchTab(\'signup\')">Créer un compte</a>':'No account? <a onclick="switchTab(\'signup\')">Create one free</a>';const ha=document.getElementById('t-have-acc');if(ha)ha.innerHTML=l==='fr'?'Déjà un compte ? <a onclick="switchTab(\'login\')">Se connecter</a>':'Have an account? <a onclick="switchTab(\'login\')">Sign in</a>';document.getElementById('tab-login').textContent=TX[l]['t-tab-login']||'Sign in';document.getElementById('tab-signup').textContent=TX[l]['t-tab-signup']||'Create account';}
+sb.auth.getSession().then(({data:{session}})=>{if(session)location.href='sellsense-dashboard.html'});
+sb.auth.onAuthStateChange((ev,session)=>{if(ev==='SIGNED_IN'&&session){showSuccess();setTimeout(()=>location.href='sellsense-dashboard.html',1500)}});
+function switchTab(tab){document.getElementById('tab-login').classList.toggle('on',tab==='login');document.getElementById('tab-signup').classList.toggle('on',tab==='signup');['login','signup','forgot','success'].forEach(t=>document.getElementById('f-'+t).style.display=t===tab?'block':'none');clearAlerts()}
+function selType(t,el){selT=t;document.querySelectorAll('.tc').forEach(c=>c.classList.remove('sel'));el.classList.add('sel')}
+function clearAlerts(){document.getElementById('a-err').classList.remove('on');document.getElementById('a-ok').classList.remove('on')}
+function showErr(m){const e=document.getElementById('a-err');e.textContent=m;e.classList.add('on')}
+function showOk(m){const e=document.getElementById('a-ok');e.textContent=m;e.classList.add('on')}
+function showSuccess(){['login','signup','forgot'].forEach(t=>document.getElementById('f-'+t).style.display='none');document.getElementById('f-success').style.display='block'}
+function setLd(id,on){const b=document.getElementById(id);b.classList.toggle('ld',on);b.disabled=on}
+async function doLogin(){clearAlerts();const email=document.getElementById('l-email').value.trim(),pass=document.getElementById('l-pass').value;if(!email||!pass){showErr(lang==='fr'?'Remplissez tous les champs.':'Fill in all fields.');return}setLd('btn-login',true);const {error}=await sb.auth.signInWithPassword({email,password:pass});setLd('btn-login',false);if(error){showErr(lang==='fr'?'Email ou mot de passe incorrect.':'Invalid email or password.');return}showSuccess();setTimeout(()=>location.href='sellsense-dashboard.html',1500)}
+async function doSignup(){clearAlerts();const name=document.getElementById('s-name').value.trim(),email=document.getElementById('s-email').value.trim(),pass=document.getElementById('s-pass').value;if(!name){showErr(lang==='fr'?'Entrez votre nom.':'Enter your name.');return}if(!email){showErr(lang==='fr'?'Entrez votre email.':'Enter your email.');return}if(pass.length<8){showErr(lang==='fr'?'Mot de passe trop court (min. 8 caractères).':'Password too short (min 8 chars).');return}if(!selT){showErr(lang==='fr'?'Choisissez votre type d\'activité.':'Choose your business type.');return}setLd('btn-signup',true);const {data,error}=await sb.auth.signUp({email,password:pass,options:{data:{full_name:name,business_type:selT}}});setLd('btn-signup',false);if(error){showErr(error.message.includes('already')?lang==='fr'?'Email déjà utilisé.':'Email already registered.':error.message);return}if(data.user)await sb.from('profiles').upsert({id:data.user.id,full_name:name,email,business_type:selT,currency:'USD',plan:'free'});showOk(lang==='fr'?'✓ Compte créé ! Vérifiez votre email.':'✓ Account created! Check your email to confirm.')}
+async function doGoogle(){const {error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/sellsense-dashboard.html'}});if(error)showErr(error.message)}
+async function doReset(){clearAlerts();const email=document.getElementById('r-email').value.trim();if(!email){showErr(lang==='fr'?'Entrez votre email.':'Enter your email.');return}setLd('btn-reset',true);const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/sellsense-auth.html'});setLd('btn-reset',false);if(error){showErr(error.message);return}showOk(lang==='fr'?'✓ Lien envoyé ! Vérifiez votre boîte mail.':'✓ Reset link sent! Check your inbox.')}
+document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;if(document.getElementById('f-login').style.display!=='none')doLogin();else if(document.getElementById('f-signup').style.display!=='none')doSignup()});
+</script>
+</body>
+</html>
