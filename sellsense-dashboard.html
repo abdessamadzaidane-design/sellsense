@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>SellSense</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script>const SU='https://fmlmkxbcfeebeqtlzzvn.supabase.co',SK='sb_publishable_M68a1m8LRq_DHQUov2k5pw_e-qrAefU';</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --b0:#0C0C22;--b1:#12122E;--b2:#18183A;--b3:#202048;--b4:#282860;
+  --br:rgba(130,80,255,.1);--br2:rgba(130,80,255,.2);--br3:rgba(130,80,255,.38);
+  --v:#8B5CF6;--v2:#7C3AED;--vd:rgba(139,92,246,.14);
+  --c:#22D3EE;--cd:rgba(34,211,238,.1);
+  --g:#10B981;--gd:rgba(16,185,129,.1);--gb:rgba(16,185,129,.22);
+  --a:#F59E0B;--ad:rgba(245,158,11,.1);--ab:rgba(245,158,11,.2);
+  --r:#F43F5E;--rd:rgba(244,63,94,.1);--rb:rgba(244,63,94,.22);
+  --gv:0 0 22px rgba(139,92,246,.25);--gg:0 0 16px rgba(16,185,129,.2);
+  --gr:0 0 16px rgba(244,63,94,.2);--ga:0 0 14px rgba(245,158,11,.16);
+  --tx:#EEEEFF;--t2:#8888CC;--mu:#50508A;
+  --s1:0 2px 8px rgba(0,0,0,.35);--s2:0 6px 28px rgba(0,0,0,.45);--s3:0 18px 60px rgba(0,0,0,.6);
+  --ff:'Bricolage Grotesque',sans-serif;--fb:'DM Sans',sans-serif;--fm:'DM Mono',monospace;
+  --sw:260px;--rr:12px;
+}
+html,body{height:100%;font-size:14px}
+body{font-family:var(--fb);background:var(--b0);color:var(--tx);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+input,select,button{font-family:var(--fb)}
+input[type=number]{-moz-appearance:textfield}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
+
+/* LOADING */
+#ls{position:fixed;inset:0;background:var(--b0);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;z-index:9999}
+.ll{font-family:var(--ff);font-size:30px;font-weight:800;letter-spacing:-.5px}
+.ll em{font-style:normal;background:linear-gradient(135deg,var(--v),var(--c));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.lb{width:160px;height:2px;background:var(--br2);border-radius:2px;overflow:hidden}
+.lf{height:100%;background:linear-gradient(90deg,var(--v),var(--c));animation:ld 1.2s ease forwards}
+@keyframes ld{from{width:0}to{width:100%}}
+
+/* LAYOUT */
+.app{display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sb{width:var(--sw);flex-shrink:0;background:var(--b1);border-right:1px solid var(--br2);position:fixed;top:0;left:0;bottom:0;z-index:200;display:flex;flex-direction:column;transition:transform .3s}
+.sb-brand{padding:20px 16px 16px;border-bottom:1px solid var(--br)}
+.logo{font-family:var(--ff);font-size:19px;font-weight:800;letter-spacing:-.5px;text-decoration:none;color:var(--tx);display:block}
+.logo em{font-style:normal;background:linear-gradient(135deg,var(--v),var(--c));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.logo-sub{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.12em;margin-top:3px;display:block}
+.sb-proj{padding:12px 14px;border-bottom:1px solid var(--br)}
+.sb-lbl{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px;display:block}
+.pw{position:relative}
+.ps{width:100%;background:var(--b2);border:1px solid var(--br2);border-radius:10px;padding:10px 30px 10px 13px;font-size:13px;font-weight:600;color:var(--tx);cursor:pointer;appearance:none;transition:border-color .2s}
+.ps:focus{outline:none;border-color:var(--v)}
+.ps option{background:var(--b2)}
+.pa{position:absolute;right:11px;top:50%;transform:translateY(-50%);color:var(--mu);pointer-events:none;font-size:11px}
+.btn-np{width:100%;background:var(--vd);border:1px solid rgba(139,92,246,.25);border-radius:10px;padding:9px;font-size:12px;font-weight:700;color:#C4B5FD;cursor:pointer;margin-top:8px;transition:all .2s;font-family:var(--ff)}
+.btn-np:hover{background:rgba(139,92,246,.22);box-shadow:var(--gv)}
+.sb-nav{flex:1;padding:10px;overflow-y:auto}
+.ni{display:flex;align-items:center;gap:10px;padding:10px 11px;border-radius:10px;font-size:13px;color:var(--t2);cursor:pointer;text-decoration:none;transition:all .15s;margin-bottom:2px}
+.ni:hover{background:var(--b2);color:var(--tx)}
+.ni.on{background:rgba(139,92,246,.08);color:#C4B5FD;border:1px solid rgba(139,92,246,.2)}
+.ni-i{font-size:14px;width:20px;text-align:center;flex-shrink:0}
+.ni-badge{margin-left:auto;font-size:10px;background:rgba(245,158,11,.18);color:#FCD34D;border-radius:20px;padding:2px 8px;font-weight:700}
+.sb-bot{padding:12px 14px;border-top:1px solid var(--br)}
+
+/* TRIAL BOX */
+.trial-box{background:var(--gd);border:1px solid var(--gb);border-radius:10px;padding:11px 13px;margin-bottom:10px}
+.trial-lbl{font-size:11px;font-weight:700;color:#34D399;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.ti{font-size:11px;display:flex;align-items:center;gap:6px;margin-top:3px}
+.ti.ok{color:var(--t2)}.ti.ok::before{content:'✓';color:var(--g);font-weight:700;font-size:11px}
+.ti.locked{color:var(--mu)}.ti.locked::before{content:'🔒';font-size:10px}
+.btn-up{width:100%;background:linear-gradient(135deg,var(--v),var(--c));border:none;border-radius:10px;padding:11px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;margin-bottom:8px;font-family:var(--ff);letter-spacing:.02em;transition:all .2s}
+.btn-up:hover{opacity:.9;box-shadow:var(--gv)}
+.sb-user{display:flex;align-items:center;gap:8px;padding:6px}
+.uav{width:30px;height:30px;border-radius:50%;background:var(--vd);border:1px solid rgba(139,92,246,.3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#C4B5FD;flex-shrink:0}
+.uname{font-size:12px;color:var(--t2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn-lo{background:none;border:none;color:var(--mu);font-size:11px;cursor:pointer}
+.btn-lo:hover{color:#F87171}
+
+/* TOPBAR */
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.tb{display:flex;align-items:center;justify-content:space-between;padding:0 22px;height:56px;border-bottom:1px solid var(--br2);background:rgba(12,12,34,.9);backdrop-filter:blur(16px);position:sticky;top:0;z-index:100}
+.tb-l{display:flex;align-items:center;gap:10px}
+.tb-title{font-family:var(--ff);font-size:15px;font-weight:700;color:var(--tx);letter-spacing:-.2px}
+.tb-r{display:flex;align-items:center;gap:8px}
+.lang-tog{display:flex;background:var(--b2);border:1px solid var(--br2);border-radius:9px;padding:3px;gap:2px}
+.lt{padding:5px 13px;border-radius:7px;border:none;background:transparent;font-size:12px;font-weight:700;color:var(--mu);cursor:pointer;transition:all .2s;font-family:var(--fb)}
+.lt.on{background:var(--b3);color:var(--tx)}
+.cur-s{background:var(--b2);border:1px solid var(--br2);border-radius:9px;padding:5px 10px;font-size:13px;font-weight:500;color:var(--tx);cursor:pointer;max-width:130px}
+.sr{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--mu)}
+.sd{width:6px;height:6px;border-radius:50%;background:var(--mu);flex-shrink:0;transition:background .3s}
+.sd.sv{background:var(--g)}
+.sd.us{background:var(--a);animation:bk .9s infinite}
+@keyframes bk{0%,100%{opacity:1}50%{opacity:.3}}
+.pc{font-size:11px;padding:4px 12px;border-radius:20px;border:1px solid var(--br2);color:var(--mu);font-weight:600}
+.pc.pro{background:var(--vd);color:#C4B5FD;border-color:var(--br3)}
+.ham{display:none;background:none;border:1px solid var(--br2);border-radius:9px;width:36px;height:36px;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--tx)}
+
+/* VIEWS */
+.view{display:none;padding:24px;flex:1}
+.view.on{display:block;animation:fi .25s ease}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* NPS */
+.nps{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;padding:40px}
+.nps-glow{width:200px;height:200px;background:radial-gradient(circle,rgba(139,92,246,.15),transparent 70%);margin-bottom:-60px}
+.nps-icon{font-size:56px;margin-bottom:18px}
+.nps-t{font-family:var(--ff);font-size:24px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px}
+.nps-s{font-size:14px;color:var(--t2);margin-bottom:28px;max-width:420px;line-height:1.65}
+
+/* CAMP HEADER */
+.ch{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px}
+.ch-l{display:flex;flex-direction:column;gap:7px}
+.ch-title{font-family:var(--ff);font-size:24px;font-weight:800;letter-spacing:-.5px}
+.ch-badges{display:flex;gap:7px;flex-wrap:wrap}
+.bdg{display:inline-flex;align-items:center;gap:4px;border-radius:20px;padding:4px 11px;font-size:12px;font-weight:700}
+.bdg-ec{background:var(--cd);color:var(--c);border:1px solid rgba(34,211,238,.2)}
+.bdg-cr{background:var(--ad);color:var(--a);border:1px solid rgba(245,158,11,.2)}
+.bdg-fr{background:var(--gd);color:var(--g);border:1px solid rgba(16,185,129,.2)}
+.bdg-t{background:var(--vd);color:#C4B5FD;border:1px solid rgba(139,92,246,.2)}
+.ch-r{display:flex;gap:8px}
+.btn-sh{background:var(--b2);border:1px solid var(--br2);border-radius:10px;padding:9px 16px;font-size:13px;font-weight:500;color:var(--t2);cursor:pointer;transition:all .2s}
+.btn-sh:hover{border-color:var(--br3);color:var(--tx)}
+.btn-sv{background:linear-gradient(135deg,var(--v),var(--c));border:none;border-radius:10px;padding:10px 22px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;font-family:var(--ff);position:relative;transition:all .2s;letter-spacing:.02em}
+.btn-sv:hover{opacity:.9;box-shadow:var(--gv)}
+.btn-sv:disabled{opacity:.5;cursor:not-allowed}
+.btn-sv .sp{display:none;width:13px;height:13px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
+.btn-sv.ld .bt{display:none}.btn-sv.ld .sp{display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* KPI GRID — HERO */
+.kpi-sec{margin-bottom:22px}
+.kpi-sec-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.kpi-sec-t{font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.12em}
+.kpi-grid{display:grid;gap:10px}
+.kg2{grid-template-columns:repeat(2,1fr)}.kg3{grid-template-columns:repeat(3,1fr)}
+.kg4{grid-template-columns:repeat(4,1fr)}.kg5{grid-template-columns:repeat(5,1fr)}.kg6{grid-template-columns:repeat(6,1fr)}
+
+/* KPI CARD */
+.kc{background:var(--b1);border:1px solid var(--br2);border-radius:var(--rr);padding:18px 15px;position:relative;overflow:visible;transition:border-color .25s,box-shadow .25s;cursor:default}
+.kc:hover{border-color:var(--br3)}
+.kc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:var(--rr) var(--rr) 0 0}
+.kp::before{background:linear-gradient(90deg,var(--v),var(--c))}.kpos::before{background:var(--g)}.kneg::before{background:var(--r)}.kwrn::before{background:var(--a)}.kinf::before{background:var(--c)}.kacc::before{background:#C4B5FD}.kdef::before{background:var(--br3)}
+.km{background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(34,211,238,.06));border-color:rgba(139,92,246,.28);box-shadow:var(--gv)}
+.kpos:hover{box-shadow:var(--gg)}.kneg:hover{box-shadow:var(--gr)}.kwrn:hover{box-shadow:var(--ga)}
+.kc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.kc-icon{font-size:18px}
+/* TOOLTIP */
+.tip-btn{width:20px;height:20px;border-radius:50%;background:var(--b3);border:1px solid var(--br2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:10px;color:var(--mu);transition:all .2s;flex-shrink:0;position:relative;z-index:10}
+.tip-btn:hover,.tip-btn.op{background:var(--b4);color:var(--t2);border-color:var(--br3)}
+.tip-box{position:absolute;bottom:calc(100% + 10px);right:-10px;z-index:300;background:var(--b3);border:1px solid var(--br3);border-radius:12px;padding:14px 15px;width:240px;pointer-events:none;opacity:0;transform:translateY(-4px);transition:opacity .2s,transform .2s;box-shadow:var(--s3);text-align:left}
+.tip-btn:hover .tip-box,.tip-btn.op .tip-box{opacity:1;transform:translateY(0);pointer-events:all}
+.tip-t{font-size:12px;font-weight:700;color:var(--tx);margin-bottom:6px;font-family:var(--ff)}
+.tip-b{font-size:12px;color:var(--t2);line-height:1.55}
+.tip-bench{margin-top:9px;display:flex;flex-direction:column;gap:4px}
+.tb-r{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--t2)}
+.tbd{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.tbd-g{background:var(--g)}.tbd-a{background:var(--a)}.tbd-r{background:var(--r)}
+.kc-lbl{font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.09em;margin-bottom:5px}
+.kc-val{font-family:var(--ff);font-size:28px;font-weight:800;letter-spacing:-.8px;line-height:1;margin-bottom:5px}
+.km .kc-val{font-size:36px;letter-spacing:-1.5px;background:linear-gradient(135deg,#C4B5FD,var(--c));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.vdef{color:var(--tx)}.vpos{color:var(--g)}.vneg{color:var(--r)}.vwrn{color:var(--a)}.vinf{color:var(--c)}.vacc{color:#C4B5FD}
+.kc-sub{font-size:11px;color:var(--t2);line-height:1.4}
+.kc-prog{margin-top:10px;height:3px;background:var(--br2);border-radius:2px;overflow:hidden}
+.kpf{height:100%;border-radius:2px;transition:width .7s ease}
+.kpf-pos{background:var(--g)}.kpf-neg{background:var(--r)}.kpf-wrn{background:var(--a)}.kpf-inf{background:var(--c)}.kpf-acc{background:#C4B5FD}
+
+/* VERDICT BANNER */
+.vb{border-radius:var(--rr);padding:18px 22px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;transition:all .35s;position:relative;overflow:hidden}
+.vb-glow{position:absolute;top:-40px;left:-40px;width:180px;height:180px;border-radius:50%;opacity:.22;pointer-events:none;transition:background .35s}
+.vwait{background:var(--b1);border:1px solid var(--br2)}.vwait .vb-glow{background:var(--v)}
+.vscale{background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(34,211,238,.04));border:1px solid rgba(16,185,129,.3)}.vscale .vb-glow{background:var(--g)}
+.vopt{background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(245,158,11,.02));border:1px solid rgba(245,158,11,.25)}.vopt .vb-glow{background:var(--a)}
+.vkill{background:linear-gradient(135deg,rgba(244,63,94,.1),rgba(244,63,94,.03));border:1px solid rgba(244,63,94,.3)}.vkill .vb-glow{background:var(--r)}
+.vb-l{display:flex;align-items:flex-start;gap:16px;position:relative;z-index:1;flex:1}
+.vb-icon{font-size:34px;line-height:1;flex-shrink:0}
+.vb-verdict{font-family:var(--ff);font-size:20px;font-weight:800;letter-spacing:-.4px;margin-bottom:5px}
+.vwait .vb-verdict{color:var(--mu)}.vscale .vb-verdict{color:var(--g)}.vopt .vb-verdict{color:var(--a)}.vkill .vb-verdict{color:var(--r)}
+.vb-exp{font-size:13px;color:var(--t2);line-height:1.6;max-width:560px}
+.vb-r{display:flex;flex-direction:column;align-items:flex-end;gap:6px;position:relative;z-index:1;flex-shrink:0}
+.cf-bar{width:130px;height:5px;background:var(--br2);border-radius:3px;overflow:hidden;margin-bottom:4px;margin-left:auto}
+.cf-fill{height:100%;border-radius:3px;transition:width .8s ease}
+.cfh{background:var(--g)}.cfm{background:var(--a)}.cfl{background:var(--r)}
+.cf-lbl{font-size:11px;font-weight:700;color:var(--t2)}
+
+/* BOTTOM LAYOUT */
+.bot{display:grid;grid-template-columns:1fr 290px;gap:18px;align-items:start}
+.inp-col{display:flex;flex-direction:column;gap:10px}
+.sec{background:var(--b1);border:1px solid var(--br);border-radius:var(--rr);overflow:hidden}
+.sec-h{display:flex;align-items:center;gap:8px;padding:12px 15px;border-bottom:1px solid var(--br);background:var(--b2)}
+.sec-icon{font-size:13px}
+.sec-t{font-size:13px;font-weight:700;color:var(--tx);font-family:var(--ff)}
+.sec-body{padding:14px 15px;display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.sec-body.c1{grid-template-columns:1fr}
+.f{display:flex;flex-direction:column;gap:5px}
+.f label{font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.05em}
+.f label em{font-style:normal;color:var(--mu);font-weight:400;text-transform:none}
+.iw{position:relative}
+.ip{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--mu);pointer-events:none;font-weight:500}
+.is{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--mu);pointer-events:none}
+.fi{width:100%;background:var(--b2);border:1px solid var(--br2);border-radius:9px;padding:10px 11px;font-size:14px;font-weight:600;color:var(--tx);transition:all .2s}
+.fi.p{padding-left:27px}.fi.s{padding-right:30px}
+.fi:focus{outline:none;border-color:var(--v);box-shadow:0 0 0 3px rgba(139,92,246,.12)}
+.fi::placeholder{color:var(--mu);font-weight:400}
+
+/* RIGHT COLUMN */
+.rc-col{position:sticky;top:62px;display:flex;flex-direction:column;gap:10px}
+.rc{background:var(--b1);border:1px solid var(--br);border-radius:var(--rr);overflow:hidden}
+.rc-h{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--br);background:var(--b2)}
+.rc-h span{font-family:var(--ff);font-size:13px;font-weight:700;color:var(--tx)}
+.brkd{padding:13px 14px}
+.brkd-row{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--br)}
+.brkd-row:last-child{border-bottom:none;border-top:1px solid var(--br2);margin-top:4px;padding-top:9px}
+.brkd-l{color:var(--mu)}
+.brkd-v{font-weight:700;font-family:var(--fm);font-size:12px;color:var(--t2)}
+.bv-r{color:var(--g)}.bv-t{color:#C4B5FD;font-size:14px}
+.ins-body{padding:10px}
+.ii{display:flex;align-items:flex-start;gap:9px;padding:9px 10px;border-radius:9px;margin-bottom:7px;transition:transform .2s}
+.ii:last-child{margin-bottom:0}
+.ii:hover{transform:translateX(2px)}
+.ii-k{background:var(--rd);border:1px solid var(--rb)}
+.ii-w{background:var(--ad);border:1px solid var(--ab)}
+.ii-g{background:var(--gd);border:1px solid var(--gb)}
+.ii-i{background:var(--cd);border:1px solid rgba(34,211,238,.15)}
+.ii-ico{font-size:14px;flex-shrink:0;margin-top:1px}
+.ii-txt{font-size:12px;line-height:1.5;color:var(--t2)}
+.sn{background:rgba(139,92,246,.07);border:1px solid rgba(139,92,246,.18);border-radius:10px;padding:12px 14px}
+.sn-t{font-size:12px;font-weight:700;color:#C4B5FD;margin-bottom:3px;font-family:var(--ff)}
+.sn-s{font-size:11px;color:var(--t2);line-height:1.5}
+
+/* HISTORY & PROJECTS */
+.vh{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:12px}
+.vh-t{font-family:var(--ff);font-size:20px;font-weight:800;letter-spacing:-.4px}
+.vh-s{font-size:13px;color:var(--t2);margin-top:3px}
+.hist-list{display:flex;flex-direction:column;gap:9px}
+.hi{background:var(--b1);border:1px solid var(--br);border-radius:var(--rr);padding:15px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:all .2s}
+.hi:hover{border-color:var(--br3);transform:translateX(4px)}
+.hi-date{font-size:11px;color:var(--mu);margin-bottom:5px}
+.hi-chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:11px;background:var(--b2);border:1px solid var(--br2);border-radius:6px;padding:3px 8px;color:var(--t2);font-family:var(--fm)}
+.hi-hint{font-size:10px;color:var(--mu);margin-top:4px}
+.hi-r{text-align:right}
+.hi-profit{font-family:var(--ff);font-size:18px;font-weight:800;letter-spacing:-.5px}
+.hi-profit.pos{color:var(--g)}.hi-profit.neg{color:var(--r)}
+.hi-v{font-size:11px;font-weight:700;margin-top:3px}
+.hvs{color:var(--g)}.hvo{color:var(--a)}.hvk{color:var(--r)}
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;margin-top:18px}
+.pc-card{background:var(--b1);border:1px solid var(--br);border-radius:var(--rr);padding:18px;transition:all .22s;position:relative;overflow:hidden}
+.pc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.pec::before{background:linear-gradient(90deg,var(--v),var(--c))}.pcr::before{background:linear-gradient(90deg,var(--a),#F97316)}.pfr::before{background:linear-gradient(90deg,var(--g),var(--c))}
+.pc-card:hover{border-color:var(--br3);transform:translateY(-3px)}
+.pc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.pc-badges{display:flex;gap:6px;flex-wrap:wrap}
+.del-btn{background:none;border:1px solid var(--br2);border-radius:8px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;transition:all .2s;position:relative}
+.del-btn:hover:not(.locked){border-color:rgba(244,63,94,.4);background:var(--rd)}
+.del-btn.locked{cursor:not-allowed;opacity:.5}
+.del-tip{position:absolute;bottom:calc(100% + 8px);right:0;background:var(--b3);border:1px solid var(--br3);border-radius:9px;padding:10px 13px;width:200px;font-size:11px;color:var(--t2);line-height:1.5;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
+.del-btn:hover .del-tip{opacity:1}
+.pc-name{font-family:var(--ff);font-size:15px;font-weight:700;margin-bottom:12px;color:var(--tx)}
+.pc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.pcs{text-align:center;padding:9px 4px;background:var(--b2);border-radius:9px}
+.pcs-v{font-family:var(--fm);font-size:14px;font-weight:500;color:var(--tx)}
+.pcs-v.pos{color:var(--g)}.pcs-v.neg{color:var(--r)}
+.pcs-l{font-size:9px;color:var(--mu);margin-top:2px;text-transform:uppercase;letter-spacing:.06em}
+.pc-foot{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:10px;border-top:1px solid var(--br);font-size:12px;color:var(--mu)}
+.pc-open{background:none;border:none;color:#C4B5FD;font-size:12px;font-weight:700;cursor:pointer}
+
+/* EMPTY */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;text-align:center}
+.ei{font-size:48px;margin-bottom:16px}
+.et{font-family:var(--ff);font-size:18px;font-weight:700;margin-bottom:8px}
+.es{font-size:14px;color:var(--t2);margin-bottom:22px;max-width:320px;line-height:1.6}
+
+/* BUTTONS */
+.btn-p{background:linear-gradient(135deg,var(--v),var(--c));border:none;border-radius:10px;padding:11px 24px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;font-family:var(--ff);transition:all .2s;letter-spacing:.02em}
+.btn-p:hover{opacity:.9;box-shadow:var(--gv)}
+
+/* MODAL */
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);z-index:500;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .25s}
+.mov.open{opacity:1;pointer-events:all}
+.mbox{background:var(--b1);border:1px solid var(--br3);border-radius:18px;width:100%;max-width:480px;padding:30px;position:relative;transform:translateY(16px);transition:transform .25s;box-shadow:var(--s3),var(--gv);max-height:90vh;overflow-y:auto}
+.mbox::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--v),var(--c));border-radius:18px 18px 0 0}
+.mov.open .mbox{transform:translateY(0)}
+.mcl{position:absolute;top:14px;right:14px;background:var(--b2);border:none;border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:var(--t2);transition:all .2s}
+.mcl:hover{background:var(--b3);color:var(--tx)}
+.mt{font-family:var(--ff);font-size:21px;font-weight:800;margin-bottom:4px;letter-spacing:-.4px}
+.ms{font-size:13px;color:var(--t2);margin-bottom:20px}
+.si-row{display:flex;align-items:center;gap:8px;margin-bottom:22px}
+.sid{width:8px;height:8px;border-radius:50%;background:var(--br2);transition:all .3s}
+.sid.active{background:linear-gradient(135deg,var(--v),var(--c));width:24px;border-radius:4px}
+.sid.done{background:var(--g)}
+.tc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:18px}
+.tc{border:1px solid var(--br2);border-radius:11px;padding:15px 8px;text-align:center;cursor:pointer;transition:all .2s;background:var(--b2)}
+.tc:hover{border-color:var(--br3);background:var(--b3)}
+.tc.sel{border-color:var(--v);background:var(--vd);box-shadow:var(--gv)}
+.tc-ic{font-size:24px;margin-bottom:7px}
+.tc-nm{font-size:12px;font-weight:700;color:var(--tx)}
+.tc-sb{font-size:10px;color:var(--mu);margin-top:2px}
+.trk-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.trk{border:1px solid var(--br2);border-radius:11px;padding:16px 14px;cursor:pointer;transition:all .2s;background:var(--b2)}
+.trk:hover{border-color:var(--br3);background:var(--b3)}
+.trk.sel{border-color:var(--v);background:var(--vd);box-shadow:var(--gv)}
+.trk-ic{font-size:24px;margin-bottom:8px}
+.trk-nm{font-family:var(--ff);font-size:14px;font-weight:700;color:var(--tx);margin-bottom:4px}
+.trk-ds{font-size:11px;color:var(--t2);line-height:1.5}
+.trk-kpis{margin-top:9px;display:flex;flex-wrap:wrap;gap:4px}
+.trk-kpi{font-size:9px;background:var(--b3);border:1px solid var(--br2);border-radius:5px;padding:2px 7px;color:var(--mu);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.mf{margin-bottom:14px}
+.mf label{display:block;font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+.mi{width:100%;background:var(--b2);border:1px solid var(--br2);border-radius:10px;padding:11px 14px;font-size:14px;color:var(--tx);transition:all .2s}
+.mi:focus{outline:none;border-color:var(--v);box-shadow:0 0 0 3px rgba(139,92,246,.12)}
+.mi::placeholder{color:var(--mu)}
+.msel{width:100%;background:var(--b2);border:1px solid var(--br2);border-radius:10px;padding:11px 14px;font-size:14px;color:var(--tx);cursor:pointer;appearance:none}
+.merr{background:var(--rd);border:1px solid var(--rb);border-radius:9px;padding:10px 14px;font-size:13px;color:#FDA4AF;margin-bottom:13px;display:none}
+.merr.on{display:block}
+.row{display:flex;align-items:center;gap:10px}
+.btn-cr{flex:1;background:linear-gradient(135deg,var(--v),var(--c));border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;font-family:var(--ff);letter-spacing:.02em;transition:all .2s}
+.btn-cr:hover{opacity:.9;box-shadow:var(--gv)}
+.btn-bk{background:var(--b2);border:1px solid var(--br2);border-radius:10px;padding:12px 20px;font-size:14px;font-weight:600;color:var(--t2);cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn-bk:hover{border-color:var(--br3);color:var(--tx)}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;right:22px;background:var(--b2);border:1px solid var(--br3);border-radius:12px;padding:12px 18px;font-size:13px;font-weight:600;color:var(--tx);transform:translateY(80px);opacity:0;transition:all .3s;z-index:999;box-shadow:var(--s3)}
+.toast.on{transform:translateY(0);opacity:1}
+.toast.ok{border-color:var(--gb);color:#34D399}
+.toast.err{border-color:var(--rb);color:#FDA4AF}
+
+@media(max-width:1200px){.kg6{grid-template-columns:repeat(3,1fr)}.kg5{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:1000px){.bot{grid-template-columns:1fr}.rc-col{position:static}.sec-body{grid-template-columns:1fr}.kg4,.kg3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:768px){.sb{transform:translateX(-100%)}.sb.open{transform:translateX(0)}.main{margin-left:0}.ham{display:flex}.view{padding:14px}.tb{padding:0 14px}.proj-grid{grid-template-columns:1fr}.kg6,.kg5,.kg4,.kg3,.kg2{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.kg6,.kg5,.kg4,.kg3,.kg2{grid-template-columns:1fr}.tc-grid,.trk-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="ls"><div class="ll">Sell<em>Sense</em></div><div class="lb"><div class="lf"></div></div><div style="font-size:12px;color:var(--mu)" id="ls-t">Loading…</div></div>
+<div class="toast" id="toast"></div>
+<div class="app" id="app" style="display:none">
+<aside class="sb" id="sb">
+  <div class="sb-brand"><a href="sellsense-landing.html" class="logo">Sell<em>Sense</em></a><small class="logo-sub" id="t-en">Decision Engine</small></div>
+  <div class="sb-proj">
+    <span class="sb-lbl" id="t-ap">Active Project</span>
+    <div class="pw"><select class="ps" id="psel" onchange="activate(this.value)"><option value="">— Select —</option></select><span class="pa">▾</span></div>
+    <button class="btn-np" onclick="openM()" id="t-np">+ New project</button>
+  </div>
+  <nav class="sb-nav">
+    <div class="ni on" id="nav-c" onclick="sv('campaign')"><span class="ni-i">⚡</span><span id="t-nc">Campaign</span></div>
+    <div class="ni" id="nav-h" onclick="sv('history')"><span class="ni-i">📋</span><span id="t-nh">History</span></div>
+    <div class="ni" id="nav-p" onclick="sv('projects')"><span class="ni-i">📁</span><span id="t-np2">Projects</span></div>
+    <div class="ni" onclick="openPro()"><span class="ni-i">⭐</span><span id="t-nup">Upgrade</span><span class="ni-badge">Pro</span></div>
+  </nav>
+  <div class="sb-bot">
+    <div class="trial-box" id="trial-box">
+      <div class="trial-lbl">🟢 <span id="t-tl">Trial Active — 7 days</span></div>
+      <div class="ti ok" id="t-t1">3 projects maximum</div>
+      <div class="ti ok" id="t-t2">Full decision engine</div>
+      <div class="ti locked" id="t-t3">Cannot delete projects</div>
+      <div class="ti locked" id="t-t4">History expires after 7 days</div>
+    </div>
+    <button class="btn-up" onclick="openPro()" id="t-bup">⭐ Upgrade to Pro — $9/mo</button>
+    <div class="sb-user"><div class="uav" id="uav">U</div><span class="uname" id="uname">…</span><button class="btn-lo" onclick="doLogout()">↩</button></div>
+  </div>
+</aside>
+<div class="main">
+  <header class="tb">
+    <div class="tb-l"><button class="ham" onclick="document.getElementById('sb').classList.toggle('open')">☰</button><div class="tb-title" id="tb-title">Campaign</div></div>
+    <div class="tb-r">
+      <div class="lang-tog"><button class="lt on" id="lt-en" onclick="setL('en')">EN</button><button class="lt" id="lt-fr" onclick="setL('fr')">FR</button></div>
+      <select class="cur-s" id="cur-s" onchange="setCur(this.value)"></select>
+      <div class="sr"><div class="sd" id="sd"></div><span id="stxt">—</span></div>
+      <div class="pc" id="pchip">Trial</div>
+    </div>
+  </header>
+  <div class="view on" id="view-campaign">
+    <div class="nps" id="nps">
+      <div class="nps-glow"></div><div class="nps-icon">⚡</div>
+      <div class="nps-t" id="t-npt">Select or create a project</div>
+      <div class="nps-s" id="t-nps">Each project tracks one business. KPIs and inputs adapt completely — a campaign needs ROAS, a product needs unit economics.</div>
+      <button class="btn-p" onclick="openM()" id="t-npb">+ Create my first project</button>
+    </div>
+    <div id="cc" style="display:none">
+      <div class="ch">
+        <div class="ch-l"><div class="ch-title" id="ctitle">Project</div><div class="ch-badges" id="cbadges"></div></div>
+        <div class="ch-r"><button class="btn-sh" onclick="sv('history')" id="t-vh">History</button><button class="btn-sv" id="bsv" onclick="saveCalc()"><span class="bt" id="t-sv">Save</span><div class="sp"></div></button></div>
+      </div>
+      <div class="kpi-sec">
+        <div class="kpi-sec-h"><span class="kpi-sec-t" id="t-kt">Performance KPIs</span><span style="font-size:11px;color:var(--mu)" id="t-ktt">Hover ⓘ for explanations</span></div>
+        <div class="kpi-grid" id="kgrid"></div>
+      </div>
+      <div class="vb vwait" id="vb">
+        <div class="vb-glow"></div>
+        <div class="vb-l"><div class="vb-icon" id="vi">⏳</div><div><div class="vb-verdict" id="vv">Awaiting data</div><div class="vb-exp" id="ve">Enter your data above to receive a decision.</div></div></div>
+        <div class="vb-r" id="vbr" style="display:none"><div class="cf-bar"><div class="cf-fill" id="cff" style="width:0%"></div></div><div class="cf-lbl" id="cfl">—</div></div>
+      </div>
+      <div class="bot">
+        <div class="inp-col" id="icol"></div>
+        <div class="rc-col">
+          <div class="rc"><div class="rc-h"><span>📊</span><span id="t-brkd">Breakdown</span></div><div class="brkd"><div class="brkd-row"><span class="brkd-l" id="t-brv">Revenue</span><span class="brkd-v bv-r" id="brv">—</span></div><div class="brkd-row"><span class="brkd-l" id="t-brc">Total costs</span><span class="brkd-v" id="brc">—</span></div><div class="brkd-row"><span class="brkd-l" style="color:var(--tx);font-weight:700" id="t-brp">Net profit</span><span class="brkd-v bv-t" id="brp">—</span></div></div></div>
+          <div class="rc"><div class="rc-h"><span>💡</span><span id="t-intel">Intelligence</span></div><div class="ins-body" id="ilist"><div class="ii ii-i"><span class="ii-ico">💡</span><span class="ii-txt" id="t-iw">Enter data to get insights.</span></div></div></div>
+          <div class="sn"><div class="sn-t" id="t-snt">Auto-persistence</div><div class="sn-s" id="t-sns">Last calculation reloads every time you open this project.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="view" id="view-history"><div class="vh"><div><div class="vh-t" id="ht">History</div><div class="vh-s" id="t-hs">Click any entry to reload it</div></div></div><div id="hc"></div></div>
+  <div class="view" id="view-projects"><div class="vh"><div><div class="vh-t" id="t-ap2">All Projects</div><div class="vh-s" id="t-ps">One project per business or campaign</div></div><button class="btn-p" onclick="openM()" id="t-npb2">+ New Project</button></div><div id="pc-c"></div></div>
+</div></div>
+<!-- PROJECT MODAL -->
+<div class="mov" id="modal" onclick="if(event.target===this)closeM()">
+  <div class="mbox">
+    <button class="mcl" onclick="closeM()">✕</button>
+    <div class="mt" id="t-mt">New Project</div>
+    <div class="ms" id="t-ms">Step 1 of 2 — What type of business?</div>
+    <div class="si-row"><div class="sid active" id="si1"></div><div class="sid" id="si2"></div></div>
+    <div class="merr" id="merr"></div>
+    <div id="s1">
+      <div class="tc-grid">
+        <div class="tc" onclick="selBiz('ecom',this)"><div class="tc-ic">📦</div><div class="tc-nm" id="t-tec">E-commerce</div><div class="tc-sb">COD, Drop, Store</div></div>
+        <div class="tc" onclick="selBiz('creator',this)"><div class="tc-ic">🎬</div><div class="tc-nm" id="t-tcr">Creator</div><div class="tc-sb">YT, TikTok, Insta</div></div>
+        <div class="tc" onclick="selBiz('freelancer',this)"><div class="tc-ic">💻</div><div class="tc-nm" id="t-tfr">Freelancer</div><div class="tc-sb">Upwork, Fiverr</div></div>
+      </div>
+      <button class="btn-cr" style="width:100%" onclick="goS2()">Next →</button>
+    </div>
+    <div id="s2" style="display:none">
+      <div id="ts" style="display:none;margin-bottom:18px">
+        <div style="font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px" id="t-tl2">What are you analyzing?</div>
+        <div class="trk-grid">
+          <div class="trk" onclick="selTrk('campaign',this)"><div class="trk-ic">📣</div><div class="trk-nm" id="t-tc">A Campaign</div><div class="trk-ds" id="t-tcd">I ran ads and want to know if they were profitable</div><div class="trk-kpis"><span class="trk-kpi">ROAS</span><span class="trk-kpi">Ads%</span><span class="trk-kpi">CPO</span><span class="trk-kpi">Return rate</span></div></div>
+          <div class="trk" onclick="selTrk('product',this)"><div class="trk-ic">📦</div><div class="trk-nm" id="t-tp">A Product</div><div class="trk-ds" id="t-tpd">I want to know if this product is worth scaling</div><div class="trk-kpis"><span class="trk-kpi">Unit margin</span><span class="trk-kpi">COGS%</span><span class="trk-kpi">Profit/unit</span></div></div>
+        </div>
+      </div>
+      <div class="mf"><label id="t-ln">Project name</label><input class="mi" type="text" id="mname" placeholder="e.g. Summer Drop — FB Campaign"/></div>
+      <div class="mf"><label id="t-lc">Currency</label><select class="msel" id="mcur"></select></div>
+      <div class="row"><button class="btn-bk" onclick="goS1()">← Back</button><button class="btn-cr" onclick="createProject()" id="t-cp">Create project →</button></div>
+    </div>
+  </div>
+</div>
+<!-- PRO MODAL -->
+<div class="mov" id="pro-modal" onclick="if(event.target===this)closePro()">
+  <div class="mbox" style="max-width:500px">
+    <button class="mcl" onclick="closePro()">✕</button>
+    <div style="text-align:center;padding-bottom:18px;border-bottom:1px solid var(--br)">
+      <div style="display:inline-flex;align-items:center;gap:6px;background:var(--vd);border:1px solid rgba(139,92,246,.3);border-radius:30px;padding:6px 16px;font-size:11px;font-weight:700;color:#C4B5FD;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px">⭐ SellSense Pro</div>
+      <div style="font-family:var(--ff);font-size:24px;font-weight:800;letter-spacing:-.5px;background:linear-gradient(135deg,#C4B5FD,var(--c));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1;margin-bottom:10px">Your data at full power.</div>
+      <div style="font-size:13px;color:var(--t2)">Unlimited projects, delete control, permanent history.</div>
+    </div>
+    <div style="padding:16px 0">
+      <div style="background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(34,211,238,.06));border:1px solid rgba(139,92,246,.28);border-radius:12px;padding:20px;text-align:center;margin-bottom:12px">
+        <div style="font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">NET PROFIT</div>
+        <div style="font-family:var(--ff);font-size:44px;font-weight:800;letter-spacing:-2px;background:linear-gradient(135deg,#C4B5FD,var(--c));-webkit-background-clip:text;-webkit-text-fill-color:transparent" id="pm-p">$0</div>
+        <div style="font-size:12px;color:var(--g);margin-top:6px">+34.2% margin</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">
+        <div style="background:var(--b2);border:1px solid var(--br2);border-radius:10px;padding:12px 8px;text-align:center"><div style="font-family:var(--fm);font-size:18px;font-weight:500;color:var(--g)" id="pm-r">0x</div><div style="font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin-top:3px">ROAS</div></div>
+        <div style="background:var(--b2);border:1px solid var(--br2);border-radius:10px;padding:12px 8px;text-align:center"><div style="font-family:var(--fm);font-size:18px;font-weight:500;color:var(--g)" id="pm-m">0%</div><div style="font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin-top:3px">MARGIN</div></div>
+        <div style="background:var(--b2);border:1px solid var(--br2);border-radius:10px;padding:12px 8px;text-align:center"><div style="font-family:var(--fm);font-size:18px;font-weight:500;color:var(--a)" id="pm-a">0%</div><div style="font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin-top:3px">ADS/REV</div></div>
+        <div style="background:var(--b2);border:1px solid var(--br2);border-radius:10px;padding:12px 8px;text-align:center"><div style="font-family:var(--fm);font-size:18px;font-weight:500;color:#C4B5FD" id="pm-c">$0</div><div style="font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin-top:3px">COST/ORDER</div></div>
+      </div>
+      <div style="background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(34,211,238,.04));border:1px solid rgba(16,185,129,.28);border-radius:11px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px">
+        <div style="font-size:24px;flex-shrink:0">🚀</div>
+        <div style="flex:1"><div style="font-family:var(--ff);font-size:16px;font-weight:800;color:var(--g);margin-bottom:3px">Scale it</div><div style="font-size:12px;color:var(--t2);line-height:1.5">34.2% margin · 4.2x ROAS → Increase budget 20–30%.</div></div>
+        <div style="flex-shrink:0;text-align:right"><div style="width:90px;height:4px;background:var(--br2);border-radius:2px;overflow:hidden;margin-bottom:4px"><div style="height:100%;background:var(--g);border-radius:2px;transition:width 1.5s ease" id="pm-cf"></div></div><div style="font-size:11px;font-weight:700;color:var(--t2)">87% confidence</div></div>
+      </div>
+    </div>
+    <div style="border-top:1px solid var(--br);padding-top:16px;margin-bottom:16px;display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;align-items:flex-start;gap:11px;background:var(--b2);border:1px solid var(--br);border-radius:10px;padding:11px 13px"><span style="font-size:18px">♾️</span><div><div style="font-size:13px;font-weight:700;color:var(--tx)">Unlimited projects</div><div style="font-size:12px;color:var(--mu)">No 3-project cap</div></div></div>
+      <div style="display:flex;align-items:flex-start;gap:11px;background:var(--b2);border:1px solid var(--br);border-radius:10px;padding:11px 13px"><span style="font-size:18px">🗑️</span><div><div style="font-size:13px;font-weight:700;color:var(--tx)">Delete & archive projects</div><div style="font-size:12px;color:var(--mu)">Full control over your workspace</div></div></div>
+      <div style="display:flex;align-items:flex-start;gap:11px;background:var(--b2);border:1px solid var(--br);border-radius:10px;padding:11px 13px"><span style="font-size:18px">📋</span><div><div style="font-size:13px;font-weight:700;color:var(--tx)">Permanent history</div><div style="font-size:12px;color:var(--mu)">Every calculation saved forever</div></div></div>
+    </div>
+    <div style="font-size:12px;color:var(--mu);text-align:center;margin-bottom:10px">From $5/mo annually · or $9/mo monthly</div>
+    <button style="width:100%;background:linear-gradient(135deg,var(--v),var(--c));border:none;border-radius:11px;padding:15px;font-size:16px;font-weight:800;color:#fff;cursor:pointer;font-family:var(--ff);letter-spacing:.02em;transition:all .2s" onclick="location.href='sellsense-payment.html'">⭐ Unlock Pro now →</button>
+    <button style="background:none;border:none;font-size:13px;color:var(--mu);cursor:pointer;width:100%;margin-top:10px" onclick="closePro()">Maybe later</button>
+  </div>
+</div>
+<script>
+const {createClient}=supabase;
+const sb=createClient(SU,SK);
+const SYM={USD:'$',EUR:'€',GBP:'£',JPY:'¥',CNY:'¥',INR:'₹',CAD:'C$',AUD:'A$',CHF:'Fr',HKD:'HK$',SGD:'S$',KRW:'₩',MXN:'$',BRL:'R$',SAR:'SR ',AED:'AED ',QAR:'QR ',KWD:'KD ',TRY:'₺',EGP:'E£',MAD:'MAD ',DZD:'DA ',TND:'DT ',NGN:'₦',ZAR:'R',GHS:'GH₵',KES:'Ksh ',SEK:'kr ',NOK:'kr ',DKK:'kr ',PLN:'zł',CZK:'Kč',HUF:'Ft ',RON:'lei ',UAH:'₴',RUB:'₽',GEL:'₾',KZT:'₸',PKR:'Rs ',BDT:'৳',THB:'฿',VND:'₫',IDR:'Rp ',MYR:'RM ',PHP:'₱',TWD:'NT$',NZD:'NZ$',COP:'$',CLP:'$',PEN:'S/',ILS:'₪',BHD:'BD ',OMR:'OMR ',JOD:'JD '};
+const CURS=[['USD','$ USD'],['EUR','€ EUR'],['GBP','£ GBP'],['JPY','¥ JPY'],['CNY','¥ CNY'],['INR','₹ INR'],['CAD','C$ CAD'],['AUD','A$ AUD'],['CHF','Fr CHF'],['HKD','HK$ HKD'],['SGD','S$ SGD'],['KRW','₩ KRW'],['MXN','$ MXN'],['BRL','R$ BRL'],['COP','$ COP'],['CLP','$ CLP'],['PEN','S/ PEN'],['ARS','$ ARS'],['SAR','SR SAR'],['AED','AED'],['QAR','QR QAR'],['KWD','KD KWD'],['BHD','BD BHD'],['OMR','OMR'],['JOD','JD JOD'],['ILS','₪ ILS'],['TRY','₺ TRY'],['EGP','E£ EGP'],['MAD','MAD'],['DZD','DA DZD'],['TND','DT TND'],['NGN','₦ NGN'],['ZAR','R ZAR'],['GHS','GH₵ GHS'],['KES','Ksh KES'],['SEK','kr SEK'],['NOK','kr NOK'],['DKK','kr DKK'],['PLN','zł PLN'],['CZK','Kč CZK'],['HUF','Ft HUF'],['RON','lei RON'],['UAH','₴ UAH'],['RUB','₽ RUB'],['GEL','₾ GEL'],['KZT','₸ KZT'],['PKR','Rs PKR'],['BDT','৳ BDT'],['THB','฿ THB'],['VND','₫ VND'],['IDR','Rp IDR'],['MYR','RM MYR'],['PHP','₱ PHP'],['TWD','NT$ TWD'],['NZD','NZ$ NZD']];
+const co=CURS.map(([v,l])=>`<option value="${v}">${l}</option>`).join('');
+['cur-s','mcur'].forEach(id=>{const e=document.getElementById(id);if(e)e.innerHTML=co});
+
+let lang='en',cur='USD',sym='$';
+let user=null,profile=null,projects=[],pid=null,bizT=null,trkT=null;
+
+const TX={
+en:{
+  'ls-t':'Loading…','t-en':'Decision Engine','t-ap':'Active Project','t-np':'+ New project',
+  't-nc':'Campaign','t-nh':'History','t-np2':'Projects','t-nup':'Upgrade',
+  't-tl':'Trial Active — 7 days','t-t1':'3 projects maximum','t-t2':'Full decision engine',
+  't-t3':'Cannot delete projects','t-t4':'History expires after 7 days',
+  't-bup':'⭐ Upgrade to Pro — $9/mo',
+  't-npt':'Select or create a project',
+  't-nps':'Each project tracks one business. KPIs and inputs adapt completely — a campaign needs ROAS, a product needs unit economics.',
+  't-npb':'+ Create my first project','t-npb2':'+ New Project',
+  't-kt':'Performance KPIs','t-ktt':'Hover ⓘ for explanations',
+  't-vh':'History','t-sv':'Save',
+  't-brkd':'Breakdown','t-brv':'Revenue','t-brc':'Total costs','t-brp':'Net profit',
+  't-intel':'Intelligence','t-iw':'Enter data to get insights.',
+  't-snt':'Auto-persistence','t-sns':'Last calculation reloads every time you open this project.',
+  'ht':'History','t-hs':'Click any entry to reload it',
+  't-ap2':'All Projects','t-ps':'One project per business or campaign',
+  't-mt':'New Project','t-ms':'Step 1 of 2 — What type of business?',
+  't-tec':'E-commerce','t-tcr':'Creator','t-tfr':'Freelancer',
+  't-tl2':'What are you analyzing?',
+  't-tc':'A Campaign','t-tcd':'I ran ads and want to know if they were profitable',
+  't-tp':'A Product','t-tpd':'I want to know if this product is worth scaling',
+  't-ln':'Project name','t-lc':'Currency','t-cp':'Create project →',
+  // Sections
+  's-rev':'Revenue','s-cogs':'Product Cost (COGS)','s-log':'Logistics','s-mkt':'Marketing & Ads','s-fee':'Platform & Fees',
+  's-prod':'Product Details','s-pcost':'Cost Structure',
+  's-crr':'Revenue','s-crc':'Production Costs','s-crp':'Promotion',
+  's-frr':'Revenue','s-frf':'Platform & Fees','s-frc':'Operating Costs',
+  // Fields
+  'f-rev':'Total Revenue','f-cogs':'Cost of Goods (COGS)',
+  'f-ship':'Shipping','f-ret':'Returns / Failed','f-pack':'Packaging',
+  'f-fb':'Facebook Ads','f-tik':'TikTok Ads','f-oads':'Other Ads',
+  'f-plat':'Platform fee','f-ppct':'Payment processor %','f-shop':'Shopify',
+  'f-ord':'Nr. of orders',
+  'f-sp':'Selling price / unit','f-uc':'Unit cost (COGS)','f-us':'Units sold',
+  'f-su':'Shipping / unit','f-rr':'Return rate %','f-ta':'Total ad spend','f-pf':'Platform fee %',
+  'f-ads':'AdSense','f-tkr':'TikTok Fund','f-spon':'Sponsorships',
+  'f-mrc':'Merch / digital','f-orv':'Other revenue',
+  'f-eq':'Equipment','f-sw':'Software','f-ed':'Editing / prod.',
+  'f-prm':'Paid promotion','f-agp':'Agency commission %',
+  'f-inv':'Total invoiced','f-plp':'Platform commission %',
+  'f-tf':'Transfer fees','f-sub':'Subcontractors',
+  'f-cow':'Coworking','f-oth':'Other costs','f-hrs':'Hours worked',
+  // Verdicts
+  'v-await':'Awaiting data','v-scale':'Scale it','v-optimize':'Optimize','v-kill':'Kill campaign',
+  'v-scale-p':'Scale this product','v-drop':'Drop this product',
+  'c-high':'High confidence','c-med':'Medium confidence','c-low':'Low confidence',
+  // Explanations
+  'e-await':'Enter your data above to receive a decision.',
+  'e-scale':'{mg}% margin and {roas}x ROAS — strong fundamentals. Increase ad spend 20–30% on best-performing sets.',
+  'e-opt':'Profitable but margin is thin ({mg}%). {drv} is the main cost at {pct}% of revenue. Reduce before scaling.',
+  'e-kill':'Losing money. Costs exceed revenue by {loss}. Main driver: {drv} at {pct}% of revenue. Pause immediately.',
+  'e-scale-p':'Strong unit economics — {mg}% unit margin. Worth scaling. Increase budget and test new audiences.',
+  'e-opt-p':'Profitable product but {mg}% unit margin is thin. {drv} is the main cost. Optimize before scaling.',
+  'e-kill-p':'This product loses {loss} per unit. Costs exceed selling price. Drop or reprice immediately.',
+  // Insights
+  'i-roas':'ROAS {v}x is below break-even. Your ads cost more than they return.',
+  'i-adpct':'Ad spend is {v}% of revenue — above the 30% benchmark.',
+  'i-cogs':'COGS is {v}% of revenue. Renegotiate supplier or raise price.',
+  'i-ret':'Return rate {v}% is high. Check product or listing quality.',
+  'i-thin':'Margin {v}% is too thin to scale safely.',
+  'i-scale':'Healthy margin + strong ROAS → ideal conditions to scale.',
+  'i-profit':'Profitable. Optimize {drv} to unlock more headroom.',
+  'i-wait':'Enter campaign data to get insights.',
+  // Status
+  'st-sv':'Saved','st-us':'Unsaved',
+  // Toast
+  'ts-sv':'✓ Saved','ts-ld':'Data loaded','ts-cr':'Project created',
+  'ts-lm':'3-project limit — upgrade to Pro','ts-np':'Select a project first',
+  'ts-nd':'Enter data first','ts-dl':'Project deleted',
+  // Empty
+  'e-ht':'No calculations yet','e-hs':'Save a calculation to see history.',
+  'e-pt':'No projects yet','e-ps':'Create your first project.',
+  'h-hint':'Click to reload →','del-locked':'Upgrade to Pro to delete projects','del-confirm':'Delete this project? Cannot be undone.',
+  // Tooltip content
+  'tip-profit':'The money left after ALL costs — what you actually keep.',
+  'tip-margin-b':[['30%+ → Ready to scale','g'],['15–30% → Optimize first','a'],['<15% → Too thin to scale','r']],
+  'tip-roas':'For every $1 spent on ads, you earn this much in revenue.',
+  'tip-roas-b':[['3x+ → Scale ads now','g'],['2–3x → Break-even zone','a'],['<2x → Ads losing money','r']],
+  'tip-adpct':'Your total ad spend as % of revenue.',
+  'tip-adpct-b':[['<20% → Efficient','g'],['20–30% → Watch this','a'],['>30% → Reduce spend','r']],
+  'tip-ret':'% of orders returned. High = product or listing issue.',
+  'tip-ret-b':[['<5% → Healthy','g'],['5–10% → Monitor','a'],['>10% → Fix product','r']],
+  'tip-cpo':'Total cost per order. Compare to your selling price.',
+  'tip-um':'Profit on each unit after all per-unit costs.',
+  'tip-um-b':[['$10+ → Strong product','g'],['$3–10 → Optimize','a'],['<$3 → Risky to scale','r']],
+  'tip-cogs':'Product cost as % of selling price.',
+  'tip-cogs-b':[['<35% → Great structure','g'],['35–55% → Acceptable','a'],['>55% → Too expensive','r']],
+  'tip-eff':'Real profit divided by hours worked.',
+  'tip-cut':'Amount the platform takes before your expenses.',
+},
+fr:{
+  'ls-t':'Chargement…','t-en':'Moteur de décision','t-ap':'Projet actif','t-np':'+ Nouveau projet',
+  't-nc':'Campagne','t-nh':'Historique','t-np2':'Projets','t-nup':'Passer Pro',
+  't-tl':'Essai actif — 7 jours','t-t1':'3 projets maximum','t-t2':'Moteur de décision complet',
+  't-t3':'Impossible de supprimer','t-t4':'Historique limité à 7 jours',
+  't-bup':'⭐ Passer Pro — 9$/mois',
+  't-npt':'Sélectionne ou crée un projet',
+  't-nps':'Chaque projet suit un business. Les KPIs et inputs s\'adaptent — une campagne a besoin du ROAS, un produit d\'une économie unitaire.',
+  't-npb':'+ Créer mon premier projet','t-npb2':'+ Nouveau projet',
+  't-kt':'KPIs de performance','t-ktt':'Survole ⓘ pour les explications',
+  't-vh':'Historique','t-sv':'Sauvegarder',
+  't-brkd':'Répartition','t-brv':'CA','t-brc':'Total charges','t-brp':'Profit net',
+  't-intel':'Intelligence','t-iw':'Entre tes données pour des insights.',
+  't-snt':'Persistance auto','t-sns':'Le dernier calcul se recharge à chaque visite.',
+  'ht':'Historique','t-hs':'Clique pour recharger',
+  't-ap2':'Tous les projets','t-ps':'Un projet par business ou campagne',
+  't-mt':'Nouveau projet','t-ms':'Étape 1/2 — Quel type de business ?',
+  't-tec':'E-commerce','t-tcr':'Créateur','t-tfr':'Freelance',
+  't-tl2':'Qu\'est-ce que tu analyses ?',
+  't-tc':'Une Campagne','t-tcd':'J\'ai lancé des pubs et veux savoir si elles sont rentables',
+  't-tp':'Un Produit','t-tpd':'Je veux savoir si ce produit vaut la peine d\'être scalé',
+  't-ln':'Nom du projet','t-lc':'Devise','t-cp':'Créer le projet →',
+  's-rev':'Revenus','s-cogs':'Coût produit (COGS)','s-log':'Logistique','s-mkt':'Marketing & Pub','s-fee':'Plateforme & Frais',
+  's-prod':'Détails produit','s-pcost':'Structure de coûts',
+  's-crr':'Revenus','s-crc':'Coûts de production','s-crp':'Promotion',
+  's-frr':'Revenus','s-frf':'Frais','s-frc':'Charges',
+  'f-rev':'CA total','f-cogs':'Coût des produits (COGS)',
+  'f-ship':'Livraison','f-ret':'Retours / non-livrés','f-pack':'Emballage',
+  'f-fb':'Facebook Ads','f-tik':'TikTok Ads','f-oads':'Autres publicités',
+  'f-plat':'Frais plateforme','f-ppct':'Processeur paiement %','f-shop':'Shopify',
+  'f-ord':'Nb. commandes',
+  'f-sp':'Prix de vente / unité','f-uc':'Coût unitaire (COGS)','f-us':'Unités vendues',
+  'f-su':'Livraison / unité','f-rr':'Taux de retour %','f-ta':'Budget pub total','f-pf':'Frais plateforme %',
+  'f-ads':'AdSense','f-tkr':'TikTok Fund','f-spon':'Sponsoring',
+  'f-mrc':'Merch / numérique','f-orv':'Autres revenus',
+  'f-eq':'Matériel','f-sw':'Logiciels','f-ed':'Montage / prod.',
+  'f-prm':'Promotion payante','f-agp':'Commission agence %',
+  'f-inv':'Montant facturé','f-plp':'Commission plateforme %',
+  'f-tf':'Frais virement','f-sub':'Sous-traitants',
+  'f-cow':'Coworking','f-oth':'Autres charges','f-hrs':'Heures travaillées',
+  'v-await':'En attente','v-scale':'Scaler','v-optimize':'Optimiser','v-kill':'Stopper',
+  'v-scale-p':'Scaler ce produit','v-drop':'Abandonner le produit',
+  'c-high':'Haute confiance','c-med':'Confiance moyenne','c-low':'Faible confiance',
+  'e-await':'Entre tes données pour recevoir une décision.',
+  'e-scale':'{mg}% de marge et ROAS {roas}x — bons fondamentaux. Augmente le budget pub de 20–30% sur les meilleures créas.',
+  'e-opt':'Rentable mais marge serrée ({mg}%). {drv} est le principal coût à {pct}% du CA. Réduis avant de scaler.',
+  'e-kill':'Perte de {loss}. Les charges dépassent le CA. Poste principal : {drv} à {pct}% du CA. Pause immédiate.',
+  'e-scale-p':'Bonne économie unitaire — {mg}% de marge. Vaut la peine d\'être scalé.',
+  'e-opt-p':'Produit rentable mais marge de {mg}% serrée. {drv} est le principal coût. Optimise avant de scaler.',
+  'e-kill-p':'Ce produit perd {loss} par vente. Les coûts dépassent le prix. Abandonne ou ajuste le prix.',
+  'i-roas':'ROAS {v}x en dessous du seuil. Tes pubs coûtent plus qu\'elles ne rapportent.',
+  'i-adpct':'Budget pub à {v}% du CA — au-dessus des 30%.',
+  'i-cogs':'COGS à {v}% du CA. Renégocie ou augmente tes prix.',
+  'i-ret':'Taux de retour {v}% élevé. Vérifie le produit ou la description.',
+  'i-thin':'Marge {v}% trop serrée pour scaler.',
+  'i-scale':'Bonne marge + bon ROAS → conditions idéales pour scaler.',
+  'i-profit':'Rentable. Optimise les charges de {drv}.',
+  'i-wait':'Entre tes données pour des insights.',
+  'st-sv':'Sauvegardé','st-us':'Non sauvegardé',
+  'ts-sv':'✓ Sauvegardé','ts-ld':'Données chargées','ts-cr':'Projet créé',
+  'ts-lm':'Limite 3 projets — passe Pro','ts-np':'Sélectionne un projet',
+  'ts-nd':'Entre des données d\'abord','ts-dl':'Projet supprimé',
+  'e-ht':'Aucun calcul','e-hs':'Sauvegarde un calcul pour voir l\'historique.',
+  'e-pt':'Aucun projet','e-ps':'Crée ton premier projet.',
+  'h-hint':'Cliquer pour recharger →','del-locked':'Passe Pro pour supprimer des projets','del-confirm':'Supprimer ce projet ? Irréversible.',
+  'tip-profit':'L\'argent restant après TOUTES les charges.',
+  'tip-margin-b':[['30%+ → Prêt à scaler','g'],['15–30% → Optimise d\'abord','a'],['<15% → Trop serré','r']],
+  'tip-roas':'Pour chaque 1€ dépensé en pubs, tu gagnes X€ de CA.',
+  'tip-roas-b':[['3x+ → Scale maintenant','g'],['2–3x → Zone rentabilité','a'],['<2x → Pubs non rentables','r']],
+  'tip-adpct':'Budget pub total en % du CA.',
+  'tip-adpct-b':[['<20% → Efficace','g'],['20–30% → Surveille','a'],['>30% → Réduis','r']],
+  'tip-ret':'% de commandes retournées.',
+  'tip-ret-b':[['<5% → Sain','g'],['5–10% → Surveille','a'],['>10% → Agis','r']],
+  'tip-cpo':'Coût total pour obtenir une commande.',
+  'tip-um':'Profit par unité vendue après tous les coûts unitaires.',
+  'tip-um-b':[['10€+ → Produit solide','g'],['3–10€ → Optimise','a'],['<3€ → Risqué','r']],
+  'tip-cogs':'Coût produit en % du prix de vente.',
+  'tip-cogs-b':[['<35% → Excellente structure','g'],['35–55% → Acceptable','a'],['>55% → Trop cher','r']],
+  'tip-eff':'Ton profit réel divisé par les heures travaillées.',
+  'tip-cut':'Montant prélevé par la plateforme avant tes charges.',
+}
+};
+const t=k=>TX[lang][k]||k;
+
+async function boot(){
+  try{
+    const {data:{session}}=await sb.auth.getSession();
+    if(!session){location.href='sellsense-auth.html';return}
+    user=session.user;
+    await loadProfile();await loadProjects();
+    applyLang();renderApp();
+    document.getElementById('ls').style.display='none';
+    document.getElementById('app').style.display='flex';
+    if(projects.length>0)activate(projects[0].id);
+  }catch(e){console.error(e);toast('Failed to load. Refresh.',true)}
+}
+
+async function loadProfile(){
+  const {data}=await sb.from('profiles').select('*').eq('id',user.id).single();
+  if(data){profile=data}else{
+    const n=user.user_metadata?.full_name||user.email.split('@')[0];
+    profile={full_name:n,plan:'free',currency:'USD'};
+    await sb.from('profiles').upsert({id:user.id,full_name:n,email:user.email,currency:'USD',plan:'free'});
+  }
+  cur=profile.currency||'USD';sym=SYM[cur]||cur+' ';
+  document.getElementById('cur-s').value=cur;
+}
+
+async function loadProjects(){
+  const {data}=await sb.from('projects').select('*,calculations(id,revenue,expenses,net_profit,margin_percent,details,created_at)').eq('user_id',user.id).eq('is_archived',false).order('created_at',{ascending:false});
+  projects=data||[];
+}
+
+function renderApp(){
+  const n=profile.full_name||user.email.split('@')[0];
+  document.getElementById('uav').textContent=n.charAt(0).toUpperCase();
+  document.getElementById('uname').textContent=n;
+  if(profile.plan==='premium'){document.getElementById('pchip').textContent='Pro';document.getElementById('pchip').className='pc pro';document.getElementById('trial-box').style.display='none'}
+  fillSel();renderProjects();
+}
+
+function fillSel(){
+  const s=document.getElementById('psel'),prev=s.value;
+  s.innerHTML=`<option value="">— ${lang==='fr'?'Sélectionner':'Select'} —</option>`+projects.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+  if(prev&&projects.find(p=>p.id===prev))s.value=prev;
+  else if(pid)s.value=pid;
+}
+
+function activate(id){
+  if(!id)return;
+  pid=id;document.getElementById('psel').value=id;
+  const proj=projects.find(p=>p.id===id);if(!proj)return;
+  cur=proj.currency||'USD';sym=SYM[cur]||cur+' ';
+  document.getElementById('cur-s').value=cur;
+  document.getElementById('ctitle').textContent=proj.name;
+  const types={ecom:{cls:'bdg-ec',lbl:t('t-tec')},creator:{cls:'bdg-cr',lbl:t('t-tcr')},freelancer:{cls:'bdg-fr',lbl:t('t-tfr')}};
+  const tp=types[proj.business_type]||{cls:'bdg-ec',lbl:proj.business_type};
+  let bh=`<span class="bdg ${tp.cls}">${tp.lbl}</span>`;
+  if(proj.track_type)bh+=`<span class="bdg bdg-t">${proj.track_type==='product'?'📦 Product':'📣 Campaign'}</span>`;
+  document.getElementById('cbadges').innerHTML=bh;
+  buildInputs(proj.business_type,proj.track_type);
+  const calcs=proj.calculations||[];
+  if(calcs.length>0){const last=[...calcs].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))[0];if(last.details&&typeof last.details==='object')restoreInputs(last.details)}
+  runCalc();setSt('sv');
+  document.getElementById('nps').style.display='none';
+  document.getElementById('cc').style.display='block';
+}
+
+function buildInputs(type,tt){
+  const s=sym;
+  let h='';
+  if(type==='ecom'&&tt==='product'){
+    h=sec('s-prod','📦','',[ num('sp','f-sp',s,'','0'),num('uc','f-uc',s,'','0'),num('us','f-us','','units','0'),num('su','f-su',s,'','0'),num('rr','f-rr','','%','0'),num('ta','f-ta',s,'','0') ])
+     +sec('s-fee','💳',[num('pf','f-pf','','%','0'),num('ppct','f-ppct','','%','2.9')]);
+  }else if(type==='ecom'){
+    h=sec('s-rev','💰','c1',[num('rev','f-rev',s,'','0')])
+     +sec('s-cogs','📦','c1',[num('cogs','f-cogs',s,'','0')])
+     +sec('s-log','🚚','',[num('ship','f-ship',s,'','0'),num('ret','f-ret',s,'','0'),num('pack','f-pack',s,'','0')])
+     +sec('s-mkt','📣','',[num('fb','f-fb',s,'','0'),num('tik','f-tik',s,'','0'),num('oads','f-oads',s,'','0')])
+     +sec('s-fee','💳','',[num('plat','f-plat',s,'','0'),num('ppct','f-ppct','','%','2.9'),num('shop','f-shop',s,'','0'),num('ord','f-ord','','','',true)]);
+  }else if(type==='creator'){
+    h=sec('s-crr','💰','',[num('ads','f-ads',s,'','0'),num('tkr','f-tkr',s,'','0'),num('spon','f-spon',s,'','0'),num('mrc','f-mrc',s,'','0'),num('orv','f-orv',s,'','0')])
+     +sec('s-crc','🎬','',[num('eq','f-eq',s,'','0'),num('sw','f-sw',s,'','0'),num('ed','f-ed',s,'','0')])
+     +sec('s-crp','📣','',[num('prm','f-prm',s,'','0'),num('agp','f-agp','','%','0')]);
+  }else{
+    h=sec('s-frr','💰','c1',[num('inv','f-inv',s,'','0')])
+     +sec('s-frf','💳','',[num('plp','f-plp','','%','20'),num('tf','f-tf',s,'','0')])
+     +sec('s-frc','🛠️','',[num('sub','f-sub',s,'','0'),num('sw','f-sw',s,'','0'),num('cow','f-cow',s,'','0'),num('oth','f-oth',s,'','0')])
+     +sec('s-log','⏱️','c1',[num('hrs','f-hrs','','','',true)]);
+  }
+  document.getElementById('icol').innerHTML=h;
+}
+
+function sec(tk,icon,cls,fields){
+  const c=Array.isArray(cls)?'':cls;
+  return`<div class="sec"><div class="sec-h"><span class="sec-icon">${icon}</span><span class="sec-t">${t(tk)}</span></div><div class="sec-body ${c}">${fields.join('')}</div></div>`;
+}
+function num(id,lk,pfx,sfx,ph,opt){
+  const ph2=pfx?`<span class="ip">${pfx}</span>`:'';
+  const sh2=sfx?`<span class="is">${sfx}</span>`:'';
+  return`<div class="f"><label>${t(lk)}${opt?` <em>(opt.)</em>`:''}</label><div class="iw">${ph2}<input type="number" id="fi_${id}" class="fi${pfx?' p':''}${sfx?' s':''}" placeholder="${ph||'0'}" min="0" step="any" oninput="oninp()"/>${sh2}</div></div>`;
+}
+function restoreInputs(d){Object.entries(d).forEach(([k,v])=>{const e=document.getElementById('fi_'+k);if(e&&v>0)e.value=v})}
+function getInputs(){const r={};document.querySelectorAll('[id^="fi_"]').forEach(e=>{r[e.id.replace('fi_','')]=parseFloat(e.value)||0});return r}
+function gv(id){return parseFloat(document.getElementById('fi_'+id)?.value)||0}
+
+function oninp(){runCalc();setSt('us')}
+
+function runCalc(){
+  const proj=projects.find(p=>p.id===pid);if(!proj)return;
+  const res=compute(proj.business_type,proj.track_type);
+  const dec=decide(res,proj.business_type,proj.track_type);
+  renderKPIs(res,proj.business_type,proj.track_type);
+  renderBanner(dec);renderBrkd(res);renderInsights(dec);
+  window._calc={res,dec,details:getInputs()};
+}
+
+function compute(type,tt){
+  if(type==='ecom'&&tt==='product'){
+    const sp=gv('sp'),uc=gv('uc'),us=gv('us'),su=gv('su'),rr=gv('rr')/100,ads=gv('ta');
+    const platFee=sp*(gv('pf')/100),payFee=sp*(gv('ppct')/100);
+    const retU=Math.round(us*rr),soldU=us-retU;
+    const rev=soldU*sp,cogs=us*uc,log=us*su,fees=us*(platFee+payFee);
+    const total=cogs+log+fees+ads,profit=rev-total;
+    const margin=rev>0?(profit/rev)*100:0;
+    const cogsPct=sp>0?(uc/sp)*100:0;
+    const unitMargin=sp>0?((sp-uc-su-platFee-payFee)/sp)*100:0;
+    const profitPerUnit=us>0?profit/us:0;
+    return{rev,cogs,log,mkt:ads,fees,total,profit,margin,roas:0,adpct:rev>0?(ads/rev)*100:0,retpct:rr*100,cogsPct,unitMargin,profitPerUnit,sellPrice:sp,unitCost:uc,unitsSold:us,isProduct:true};
+  }
+  let rev=0,cogs=0,log=0,mkt=0,fees=0;
+  if(type==='ecom'){
+    rev=gv('rev');cogs=gv('cogs');log=gv('ship')+gv('ret')+gv('pack');
+    mkt=gv('fb')+gv('tik')+gv('oads');fees=gv('plat')+gv('shop')+(rev*(gv('ppct')/100));
+  }else if(type==='creator'){
+    rev=gv('ads')+gv('tkr')+gv('spon')+gv('mrc')+gv('orv');
+    cogs=gv('eq')+gv('sw')+gv('ed');mkt=gv('prm');fees=rev*(gv('agp')/100);
+  }else{
+    rev=gv('inv');fees=(rev*(gv('plp')/100))+gv('tf');
+    cogs=gv('sub')+gv('sw')+gv('cow')+gv('oth');
+  }
+  const total=cogs+log+mkt+fees,profit=rev-total;
+  const margin=rev>0?(profit/rev)*100:0,roas=mkt>0?rev/mkt:0;
+  const adpct=rev>0?(mkt/rev)*100:0,retpct=rev>0?(gv('ret')/rev)*100:0;
+  const cogsPct=rev>0?(cogs/rev)*100:0;
+  const orders=gv('ord'),cpo=orders>0?total/orders:0;
+  const hours=gv('hrs'),effRate=hours>0?profit/hours:0;
+  const agencyCut=type==='creator'?fees:0;
+  const platCut=type==='freelancer'?rev*(gv('plp')/100):0;
+  return{rev,cogs,log,mkt,fees,total,profit,margin,roas,adpct,retpct,cogsPct,orders,cpo,hours,effRate,agencyCut,platCut,isProduct:false};
+}
+
+function decide(r,type,tt){
+  if(r.rev===0)return{verdict:'await',confidence:0,cl:'low',exp:t('e-await'),ins:[]};
+  const fields=document.querySelectorAll('[id^="fi_"]');
+  const filled=[...fields].filter(f=>parseFloat(f.value)>0).length;
+  const conf=Math.min(95,Math.round((filled/Math.max(fields.length,1))*100));
+  const cl=conf>=70?'high':conf>=40?'med':'low';
+  const cd={COGS:r.cogs,Marketing:r.mkt,Logistics:r.log,Fees:r.fees};
+  const top=Object.entries(cd).sort((a,b)=>b[1]-a[1])[0];
+  const drv=top[0],pct=r.rev>0?((top[1]/r.rev)*100).toFixed(0):0;
+  let verdict,exp;
+  if(type==='ecom'&&tt==='product'){
+    if(r.profit<0){verdict='v-drop';exp=t('e-kill-p').replace('{loss}',fmt(Math.abs(r.profitPerUnit||0)))}
+    else if(r.margin>=25){verdict='v-scale-p';exp=t('e-scale-p').replace('{mg}',r.margin.toFixed(1))}
+    else{verdict='v-optimize';exp=t('e-opt-p').replace('{mg}',r.margin.toFixed(1)).replace('{drv}',drv)}
+  }else{
+    if(r.profit<0){verdict='v-kill';exp=t('e-kill').replace('{loss}',fmt(Math.abs(r.profit))).replace('{drv}',drv).replace('{pct}',pct)}
+    else if(r.margin>=25&&(type!=='ecom'||r.roas>=3)){verdict='v-scale';exp=t('e-scale').replace('{mg}',r.margin.toFixed(1)).replace('{roas}',r.roas>0?r.roas.toFixed(1):'N/A')}
+    else{verdict='v-optimize';exp=t('e-opt').replace('{mg}',r.margin.toFixed(1)).replace('{drv}',drv).replace('{pct}',pct)}
+  }
+  const ins=[];
+  if(r.roas>0&&r.roas<2)ins.push({c:'ii-k',i:'📉',tx:t('i-roas').replace('{v}',r.roas.toFixed(1))});
+  if(r.adpct>30)ins.push({c:'ii-w',i:'📣',tx:t('i-adpct').replace('{v}',r.adpct.toFixed(0))});
+  if(r.cogsPct>50)ins.push({c:'ii-w',i:'📦',tx:t('i-cogs').replace('{v}',r.cogsPct.toFixed(0))});
+  if(r.retpct>10)ins.push({c:'ii-w',i:'↩️',tx:t('i-ret').replace('{v}',r.retpct.toFixed(0))});
+  if(r.profit>0&&r.margin<15)ins.push({c:'ii-w',i:'⚠️',tx:t('i-thin').replace('{v}',r.margin.toFixed(1))});
+  if(verdict==='v-scale'||verdict==='v-scale-p')ins.push({c:'ii-g',i:'🚀',tx:t('i-scale')});
+  else if(r.profit>0&&ins.length===0)ins.push({c:'ii-g',i:'✅',tx:t('i-profit').replace('{drv}',drv)});
+  if(!ins.length)ins.push({c:'ii-i',i:'💡',tx:t('i-wait')});
+  return{verdict,confidence:conf,cl,exp,ins};
+}
+
+function renderKPIs(r,type,tt){
+  const g=document.getElementById('kgrid');
+  let cards=[];
+  const pv=r.profit>0?'vpos':r.profit<0?'vneg':'vdef';
+  const pk=r.profit>0?'kpos':r.profit<0?'kneg':'kp';
+
+  const tip=(title,body,bench)=>{
+    const bh=bench&&bench.length?`<div class="tip-bench">${bench.map(([l,c])=>`<div class="tb-r"><div class="tbd tbd-${c}"></div>${l}</div>`).join('')}</div>`:'';
+    return`<div class="tip-t">${title}</div><div class="tip-b">${body}</div>${bh}`;
+  };
+  const card=(icon,val,cardCls,sub,valCls,progPct,tipHtml)=>{
+    const isMain=cardCls.includes('km');
+    const pb=progPct!=null?`<div class="kc-prog"><div class="kpf kpf-${valCls.replace('v','')}" style="width:${Math.min(progPct,100)}%"></div></div>`:'';
+    return`<div class="kc ${cardCls}"><div class="kc-top"><span class="kc-icon">${icon}</span><div class="tip-btn" onclick="this.classList.toggle('op')">ⓘ<div class="tip-box">${tipHtml}</div></div></div><div class="kc-lbl">${isMain?'NET PROFIT':''}</div><div class="kc-val ${valCls}">${val}</div><div class="kc-sub">${sub}</div>${pb}</div>`;
+  };
+
+  if(type==='ecom'&&tt==='product'){
+    cards=[
+      card('💰',r.rev>0?fmt(r.profit):'—','km kpos',r.profit>=0?`+${r.margin.toFixed(1)}% margin`:`${r.margin.toFixed(1)}% margin`,pv,null,tip('Net Profit',t('tip-profit'),null)),
+      card('📊',r.rev>0?r.unitMargin.toFixed(1)+'%':'—','k'+(r.unitMargin>15?'pos':r.unitMargin<0?'neg':'wrn'),lang==='fr'?'marge / unité':'margin per unit',r.unitMargin>15?'vpos':r.unitMargin<0?'vneg':'vwrn',r.unitMargin>0?Math.min(r.unitMargin/40*100,100):0,tip(lang==='fr'?'Marge unitaire':'Unit Margin',t('tip-um'),t('tip-um-b'))),
+      card('📦',r.rev>0?r.cogsPct.toFixed(0)+'%':'—','k'+(r.cogsPct<35?'pos':r.cogsPct>55?'neg':'wrn'),lang==='fr'?'coût / prix vente':'cost / sell price',r.cogsPct<35?'vpos':r.cogsPct>55?'vneg':'vwrn',r.cogsPct>0?100-Math.min(r.cogsPct,100):0,tip(lang==='fr'?'Ratio COGS':'COGS Ratio',t('tip-cogs'),t('tip-cogs-b'))),
+      card('🧾',r.profitPerUnit?fmt(r.profitPerUnit):'—','k'+(r.profitPerUnit>0?'pos':r.profitPerUnit<0?'neg':'def'),lang==='fr'?'par unité vendue':'per unit sold',r.profitPerUnit>0?'vpos':r.profitPerUnit<0?'vneg':'vdef',null,tip(lang==='fr'?'Profit / unité':'Profit per unit',lang==='fr'?'Profit réalisé sur chaque unité.':'Profit made on each unit sold after all costs.',null)),
+      card('↩️',r.retpct>0?r.retpct.toFixed(1)+'%':'—','k'+(r.retpct>10?'neg':r.retpct>5?'wrn':'pos'),r.retpct>10?'⚠ Check product':r.retpct>5?'Monitor':'Healthy',r.retpct>10?'vneg':r.retpct>5?'vwrn':'vpos',null,tip(lang==='fr'?'Taux de retour':'Return Rate',t('tip-ret'),t('tip-ret-b'))),
+    ];
+    g.className='kpi-grid kg5';
+  }else if(type==='ecom'){
+    cards=[
+      card('💰',r.rev>0?fmt(r.profit):'—',`km ${pk}`,r.profit>=0?`+${r.margin.toFixed(1)}% margin`:`${r.margin.toFixed(1)}% margin`,pv,null,tip('Net Profit',t('tip-profit'),null)),
+      card('📊',r.rev>0?r.margin.toFixed(1)+'%':'—','k'+(r.margin>20?'pos':r.margin<0?'neg':r.margin<15?'wrn':'def'),r.margin>=30?'Ready to scale':r.margin>=15?'Optimize first':'Too thin',r.margin>20?'vpos':r.margin<0?'vneg':r.margin<15?'vwrn':'vdef',r.rev>0?Math.min(Math.max(r.margin,0)/40*100,100):0,tip('Margin',t('tip-margin-b')&&'Net profit as % of revenue.',t('tip-margin-b'))),
+      card('📣',r.roas>0?r.roas.toFixed(1)+'x':'—','k'+(r.roas>=3?'pos':r.roas>0&&r.roas<2?'neg':'def'),r.roas>=3?'Excellent — scale':r.roas>=2?'Break-even zone':r.roas>0?'Below break-even':'No ad spend',r.roas>=3?'vpos':r.roas>0&&r.roas<2?'vneg':'vdef',r.roas>0?Math.min(r.roas/5*100,100):0,tip('ROAS',t('tip-roas'),t('tip-roas-b'))),
+      card('🎯',r.adpct>0?r.adpct.toFixed(0)+'%':'—','k'+(r.adpct>30?'wrn':'def'),r.adpct>30?'Above benchmark':r.adpct>0?'Within range':'—',r.adpct>30?'vwrn':'vdef',r.adpct>0?100-Math.min(r.adpct/40*100,100):0,tip('Ads / Revenue',t('tip-adpct'),t('tip-adpct-b'))),
+      card('↩️',r.retpct>0?r.retpct.toFixed(1)+'%':'—','k'+(r.retpct>10?'neg':r.retpct>5?'wrn':'pos'),r.retpct>10?'⚠ High':r.retpct>5?'Monitor':'Healthy',r.retpct>10?'vneg':r.retpct>5?'vwrn':'vpos',null,tip('Return Rate',t('tip-ret'),t('tip-ret-b'))),
+      card('🧾',r.cpo>0?fmt(r.cpo):'—','kacc',lang==='fr'?'par commande':'per order','vacc',null,tip('Cost per Order',t('tip-cpo'),null)),
+    ];
+    g.className='kpi-grid kg6';
+  }else if(type==='creator'){
+    const prodR=r.rev>0?(r.cogs/r.rev)*100:0;
+    cards=[
+      card('💰',r.rev>0?fmt(r.profit):'—',`km ${pk}`,r.profit>=0?`+${r.margin.toFixed(1)}%`:`${r.margin.toFixed(1)}%`,pv,null,tip('Net Profit',t('tip-profit'),null)),
+      card('📊',r.rev>0?r.margin.toFixed(1)+'%':'—','k'+(r.margin>20?'pos':r.margin<0?'neg':r.margin<15?'wrn':'def'),r.margin>=30?'Healthy':r.margin>=15?'Optimize':'Too thin',r.margin>20?'vpos':r.margin<0?'vneg':r.margin<15?'vwrn':'vdef',r.rev>0?Math.min(Math.max(r.margin,0)/40*100,100):0,tip('Margin','Net profit as % of revenue.',t('tip-margin-b'))),
+      card('🎬',prodR>0?prodR.toFixed(0)+'%':'—','k'+(prodR>40?'wrn':'def'),lang==='fr'?'production / CA':'production / revenue',prodR>40?'vwrn':'vdef',null,tip('Prod / Revenue',lang==='fr'?'Coût de production en % du CA.':'Production cost as % of total revenue.',null)),
+      card('🤝',r.agencyCut>0?fmt(r.agencyCut):'—','k'+(r.agencyCut>0?'wrn':'def'),r.agencyCut>0?`${((r.agencyCut/r.rev)*100).toFixed(0)}% of revenue`:'No agency',r.agencyCut>0?'vwrn':'vdef',null,tip(lang==='fr'?'Commission agence':'Agency Fee',t('tip-cut'),null)),
+      card('📺',r.rev>0?fmt(r.rev):'—','kinf',lang==='fr'?'toutes sources':'all sources combined','vinf',null,tip(lang==='fr'?'Revenus totaux':'Total Revenue',lang==='fr'?'Cumul de toutes tes sources.':'Sum of all revenue sources.',null)),
+    ];
+    g.className='kpi-grid kg5';
+  }else{
+    const netR=r.rev>0?(r.profit/r.rev)*100:0;
+    cards=[
+      card('💰',r.rev>0?fmt(r.profit):'—',`km ${pk}`,r.profit>=0?`+${r.margin.toFixed(1)}% net`:`${r.margin.toFixed(1)}%`,pv,null,tip('Net Profit',t('tip-profit'),null)),
+      card('📊',r.rev>0?r.margin.toFixed(1)+'%':'—','k'+(r.margin>20?'pos':r.margin<0?'neg':r.margin<15?'wrn':'def'),r.margin>=30?'Strong':r.margin>=15?'Acceptable':'Optimize',r.margin>20?'vpos':r.margin<0?'vneg':r.margin<15?'vwrn':'vdef',r.rev>0?Math.min(Math.max(r.margin,0)/40*100,100):0,tip('Margin','Net profit as % of revenue.',t('tip-margin-b'))),
+      card('⏱️',r.effRate>0?fmt(r.effRate)+'/hr':'—','k'+(r.effRate>0?'acc':'def'),r.effRate>0?`Based on ${r.hours}h`:'Enter hours','vacc',null,tip(lang==='fr'?'Taux horaire effectif':'Effective Hourly Rate',t('tip-eff'),null)),
+      card('💳',r.platCut>0?fmt(r.platCut):'—','k'+(r.platCut>0?'wrn':'def'),r.platCut>0?`${((r.platCut/r.rev)*100).toFixed(0)}% of invoiced`:'No platform',r.platCut>0?'vwrn':'vdef',null,tip(lang==='fr'?'Commission plateforme':'Platform Cut',t('tip-cut'),null)),
+      card('📈',netR>0?netR.toFixed(0)+'%':'—','k'+(netR>60?'pos':'def'),netR>60?'Good retention':netR>0?'Check fees':'—',netR>60?'vpos':'vdef',null,tip('Net / Gross',lang==='fr'?'% du montant facturé que tu gardes.':'% of invoiced amount you actually keep.',null)),
+    ];
+    g.className='kpi-grid kg5';
+  }
+  g.innerHTML=cards.join('');
+  g.querySelectorAll('.tip-btn').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const op=b.classList.contains('op');g.querySelectorAll('.tip-btn.op').forEach(x=>x.classList.remove('op'));if(!op)b.classList.add('op')})});
+  document.addEventListener('click',()=>g.querySelectorAll('.tip-btn.op').forEach(x=>x.classList.remove('op')));
+}
+
+function renderBanner(dec){
+  const {verdict,confidence,cl,exp}=dec;
+  const bn=document.getElementById('vb');
+  const cm={await:'vwait','v-scale':'vscale','v-scale-p':'vscale','v-optimize':'vopt','v-kill':'vkill','v-drop':'vkill'};
+  bn.className='vb '+(cm[verdict]||'vwait');
+  const icons={await:'⏳','v-scale':'🚀','v-scale-p':'🚀','v-optimize':'⚠️','v-kill':'❌','v-drop':'❌'};
+  document.getElementById('vi').textContent=icons[verdict]||'⏳';
+  document.getElementById('vv').textContent=t(verdict)||t('v-await');
+  document.getElementById('ve').textContent=exp;
+  const ce=document.getElementById('vbr');
+  if(verdict!=='await'){
+    ce.style.display='flex';
+    document.getElementById('cff').style.width=confidence+'%';
+    document.getElementById('cff').className='cf-fill cf'+cl.charAt(0);
+    document.getElementById('cfl').textContent=`${t('c-'+cl)} — ${confidence}%`;
+  }else ce.style.display='none';
+}
+
+function renderBrkd(r){
+  document.getElementById('brv').textContent=r.rev>0?fmt(r.rev):'—';
+  document.getElementById('brc').textContent=r.total>0?fmt(r.total):'—';
+  const pe=document.getElementById('brp');pe.textContent=r.rev>0?fmt(r.profit):'—';
+  pe.style.color=r.profit<0?'var(--r)':'';
+}
+
+function renderInsights(dec){
+  document.getElementById('ilist').innerHTML=dec.ins.map(i=>`<div class="ii ${i.c}"><span class="ii-ico">${i.i}</span><span class="ii-txt">${i.tx}</span></div>`).join('');
+}
+
+async function saveCalc(){
+  if(!pid){toast(t('ts-np'),true);return}
+  if(!window._calc||window._calc.res.rev===0){toast(t('ts-nd'),true);return}
+  const {res,details}=window._calc;
+  const btn=document.getElementById('bsv');btn.classList.add('ld');btn.disabled=true;
+  const {data,error}=await sb.from('calculations').insert({
+    project_id:pid,user_id:user.id,revenue:res.rev,expenses:res.total,
+    net_profit:res.profit,margin_percent:res.margin,details,
+    calc_date:new Date().toISOString().split('T')[0]
+  }).select().single();
+  btn.classList.remove('ld');btn.disabled=false;
+  if(error){toast(error.message,true);return}
+  const idx=projects.findIndex(p=>p.id===pid);
+  if(idx>=0){if(!projects[idx].calculations)projects[idx].calculations=[];projects[idx].calculations.unshift(data)}
+  setSt('sv');toast(t('ts-sv'));renderProjects();
+}
+
+async function loadHistory(){
+  const hc=document.getElementById('hc');
+  if(!pid){hc.innerHTML=emptyEl(t('e-ht'),t('e-hs'));return}
+  const proj=projects.find(p=>p.id===pid);
+  document.getElementById('ht').textContent=proj?.name||t('t-nh');
+  const {data}=await sb.from('calculations').select('*').eq('project_id',pid).eq('user_id',user.id).order('created_at',{ascending:false}).limit(50);
+  if(!data||!data.length){hc.innerHTML=emptyEl(t('e-ht'),t('e-hs'));return}
+  const vf=(mg,pr)=>pr<0?{cls:'hvk',tx:t('v-kill')}:mg>=25?{cls:'hvs',tx:t('v-scale')}:{cls:'hvo',tx:t('v-optimize')};
+  hc.innerHTML='<div class="hist-list">'+data.map(d=>{
+    const pr=d.net_profit||0,mg=d.margin_percent||0,rv=d.revenue||0;
+    const vd=vf(mg,pr);
+    const roas=d.details?.fb||d.details?.tik?rv/((d.details?.fb||0)+(d.details?.tik||0)):0;
+    const dt=new Date(d.created_at).toLocaleDateString(lang==='fr'?'fr-FR':'en-US',{weekday:'short',day:'numeric',month:'short'});
+    return`<div class="hi" onclick="loadEntry('${d.id}')"><div><div class="hi-date">${dt}</div><div class="hi-chips"><span class="chip">${sym}${Math.round(rv).toLocaleString()}</span><span class="chip">${mg.toFixed(1)}%</span>${roas>0?`<span class="chip">${roas.toFixed(1)}x</span>`:''}</div><div class="hi-hint">${t('h-hint')}</div></div><div class="hi-r"><div class="hi-profit ${pr>=0?'pos':'neg'}">${pr>=0?'+':''}${sym}${Math.abs(pr).toLocaleString('en-US',{maximumFractionDigits:0})}</div><div class="hi-v ${vd.cls}">${vd.tx}</div></div></div>`;
+  }).join('')+'</div>';
+}
+
+async function loadEntry(id){
+  const {data}=await sb.from('calculations').select('*').eq('id',id).single();
+  if(!data?.details)return;
+  restoreInputs(data.details);runCalc();setSt('us');sv('campaign');toast(t('ts-ld'));
+}
+
+function renderProjects(){
+  const c=document.getElementById('pc-c');
+  if(!projects.length){c.innerHTML=emptyEl(t('e-pt'),t('e-ps'));return}
+  const isPro=profile?.plan==='premium';
+  const tl={ecom:t('t-tec'),creator:t('t-tcr'),freelancer:t('t-tfr')};
+  const pcls={ecom:'pec',creator:'pcr',freelancer:'pfr'};
+  const ics={ecom:'📦',creator:'🎬',freelancer:'💻'};
+  c.innerHTML='<div class="proj-grid">'+projects.map(p=>{
+    const cs=p.calculations||[];
+    const last=cs.length?[...cs].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))[0]:null;
+    const pr=last?.net_profit||0,mg=last?.margin_percent||0,rv=last?.revenue||0;
+    const dtip=isPro?'':`<div class="del-tip">${t('del-locked')}</div>`;
+    return`<div class="pc-card ${pcls[p.business_type]||'pec'}">
+      <div class="pc-top">
+        <div class="pc-badges"><span class="bdg ${p.business_type==='ecom'?'bdg-ec':p.business_type==='creator'?'bdg-cr':'bdg-fr'}">${tl[p.business_type]||p.business_type}</span>${p.track_type?`<span class="bdg bdg-t">${p.track_type==='product'?'📦':'📣'}</span>`:''}</div>
+        <div class="del-btn ${isPro?'':'locked'}" onclick="${isPro?`delProj('${p.id}')`:'void(0)'}" title="${isPro?'Delete':'🔒'}">${isPro?'🗑️':'🔒'}${dtip}</div>
+      </div>
+      <div class="pc-name">${p.name}</div>
+      ${last?`<div class="pc-stats"><div class="pcs"><div class="pcs-v">${sym}${Math.round(rv).toLocaleString()}</div><div class="pcs-l">REV</div></div><div class="pcs"><div class="pcs-v ${pr>=0?'pos':'neg'}">${pr>=0?'+':''}${sym}${Math.abs(Math.round(pr)).toLocaleString()}</div><div class="pcs-l">NET</div></div><div class="pcs"><div class="pcs-v">${mg.toFixed(1)}%</div><div class="pcs-l">MARGIN</div></div></div>`:`<p style="font-size:12px;color:var(--mu);padding:8px 0">${t('e-ht')}</p>`}
+      <div class="pc-foot"><span>${new Date(p.created_at).toLocaleDateString()}</span><button class="pc-open" onclick="activate('${p.id}');sv('campaign')">${t('t-nc')} →</button></div>
+    </div>`;
+  }).join('')+'</div>';
+}
+
+async function delProj(id){
+  if(!confirm(t('del-confirm')))return;
+  const {error}=await sb.from('projects').update({is_archived:true}).eq('id',id).eq('user_id',user.id);
+  if(error){toast(error.message,true);return}
+  projects=projects.filter(p=>p.id!==id);
+  if(pid===id){pid=null;document.getElementById('nps').style.display='flex';document.getElementById('cc').style.display='none'}
+  fillSel();renderProjects();toast(t('ts-dl'));
+}
+
+// MODAL
+function openM(){
+  const isPro=profile?.plan==='premium';
+  if(!isPro&&projects.length>=3){toast(t('ts-lm'),true);openPro();return}
+  bizT=null;trkT=null;
+  document.getElementById('mname').value='';
+  document.getElementById('merr').classList.remove('on');
+  document.querySelectorAll('.tc,.trk').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('s1').style.display='block';
+  document.getElementById('s2').style.display='none';
+  document.getElementById('si1').className='sid active';
+  document.getElementById('si2').className='sid';
+  document.getElementById('t-ms').textContent=lang==='fr'?'Étape 1/2 — Quel type de business ?':'Step 1 of 2 — What type of business?';
+  document.getElementById('modal').classList.add('open');
+}
+function closeM(){document.getElementById('modal').classList.remove('open')}
+function selBiz(tp,el){bizT=tp;document.querySelectorAll('.tc').forEach(c=>c.classList.remove('sel'));el.classList.add('sel')}
+function selTrk(tt,el){trkT=tt;document.querySelectorAll('.trk').forEach(c=>c.classList.remove('sel'));el.classList.add('sel')}
+function goS2(){
+  const err=document.getElementById('merr');err.classList.remove('on');
+  if(!bizT){err.textContent=lang==='fr'?'Choisis un type.':'Choose a business type.';err.classList.add('on');return}
+  document.getElementById('s1').style.display='none';
+  document.getElementById('s2').style.display='block';
+  document.getElementById('si1').className='sid done';
+  document.getElementById('si2').className='sid active';
+  document.getElementById('t-ms').textContent=lang==='fr'?'Étape 2/2 — Détails du projet':'Step 2 of 2 — Project details';
+  document.getElementById('ts').style.display=bizT==='ecom'?'block':'none';
+  err.classList.remove('on');
+}
+function goS1(){
+  document.getElementById('s1').style.display='block';
+  document.getElementById('s2').style.display='none';
+  document.getElementById('si1').className='sid active';
+  document.getElementById('si2').className='sid';
+  document.getElementById('t-ms').textContent=lang==='fr'?'Étape 1/2 — Quel type de business ?':'Step 1 of 2 — What type of business?';
+}
+async function createProject(){
+  const name=document.getElementById('mname').value.trim();
+  const mc=document.getElementById('mcur').value;
+  const err=document.getElementById('merr');err.classList.remove('on');
+  if(bizT==='ecom'&&!trkT){err.textContent=lang==='fr'?'Choisis ce que tu analyses.':'Choose what you\'re analyzing.';err.classList.add('on');return}
+  if(!name){err.textContent=lang==='fr'?'Entre un nom.':'Enter a name.';err.classList.add('on');return}
+  const {data,error}=await sb.from('projects').insert({user_id:user.id,name,business_type:bizT,currency:mc,is_archived:false,track_type:bizT==='ecom'?trkT:null}).select().single();
+  if(error){err.textContent=error.message;err.classList.add('on');return}
+  data.calculations=[];projects.unshift(data);
+  fillSel();renderProjects();closeM();activate(data.id);sv('campaign');toast(t('ts-cr'));
+}
+
+// PRO MODAL
+let _proA=false;
+function openPro(){
+  if(profile?.plan==='premium'){location.href='sellsense-payment.html';return}
+  document.getElementById('pro-modal').classList.add('open');
+  if(!_proA)animPro();
+}
+function closePro(){document.getElementById('pro-modal').classList.remove('open')}
+function animPro(){
+  _proA=true;
+  const tg={p:12840,r:4.2,m:34.2,a:18,c:8.40};
+  const steps=112;let step=0;
+  const ease=p=>p<.5?2*p*p:-1+(4-2*p)*p;
+  const iv=setInterval(()=>{
+    step++;const q=ease(Math.min(step/steps,1));
+    const el=id=>document.getElementById(id);
+    if(el('pm-p'))el('pm-p').textContent='+'+sym+Math.round(tg.p*q).toLocaleString();
+    if(el('pm-r'))el('pm-r').textContent=(tg.r*q).toFixed(1)+'x';
+    if(el('pm-m'))el('pm-m').textContent=(tg.m*q).toFixed(1)+'%';
+    if(el('pm-a'))el('pm-a').textContent=Math.round(tg.a*q)+'%';
+    if(el('pm-c'))el('pm-c').textContent=sym+(tg.c*q).toFixed(2);
+    if(el('pm-cf'))el('pm-cf').style.width=Math.round(87*q)+'%';
+    if(step>=steps){clearInterval(iv);_proA=false}
+  },16);
+}
+
+// NAVIGATION
+function sv(v){
+  document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));
+  document.getElementById('view-'+v).classList.add('on');
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  const nm={campaign:'nav-c',history:'nav-h',projects:'nav-p'};
+  if(nm[v])document.getElementById(nm[v]).classList.add('on');
+  const tm={campaign:t('t-nc'),history:t('t-nh'),projects:t('t-np2')};
+  document.getElementById('tb-title').textContent=tm[v]||'';
+  if(window.innerWidth<=768)document.getElementById('sb').classList.remove('open');
+  if(v==='history')loadHistory();
+}
+
+// LANGUAGE
+function setL(l){
+  lang=l;
+  document.getElementById('lt-en').classList.toggle('on',l==='en');
+  document.getElementById('lt-fr').classList.toggle('on',l==='fr');
+  applyLang();
+  if(pid){const proj=projects.find(p=>p.id===pid);if(proj){const v=getInputs();buildInputs(proj.business_type,proj.track_type);restoreInputs(v);runCalc()}}
+  renderProjects();
+}
+function applyLang(){
+  const ids=['ls-t','t-en','t-ap','t-np','t-nc','t-nh','t-np2','t-nup','t-tl','t-t1','t-t2','t-t3','t-t4','t-bup','t-npt','t-nps','t-npb','t-npb2','t-kt','t-ktt','t-vh','t-sv','t-brkd','t-brv','t-brc','t-brp','t-intel','t-iw','t-snt','t-sns','ht','t-hs','t-ap2','t-ps','t-mt','t-ms','t-tec','t-tcr','t-tfr','t-tl2','t-tc','t-tcd','t-tp','t-tpd','t-ln','t-lc','t-cp'];
+  ids.forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=t(id)});
+}
+
+// CURRENCY
+function setCur(c){
+  cur=c;sym=SYM[c]||c+' ';
+  if(pid){const proj=projects.find(p=>p.id===pid);if(proj){const v=getInputs();buildInputs(proj.business_type,proj.track_type);restoreInputs(v);runCalc()}}
+}
+
+// UTILS
+function fmt(n){const a=Math.abs(n);return(n<0?'-':'')+sym+a.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0})}
+function setSt(s){const d=document.getElementById('sd'),x=document.getElementById('stxt');if(s==='sv'){d.className='sd sv';x.textContent=t('st-sv')}else if(s==='us'){d.className='sd us';x.textContent=t('st-us')}else{d.className='sd';x.textContent='—'}}
+function toast(msg,err){const e=document.getElementById('toast');e.textContent=msg;e.className='toast on '+(err?'err':'ok');setTimeout(()=>e.className='toast',3500)}
+function emptyEl(title,sub){return`<div class="empty"><div class="ei">📋</div><div class="et">${title}</div><div class="es">${sub}</div></div>`}
+async function doLogout(){await sb.auth.signOut();location.href='sellsense-auth.html'}
+boot();
+</script>
+</body>
+</html>
