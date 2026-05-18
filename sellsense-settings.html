@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SellSense — Settings</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#FAFAF7;--bg-soft:#F4F2EC;--surface:#FFFFFF;--surface-2:#FBFAF6;--surface-3:#F1EFE8;
+  --ink:#0A0F1E;--text:#0D1424;--text-2:#3B4358;--text-3:#6B7280;
+  --muted:#9CA3AF;--muted-2:#D1D5DB;
+  --border:#EBE7DC;--border-2:#E2DDD0;--border-3:#D5CFC0;
+  --primary:#1E2761;--primary-2:#2C3679;--accent:#E76F4A;--accent-2:#FF8A66;
+  --gold:#D4A53C;--gold-2:#E8BD58;--emerald:#0F6E5C;--emerald-2:#15A37F;
+  --ruby:#DC3556;--violet:#7C3AED;--sky:#0EA5E9;
+  --pos:#0F6E5C;--pos-soft:#E6F5F1;--neg:#DC3556;--neg-soft:#FCE9ED;
+  --warn:#D4A53C;--warn-soft:#FBF3DC;--info-soft:#E8EAF5;
+  --grad-aurora:linear-gradient(135deg,#1E2761 0%,#7C3AED 50%,#E76F4A 100%);
+  --sh-xs:0 1px 2px rgba(13,20,36,0.04);
+  --sh-sm:0 2px 8px rgba(13,20,36,0.06),0 1px 2px rgba(13,20,36,0.04);
+  --sh-md:0 8px 28px rgba(13,20,36,0.08),0 2px 6px rgba(13,20,36,0.04);
+  --sh-lg:0 24px 60px rgba(13,20,36,0.12),0 8px 18px rgba(13,20,36,0.06);
+  --sh-glow:0 0 0 4px rgba(30,39,97,0.08);
+  --ff-sans:'Inter',system-ui,sans-serif;
+  --ff-display:'Instrument Serif',Georgia,serif;
+  --ff-mono:'JetBrains Mono',Menlo,monospace;
+  --sw:240px;--tb:60px;
+}
+html,body{height:100%;}
+body{background:var(--bg);color:var(--text);font-family:var(--ff-sans);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+input,select,textarea{font-family:inherit;font-size:inherit;}
+a{color:inherit;text-decoration:none;}
+
+.app{display:flex;min-height:100vh;}
+
+/* SIDEBAR — IDENTICAL TO DASHBOARD */
+.sb{width:var(--sw);background:var(--ink);color:#fff;flex-shrink:0;position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:90;border-right:1px solid rgba(255,255,255,0.04);}
+.sb-bg{position:absolute;inset:0;background:radial-gradient(circle at 0% 0%,rgba(30,39,97,0.4),transparent 50%),radial-gradient(circle at 100% 100%,rgba(231,111,74,0.15),transparent 60%);pointer-events:none;}
+.sb-logo{padding:20px 18px 16px;display:flex;align-items:center;gap:10px;position:relative;z-index:1;}
+.sb-logo-mark{width:30px;height:30px;background:linear-gradient(135deg,var(--gold),var(--accent));border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(212,165,60,0.35);position:relative;}
+.sb-logo-mark::after{content:'';position:absolute;inset:1.5px;border-radius:7px;background:linear-gradient(135deg,rgba(255,255,255,0.18),transparent 60%);}
+.sb-logo-mark svg{position:relative;z-index:1;}
+.sb-logo-name{font-family:var(--ff-display);font-size:21px;font-style:italic;letter-spacing:-0.5px;line-height:1;color:#fff;}
+
+.ws{margin:6px 12px 14px;padding:9px 11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:10px;display:flex;align-items:center;gap:9px;cursor:pointer;transition:all .15s;position:relative;z-index:1;}
+.ws:hover{background:rgba(255,255,255,0.07);}
+.ws-av{width:24px;height:24px;border-radius:6px;background:var(--grad-aurora);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#fff;flex-shrink:0;letter-spacing:-0.3px;}
+.ws-name{font-size:13px;font-weight:600;color:#fff;line-height:1.1;}
+.ws-sub{font-size:10.5px;color:rgba(255,255,255,0.45);margin-top:1px;line-height:1;letter-spacing:0.02em;}
+.ws-chev{margin-left:auto;color:rgba(255,255,255,0.4);font-size:10px;}
+
+.nav{flex:1;padding:6px 10px;position:relative;z-index:1;overflow-y:auto;}
+.nav-grp{margin-bottom:18px;}
+.nav-grp-lbl{font-size:10px;font-weight:600;color:rgba(255,255,255,0.32);text-transform:uppercase;letter-spacing:0.1em;padding:6px 10px;}
+.nv{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.65);cursor:pointer;transition:all .15s;margin-bottom:1px;position:relative;}
+.nv:hover{background:rgba(255,255,255,0.04);color:#fff;}
+.nv.active{background:linear-gradient(90deg,rgba(212,165,60,0.18),rgba(212,165,60,0.05));color:#fff;}
+.nv.active::before{content:'';position:absolute;left:-10px;top:8px;bottom:8px;width:2px;border-radius:0 2px 2px 0;background:var(--gold);}
+.nv-icon{width:18px;height:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nv-icon svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.8;fill:none;}
+.nv-badge{margin-left:auto;font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:20px;background:var(--gold);color:var(--ink);}
+.nv-dot{margin-left:auto;width:6px;height:6px;border-radius:50%;background:var(--accent);}
+
+.sb-bottom{padding:10px 12px 14px;position:relative;z-index:1;}
+.user-bx{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:9px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);cursor:pointer;transition:all .15s;}
+.user-bx:hover{background:rgba(255,255,255,0.06);}
+.ua{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--gold));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#fff;flex-shrink:0;}
+.ub-n{font-size:12.5px;font-weight:600;color:#fff;line-height:1.1;}
+.ub-e{font-size:10.5px;color:rgba(255,255,255,0.4);line-height:1;margin-top:1px;}
+
+/* MAIN */
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-width:0;}
+.tb{height:var(--tb);background:rgba(250,250,247,0.85);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50;}
+.tb-burger{display:none;width:36px;height:36px;border-radius:9px;border:1px solid var(--border-2);background:#fff;align-items:center;justify-content:center;cursor:pointer;}
+.tb-title{font-family:var(--ff-display);font-size:22px;font-style:italic;font-weight:400;color:var(--text);letter-spacing:-0.3px;}
+.tb-actions{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.btn-save{background:var(--ink);color:#fff;padding:8px 16px;font-size:13px;font-weight:600;border-radius:9px;transition:all .15s;}
+.btn-save:hover{background:var(--primary);}
+
+/* SETTINGS LAYOUT */
+.set-shell{display:grid;grid-template-columns:240px 1fr;gap:24px;padding:24px 24px 60px;}
+.set-nav{position:sticky;top:calc(var(--tb) + 24px);align-self:start;}
+.set-nv-grp{margin-bottom:8px;}
+.set-nv-lbl{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;padding:6px 12px;}
+.set-nv{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:9px;font-size:13px;font-weight:500;color:var(--text-3);cursor:pointer;transition:all .12s;margin-bottom:1px;}
+.set-nv:hover{background:var(--surface-3);color:var(--text);}
+.set-nv.active{background:var(--ink);color:#fff;font-weight:600;}
+.set-nv .ic{width:16px;height:16px;display:flex;align-items:center;justify-content:center;}
+.set-nv .ic svg{width:14px;height:14px;stroke:currentColor;stroke-width:1.8;fill:none;}
+
+/* CONTENT */
+.set-main{min-width:0;}
+.sect{background:var(--surface);border:1px solid var(--border);border-radius:16px;margin-bottom:18px;overflow:hidden;}
+.sect-hdr{padding:20px 24px 18px;border-bottom:1px solid var(--border);}
+.sect-t{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.sect-s{font-size:13px;color:var(--text-3);}
+.sect-body{padding:20px 24px;}
+.set-pane{display:none;}
+.set-pane.on{display:block;animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.pane-h{font-family:var(--ff-display);font-size:30px;font-weight:400;letter-spacing:-0.5px;color:var(--text);margin-bottom:6px;}
+.pane-h em{font-style:italic;color:var(--primary);}
+.pane-s{font-size:14px;color:var(--text-3);margin-bottom:22px;}
+
+/* AVATAR */
+.avatar-row{display:flex;align-items:center;gap:18px;}
+.av-lg{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--gold));color:#fff;font-weight:700;font-size:24px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(231,111,74,0.25);}
+.av-actions{display:flex;flex-direction:column;gap:6px;}
+.av-actions button{font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:8px;}
+.av-up{background:var(--ink);color:#fff;}
+.av-up:hover{background:var(--primary);}
+.av-rm{background:var(--surface-3);color:var(--text-2);}
+.av-rm:hover{background:var(--neg-soft);color:var(--neg);}
+
+/* FIELDS */
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.fld{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.fld.full{grid-column:1/-1;}
+.fld label{font-size:11.5px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:0.06em;}
+.fld input,.fld select,.fld textarea{background:var(--surface-2);border:1.5px solid var(--border-2);border-radius:10px;padding:10px 13px;font-size:13.5px;color:var(--text);transition:all .15s;width:100%;}
+.fld input:focus,.fld select:focus,.fld textarea:focus{outline:none;border-color:var(--primary);background:#fff;box-shadow:var(--sh-glow);}
+.fld .help{font-size:11px;color:var(--text-3);}
+
+/* TOGGLES */
+.toggle-row{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:13px 0;border-bottom:1px solid var(--border);}
+.toggle-row:last-child{border-bottom:none;}
+.tr-l{flex:1;}
+.tr-t{font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.tr-d{font-size:12px;color:var(--text-3);max-width:480px;line-height:1.5;}
+.switch{position:relative;width:38px;height:22px;background:var(--border-2);border-radius:20px;cursor:pointer;transition:all .2s;flex-shrink:0;margin-top:2px;}
+.switch::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;background:#fff;border-radius:50%;transition:all .2s;box-shadow:var(--sh-xs);}
+.switch.on{background:var(--primary);}
+.switch.on::after{left:18px;}
+
+/* CURRENCIES — FAVORITES */
+.fav-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;}
+.fv{background:var(--surface-2);border:1.5px solid var(--border-2);border-radius:10px;padding:10px 12px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:9px;}
+.fv:hover{border-color:var(--border-3);background:#fff;}
+.fv.on{border-color:var(--primary);background:var(--info-soft);box-shadow:var(--sh-glow);}
+.fv .flg{font-size:16px;}
+.fv .cd{font-size:12.5px;font-weight:700;color:var(--text);}
+.fv .nm{font-size:10.5px;color:var(--text-3);}
+
+/* LANG */
+.lang-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;}
+
+/* WORKSPACES */
+.ws-list{display:flex;flex-direction:column;gap:9px;}
+.ws-item{display:flex;align-items:center;gap:14px;padding:13px 16px;background:var(--surface-2);border:1px solid var(--border);border-radius:12px;}
+.ws-item-av{width:38px;height:38px;border-radius:9px;font-weight:700;font-size:13px;color:#fff;display:flex;align-items:center;justify-content:center;}
+.ws-item-n{font-size:13.5px;font-weight:600;color:var(--text);}
+.ws-item-d{font-size:11.5px;color:var(--text-3);margin-top:2px;}
+.ws-item .badge{font-size:10px;font-weight:700;background:var(--info-soft);color:var(--primary);padding:3px 8px;border-radius:5px;text-transform:uppercase;letter-spacing:0.05em;margin-left:auto;}
+.ws-item .menu{width:26px;height:26px;border-radius:7px;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-3);cursor:pointer;}
+.ws-item .menu:hover{border-color:var(--text-2);color:var(--text);}
+
+.btn-add{display:inline-flex;align-items:center;gap:6px;background:var(--ink);color:#fff;font-size:13px;font-weight:600;padding:9px 14px;border-radius:9px;transition:all .15s;cursor:pointer;}
+.btn-add:hover{background:var(--primary);}
+
+/* TEAM */
+.team-list{display:flex;flex-direction:column;gap:0;}
+.tm-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);}
+.tm-row:last-child{border-bottom:none;}
+.tm-av{width:36px;height:36px;border-radius:50%;color:#fff;font-weight:700;font-size:12.5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tm-n{font-size:13.5px;font-weight:600;color:var(--text);}
+.tm-e{font-size:11.5px;color:var(--text-3);margin-top:1px;}
+.tm-role{font-size:11px;font-weight:600;padding:3px 9px;border-radius:5px;letter-spacing:0.04em;text-transform:uppercase;margin-left:auto;}
+.tm-role.owner{background:var(--warn-soft);color:#9C7B12;}
+.tm-role.admin{background:var(--info-soft);color:var(--primary);}
+.tm-role.member{background:var(--surface-3);color:var(--text-2);}
+
+/* DANGER */
+.danger{border:1.5px solid rgba(220,53,86,0.25);border-radius:14px;padding:18px 22px;background:rgba(220,53,86,0.04);}
+.danger-t{font-size:14px;font-weight:700;color:var(--neg);margin-bottom:4px;}
+.danger-d{font-size:12.5px;color:var(--text-2);margin-bottom:14px;}
+.btn-danger{background:#fff;color:var(--neg);border:1.5px solid var(--neg);font-size:13px;font-weight:600;padding:9px 14px;border-radius:9px;}
+.btn-danger:hover{background:var(--neg);color:#fff;}
+
+/* INTEGRATIONS */
+.int-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.int{background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;align-items:center;gap:13px;}
+.int-ic{width:42px;height:42px;border-radius:10px;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.int-b{flex:1;}
+.int-n{font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.int-d{font-size:11.5px;color:var(--text-3);}
+.int-btn{font-size:12px;font-weight:600;padding:6px 12px;border-radius:7px;border:1px solid var(--border-2);background:#fff;color:var(--text);}
+.int-btn:hover{border-color:var(--text);}
+.int-btn.on{background:var(--pos);color:#fff;border-color:var(--pos);}
+
+@media(max-width:980px){
+  .set-shell{grid-template-columns:1fr;}
+  .set-nav{position:static;}
+  .fgrid,.fav-grid,.lang-grid,.int-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:768px){
+  .sb{transform:translateX(-100%);transition:transform .2s;}
+  .sb.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .tb-burger{display:flex;}
+  .fgrid,.fav-grid,.lang-grid,.int-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sb" id="sb">
+    <div class="sb-bg"></div>
+    <div class="sb-logo">
+      <div class="sb-logo-mark">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M8 1L15 5V11L8 15L1 11V5L8 1Z" stroke="#0A0F1E" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M8 5L11 7V9L8 11L5 9V7L8 5Z" fill="#0A0F1E"/>
+        </svg>
+      </div>
+      <div class="sb-logo-name">SellSense</div>
+    </div>
+
+    <div class="ws">
+      <div class="ws-av">AB</div>
+      <div style="flex:1;min-width:0;">
+        <div class="ws-name">Atelier Beldi</div>
+        <div class="ws-sub">3 brands · Workspace</div>
+      </div>
+      <span class="ws-chev">▾</span>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-grp">
+        <div class="nav-grp-lbl">Workspace</div>
+        <a class="nv" href="sellsense-dashboard.html">
+          <span class="nv-icon"><svg viewBox="0 0 24 24"><path d="M3 12L12 4l9 8M5 10v10h14V10"/></svg></span>
+          Overview
+        </a>
+        <a class="nv" href="sellsense-dashboard.html#products">
+          <span class="nv-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-6 9 6v12H3z M9 21V12h6v9"/></svg></span>
+          Products
+        </a>
+        <a class="nv" href="sellsense-dashboard.html#add">
+          <span class="nv-icon"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+          Log a Sale
+        </a>
+        <a class="nv" href="sellsense-dashboard.html#insights">
+          <span class="nv-icon"><svg viewBox="0 0 24 24"><path d="M9.6 4.6a2 2 0 014.8 0c0 .8.6 1.6 1.4 1.7 2 .4 3.4 2.1 3.4 4.2 0 1.5-.8 2.8-2 3.5v2c0 1.7-1.3 3-3 3h-2"/></svg></span>
+          AI Insights
+        </a>
+        <a class="nv" href="sellsense-dashboard.html#reports">
+          <span class="nv-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z M14 2v6h6"/></svg></span>
+          Reports
+        </a>
+      </div>
+      <div class="nav-grp">
+        <div class="nav-grp-lbl">Manage</div>
+        <a class="nv active">
+          <span class="nv-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1A1.7 1.7 0 009 19.4a1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1A1.7 1.7 0 004.6 9a1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg></span>
+          Settings
+        </a>
+        <a class="nv" href="sellsense-help.html">
+          <span class="nv-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3 M12 17h.01"/></svg></span>
+          Help & Docs
+        </a>
+      </div>
+    </nav>
+
+    <div class="sb-bottom">
+      <div class="user-bx">
+        <div class="ua">AZ</div>
+        <div style="flex:1;min-width:0;">
+          <div class="ub-n">Abdessamad Z.</div>
+          <div class="ub-e">abdessamad@sellsense.io</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <header class="tb">
+      <button class="tb-burger" onclick="document.getElementById('sb').classList.toggle('open')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+      <div class="tb-title">Settings</div>
+      <div class="tb-actions">
+        <button class="btn-save" onclick="showToast()">Save changes</button>
+      </div>
+    </header>
+
+    <div class="set-shell">
+
+      <!-- LEFT NAV -->
+      <aside class="set-nav">
+        <div class="set-nv-grp">
+          <div class="set-nv-lbl">Account</div>
+          <div class="set-nv active" onclick="goPane(this,'profile')">
+            <span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg></span>
+            Profile
+          </div>
+          <div class="set-nv" onclick="goPane(this,'security')">
+            <span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></span>
+            Security
+          </div>
+          <div class="set-nv" onclick="goPane(this,'notifications')">
+            <span class="ic"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9 M13.7 21a2 2 0 01-3.4 0"/></svg></span>
+            Notifications
+          </div>
+        </div>
+        <div class="set-nv-grp">
+          <div class="set-nv-lbl">Workspace</div>
+          <div class="set-nv" onclick="goPane(this,'workspaces')">
+            <span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span>
+            Workspaces
+          </div>
+          <div class="set-nv" onclick="goPane(this,'team')">
+            <span class="ic"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M3 21a6 6 0 0112 0M17 7h.01M17 14h.01"/></svg></span>
+            Team
+          </div>
+          <div class="set-nv" onclick="goPane(this,'integrations')">
+            <span class="ic"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007 0l4-4a5 5 0 00-7-7l-1.5 1.5M14 11a5 5 0 00-7 0l-4 4a5 5 0 007 7l1.5-1.5"/></svg></span>
+            Integrations
+          </div>
+        </div>
+        <div class="set-nv-grp">
+          <div class="set-nv-lbl">Preferences</div>
+          <div class="set-nv" onclick="goPane(this,'currency')">
+            <span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M8 10h6.5a1.5 1.5 0 010 3H9.5a1.5 1.5 0 000 3H16"/></svg></span>
+            Currencies
+          </div>
+          <div class="set-nv" onclick="goPane(this,'language')">
+            <span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg></span>
+            Language & Region
+          </div>
+          <div class="set-nv" onclick="goPane(this,'appearance')">
+            <span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 010 18z" fill="currentColor"/></svg></span>
+            Appearance
+          </div>
+        </div>
+        <div class="set-nv-grp">
+          <div class="set-nv-lbl">Data</div>
+          <div class="set-nv" onclick="goPane(this,'data')">
+            <span class="ic"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4 M7 10l5 5 5-5 M12 15V3"/></svg></span>
+            Export & Import
+          </div>
+          <div class="set-nv" onclick="goPane(this,'danger')">
+            <span class="ic"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></span>
+            Danger zone
+          </div>
+        </div>
+      </aside>
+
+      <!-- CONTENT -->
+      <div class="set-main">
+
+        <!-- PROFILE -->
+        <div class="set-pane on" id="pane-profile">
+          <h1 class="pane-h">Your <em>profile.</em></h1>
+          <p class="pane-s">How you appear across SellSense. Visible to your team only.</p>
+
+          <div class="sect">
+            <div class="sect-hdr">
+              <div class="sect-t">Avatar</div>
+              <div class="sect-s">A square image. PNG or JPG, max 2MB.</div>
+            </div>
+            <div class="sect-body">
+              <div class="avatar-row">
+                <div class="av-lg">AZ</div>
+                <div class="av-actions">
+                  <button class="av-up">Upload new</button>
+                  <button class="av-rm">Remove</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sect">
+            <div class="sect-hdr">
+              <div class="sect-t">Personal info</div>
+              <div class="sect-s">Used in exports and your dashboard.</div>
+            </div>
+            <div class="sect-body">
+              <div class="fgrid">
+                <div class="fld"><label>Full name</label><input type="text" value="Abdessamad Zaidane"/></div>
+                <div class="fld"><label>Display name</label><input type="text" value="Sam"/></div>
+                <div class="fld"><label>Email</label><input type="email" value="abdessamad@sellsense.io"/></div>
+                <div class="fld"><label>Phone</label><input type="tel" value="+212 6 12 34 56 78"/></div>
+                <div class="fld"><label>Business type</label><select><option>📦 E-commerce</option><option>🎬 Creator</option><option>💻 Freelance</option></select></div>
+                <div class="fld"><label>Country</label><select><option>🇲🇦 Morocco</option><option>🇺🇸 United States</option><option>🇫🇷 France</option></select></div>
+                <div class="fld full"><label>Bio <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label><textarea rows="2" placeholder="Tell us about your business…">Founder of Atelier Beldi · 3 brands across ecom, content & courses</textarea></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECURITY -->
+        <div class="set-pane" id="pane-security">
+          <h1 class="pane-h"><em>Security</em> & access.</h1>
+          <p class="pane-s">Keep your account locked down. Two-factor recommended.</p>
+
+          <div class="sect">
+            <div class="sect-hdr"><div class="sect-t">Password</div><div class="sect-s">Last changed 14 days ago.</div></div>
+            <div class="sect-body">
+              <div class="fgrid">
+                <div class="fld full"><label>Current password</label><input type="password" value="••••••••••"/></div>
+                <div class="fld"><label>New password</label><input type="password" placeholder="At least 8 characters"/></div>
+                <div class="fld"><label>Confirm password</label><input type="password"/></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sect">
+            <div class="sect-hdr"><div class="sect-t">Two-factor authentication</div></div>
+            <div class="sect-body">
+              <div class="toggle-row">
+                <div class="tr-l"><div class="tr-t">Authenticator app (recommended)</div><div class="tr-d">Use Google Authenticator, Authy, or 1Password.</div></div>
+                <div class="switch on" onclick="this.classList.toggle('on')"></div>
+              </div>
+              <div class="toggle-row">
+                <div class="tr-l"><div class="tr-t">SMS backup</div><div class="tr-d">Receive a backup code by SMS when you sign in.</div></div>
+                <div class="switch" onclick="this.classList.toggle('on')"></div>
+              </div>
+              <div class="toggle-row">
+                <div class="tr-l"><div class="tr-t">Passkeys</div><div class="tr-d">Sign in with Face ID, fingerprint or hardware key.</div></div>
+                <div class="switch" onclick="this.classList.toggle('on')"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sect">
+            <div class="sect-hdr"><div class="sect-t">Active sessions</div></div>
+            <div class="sect-body">
+              <div class="toggle-row"><div class="tr-l"><div class="tr-t">Chrome · macOS · Casablanca, MA</div><div class="tr-d">Current session · Last active just now</div></div><span style="font-size:11px;font-weight:600;color:var(--pos);background:var(--pos-soft);padding:3px 8px;border-radius:5px;">Current</span></div>
+              <div class="toggle-row"><div class="tr-l"><div class="tr-t">Safari · iPhone · Casablanca, MA</div><div class="tr-d">Last active 2 hours ago</div></div><button class="btn-danger" style="padding:6px 10px;font-size:11.5px;">Sign out</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NOTIFICATIONS -->
+        <div class="set-pane" id="pane-notifications">
+          <h1 class="pane-h"><em>Notifications</em> & alerts.</h1>
+          <p class="pane-s">Choose what we tell you about — and how.</p>
+
+          <div class="sect">
+            <div class="sect-hdr"><div class="sect-t">Email notifications</div></div>
+            <div class="sect-body">
+              <div class="toggle-row"><div class="tr-l"><div class="tr-t">Daily profit digest</div><div class="tr-d">Tomorrow's plan based on today's numbers — sent at 8 AM your time.</div></div><div class="switch on" onclick="this.classList.toggle('on')"></div></div>
+              <div class="toggle-row"><div class="tr-l"><div class="tr-t">Critical alerts</div><div class="tr-d">A product turning unprofitable, ad CPA spike, returns surge.</div></div><div class="switch on" onclick="this.classList.toggle('on')"></div></div>
+              <div class="toggle-row"><div class="tr-l"><div class="tr-t">Weekly insights</div><div class="tr-d">Your AI Decision Center summary every Monday.</div></div><div class="switch on" onclick="this.classList.toggle('on')"></div></div>
+              <div class="toggle-row"><div class="tr-l"><div class="tr-t">Product news</div><div class="tr-d">Features, tips, occasional case studies. No spam.</div></div><div class="switch" onclick="this.classList.toggle('on')"></div></div>
+            </div>
+          </div>
+
+          <div class="sect">
+            <div class="sect-hdr"><div class="sect-t">In-app & push</div></div>
+            <div class="sect-body">
+              <div class="toggle-row"><div class="tr-l"><div class="tr-t">Health score drops</div><div class="tr-d">When any product's score drops by 10+ points.</div></div><div class="switch on" onclick="this.classList.toggle('on')"></div></div>
+              <div class="toggle-row"><div class="tr-l"><div class="tr-t">Scaling opportunities</div><div class="tr-d">When AI detects a product worth pushing budget on.</div></div><div class="switch on" onclick="this.classList.toggle('on')"></div></div>
+              <div class="toggle-row"><div class="tr-l"><div class="tr-t">Cash-flow warnings</div><div class="tr-d">Heads-up before you risk running short on working capital.</div></div><div class="switch on" onclick="this.classList.toggle('on')"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WORKSPACES -->
+        <div class="set-pane" id="pane-workspaces">
+          <h1 class="pane-h">Your <em>workspaces.</em></h1>
+          <p class="pane-s">Separate brands and businesses. Each gets its own products, currency, and team.</p>
+
+          <div class="sect">
+            <div class="sect-hdr" style="display:flex;align-items:center;justify-content:space-between;">
+              <div><div class="sect-t">All workspaces</div><div class="sect-s">3 of unlimited used</div></div>
+              <button class="btn-add"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg> New workspace</button>
+            </div>
+            <div class="sect-body">
+              <div class="ws-list">
+                <div class="ws-item">
+                  <div class="ws-item-av" style="background:var(--grad-aurora);">AB</div>
+                  <div style="flex:1;"><div class="ws-item-n">Atelier Beldi</div><div class="ws-item-d">Ecom · MAD · 12 products · 4 team members</div></div>
+                  <span class="badge">Active</span>
+                  <button class="menu"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                </div>
+                <div class="ws-item">
+                  <div class="ws-item-av" style="background:linear-gradient(135deg,var(--emerald-2),var(--emerald));">SC</div>
+                  <div style="flex:1;"><div class="ws-item-n">Sahara Coffee Co.</div><div class="ws-item-d">D2C · USD · 5 products · 2 team members</div></div>
+                  <button class="menu"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                </div>
+                <div class="ws-item">
+                  <div class="ws-item-av" style="background:linear-gradient(135deg,var(--gold-2),var(--gold));">SC</div>
+                  <div style="flex:1;"><div class="ws-item-n">Sam Creates (YouTube)</div><div class="ws-item-d">Creator · EUR · 6 products · 1 member</div></div>
+                  <button class="menu"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TEAM -->
+        <div class="set-pane" id="pane-team">
+          <h1 class="pane-h">Your <em>team.</em></h1>
+          <p class="pane-s">Invite collaborators to your workspace. Unlimited seats, fully free.</p>
+
+          <div class="sect">
+            <div class="sect-hdr" style="display:flex;align-items:center;justify-content:space-between;">
+              <div><div class="sect-t">Members</div><div class="sect-s">4 active members</div></div>
+              <button class="btn-add"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg> Invite member</button>
+            </div>
+            <div class="sect-body">
+              <div class="team-list">
+                <div class="tm-row">
+                  <div class="tm-av" style="background:linear-gradient(135deg,var(--accent),var(--gold));">AZ</div>
+                  <div style="flex:1;"><div class="tm-n">Abdessamad Z. (you)</div><div class="tm-e">abdessamad@sellsense.io</div></div>
+                  <span class="tm-role owner">Owner</span>
+                </div>
+                <div class="tm-row">
+                  <div class="tm-av" style="background:linear-gradient(135deg,var(--primary),var(--violet));">YM</div>
+                  <div style="flex:1;"><div class="tm-n">Youssef M.</div><div class="tm-e">youssef@atelierbeldi.com</div></div>
+                  <span class="tm-role admin">Admin</span>
+                </div>
+                <div class="tm-row">
+                  <div class="tm-av" style="background:linear-gradient(135deg,var(--emerald),var(--emerald-2));">SR</div>
+                  <div style="flex:1;"><div class="tm-n">Sofia R.</div><div class="tm-e">sofia@atelierbeldi.com</div></div>
+                  <span class="tm-role member">Member</span>
+                </div>
+                <div class="tm-row">
+                  <div class="tm-av" style="background:linear-gradient(135deg,var(--ruby),var(--accent));">KA</div>
+                  <div style="flex:1;"><div class="tm-n">Karim A.</div><div class="tm-e">karim@atelierbeldi.com</div></div>
+                  <span class="tm-role member">Member</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- INTEGRATIONS -->
+        <div class="set-pane" id="pane-integrations">
+          <h1 class="pane-h"><em>Integrations.</em></h1>
+          <p class="pane-s">Connect your stores, ad platforms and accounting tools to auto-sync data.</p>
+
+          <div class="sect">
+            <div class="sect-hdr"><div class="sect-t">E-commerce platforms</div></div>
+            <div class="sect-body">
+              <div class="int-grid">
+                <div class="int"><div class="int-ic">🛍️</div><div class="int-b"><div class="int-n">Shopify</div><div class="int-d">Auto-import orders, products & costs</div></div><button class="int-btn on">Connected</button></div>
+                <div class="int"><div class="int-ic">🟢</div><div class="int-b"><div class="int-n">WooCommerce</div><div class="int-d">Sync your WordPress store</div></div><button class="int-btn">Connect</button></div>
+                <div class="int"><div class="int-ic">⚡</div><div class="int-b"><div class="int-n">YouCan</div><div class="int-d">MENA-region COD platform</div></div><button class="int-btn">Connect</button></div>
+                <div class="int"><div class="int-ic">🟠</div><div class="int-b"><div class="int-n">Etsy</div><div class="int-d">Sync handmade & vintage orders</div></div><button class="int-btn">Connect</button></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sect">
+            <div class="sect-hdr"><div class="sect-t">Ad platforms</div></div>
+            <div class="sect-body">
+              <div class="int-grid">
+                <div class="int"><div class="int-ic">🔵</div><div class="int-b"><div class="int-n">Meta Ads</div><div class="int-d">Facebook & Instagram ad spend</div></div><button class="int-btn on">Connected</button></div>
+                <div class="int"><div class="int-ic">⚫</div><div class="int-b"><div class="int-n">TikTok Ads</div><div class="int-d">Live ad spend & ROAS sync</div></div><button class="int-btn on">Connected</button></div>
+                <div class="int"><div class="int-ic">🟦</div><div class="int-b"><div class="int-n">Google Ads</div><div class="int-d">Search & shopping campaigns</div></div><button class="int-btn">Connect</button></div>
+                <div class="int"><div class="int-ic">📌</div><div class="int-b"><div class="int-n">Pinterest Ads</div><div class="int-d">Visual ad performance</div></div><button class="int-btn">Connect</button></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sect">
+            <div class="sect-hdr"><div class="sect-t">Payments & finance</div></div>
+            <div class="sect-body">
+              <div class="int-grid">
+                <div class="int"><div class="int-ic">💳</div><div class="int-b"><div class="int-n">Stripe</div><div class="int-d">Auto-import fees & transactions</div></div><button class="int-btn">Connect</button></div>
+                <div class="int"><div class="int-ic">💰</div><div class="int-b"><div class="int-n">PayPal</div><div class="int-d">Global payments & fees</div></div><button class="int-btn">Connect</button></div>
+                <div class="int"><div class="int-ic">🏦</div><div class="int-b"><div class="int-n">CMI Morocco</div><div class="int-d">Local payment gateway</div></div><button class="int-btn">Connect</button></div>
+                <div class="int"><div class="int-ic">📊</div><div class="int-b"><div class="int-n">QuickBooks</div><div class="int-d">Sync to your books</div></div><button class="int-btn">Connect</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CURRENCIES -->
+        <div class="set-pane" id="pane-currency">
+          <h1 class="pane-h"><em>Currencies</em> & FX.</h1>
+          <p class="pane-s">Choose your primary currency and favorites. All 27 currencies available, free.</p>
+
+          <div class="sect">
+            <div class="sect-hdr"><div class="sect-t">Primary currency</div><div class="sect-s">The default for all calculations and displays.</div></div>
+            <div class="sect-body">
+              <div class="fld"><label>Primary</label><select><option>🇺🇸 USD · US Dollar</option><option>🇪🇺 EUR · Euro</option><option>🇲🇦 MAD · Dirham</option><option>🇬🇧 GBP · British Pound</option></select></div>
+              <div class="toggle-row"><div class="tr-l"><div class="tr-t">Show secondary currency</div><div class="tr-d">Display USD alongside your primary in all views.</div></div><div class="switch on" onclick="this.classList.toggle('on')"></div></div>
+              <div class="toggle-row"><div class="tr-l"><div class="tr-t">Live FX rates</div><div class="tr-d">Update exchange rates automatically every hour.</div></div><div class="switch on" onclick="this.classList.toggle('on')"></div></div>
+            </div>
+          </div>
+
+          <div class="sect">
+            <div class="sect-hdr"><div class="sect-t">Favorites in switcher</div><div class="sect-s">Pinned to the top of the currency picker.</div></div>
+            <div class="sect-body">
+              <div class="fav-grid">
+                <div class="fv on"><span class="flg">🇺🇸</span><div><div class="cd">USD</div><div class="nm">Dollar</div></div></div>
+                <div class="fv on"><span class="flg">🇪🇺</span><div><div class="cd">EUR</div><div class="nm">Euro</div></div></div>
+                <div class="fv on"><span class="flg">🇲🇦</span><div><div class="cd">MAD</div><div class="nm">Dirham</div></div></div>
+                <div class="fv on"><span class="flg">🇬🇧</span><div><div class="cd">GBP</div><div class="nm">Pound</div></div></div>
+                <div class="fv"><span class="flg">🇦🇪</span><div><div class="cd">AED</div><div class="nm">UAE Dh</div></div></div>
+                <div class="fv"><span class="flg">🇮🇳</span><div><div class="cd">INR</div><div class="nm">Rupee</div></div></div>
+                <div class="fv"><span class="flg">🇳🇬</span><div><div class="cd">NGN</div><div class="nm">Naira</div></div></div>
+                <div class="fv"><span class="flg">🇧🇷</span><div><div class="cd">BRL</div><div class="nm">Real</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LANGUAGE -->
+        <div class="set-pane" id="pane-language">
+          <h1 class="pane-h"><em>Language</em> & region.</h1>
+          <p class="pane-s">8 languages supported, including full RTL Arabic.</p>
+
+          <div class="sect">
+            <div class="sect-hdr"><div class="sect-t">Display language</div></div>
+            <div class="sect-body">
+              <div class="lang-grid">
+                <div class="fv on"><span class="flg">🇬🇧</span><div><div class="cd">English</div><div class="nm">EN</div></div></div>
+                <div class="fv"><span class="flg">🇫🇷</span><div><div class="cd">Français</div><div class="nm">FR</div></div></div>
+                <div class="fv"><span class="flg">🇲🇦</span><div><div class="cd">العربية</div><div class="nm">AR · RTL</div></div></div>
+                <div class="fv"><span class="flg">🇪🇸</span><div><div class="cd">Español</div><div class="nm">ES</div></div></div>
+                <div class="fv"><span class="flg">🇧🇷</span><div><div class="cd">Português</div><div class="nm">PT</div></div></div>
+                <div class="fv"><span class="flg">🇩🇪</span><div><div class="cd">Deutsch</div><div class="nm">DE</div></div></div>
+                <div class="fv"><span class="flg">🇮🇳</span><div><div class="cd">हिन्दी</div><div class="nm">HI</div></div></div>
+                <div class="fv"><span class="flg">🇨🇳</span><div><div class="cd">中文</div><div class="nm">ZH</div></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sect">
+            <div class="sect-hdr"><div class="sect-t">Region & format</div></div>
+            <div class="sect-body">
+              <div class="fgrid">
+                <div class="fld"><label>Timezone</label><select><option>Africa/Casablanca (UTC+1)</option><option>America/New_York (UTC−5)</option><option>Europe/London (UTC+0)</option></select></div>
+                <div class="fld"><label>Date format</label><select><option>DD/MM/YYYY</option><option>MM/DD/YYYY</option><option>YYYY-MM-DD</option></select></div>
+                <div class="fld"><label>Number format</label><select><option>1,234,567.89</option><option>1.234.567,89</option><option>1 234 567,89</option></select></div>
+                <div class="fld"><label>Week starts on</label><select><option>Monday</option><option>Sunday</option><option>Saturday</option></select></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- APPEARANCE -->
+        <div class="set-pane" id="pane-appearance">
+          <h1 class="pane-h"><em>Appearance.</em></h1>
+          <p class="pane-s">Make SellSense yours.</p>
+
+          <div class="sect">
+            <div class="sect-hdr"><div class="sect-t">Theme</div></div>
+            <div class="sect-body">
+              <div class="fav-grid" style="grid-template-columns:repeat(3,1fr);">
+                <div class="fv on" style="padding:18px;flex-direction:column;text-align:center;align-items:center;">
+                  <div style="width:100%;height:60px;background:linear-gradient(135deg,#FAFAF7,#F4F2EC);border:1px solid var(--border);border-radius:8px;margin-bottom:9px;"></div>
+                  <div class="cd">Light</div>
+                </div>
+                <div class="fv" style="padding:18px;flex-direction:column;text-align:center;align-items:center;">
+                  <div style="width:100%;height:60px;background:linear-gradient(135deg,#0A0F1E,#1E2761);border-radius:8px;margin-bottom:9px;"></div>
+                  <div class="cd">Dark</div>
+                </div>
+                <div class="fv" style="padding:18px;flex-direction:column;text-align:center;align-items:center;">
+                  <div style="width:100%;height:60px;background:linear-gradient(135deg,#FAFAF7 50%,#0A0F1E 50%);border-radius:8px;margin-bottom:9px;"></div>
+                  <div class="cd">Auto</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sect">
+            <div class="sect-hdr"><div class="sect-t">Accent color</div></div>
+            <div class="sect-body">
+              <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <div style="width:36px;height:36px;border-radius:9px;background:#1E2761;cursor:pointer;border:2px solid var(--text);"></div>
+                <div style="width:36px;height:36px;border-radius:9px;background:#E76F4A;cursor:pointer;border:2px solid transparent;"></div>
+                <div style="width:36px;height:36px;border-radius:9px;background:#0F6E5C;cursor:pointer;border:2px solid transparent;"></div>
+                <div style="width:36px;height:36px;border-radius:9px;background:#D4A53C;cursor:pointer;border:2px solid transparent;"></div>
+                <div style="width:36px;height:36px;border-radius:9px;background:#7C3AED;cursor:pointer;border:2px solid transparent;"></div>
+                <div style="width:36px;height:36px;border-radius:9px;background:#0EA5E9;cursor:pointer;border:2px solid transparent;"></div>
+                <div style="width:36px;height:36px;border-radius:9px;background:#DC3556;cursor:pointer;border:2px solid transparent;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sect">
+            <div class="sect-hdr"><div class="sect-t">Density</div></div>
+            <div class="sect-body">
+              <div class="toggle-row"><div class="tr-l"><div class="tr-t">Compact mode</div><div class="tr-d">Tighter padding, more data on screen.</div></div><div class="switch" onclick="this.classList.toggle('on')"></div></div>
+              <div class="toggle-row"><div class="tr-l"><div class="tr-t">Reduce animations</div><div class="tr-d">Disable motion effects for accessibility.</div></div><div class="switch" onclick="this.classList.toggle('on')"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DATA -->
+        <div class="set-pane" id="pane-data">
+          <h1 class="pane-h">Your <em>data.</em></h1>
+          <p class="pane-s">Export, import, and back up — it's all yours.</p>
+
+          <div class="sect">
+            <div class="sect-hdr"><div class="sect-t">Export</div><div class="sect-s">Download your data in machine-readable format.</div></div>
+            <div class="sect-body" style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn-add">📊 Export all products (CSV)</button>
+              <button class="btn-add" style="background:var(--surface-3);color:var(--text);">📑 Export sales (Excel)</button>
+              <button class="btn-add" style="background:var(--surface-3);color:var(--text);">📦 Full account backup (.zip)</button>
+            </div>
+          </div>
+
+          <div class="sect">
+            <div class="sect-hdr"><div class="sect-t">Import</div><div class="sect-s">Bring in data from Shopify, Excel, or another tool.</div></div>
+            <div class="sect-body">
+              <div style="border:2px dashed var(--border-2);border-radius:12px;padding:32px;text-align:center;background:var(--surface-2);">
+                <div style="font-size:36px;margin-bottom:10px;">📥</div>
+                <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;">Drop a CSV file here</div>
+                <div style="font-size:12px;color:var(--text-3);">or <a style="color:var(--primary);font-weight:600;cursor:pointer;">browse files</a></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sect">
+            <div class="sect-hdr"><div class="sect-t">Auto-backup</div></div>
+            <div class="sect-body">
+              <div class="toggle-row"><div class="tr-l"><div class="tr-t">Weekly email backup</div><div class="tr-d">A full snapshot of your data sent to your inbox every Monday.</div></div><div class="switch on" onclick="this.classList.toggle('on')"></div></div>
+              <div class="toggle-row"><div class="tr-l"><div class="tr-t">Cloud sync</div><div class="tr-d">Auto-sync to Google Drive, Dropbox or OneDrive.</div></div><div class="switch" onclick="this.classList.toggle('on')"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DANGER -->
+        <div class="set-pane" id="pane-danger">
+          <h1 class="pane-h" style="color:var(--neg);">Danger <em style="color:var(--neg);">zone.</em></h1>
+          <p class="pane-s">Irreversible actions. Read carefully.</p>
+
+          <div class="sect" style="border-color:rgba(220,53,86,0.2);">
+            <div class="sect-hdr"><div class="sect-t" style="color:var(--neg);">Reset all data</div><div class="sect-s">Removes all products, sales, and history. Cannot be undone.</div></div>
+            <div class="sect-body"><button class="btn-danger">Reset workspace data</button></div>
+          </div>
+
+          <div class="sect" style="border-color:rgba(220,53,86,0.2);">
+            <div class="sect-hdr"><div class="sect-t" style="color:var(--neg);">Delete workspace</div><div class="sect-s">Permanently removes "Atelier Beldi" and everything in it.</div></div>
+            <div class="sect-body"><button class="btn-danger">Delete this workspace</button></div>
+          </div>
+
+          <div class="sect" style="border-color:rgba(220,53,86,0.2);">
+            <div class="sect-hdr"><div class="sect-t" style="color:var(--neg);">Delete account</div><div class="sect-s">Permanently delete your SellSense account and all workspaces. This cannot be undone.</div></div>
+            <div class="sect-body"><button class="btn-danger">Delete my account</button></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- TOAST -->
+<div id="toast" style="position:fixed;bottom:24px;right:24px;background:var(--ink);color:#fff;padding:12px 18px;border-radius:11px;font-size:13px;font-weight:500;display:flex;gap:9px;align-items:center;transform:translateY(60px);opacity:0;transition:all .25s;z-index:300;box-shadow:var(--sh-lg);">
+  <span style="width:8px;height:8px;border-radius:50%;background:var(--pos);"></span> Settings saved.
+</div>
+
+<script>
+function goPane(el,name){
+  document.querySelectorAll('.set-nv').forEach(n=>n.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.set-pane').forEach(p=>p.classList.remove('on'));
+  document.getElementById('pane-'+name).classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function showToast(){
+  const t = document.getElementById('toast');
+  t.style.opacity = '1';
+  t.style.transform = 'translateY(0)';
+  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(60px)';},2400);
+}
+</script>
+</body>
+</html>

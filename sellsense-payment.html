@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SellSense — Free access</title>
+<meta http-equiv="refresh" content="3; url=sellsense-dashboard.html"/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#FAFAF7;--ink:#0A0F1E;--text:#0D1424;--text-3:#6B7280;
+  --primary:#1E2761;--accent:#E76F4A;--gold:#D4A53C;
+  --border:#EBE7DC;--surface:#FFFFFF;
+  --ff-sans:'Inter',system-ui,sans-serif;
+  --ff-display:'Instrument Serif',Georgia,serif;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--ff-sans);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+.box{max-width:480px;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:48px 40px;box-shadow:0 24px 60px rgba(13,20,36,0.08);}
+.logo{display:inline-flex;align-items:center;gap:10px;margin-bottom:28px;}
+.logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--accent));border-radius:9px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(212,165,60,0.35);position:relative;}
+.logo-mark::after{content:'';position:absolute;inset:1.5px;border-radius:8px;background:linear-gradient(135deg,rgba(255,255,255,0.2),transparent 60%);}
+.logo-name{font-family:var(--ff-display);font-size:22px;font-style:italic;letter-spacing:-0.5px;color:var(--text);}
+.gift{font-size:60px;margin-bottom:18px;display:block;}
+h1{font-family:var(--ff-display);font-size:38px;font-weight:400;letter-spacing:-0.8px;color:var(--text);line-height:1.05;margin-bottom:12px;}
+h1 em{font-style:italic;color:var(--primary);}
+p{font-size:14.5px;color:var(--text-3);margin-bottom:22px;}
+.btn{display:inline-flex;align-items:center;gap:7px;background:var(--ink);color:#fff;font-size:14px;font-weight:600;padding:12px 22px;border-radius:11px;text-decoration:none;transition:all .15s;box-shadow:0 8px 28px rgba(13,20,36,0.08);}
+.btn:hover{background:var(--primary);transform:translateY(-1px);}
+.redirect{font-size:11.5px;color:var(--text-3);margin-top:18px;}
+.redirect strong{color:var(--text);}
+.bar{height:3px;background:var(--border);border-radius:2px;margin-top:14px;overflow:hidden;}
+.bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));animation:fill 3s linear forwards;}
+@keyframes fill{from{width:0}to{width:100%}}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="logo">
+    <div class="logo-mark">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M8 1L15 5V11L8 15L1 11V5L8 1Z" stroke="#0A0F1E" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M8 5L11 7V9L8 11L5 9V7L8 5Z" fill="#0A0F1E"/>
+      </svg>
+    </div>
+    <span class="logo-name">SellSense</span>
+  </div>
+  <span class="gift">🎁</span>
+  <h1>It's all <em>free.</em></h1>
+  <p>No billing. No "Pro" gates. Unlimited products, full AI Decision Center, every chart and every report — open to everyone while we're still building.</p>
+  <a href="sellsense-dashboard.html" class="btn">
+    Open my dashboard
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+  </a>
+  <div class="redirect">Redirecting in <strong>3 seconds</strong>…</div>
+  <div class="bar"><div class="bar-fill"></div></div>
+</div>
+</body>
+</html>

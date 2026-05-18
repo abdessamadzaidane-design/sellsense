@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SellSense — Profit Intelligence Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  /* Refined Premium Palette */
+  --bg:#FAFAF7;
+  --bg-soft:#F4F2EC;
+  --surface:#FFFFFF;
+  --surface-2:#FBFAF6;
+  --surface-3:#F1EFE8;
+
+  --ink:#0A0F1E;
+  --ink-2:#1A2238;
+  --text:#0D1424;
+  --text-2:#3B4358;
+  --text-3:#6B7280;
+  --muted:#9CA3AF;
+  --muted-2:#D1D5DB;
+
+  --border:#EBE7DC;
+  --border-2:#E2DDD0;
+  --border-3:#D5CFC0;
+
+  /* Brand */
+  --primary:#1E2761;       /* Deep indigo */
+  --primary-2:#2C3679;
+  --primary-3:#0F1543;
+  --accent:#E76F4A;        /* Refined terra */
+  --accent-2:#FF8A66;
+  --gold:#D4A53C;          /* Beldi gold */
+  --gold-2:#E8BD58;
+  --emerald:#0F6E5C;       /* Trusted green */
+  --emerald-2:#15A37F;
+  --ruby:#DC3556;
+  --violet:#7C3AED;
+  --sky:#0EA5E9;
+
+  /* Semantic */
+  --pos:#0F6E5C;
+  --pos-soft:#E6F5F1;
+  --neg:#DC3556;
+  --neg-soft:#FCE9ED;
+  --warn:#D4A53C;
+  --warn-soft:#FBF3DC;
+  --info:#1E2761;
+  --info-soft:#E8EAF5;
+
+  --grad-1:linear-gradient(135deg,#1E2761 0%,#3B4FA3 100%);
+  --grad-2:linear-gradient(135deg,#E76F4A 0%,#FFA37A 100%);
+  --grad-3:linear-gradient(135deg,#0F6E5C 0%,#15A37F 100%);
+  --grad-4:linear-gradient(135deg,#D4A53C 0%,#F5C962 100%);
+  --grad-aurora:linear-gradient(135deg,#1E2761 0%,#7C3AED 50%,#E76F4A 100%);
+  --grad-pulse:linear-gradient(180deg,rgba(30,39,97,0.18) 0%,rgba(30,39,97,0) 100%);
+
+  --sh-xs:0 1px 2px rgba(13,20,36,0.04);
+  --sh-sm:0 2px 8px rgba(13,20,36,0.06),0 1px 2px rgba(13,20,36,0.04);
+  --sh-md:0 8px 28px rgba(13,20,36,0.08),0 2px 6px rgba(13,20,36,0.04);
+  --sh-lg:0 24px 60px rgba(13,20,36,0.12),0 8px 18px rgba(13,20,36,0.06);
+  --sh-glow:0 0 0 4px rgba(30,39,97,0.08);
+
+  --r-xs:6px;
+  --r-sm:10px;
+  --r-md:14px;
+  --r-lg:18px;
+  --r-xl:24px;
+  --r-2xl:32px;
+
+  --ff-sans:'Inter',system-ui,-apple-system,sans-serif;
+  --ff-display:'Instrument Serif',Georgia,serif;
+  --ff-mono:'JetBrains Mono',Menlo,monospace;
+
+  --sw:240px;
+  --tb:60px;
+}
+
+html,body{height:100%;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--ff-sans);font-size:14px;line-height:1.55;overflow-x:hidden;-webkit-font-smoothing:antialiased;font-feature-settings:'cv02','cv03','cv04','cv11';}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+input,select{font-family:inherit;font-size:inherit;}
+[dir="rtl"]{direction:rtl;}
+
+/* ═══════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════════ */
+.app{display:flex;min-height:100vh;}
+
+/* SIDEBAR */
+.sb{width:var(--sw);background:var(--ink);color:#fff;flex-shrink:0;position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:90;border-right:1px solid rgba(255,255,255,0.04);}
+[dir="rtl"] .sb{left:auto;right:0;border-right:none;border-left:1px solid rgba(255,255,255,0.04);}
+
+.sb-bg{position:absolute;inset:0;background:radial-gradient(circle at 0% 0%,rgba(30,39,97,0.4),transparent 50%),radial-gradient(circle at 100% 100%,rgba(231,111,74,0.15),transparent 60%);pointer-events:none;}
+.sb-logo{padding:20px 18px 16px;display:flex;align-items:center;gap:10px;position:relative;z-index:1;}
+.sb-logo-mark{width:30px;height:30px;background:linear-gradient(135deg,var(--gold),var(--accent));border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(212,165,60,0.35);position:relative;}
+.sb-logo-mark::after{content:'';position:absolute;inset:1.5px;border-radius:7px;background:linear-gradient(135deg,rgba(255,255,255,0.18),transparent 60%);}
+.sb-logo-mark svg{position:relative;z-index:1;}
+.sb-logo-name{font-family:var(--ff-display);font-size:21px;font-style:italic;letter-spacing:-0.5px;line-height:1;color:#fff;}
+
+.ws{margin:6px 12px 14px;padding:9px 11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:var(--r-sm);display:flex;align-items:center;gap:9px;cursor:pointer;transition:all .15s;position:relative;z-index:1;}
+.ws:hover{background:rgba(255,255,255,0.07);}
+.ws-av{width:24px;height:24px;border-radius:6px;background:var(--grad-aurora);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#fff;flex-shrink:0;letter-spacing:-0.3px;}
+.ws-name{font-size:13px;font-weight:600;color:#fff;line-height:1.1;}
+.ws-sub{font-size:10.5px;color:rgba(255,255,255,0.45);margin-top:1px;line-height:1;letter-spacing:0.02em;}
+.ws-chev{margin-left:auto;color:rgba(255,255,255,0.4);font-size:10px;}
+[dir="rtl"] .ws-chev{margin-left:0;margin-right:auto;}
+
+.nav{flex:1;padding:6px 10px;position:relative;z-index:1;overflow-y:auto;}
+.nav::-webkit-scrollbar{width:4px;}
+.nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px;}
+
+.nav-grp{margin-bottom:18px;}
+.nav-grp-lbl{font-size:10px;font-weight:600;color:rgba(255,255,255,0.32);text-transform:uppercase;letter-spacing:0.1em;padding:6px 10px;}
+.nv{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.65);cursor:pointer;transition:all .15s;margin-bottom:1px;text-decoration:none;position:relative;}
+.nv:hover{background:rgba(255,255,255,0.04);color:#fff;}
+.nv.active{background:linear-gradient(90deg,rgba(212,165,60,0.18),rgba(212,165,60,0.05));color:#fff;}
+.nv.active::before{content:'';position:absolute;left:-10px;top:8px;bottom:8px;width:2px;border-radius:0 2px 2px 0;background:var(--gold);}
+[dir="rtl"] .nv.active::before{left:auto;right:-10px;border-radius:2px 0 0 2px;}
+.nv-icon{width:18px;height:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nv-icon svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.8;fill:none;}
+.nv .nv-badge{margin-left:auto;font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:20px;background:var(--gold);color:var(--ink);}
+[dir="rtl"] .nv .nv-badge{margin-left:0;margin-right:auto;}
+.nv .nv-dot{margin-left:auto;width:6px;height:6px;border-radius:50%;background:var(--accent);}
+[dir="rtl"] .nv .nv-dot{margin-left:0;margin-right:auto;}
+
+.sb-bottom{padding:10px 12px 14px;position:relative;z-index:1;}
+.upgrade{background:linear-gradient(135deg,rgba(212,165,60,0.18),rgba(231,111,74,0.18));border:1px solid rgba(212,165,60,0.25);border-radius:var(--r-md);padding:12px;margin-bottom:10px;position:relative;overflow:hidden;}
+.upgrade::before{content:'';position:absolute;top:-30px;right:-30px;width:80px;height:80px;background:radial-gradient(circle,var(--gold) 0%,transparent 70%);opacity:0.35;}
+.up-t{font-size:12px;font-weight:700;color:#fff;margin-bottom:3px;}
+.up-s{font-size:11px;color:rgba(255,255,255,0.55);margin-bottom:9px;line-height:1.4;}
+.up-btn{background:#fff;color:var(--ink);font-size:11.5px;font-weight:700;padding:7px 11px;border-radius:7px;cursor:pointer;width:100%;transition:all .15s;}
+.up-btn:hover{background:var(--gold);}
+
+.user-bx{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:9px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);cursor:pointer;transition:all .15s;}
+.user-bx:hover{background:rgba(255,255,255,0.06);}
+.ua{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--gold));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#fff;flex-shrink:0;}
+.ub-n{font-size:12.5px;font-weight:600;color:#fff;line-height:1.1;}
+.ub-e{font-size:10.5px;color:rgba(255,255,255,0.4);line-height:1;margin-top:1px;}
+
+/* MAIN */
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0;}
+[dir="rtl"] .main{margin-left:0;margin-right:var(--sw);}
+
+/* TOPBAR */
+.tb{height:var(--tb);background:rgba(250,250,247,0.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50;}
+.tb-burger{display:none;width:36px;height:36px;border-radius:9px;border:1px solid var(--border-2);background:#fff;align-items:center;justify-content:center;cursor:pointer;}
+.tb-search{flex:1;max-width:380px;position:relative;}
+.tb-search input{width:100%;background:rgba(255,255,255,0.65);border:1px solid var(--border);border-radius:10px;padding:9px 14px 9px 38px;font-size:13px;color:var(--text);transition:all .15s;}
+[dir="rtl"] .tb-search input{padding:9px 38px 9px 14px;}
+.tb-search input:focus{outline:none;background:#fff;border-color:var(--primary);box-shadow:var(--sh-glow);}
+.tb-search-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;}
+[dir="rtl"] .tb-search-icon{left:auto;right:13px;}
+.tb-search-kbd{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-family:var(--ff-mono);font-size:10px;font-weight:500;color:var(--muted);background:var(--surface-3);border:1px solid var(--border);padding:2px 6px;border-radius:5px;pointer-events:none;}
+[dir="rtl"] .tb-search-kbd{right:auto;left:10px;}
+
+.tb-actions{display:flex;align-items:center;gap:6px;margin-left:auto;}
+[dir="rtl"] .tb-actions{margin-left:0;margin-right:auto;}
+
+.cur-picker,.lang-picker{position:relative;}
+.cp-btn{display:flex;align-items:center;gap:6px;padding:7px 11px;background:#fff;border:1px solid var(--border);border-radius:9px;font-size:12.5px;font-weight:600;color:var(--text);transition:all .15s;cursor:pointer;}
+.cp-btn:hover{border-color:var(--border-3);background:var(--surface-2);}
+.cp-flag{font-size:14px;line-height:1;}
+.cp-code{font-weight:700;letter-spacing:0.02em;}
+.cp-chev{font-size:9px;color:var(--muted);}
+
+.cp-menu{position:absolute;top:calc(100% + 6px);right:0;background:#fff;border:1px solid var(--border);border-radius:var(--r-md);box-shadow:var(--sh-lg);min-width:280px;max-height:380px;overflow-y:auto;padding:6px;display:none;z-index:60;}
+[dir="rtl"] .cp-menu{right:auto;left:0;}
+.cp-menu.open{display:block;animation:fadeDown 0.15s ease;}
+.cp-search{position:sticky;top:0;background:#fff;padding:8px 6px 10px;border-bottom:1px solid var(--border);margin-bottom:4px;}
+.cp-search input{width:100%;border:1px solid var(--border);border-radius:8px;padding:7px 11px;font-size:12.5px;}
+.cp-search input:focus{outline:none;border-color:var(--primary);}
+.cp-grp{font-size:10px;font-weight:600;color:var(--muted);padding:6px 10px 4px;letter-spacing:0.08em;text-transform:uppercase;}
+.cp-item{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;cursor:pointer;transition:background .12s;}
+.cp-item:hover{background:var(--surface-3);}
+.cp-item.active{background:var(--info-soft);}
+.cp-item-flag{font-size:16px;width:20px;flex-shrink:0;}
+.cp-item-info{flex:1;min-width:0;}
+.cp-item-code{font-size:12.5px;font-weight:700;color:var(--text);}
+.cp-item-name{font-size:11px;color:var(--muted);}
+.cp-item-rate{font-family:var(--ff-mono);font-size:10.5px;color:var(--text-3);}
+
+.tb-icon-btn{width:36px;height:36px;border-radius:9px;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-2);cursor:pointer;transition:all .15s;position:relative;}
+.tb-icon-btn:hover{background:var(--surface-2);border-color:var(--border-3);color:var(--text);}
+.tb-icon-btn .notif-dot{position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:var(--accent);border:1.5px solid #fff;}
+
+.tb-primary{display:flex;align-items:center;gap:7px;padding:8px 14px;background:var(--primary);color:#fff;border-radius:9px;font-size:13px;font-weight:600;transition:all .15s;cursor:pointer;box-shadow:var(--sh-sm);}
+.tb-primary:hover{background:var(--primary-2);transform:translateY(-1px);box-shadow:var(--sh-md);}
+
+/* VIEWS */
+.view{display:none;padding:22px 24px 60px;animation:viewIn .3s ease;}
+.view.active{display:block;}
+@keyframes viewIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══════════════════════════════════════
+   PAGE HEADER
+══════════════════════════════════════════ */
+.page-hdr{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:22px;gap:18px;flex-wrap:wrap;}
+.page-hdr-l{flex:1;min-width:240px;}
+.page-bc{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-bottom:6px;}
+.page-bc a{color:var(--muted);text-decoration:none;}
+.page-bc a:hover{color:var(--text);}
+.page-title{font-family:var(--ff-display);font-size:34px;font-weight:400;letter-spacing:-0.5px;color:var(--text);line-height:1.05;margin-bottom:4px;}
+.page-title em{font-style:italic;color:var(--primary);}
+.page-sub{font-size:13.5px;color:var(--text-3);max-width:560px;}
+
+.page-hdr-r{display:flex;align-items:center;gap:8px;}
+.range-pill{display:inline-flex;background:var(--surface-3);border-radius:10px;padding:3px;}
+.range-pill button{padding:6px 11px;border-radius:7px;font-size:12px;font-weight:600;color:var(--text-3);transition:all .12s;}
+.range-pill button.on{background:#fff;color:var(--text);box-shadow:var(--sh-xs);}
+.btn-export{display:inline-flex;align-items:center;gap:6px;padding:8px 13px;background:#fff;border:1px solid var(--border);border-radius:9px;font-size:12.5px;font-weight:600;color:var(--text-2);transition:all .15s;cursor:pointer;}
+.btn-export:hover{border-color:var(--border-3);background:var(--surface-2);}
+
+/* ═══════════════════════════════════════
+   HERO KPI CARDS
+══════════════════════════════════════════ */
+.hero-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px 18px 0;position:relative;overflow:hidden;transition:all .2s;}
+.kpi:hover{border-color:var(--border-3);box-shadow:var(--sh-md);transform:translateY(-2px);}
+.kpi-grain{position:absolute;inset:0;opacity:0.4;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.03 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none;}
+.kpi-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;position:relative;z-index:1;}
+.kpi-lbl{font-size:11.5px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.08em;display:flex;align-items:center;gap:6px;}
+.kpi-lbl-dot{width:6px;height:6px;border-radius:50%;}
+.kpi-info-icon{width:14px;height:14px;border-radius:50%;background:var(--surface-3);color:var(--muted);font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:700;cursor:help;}
+.kpi-val{font-family:var(--ff-display);font-size:34px;font-weight:400;letter-spacing:-1px;line-height:1;color:var(--text);position:relative;z-index:1;display:flex;align-items:baseline;gap:6px;}
+.kpi-val .cur{font-family:var(--ff-sans);font-size:14px;font-weight:600;color:var(--text-3);}
+.kpi-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px;position:relative;z-index:1;}
+.kpi-trend{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;padding:3px 8px;border-radius:20px;}
+.kpi-trend.up{background:var(--pos-soft);color:var(--pos);}
+.kpi-trend.down{background:var(--neg-soft);color:var(--neg);}
+.kpi-trend.flat{background:var(--surface-3);color:var(--text-3);}
+.kpi-cmp{font-size:10.5px;color:var(--muted);}
+.kpi-spark{margin:0 -18px;margin-top:8px;height:54px;position:relative;}
+.kpi-spark canvas{width:100%!important;height:54px!important;display:block;}
+
+.kpi.primary{background:linear-gradient(135deg,#1E2761 0%,#2D3A8A 100%);color:#fff;border-color:transparent;}
+.kpi.primary .kpi-lbl{color:rgba(255,255,255,0.6);}
+.kpi.primary .kpi-val{color:#fff;}
+.kpi.primary .kpi-val .cur{color:rgba(255,255,255,0.6);}
+.kpi.primary .kpi-info-icon{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);}
+.kpi.primary .kpi-cmp{color:rgba(255,255,255,0.5);}
+.kpi.primary .kpi-trend.up{background:rgba(15,110,92,0.3);color:#7AE0BD;}
+.kpi.primary .kpi-trend.down{background:rgba(220,53,86,0.3);color:#FFA8B6;}
+.kpi.primary::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,var(--gold) 0%,transparent 65%);opacity:0.18;pointer-events:none;}
+
+.kpi-gauge{position:relative;width:100%;height:54px;display:flex;align-items:flex-end;justify-content:center;margin-top:8px;}
+.kpi-gauge svg{width:130px;height:65px;}
+.kpi-gauge-val{position:absolute;bottom:0;left:50%;transform:translateX(-50%);font-family:var(--ff-display);font-size:24px;font-weight:400;color:var(--text);}
+
+/* ═══════════════════════════════════════
+   PROFIT PULSE (main chart card)
+══════════════════════════════════════════ */
+.dual-row{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;margin-bottom:22px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;}
+.card-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;gap:12px;}
+.card-title{font-size:14px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;}
+.card-title .pill{font-size:10px;font-weight:600;color:var(--primary);background:var(--info-soft);padding:2px 8px;border-radius:20px;letter-spacing:0.04em;}
+.card-sub{font-size:11.5px;color:var(--text-3);margin-top:2px;}
+.card-act{display:flex;align-items:center;gap:5px;}
+.seg{display:inline-flex;background:var(--surface-3);border-radius:8px;padding:2px;}
+.seg button{padding:5px 9px;border-radius:6px;font-size:11px;font-weight:600;color:var(--text-3);transition:all .12s;}
+.seg button.on{background:#fff;color:var(--text);box-shadow:var(--sh-xs);}
+
+.pulse-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.ps-it .ps-lbl{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;font-weight:600;}
+.ps-it .ps-val{font-family:var(--ff-display);font-size:22px;font-weight:400;color:var(--text);line-height:1;}
+.ps-it .ps-sub{font-size:11px;color:var(--text-3);margin-top:3px;}
+.ps-it .ps-sub strong{color:var(--pos);}
+.ps-it.neg .ps-sub strong{color:var(--neg);}
+
+.pulse-chart{height:240px;position:relative;}
+
+/* AI DECISION CENTER */
+.ai-card{position:relative;overflow:hidden;background:linear-gradient(135deg,#0D1424 0%,#1E2761 100%);color:#fff;border:none;}
+.ai-card::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,var(--gold) 0%,transparent 65%);opacity:0.15;}
+.ai-card::after{content:'';position:absolute;bottom:-60px;left:-60px;width:200px;height:200px;background:radial-gradient(circle,var(--accent) 0%,transparent 65%);opacity:0.12;}
+.ai-card .card-title{color:#fff;}
+.ai-card .card-sub{color:rgba(255,255,255,0.55);}
+.ai-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,var(--gold),var(--gold-2));color:var(--ink);font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;letter-spacing:0.04em;text-transform:uppercase;}
+.ai-recs{display:flex;flex-direction:column;gap:10px;position:relative;z-index:1;}
+.ai-rec{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r-md);padding:13px 14px;cursor:pointer;transition:all .15s;display:flex;align-items:flex-start;gap:11px;}
+.ai-rec:hover{background:rgba(255,255,255,0.09);border-color:rgba(255,255,255,0.15);transform:translateX(2px);}
+[dir="rtl"] .ai-rec:hover{transform:translateX(-2px);}
+.ai-rec-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;}
+.ai-rec.scale .ai-rec-icon{background:rgba(15,163,127,0.18);color:#5FE3B8;}
+.ai-rec.pause .ai-rec-icon{background:rgba(220,53,86,0.18);color:#FF8B9E;}
+.ai-rec.optimize .ai-rec-icon{background:rgba(212,165,60,0.2);color:#F5D177;}
+.ai-rec-body{flex:1;min-width:0;}
+.ai-rec-tag{display:inline-block;font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;}
+.ai-rec.scale .ai-rec-tag{background:rgba(15,163,127,0.18);color:#5FE3B8;}
+.ai-rec.pause .ai-rec-tag{background:rgba(220,53,86,0.18);color:#FF8B9E;}
+.ai-rec.optimize .ai-rec-tag{background:rgba(212,165,60,0.2);color:#F5D177;}
+.ai-rec-t{font-size:13px;font-weight:600;color:#fff;margin-bottom:3px;line-height:1.3;}
+.ai-rec-d{font-size:11.5px;color:rgba(255,255,255,0.6);line-height:1.45;}
+.ai-rec-d strong{color:#fff;font-weight:600;}
+.ai-rec-arrow{color:rgba(255,255,255,0.4);font-size:14px;flex-shrink:0;align-self:center;}
+
+/* ═══════════════════════════════════════
+   PRODUCT PERFORMANCE MATRIX
+══════════════════════════════════════════ */
+.pmat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:22px;}
+.pmat-hdr{padding:18px 22px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);gap:12px;flex-wrap:wrap;}
+.pmat-l{flex:1;min-width:200px;}
+.pmat-title{font-size:15px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:9px;}
+.pmat-count{font-size:11px;font-weight:600;color:var(--text-3);background:var(--surface-3);padding:2px 8px;border-radius:20px;}
+.pmat-sub{font-size:11.5px;color:var(--text-3);margin-top:2px;}
+.pmat-acts{display:flex;align-items:center;gap:8px;}
+.pmat-filter{display:inline-flex;background:var(--surface-3);border-radius:8px;padding:2px;}
+.pmat-filter button{padding:5px 10px;border-radius:6px;font-size:11.5px;font-weight:600;color:var(--text-3);transition:all .12s;display:inline-flex;align-items:center;gap:5px;}
+.pmat-filter button.on{background:#fff;color:var(--text);box-shadow:var(--sh-xs);}
+.pmat-filter .ind{width:6px;height:6px;border-radius:50%;}
+.btn-add{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;background:var(--primary);color:#fff;border-radius:8px;font-size:12px;font-weight:600;transition:all .15s;}
+.btn-add:hover{background:var(--primary-2);}
+
+.pmat-table{width:100%;border-collapse:collapse;}
+.pmat-table thead th{font-size:10.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;padding:11px 16px;text-align:left;background:var(--surface-2);border-bottom:1px solid var(--border);}
+[dir="rtl"] .pmat-table thead th{text-align:right;}
+.pmat-table thead th.n{text-align:right;}
+.pmat-table thead th.c{text-align:center;}
+.pmat-table tbody td{padding:13px 16px;font-size:13px;border-bottom:1px solid var(--border);color:var(--text);}
+.pmat-table tbody tr{transition:background .12s;cursor:pointer;}
+.pmat-table tbody tr:hover{background:var(--surface-2);}
+.pmat-table tbody tr:last-child td{border-bottom:none;}
+.pmat-table td.n{text-align:right;font-variant-numeric:tabular-nums;}
+.pmat-table td.c{text-align:center;}
+.pcell{display:flex;align-items:center;gap:11px;}
+.pemoji{width:36px;height:36px;border-radius:9px;background:var(--surface-3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:1px solid var(--border);}
+.pname{font-weight:600;color:var(--text);line-height:1.2;}
+.pmeta{font-size:11px;color:var(--muted);margin-top:2px;display:flex;align-items:center;gap:6px;}
+.pmeta-dot{width:3px;height:3px;border-radius:50%;background:var(--muted-2);}
+.amt-pos{color:var(--pos);font-weight:600;}
+.amt-neg{color:var(--neg);font-weight:600;}
+.marg{display:inline-flex;align-items:center;gap:4px;font-weight:600;}
+.marg.hi{color:var(--pos);}
+.marg.md{color:var(--gold);}
+.marg.lo{color:var(--neg);}
+.sparkmini{display:inline-block;width:64px;height:24px;vertical-align:middle;}
+.status-pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;}
+.status-pill .sd{width:5px;height:5px;border-radius:50%;}
+.status-pill.scaling{background:var(--pos-soft);color:var(--pos);}
+.status-pill.scaling .sd{background:var(--pos);box-shadow:0 0 0 0 var(--pos);animation:pulseDot 1.8s infinite;}
+.status-pill.stable{background:var(--info-soft);color:var(--primary);}
+.status-pill.stable .sd{background:var(--primary);}
+.status-pill.watch{background:var(--warn-soft);color:#9C7B12;}
+.status-pill.watch .sd{background:var(--warn);}
+.status-pill.declining{background:var(--neg-soft);color:var(--neg);}
+.status-pill.declining .sd{background:var(--neg);}
+@keyframes pulseDot{0%{box-shadow:0 0 0 0 rgba(15,110,92,0.5)}70%{box-shadow:0 0 0 6px rgba(15,110,92,0)}100%{box-shadow:0 0 0 0 rgba(15,110,92,0)}}
+
+.row-acts{display:flex;align-items:center;justify-content:flex-end;gap:4px;}
+.ra-btn{width:28px;height:28px;border-radius:7px;border:1px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;color:var(--text-3);transition:all .12s;}
+.ra-btn:hover{border-color:var(--primary);color:var(--primary);background:var(--info-soft);}
+
+/* ═══════════════════════════════════════
+   TRIPLE ROW — BREAKDOWN + INSIGHTS
+══════════════════════════════════════════ */
+.triple{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:22px;}
+.donut-wrap{position:relative;height:200px;display:flex;align-items:center;justify-content:center;margin:8px 0;}
+.donut-wrap canvas{max-height:200px!important;}
+.donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;}
+.dc-val{font-family:var(--ff-display);font-size:24px;font-weight:400;color:var(--text);line-height:1;}
+.dc-lbl{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-top:3px;}
+.legend{display:flex;flex-direction:column;gap:7px;margin-top:14px;}
+.lg{display:flex;align-items:center;gap:9px;font-size:12px;}
+.lg-dot{width:9px;height:9px;border-radius:3px;flex-shrink:0;}
+.lg-name{color:var(--text-2);flex:1;}
+.lg-val{font-weight:600;color:var(--text);font-variant-numeric:tabular-nums;}
+.lg-pct{font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums;}
+
+/* TOP PRODUCTS BAR */
+.tprod{display:flex;flex-direction:column;gap:11px;}
+.tp{display:flex;align-items:center;gap:11px;}
+.tp-rank{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;background:var(--surface-3);color:var(--text-3);}
+.tp-rank.gold{background:linear-gradient(135deg,var(--gold-2),var(--gold));color:var(--ink);}
+.tp-rank.silver{background:linear-gradient(135deg,#E8E8E8,#C0C0C0);color:var(--ink);}
+.tp-rank.bronze{background:linear-gradient(135deg,#F0B98A,#CD7F32);color:#fff;}
+.tp-body{flex:1;min-width:0;}
+.tp-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.tp-name{font-size:12.5px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:6px;}
+.tp-val{font-size:12.5px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;}
+.tp-bar{height:5px;background:var(--surface-3);border-radius:3px;overflow:hidden;}
+.tp-fill{height:100%;border-radius:3px;transition:width 1s cubic-bezier(0.4,0,0.2,1);}
+
+/* ═══════════════════════════════════════
+   SECONDARY VIEWS
+══════════════════════════════════════════ */
+/* PRODUCTS VIEW */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+.prod-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;transition:all .2s;cursor:pointer;position:relative;overflow:hidden;}
+.prod-card:hover{border-color:var(--border-3);box-shadow:var(--sh-md);transform:translateY(-2px);}
+.prod-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
+.prod-emoji{width:44px;height:44px;border-radius:11px;background:var(--surface-3);display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid var(--border);}
+.prod-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.prod-cat{font-size:11px;color:var(--text-3);}
+.prod-amt{font-family:var(--ff-display);font-size:24px;font-weight:400;letter-spacing:-0.5px;color:var(--text);margin-bottom:2px;}
+.prod-amt.pos{color:var(--pos);}
+.prod-amt.neg{color:var(--neg);}
+.prod-amt-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:14px;}
+.prod-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding-top:13px;border-top:1px solid var(--border);}
+.psd{text-align:center;}
+.psd-v{font-size:13px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;}
+.psd-l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;margin-top:2px;}
+.prod-spark{margin:14px -18px -18px;height:50px;position:relative;border-radius:0 0 var(--r-lg) var(--r-lg);overflow:hidden;}
+
+/* ADD PRODUCT WIZARD */
+.wiz-shell{max-width:880px;margin:0 auto;}
+.wiz-stepper{display:flex;align-items:center;gap:0;margin-bottom:24px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:14px 18px;}
+.ws-step{display:flex;align-items:center;gap:9px;flex:1;}
+.ws-num{width:24px;height:24px;border-radius:50%;background:var(--surface-3);color:var(--text-3);font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.ws-step.active .ws-num{background:var(--primary);color:#fff;}
+.ws-step.done .ws-num{background:var(--pos);color:#fff;}
+.ws-lbl{font-size:12px;font-weight:600;color:var(--text-3);}
+.ws-step.active .ws-lbl,.ws-step.done .ws-lbl{color:var(--text);}
+.ws-sep{flex:1;height:1px;background:var(--border);margin:0 6px;}
+
+.wiz-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px;margin-bottom:14px;}
+.wiz-title{font-family:var(--ff-display);font-size:24px;font-weight:400;letter-spacing:-0.3px;color:var(--text);margin-bottom:6px;}
+.wiz-title em{font-style:italic;color:var(--primary);}
+.wiz-sub{font-size:13px;color:var(--text-3);margin-bottom:20px;}
+
+.type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px;}
+.tcard{background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--r-md);padding:18px;cursor:pointer;transition:all .15s;position:relative;}
+.tcard:hover{border-color:var(--border-3);background:#fff;}
+.tcard.sel{border-color:var(--primary);background:var(--info-soft);box-shadow:var(--sh-glow);}
+.tcard-emoji{font-size:28px;margin-bottom:10px;display:block;}
+.tcard-n{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.tcard-d{font-size:11.5px;color:var(--text-3);}
+.tcard.sel::after{content:'✓';position:absolute;top:10px;right:10px;width:20px;height:20px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;}
+
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:6px;}
+.fld{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
+.fld.full{grid-column:1/-1;}
+.fld label{font-size:12px;font-weight:600;color:var(--text-2);display:flex;align-items:center;gap:4px;}
+.fld label .hint{font-weight:400;color:var(--muted);font-size:11px;}
+.fld .help{font-size:11px;color:var(--text-3);}
+.iwrap{position:relative;}
+.iwrap input,.iwrap select,.fld input,.fld select,.fld textarea{width:100%;background:var(--surface-2);border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:13.5px;color:var(--text);transition:all .15s;font-variant-numeric:tabular-nums;}
+.iwrap input:focus,.iwrap select:focus,.fld input:focus,.fld select:focus,.fld textarea:focus{outline:none;border-color:var(--primary);background:#fff;box-shadow:var(--sh-glow);}
+.iwrap .suffix{position:absolute;right:13px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:600;color:var(--muted);pointer-events:none;background:var(--surface-3);padding:2px 7px;border-radius:5px;}
+[dir="rtl"] .iwrap .suffix{right:auto;left:13px;}
+.iwrap.has-suffix input{padding-right:60px;}
+[dir="rtl"] .iwrap.has-suffix input{padding-right:13px;padding-left:60px;}
+
+.sec-grp{margin-bottom:20px;}
+.sec-grp-hdr{display:flex;align-items:center;gap:9px;margin-bottom:13px;}
+.sec-grp-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;}
+.sec-grp-icon.rev{background:var(--pos-soft);color:var(--pos);}
+.sec-grp-icon.cogs{background:var(--info-soft);color:var(--primary);}
+.sec-grp-icon.ads{background:var(--neg-soft);color:var(--neg);}
+.sec-grp-icon.fees{background:var(--warn-soft);color:#9C7B12;}
+.sec-grp-icon.ship{background:#F0E9FF;color:var(--violet);}
+.sec-grp-t{font-size:14px;font-weight:700;color:var(--text);}
+.sec-grp-s{font-size:11.5px;color:var(--text-3);}
+
+.wiz-result{position:sticky;bottom:0;background:linear-gradient(135deg,var(--primary) 0%,var(--primary-2) 100%);color:#fff;border-radius:var(--r-lg);padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;box-shadow:var(--sh-lg);}
+.wr-stat{display:flex;flex-direction:column;}
+.wr-lbl{font-size:10.5px;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;}
+.wr-val{font-family:var(--ff-display);font-size:26px;font-weight:400;color:#fff;letter-spacing:-0.3px;line-height:1.1;}
+.wr-pct{font-size:13px;color:rgba(255,255,255,0.85);margin-top:2px;}
+.wr-acts{display:flex;gap:9px;}
+.btn-ghost{background:rgba(255,255,255,0.1);color:#fff;font-size:12.5px;font-weight:600;padding:10px 16px;border-radius:9px;border:1px solid rgba(255,255,255,0.2);transition:all .15s;}
+.btn-ghost:hover{background:rgba(255,255,255,0.18);}
+.btn-cta{background:var(--gold);color:var(--ink);font-size:12.5px;font-weight:700;padding:10px 18px;border-radius:9px;transition:all .15s;}
+.btn-cta:hover{background:var(--gold-2);transform:translateY(-1px);}
+
+/* INSIGHTS VIEW */
+.ins-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;}
+.ins-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;position:relative;overflow:hidden;}
+.ins-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:13px;}
+.ins-icon.win{background:var(--pos-soft);color:var(--pos);}
+.ins-icon.warn{background:var(--warn-soft);color:#9C7B12;}
+.ins-icon.alert{background:var(--neg-soft);color:var(--neg);}
+.ins-icon.info{background:var(--info-soft);color:var(--primary);}
+.ins-t{font-size:14px;font-weight:700;color:var(--text);margin-bottom:5px;line-height:1.3;}
+.ins-d{font-size:12.5px;color:var(--text-3);line-height:1.5;margin-bottom:13px;}
+.ins-d strong{color:var(--text);font-weight:600;}
+.ins-foot{display:flex;align-items:center;justify-content:space-between;padding-top:13px;border-top:1px solid var(--border);}
+.ins-imp{font-size:11px;color:var(--muted);}
+.ins-imp strong{color:var(--text);font-weight:700;font-family:var(--ff-mono);}
+.ins-imp.pos strong{color:var(--pos);}
+.ins-act{font-size:12px;font-weight:600;color:var(--primary);display:inline-flex;align-items:center;gap:4px;cursor:pointer;}
+.ins-act:hover{text-decoration:underline;}
+
+/* REPORTS VIEW */
+.rep-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:22px;}
+.rep-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;cursor:pointer;transition:all .2s;}
+.rep-card:hover{border-color:var(--primary);box-shadow:var(--sh-md);transform:translateY(-2px);}
+.rep-icon{width:42px;height:42px;border-radius:11px;background:var(--info-soft);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px;}
+.rep-t{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.rep-d{font-size:12px;color:var(--text-3);line-height:1.5;margin-bottom:13px;}
+.rep-fmt{display:inline-flex;gap:6px;}
+.rep-fmt-pill{font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;background:var(--surface-3);color:var(--text-3);text-transform:uppercase;letter-spacing:0.04em;}
+
+/* MODAL */
+.mod-bg{position:fixed;inset:0;background:rgba(13,20,36,0.55);backdrop-filter:blur(6px);z-index:200;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .2s;}
+.mod-bg.open{opacity:1;pointer-events:all;}
+.mod{background:#fff;border-radius:var(--r-xl);width:100%;max-width:520px;padding:28px;transform:translateY(20px) scale(0.98);transition:transform .2s;box-shadow:var(--sh-lg);max-height:90vh;overflow-y:auto;}
+.mod-bg.open .mod{transform:translateY(0) scale(1);}
+.mod-close{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:8px;background:var(--surface-3);display:flex;align-items:center;justify-content:center;color:var(--text-3);cursor:pointer;}
+.mod-close:hover{background:var(--border);color:var(--text);}
+.mod-t{font-family:var(--ff-display);font-size:24px;font-weight:400;color:var(--text);margin-bottom:6px;}
+.mod-s{font-size:13px;color:var(--text-3);margin-bottom:22px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:#fff;border-radius:11px;padding:12px 18px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:9px;transform:translateY(60px);opacity:0;transition:all .25s;z-index:300;box-shadow:var(--sh-lg);}
+.toast.show{transform:translateY(0);opacity:1;}
+[dir="rtl"] .toast{right:auto;left:24px;}
+.toast .tdot{width:8px;height:8px;border-radius:50%;background:var(--pos);}
+
+/* QUICK ADD FAB */
+.fab{position:fixed;bottom:24px;right:24px;width:54px;height:54px;border-radius:50%;background:var(--grad-1);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 32px rgba(30,39,97,0.35);transition:all .2s;z-index:80;}
+[dir="rtl"] .fab{right:auto;left:24px;}
+.fab:hover{transform:translateY(-3px) scale(1.05);box-shadow:0 12px 40px rgba(30,39,97,0.45);}
+
+/* ANIMATIONS */
+@keyframes fadeDown{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+@keyframes countUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.rev{opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease;}
+.rev.vis{opacity:1;transform:translateY(0);}
+
+/* RESPONSIVE */
+@media(max-width:1180px){
+  .hero-kpis{grid-template-columns:1fr 1fr;}
+  .dual-row{grid-template-columns:1fr;}
+  .triple{grid-template-columns:1fr;}
+  .fgrid{grid-template-columns:1fr;}
+  .type-grid{grid-template-columns:1fr;}
+}
+@media(max-width:900px){
+  .sb{transform:translateX(-100%);transition:transform .2s;box-shadow:var(--sh-lg);}
+  .sb.open{transform:translateX(0);}
+  [dir="rtl"] .sb{transform:translateX(100%);}
+  [dir="rtl"] .sb.open{transform:translateX(0);}
+  .main{margin-left:0;margin-right:0;}
+  .tb-burger{display:flex;}
+  .tb-search{display:none;}
+}
+@media(max-width:640px){
+  .hero-kpis{grid-template-columns:1fr;}
+  .view{padding:14px;}
+  .page-title{font-size:28px;}
+  .tb{padding:0 14px;}
+  .pmat-table{display:block;overflow-x:auto;}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ═══════════ SIDEBAR ═══════════ -->
+  <aside class="sb" id="sb">
+    <div class="sb-bg"></div>
+
+    <div class="sb-logo">
+      <div class="sb-logo-mark">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M8 1L15 5V11L8 15L1 11V5L8 1Z" stroke="#0A0F1E" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M8 5L11 7V9L8 11L5 9V7L8 5Z" fill="#0A0F1E"/>
+        </svg>
+      </div>
+      <div class="sb-logo-name">SellSense</div>
+    </div>
+
+    <div class="ws">
+      <div class="ws-av">AB</div>
+      <div style="flex:1;min-width:0;">
+        <div class="ws-name">Atelier Beldi</div>
+        <div class="ws-sub">3 brands · Workspace</div>
+      </div>
+      <span class="ws-chev">▾</span>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-grp">
+        <div class="nav-grp-lbl">Workspace</div>
+        <a class="nv active" onclick="goView('overview', this)">
+          <span class="nv-icon"><svg viewBox="0 0 24 24"><path d="M3 12L12 4l9 8M5 10v10h14V10"/></svg></span>
+          <span>Overview</span>
+        </a>
+        <a class="nv" onclick="goView('products', this)">
+          <span class="nv-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-6 9 6v12H3z M9 21V12h6v9"/></svg></span>
+          <span>Products</span>
+          <span class="nv-badge">12</span>
+        </a>
+        <a class="nv" onclick="goView('add', this)">
+          <span class="nv-icon"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+          <span>Log a Sale</span>
+        </a>
+        <a class="nv" onclick="goView('insights', this)">
+          <span class="nv-icon"><svg viewBox="0 0 24 24"><path d="M9.6 4.6a2 2 0 014.8 0c0 .8.6 1.6 1.4 1.7 2 .4 3.4 2.1 3.4 4.2 0 1.5-.8 2.8-2 3.5v2c0 1.7-1.3 3-3 3h-2"/><circle cx="12" cy="20" r="1"/><path d="M12 7v6M9 10h6"/></svg></span>
+          <span>AI Insights</span>
+          <span class="nv-dot"></span>
+        </a>
+        <a class="nv" onclick="goView('reports', this)">
+          <span class="nv-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z M14 2v6h6 M16 13H8 M16 17H8 M10 9H8"/></svg></span>
+          <span>Reports</span>
+        </a>
+      </div>
+
+      <div class="nav-grp">
+        <div class="nav-grp-lbl">Manage</div>
+        <a class="nv" href="sellsense-settings.html">
+          <span class="nv-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1A1.7 1.7 0 009 19.4a1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1A1.7 1.7 0 004.6 9a1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg></span>
+          <span>Settings</span>
+        </a>
+        <a class="nv" href="sellsense-help.html">
+          <span class="nv-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3 M12 17h.01"/></svg></span>
+          <span>Help & Docs</span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="sb-bottom">
+      <div class="upgrade">
+        <div class="up-t">🎁 Full access · free</div>
+        <div class="up-s">Unlimited products, AI insights, all reports — open while we're building.</div>
+        <button class="up-btn" onclick="window.location.href='sellsense-help.html'">What's new →</button>
+      </div>
+      <div class="user-bx" onclick="window.location.href='sellsense-settings.html'">
+        <div class="ua">AZ</div>
+        <div style="flex:1;min-width:0;">
+          <div class="ub-n">Abdessamad Z.</div>
+          <div class="ub-e">abdessamad@sellsense.io</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ═══════════ MAIN ═══════════ -->
+  <main class="main">
+
+    <!-- ═══ TOPBAR ═══ -->
+    <header class="tb">
+      <button class="tb-burger" onclick="document.getElementById('sb').classList.toggle('open')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+
+      <div class="tb-search">
+        <span class="tb-search-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        </span>
+        <input type="text" placeholder="Search products, sales, insights…"/>
+        <span class="tb-search-kbd">⌘ K</span>
+      </div>
+
+      <div class="tb-actions">
+        <!-- CURRENCY PICKER -->
+        <div class="cur-picker">
+          <button class="cp-btn" onclick="toggleMenu('curMenu')">
+            <span class="cp-flag" id="curFlag">🇲🇦</span>
+            <span class="cp-code" id="curCode">MAD</span>
+            <span class="cp-chev">▾</span>
+          </button>
+          <div class="cp-menu" id="curMenu">
+            <div class="cp-search">
+              <input type="text" placeholder="Search currency…" oninput="filterCurrencies(this.value)" id="curSearch"/>
+            </div>
+            <div id="curList"></div>
+          </div>
+        </div>
+
+        <!-- LANGUAGE PICKER -->
+        <div class="lang-picker">
+          <button class="cp-btn" onclick="toggleMenu('langMenu')">
+            <span class="cp-flag" id="langFlag">🇬🇧</span>
+            <span class="cp-code" id="langCode">EN</span>
+            <span class="cp-chev">▾</span>
+          </button>
+          <div class="cp-menu" id="langMenu" style="min-width:180px;">
+            <div class="cp-item" onclick="setLang('en','🇬🇧','EN','ltr')"><span class="cp-item-flag">🇬🇧</span><div class="cp-item-info"><div class="cp-item-code">English</div></div></div>
+            <div class="cp-item" onclick="setLang('fr','🇫🇷','FR','ltr')"><span class="cp-item-flag">🇫🇷</span><div class="cp-item-info"><div class="cp-item-code">Français</div></div></div>
+            <div class="cp-item" onclick="setLang('ar','🇲🇦','AR','rtl')"><span class="cp-item-flag">🇲🇦</span><div class="cp-item-info"><div class="cp-item-code">العربية</div></div></div>
+            <div class="cp-item" onclick="setLang('es','🇪🇸','ES','ltr')"><span class="cp-item-flag">🇪🇸</span><div class="cp-item-info"><div class="cp-item-code">Español</div></div></div>
+            <div class="cp-item" onclick="setLang('pt','🇧🇷','PT','ltr')"><span class="cp-item-flag">🇧🇷</span><div class="cp-item-info"><div class="cp-item-code">Português</div></div></div>
+            <div class="cp-item" onclick="setLang('de','🇩🇪','DE','ltr')"><span class="cp-item-flag">🇩🇪</span><div class="cp-item-info"><div class="cp-item-code">Deutsch</div></div></div>
+            <div class="cp-item" onclick="setLang('hi','🇮🇳','HI','ltr')"><span class="cp-item-flag">🇮🇳</span><div class="cp-item-info"><div class="cp-item-code">हिन्दी</div></div></div>
+            <div class="cp-item" onclick="setLang('zh','🇨🇳','ZH','ltr')"><span class="cp-item-flag">🇨🇳</span><div class="cp-item-info"><div class="cp-item-code">中文</div></div></div>
+          </div>
+        </div>
+
+        <button class="tb-icon-btn" title="Notifications">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9 M13.7 21a2 2 0 01-3.4 0"/></svg>
+          <span class="notif-dot"></span>
+        </button>
+
+        <button class="tb-primary" onclick="goView('add')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+          <span>Log sale</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════
+         OVERVIEW VIEW
+    ══════════════════════════════════════════ -->
+    <section class="view active" id="view-overview">
+
+      <div class="page-hdr">
+        <div class="page-hdr-l">
+          <div class="page-bc"><a>Workspace</a> <span>›</span> <span>Overview</span></div>
+          <h1 class="page-title">Good morning, Abdessamad <em>—</em> your <em>profit pulse</em></h1>
+          <p class="page-sub">Real-time view of profitability across all your products. Updated 2 minutes ago.</p>
+        </div>
+        <div class="page-hdr-r">
+          <div class="range-pill">
+            <button onclick="setRange(this,'7d')">7d</button>
+            <button class="on" onclick="setRange(this,'30d')">30d</button>
+            <button onclick="setRange(this,'90d')">90d</button>
+            <button onclick="setRange(this,'1y')">1y</button>
+          </div>
+          <button class="btn-export">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4 M7 10l5 5 5-5 M12 15V3"/></svg>
+            <span>Export</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- HERO KPI CARDS -->
+      <div class="hero-kpis">
+
+        <div class="kpi primary">
+          <div class="kpi-grain"></div>
+          <div class="kpi-hdr">
+            <div class="kpi-lbl"><span class="kpi-lbl-dot" style="background:#7AE0BD;"></span>Net Profit</div>
+            <span class="kpi-info-icon">i</span>
+          </div>
+          <div class="kpi-val"><span class="cur" data-cur-sym>MAD</span><span data-amt="84290">84,290</span></div>
+          <div class="kpi-row">
+            <span class="kpi-trend up">▲ 23.4%</span>
+            <span class="kpi-cmp">vs. previous 30d</span>
+          </div>
+          <div class="kpi-spark"><canvas id="sparkProfit"></canvas></div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi-hdr">
+            <div class="kpi-lbl"><span class="kpi-lbl-dot" style="background:var(--primary);"></span>Revenue</div>
+            <span class="kpi-info-icon">i</span>
+          </div>
+          <div class="kpi-val"><span class="cur" data-cur-sym>MAD</span><span data-amt="312500">312,500</span></div>
+          <div class="kpi-row">
+            <span class="kpi-trend up">▲ 18.2%</span>
+            <span class="kpi-cmp">8,420 orders</span>
+          </div>
+          <div class="kpi-spark"><canvas id="sparkRevenue"></canvas></div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi-hdr">
+            <div class="kpi-lbl"><span class="kpi-lbl-dot" style="background:var(--accent);"></span>Profit Margin</div>
+            <span class="kpi-info-icon">i</span>
+          </div>
+          <div class="kpi-val">26.9<span class="cur">%</span></div>
+          <div class="kpi-row">
+            <span class="kpi-trend up">▲ 2.1pp</span>
+            <span class="kpi-cmp">healthy zone</span>
+          </div>
+          <div class="kpi-spark"><canvas id="sparkMargin"></canvas></div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi-hdr">
+            <div class="kpi-lbl"><span class="kpi-lbl-dot" style="background:var(--gold);"></span>Business Health</div>
+            <span class="kpi-info-icon">i</span>
+          </div>
+          <div class="kpi-val">82<span class="cur">/100</span></div>
+          <div class="kpi-row">
+            <span class="kpi-trend up">▲ 4 pts</span>
+            <span class="kpi-cmp">excellent</span>
+          </div>
+          <div class="kpi-gauge">
+            <svg viewBox="0 0 130 65">
+              <path d="M 12 60 A 53 53 0 0 1 118 60" stroke="#EBE7DC" stroke-width="8" fill="none" stroke-linecap="round"/>
+              <path d="M 12 60 A 53 53 0 0 1 118 60" stroke="url(#gaugeGrad)" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="166" stroke-dashoffset="30"/>
+              <defs>
+                <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#E76F4A"/>
+                  <stop offset="50%" stop-color="#D4A53C"/>
+                  <stop offset="100%" stop-color="#0F6E5C"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- DUAL ROW: PROFIT PULSE + AI DECISIONS -->
+      <div class="dual-row">
+
+        <div class="card">
+          <div class="card-hdr">
+            <div>
+              <div class="card-title">Profit Pulse <span class="pill">LIVE</span></div>
+              <div class="card-sub">Net profit evolution across all products</div>
+            </div>
+            <div class="card-act">
+              <div class="seg">
+                <button class="on" onclick="setPulse(this,'daily')">Daily</button>
+                <button onclick="setPulse(this,'weekly')">Weekly</button>
+                <button onclick="setPulse(this,'monthly')">Monthly</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="pulse-stats">
+            <div class="ps-it">
+              <div class="ps-lbl">Best day</div>
+              <div class="ps-val"><span data-cur-sym-tiny>MAD</span> <span data-amt="6840">6,840</span></div>
+              <div class="ps-sub">Apr 18 · <strong>+42% vs avg</strong></div>
+            </div>
+            <div class="ps-it">
+              <div class="ps-lbl">Daily average</div>
+              <div class="ps-val"><span data-cur-sym-tiny>MAD</span> <span data-amt="2810">2,810</span></div>
+              <div class="ps-sub">vs <strong>2,280</strong> last period</div>
+            </div>
+            <div class="ps-it neg">
+              <div class="ps-lbl">Worst day</div>
+              <div class="ps-val"><span data-cur-sym-tiny>MAD</span> <span data-amt="-340">−340</span></div>
+              <div class="ps-sub">Apr 3 · <strong>ad waste</strong></div>
+            </div>
+          </div>
+
+          <div class="pulse-chart">
+            <canvas id="pulseChart"></canvas>
+          </div>
+        </div>
+
+        <div class="card ai-card">
+          <div class="card-hdr">
+            <div>
+              <div class="card-title" style="color:#fff;">Decision Center <span class="ai-badge">AI</span></div>
+              <div class="card-sub" style="color:rgba(255,255,255,0.5);">3 actions to scale profits this week</div>
+            </div>
+          </div>
+
+          <div class="ai-recs">
+            <div class="ai-rec scale">
+              <div class="ai-rec-icon">📈</div>
+              <div class="ai-rec-body">
+                <span class="ai-rec-tag">Scale now</span>
+                <div class="ai-rec-t">Push budget on Smart Watch Pro</div>
+                <div class="ai-rec-d">ROAS at <strong>4.8×</strong>, margin <strong>42%</strong>. Doubling ad spend could add <strong data-cur-sym-tiny>MAD</strong> <strong data-amt="12400">12,400</strong>/mo in profit.</div>
+              </div>
+              <span class="ai-rec-arrow">→</span>
+            </div>
+
+            <div class="ai-rec pause">
+              <div class="ai-rec-icon">⏸️</div>
+              <div class="ai-rec-body">
+                <span class="ai-rec-tag">Pause</span>
+                <div class="ai-rec-t">Bluetooth Earbuds losing money</div>
+                <div class="ai-rec-d">Bleeding <strong data-cur-sym-tiny>MAD</strong> <strong data-amt="-1840">−1,840</strong>/wk. CPA exceeds margin by 28%. Pause or rework offer.</div>
+              </div>
+              <span class="ai-rec-arrow">→</span>
+            </div>
+
+            <div class="ai-rec optimize">
+              <div class="ai-rec-icon">⚡</div>
+              <div class="ai-rec-body">
+                <span class="ai-rec-tag">Optimize</span>
+                <div class="ai-rec-t">Lower delivery costs on COD orders</div>
+                <div class="ai-rec-d">Negotiate with carrier — saving <strong>5 MAD/order</strong> = <strong data-cur-sym-tiny>MAD</strong> <strong data-amt="8200">8,200</strong>/mo at current volume.</div>
+              </div>
+              <span class="ai-rec-arrow">→</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRODUCT PERFORMANCE MATRIX -->
+      <div class="pmat-card">
+        <div class="pmat-hdr">
+          <div class="pmat-l">
+            <div class="pmat-title">Product Performance Matrix <span class="pmat-count">12 active</span></div>
+            <div class="pmat-sub">Track every product's true profitability — by unit, not by campaign.</div>
+          </div>
+          <div class="pmat-acts">
+            <div class="pmat-filter">
+              <button class="on">All</button>
+              <button><span class="ind" style="background:var(--pos);"></span> Scaling</button>
+              <button><span class="ind" style="background:var(--primary);"></span> Stable</button>
+              <button><span class="ind" style="background:var(--warn);"></span> Watch</button>
+              <button><span class="ind" style="background:var(--neg);"></span> Declining</button>
+            </div>
+            <button class="btn-add" onclick="goView('add')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+              Add Product
+            </button>
+          </div>
+        </div>
+
+        <table class="pmat-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th class="n">Units</th>
+              <th class="n">Revenue</th>
+              <th class="n">Net Profit</th>
+              <th class="n">Margin</th>
+              <th class="n">Per Unit</th>
+              <th class="c">Trend (30d)</th>
+              <th class="c">Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="pmatBody">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- TRIPLE ROW: Revenue Mix + Cost Breakdown + Top Products -->
+      <div class="triple">
+
+        <div class="card">
+          <div class="card-hdr">
+            <div>
+              <div class="card-title">Revenue Mix</div>
+              <div class="card-sub">By business stream</div>
+            </div>
+          </div>
+          <div class="donut-wrap">
+            <canvas id="revMix"></canvas>
+            <div class="donut-center">
+              <div class="dc-val"><span data-cur-sym-tiny>MAD</span> 312k</div>
+              <div class="dc-lbl">Total</div>
+            </div>
+          </div>
+          <div class="legend">
+            <div class="lg"><span class="lg-dot" style="background:#1E2761;"></span><span class="lg-name">E-commerce / COD</span><span class="lg-val">198,400</span><span class="lg-pct">63%</span></div>
+            <div class="lg"><span class="lg-dot" style="background:#E76F4A;"></span><span class="lg-name">Creator income</span><span class="lg-val">76,200</span><span class="lg-pct">24%</span></div>
+            <div class="lg"><span class="lg-dot" style="background:#0F6E5C;"></span><span class="lg-name">Freelance gigs</span><span class="lg-val">37,900</span><span class="lg-pct">13%</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-hdr">
+            <div>
+              <div class="card-title">Where Profit Leaks</div>
+              <div class="card-sub">Cost breakdown</div>
+            </div>
+          </div>
+          <div class="donut-wrap">
+            <canvas id="costMix"></canvas>
+            <div class="donut-center">
+              <div class="dc-val">73<span style="font-size:14px;">%</span></div>
+              <div class="dc-lbl">of revenue</div>
+            </div>
+          </div>
+          <div class="legend">
+            <div class="lg"><span class="lg-dot" style="background:#1E2761;"></span><span class="lg-name">COGS (products)</span><span class="lg-val">94,800</span><span class="lg-pct">42%</span></div>
+            <div class="lg"><span class="lg-dot" style="background:#E76F4A;"></span><span class="lg-name">Ad spend</span><span class="lg-val">62,400</span><span class="lg-pct">27%</span></div>
+            <div class="lg"><span class="lg-dot" style="background:#D4A53C;"></span><span class="lg-name">Shipping & returns</span><span class="lg-val">38,600</span><span class="lg-pct">17%</span></div>
+            <div class="lg"><span class="lg-dot" style="background:#7C3AED;"></span><span class="lg-name">Platform fees</span><span class="lg-val">31,400</span><span class="lg-pct">14%</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-hdr">
+            <div>
+              <div class="card-title">Top Profit Drivers</div>
+              <div class="card-sub">Best performers, this period</div>
+            </div>
+            <div class="card-act"><div class="seg"><button class="on">Profit</button><button>Revenue</button></div></div>
+          </div>
+
+          <div class="tprod" id="tprod">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         PRODUCTS VIEW
+    ══════════════════════════════════════════ -->
+    <section class="view" id="view-products">
+
+      <div class="page-hdr">
+        <div class="page-hdr-l">
+          <div class="page-bc"><a>Workspace</a> <span>›</span> <span>Products</span></div>
+          <h1 class="page-title">Every product, <em>scored</em></h1>
+          <p class="page-sub">A boardroom view of what's really making money — and what's quietly draining it.</p>
+        </div>
+        <div class="page-hdr-r">
+          <button class="btn-export">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M7 12h10M10 18h4"/></svg>
+            Filter
+          </button>
+          <button class="tb-primary" onclick="goView('add')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+            Add product
+          </button>
+        </div>
+      </div>
+
+      <div class="pgrid" id="pgrid"></div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         ADD / LOG VIEW (WIZARD)
+    ══════════════════════════════════════════ -->
+    <section class="view" id="view-add">
+
+      <div class="page-hdr">
+        <div class="page-hdr-l">
+          <div class="page-bc"><a onclick="goView('overview')">Workspace</a> <span>›</span> <span>Log a Sale</span></div>
+          <h1 class="page-title">Add a product or <em>log today's numbers</em></h1>
+          <p class="page-sub">Adapts to your business type. We auto-calculate profit, margin & health in real time.</p>
+        </div>
+      </div>
+
+      <div class="wiz-shell">
+
+        <div class="wiz-stepper">
+          <div class="ws-step active"><div class="ws-num">1</div><div class="ws-lbl">Choose type</div></div>
+          <div class="ws-sep"></div>
+          <div class="ws-step"><div class="ws-num">2</div><div class="ws-lbl">Product details</div></div>
+          <div class="ws-sep"></div>
+          <div class="ws-step"><div class="ws-num">3</div><div class="ws-lbl">Costs & sale</div></div>
+          <div class="ws-sep"></div>
+          <div class="ws-step"><div class="ws-num">4</div><div class="ws-lbl">Review</div></div>
+        </div>
+
+        <div class="wiz-card">
+          <div class="wiz-title">What kind of business <em>powers this product?</em></div>
+          <div class="wiz-sub">Each business type gets a smart input form tailored to its real costs.</div>
+
+          <div class="type-grid">
+            <div class="tcard sel" onclick="selType(this,'ecom')">
+              <span class="tcard-emoji">📦</span>
+              <div class="tcard-n">E-commerce / COD</div>
+              <div class="tcard-d">Dropshipping, COD, online store</div>
+            </div>
+            <div class="tcard" onclick="selType(this,'creator')">
+              <span class="tcard-emoji">🎬</span>
+              <div class="tcard-n">Content Creator</div>
+              <div class="tcard-d">YouTube, TikTok, Instagram, courses</div>
+            </div>
+            <div class="tcard" onclick="selType(this,'freelance')">
+              <span class="tcard-emoji">💻</span>
+              <div class="tcard-n">Freelance / Service</div>
+              <div class="tcard-d">Upwork, Fiverr, direct clients</div>
+            </div>
+          </div>
+
+          <div class="sec-grp">
+            <div class="sec-grp-hdr">
+              <div class="sec-grp-icon" style="background:var(--surface-3);color:var(--text);">🏷️</div>
+              <div>
+                <div class="sec-grp-t">Product identity</div>
+                <div class="sec-grp-s">What is it called, what's the unit price?</div>
+              </div>
+            </div>
+            <div class="fgrid">
+              <div class="fld">
+                <label>Product name</label>
+                <input type="text" placeholder="e.g. Smart Watch Pro" value="Smart Watch Pro"/>
+              </div>
+              <div class="fld">
+                <label>Icon / emoji</label>
+                <input type="text" placeholder="📦" value="⌚" maxlength="2"/>
+              </div>
+              <div class="fld">
+                <label>Selling price <span class="hint">(per unit)</span></label>
+                <div class="iwrap has-suffix">
+                  <input type="number" value="349" oninput="calcWiz()" id="wPrice"/>
+                  <span class="suffix" data-cur-sym>MAD</span>
+                </div>
+              </div>
+              <div class="fld">
+                <label>Units sold <span class="hint">(this period)</span></label>
+                <input type="number" value="180" oninput="calcWiz()" id="wUnits"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="sec-grp">
+            <div class="sec-grp-hdr">
+              <div class="sec-grp-icon cogs">📦</div>
+              <div>
+                <div class="sec-grp-t">Cost of goods (COGS)</div>
+                <div class="sec-grp-s">What you pay your supplier, per unit</div>
+              </div>
+            </div>
+            <div class="fgrid">
+              <div class="fld">
+                <label>Supplier cost <span class="hint">(per unit)</span></label>
+                <div class="iwrap has-suffix">
+                  <input type="number" value="95" oninput="calcWiz()" id="wCogs"/>
+                  <span class="suffix" data-cur-sym>MAD</span>
+                </div>
+              </div>
+              <div class="fld">
+                <label>Packaging</label>
+                <div class="iwrap has-suffix">
+                  <input type="number" value="6" oninput="calcWiz()" id="wPack"/>
+                  <span class="suffix" data-cur-sym>MAD</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sec-grp">
+            <div class="sec-grp-hdr">
+              <div class="sec-grp-icon ship">🚚</div>
+              <div>
+                <div class="sec-grp-t">Fulfillment & delivery</div>
+                <div class="sec-grp-s">Shipping, returns, COD recovery</div>
+              </div>
+            </div>
+            <div class="fgrid">
+              <div class="fld">
+                <label>Shipping cost per order</label>
+                <div class="iwrap has-suffix">
+                  <input type="number" value="25" oninput="calcWiz()" id="wShip"/>
+                  <span class="suffix" data-cur-sym>MAD</span>
+                </div>
+              </div>
+              <div class="fld">
+                <label>Return rate <span class="hint">(failed deliveries)</span></label>
+                <div class="iwrap has-suffix">
+                  <input type="number" value="12" oninput="calcWiz()" id="wReturn"/>
+                  <span class="suffix">%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sec-grp">
+            <div class="sec-grp-hdr">
+              <div class="sec-grp-icon ads">📢</div>
+              <div>
+                <div class="sec-grp-t">Marketing</div>
+                <div class="sec-grp-s">Ad spend allocated to this product</div>
+              </div>
+            </div>
+            <div class="fgrid">
+              <div class="fld">
+                <label>Total ad spend <span class="hint">(this period)</span></label>
+                <div class="iwrap has-suffix">
+                  <input type="number" value="9800" oninput="calcWiz()" id="wAds"/>
+                  <span class="suffix" data-cur-sym>MAD</span>
+                </div>
+              </div>
+              <div class="fld">
+                <label>Platform <span class="hint">(optional)</span></label>
+                <select>
+                  <option>Facebook + Instagram</option>
+                  <option>TikTok Ads</option>
+                  <option>Google Ads</option>
+                  <option>Multi-channel</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="sec-grp">
+            <div class="sec-grp-hdr">
+              <div class="sec-grp-icon fees">💳</div>
+              <div>
+                <div class="sec-grp-t">Fees & taxes</div>
+                <div class="sec-grp-s">Payment processing & platform commissions</div>
+              </div>
+            </div>
+            <div class="fgrid">
+              <div class="fld">
+                <label>Payment fees</label>
+                <div class="iwrap has-suffix">
+                  <input type="number" value="2.5" oninput="calcWiz()" id="wFees"/>
+                  <span class="suffix">%</span>
+                </div>
+              </div>
+              <div class="fld">
+                <label>Tax / VAT</label>
+                <div class="iwrap has-suffix">
+                  <input type="number" value="0" oninput="calcWiz()" id="wTax"/>
+                  <span class="suffix">%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="wiz-result">
+          <div class="wr-stat">
+            <div class="wr-lbl">Net profit</div>
+            <div class="wr-val"><span data-cur-sym-tiny>MAD</span> <span id="wNet">22,140</span></div>
+            <div class="wr-pct"><span id="wNetUnit">123</span> per unit · <span id="wMargin">35.2%</span> margin</div>
+          </div>
+          <div class="wr-stat">
+            <div class="wr-lbl">Health score</div>
+            <div class="wr-val"><span id="wHealth">88</span><span style="font-size:14px;opacity:0.6;">/100</span></div>
+            <div class="wr-pct"><span id="wVerdict">⚡ Scale this product</span></div>
+          </div>
+          <div class="wr-acts">
+            <button class="btn-ghost">Save draft</button>
+            <button class="btn-cta" onclick="saveProduct()">Save product →</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         INSIGHTS VIEW
+    ══════════════════════════════════════════ -->
+    <section class="view" id="view-insights">
+
+      <div class="page-hdr">
+        <div class="page-hdr-l">
+          <div class="page-bc"><a>Workspace</a> <span>›</span> <span>AI Insights</span></div>
+          <h1 class="page-title">Your business, <em>read out loud</em></h1>
+          <p class="page-sub">Plain-language insights from your numbers. Each one ties to a specific action.</p>
+        </div>
+      </div>
+
+      <div class="ins-grid">
+
+        <div class="ins-card">
+          <div class="ins-icon win">🏆</div>
+          <div class="ins-t">Smart Watch Pro is your golden goose</div>
+          <div class="ins-d">It accounts for <strong>34% of total profit</strong> but only <strong>22% of revenue</strong>. Margin sits at <strong>42%</strong> — well above your average. Most profitable single product in your catalog.</div>
+          <div class="ins-foot">
+            <div class="ins-imp pos">Profit impact · <strong>+12,400/mo potential</strong></div>
+            <a class="ins-act">Scale it →</a>
+          </div>
+        </div>
+
+        <div class="ins-card">
+          <div class="ins-icon alert">🩸</div>
+          <div class="ins-t">Bluetooth Earbuds bleed every week</div>
+          <div class="ins-d">CPA of <strong>112 MAD</strong> on a margin of <strong>78 MAD</strong>. You lose <strong>34 MAD per sale</strong>. Either rework the offer or pause — this product is silently killing your profit.</div>
+          <div class="ins-foot">
+            <div class="ins-imp">Loss recovery · <strong>−1,840/wk</strong></div>
+            <a class="ins-act">Fix it →</a>
+          </div>
+        </div>
+
+        <div class="ins-card">
+          <div class="ins-icon warn">📦</div>
+          <div class="ins-t">Your return rate is climbing</div>
+          <div class="ins-d">Up from <strong>9.2% to 12.4%</strong> in 30 days. Each return costs you packaging + shipping = <strong>~31 MAD</strong>. Check fulfilment quality on top 3 products.</div>
+          <div class="ins-foot">
+            <div class="ins-imp">Cost leakage · <strong>+3,200/mo if fixed</strong></div>
+            <a class="ins-act">Investigate →</a>
+          </div>
+        </div>
+
+        <div class="ins-card">
+          <div class="ins-icon info">💸</div>
+          <div class="ins-t">Friday is your most profitable day</div>
+          <div class="ins-d">Average <strong>+62% profit</strong> vs other days. Consider concentrating ad budget Thursday evening through Friday night to amplify your strongest window.</div>
+          <div class="ins-foot">
+            <div class="ins-imp pos">Upside · <strong>+4,100/mo</strong></div>
+            <a class="ins-act">See pattern →</a>
+          </div>
+        </div>
+
+        <div class="ins-card">
+          <div class="ins-icon win">🎯</div>
+          <div class="ins-t">Ad efficiency improved</div>
+          <div class="ins-d">ROAS climbed from <strong>2.8× to 3.4×</strong> this month. Your cost per acquired customer dropped 19%. Whatever you changed in creative — keep it.</div>
+          <div class="ins-foot">
+            <div class="ins-imp pos">Saved · <strong>2,840 this month</strong></div>
+            <a class="ins-act">See ads →</a>
+          </div>
+        </div>
+
+        <div class="ins-card">
+          <div class="ins-icon warn">⚖️</div>
+          <div class="ins-t">Cash flow alert: April 28</div>
+          <div class="ins-d">Based on current spend rhythm, you'll need <strong>~28,000 MAD in working capital</strong> by month-end to keep ad budget steady. Plan refill.</div>
+          <div class="ins-foot">
+            <div class="ins-imp">Forecast confidence · <strong>87%</strong></div>
+            <a class="ins-act">Plan ahead →</a>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         REPORTS VIEW
+    ══════════════════════════════════════════ -->
+    <section class="view" id="view-reports">
+
+      <div class="page-hdr">
+        <div class="page-hdr-l">
+          <div class="page-bc"><a>Workspace</a> <span>›</span> <span>Reports</span></div>
+          <h1 class="page-title">Pull a report, <em>any shape</em></h1>
+          <p class="page-sub">Pre-built reports for taxes, partners, and your own peace of mind.</p>
+        </div>
+      </div>
+
+      <div class="rep-grid">
+        <div class="rep-card">
+          <div class="rep-icon">📊</div>
+          <div class="rep-t">Monthly P&L Statement</div>
+          <div class="rep-d">Income, expenses & net profit summary — formatted like an accountant's brief.</div>
+          <div class="rep-fmt"><span class="rep-fmt-pill">PDF</span><span class="rep-fmt-pill">Excel</span></div>
+        </div>
+        <div class="rep-card">
+          <div class="rep-icon">🧾</div>
+          <div class="rep-t">VAT / Tax Report</div>
+          <div class="rep-d">Localized by country — fully ready for your accountant or filing portal.</div>
+          <div class="rep-fmt"><span class="rep-fmt-pill">PDF</span><span class="rep-fmt-pill">CSV</span></div>
+        </div>
+        <div class="rep-card">
+          <div class="rep-icon">🚀</div>
+          <div class="rep-t">Scaling Playbook</div>
+          <div class="rep-d">AI-built playbook: which products to push, pause, or rework — with capital needs.</div>
+          <div class="rep-fmt"><span class="rep-fmt-pill">PDF</span></div>
+        </div>
+        <div class="rep-card">
+          <div class="rep-icon">📦</div>
+          <div class="rep-t">Per-Product Deep Dive</div>
+          <div class="rep-d">A full report for any single SKU — unit economics, trend, cost evolution.</div>
+          <div class="rep-fmt"><span class="rep-fmt-pill">PDF</span></div>
+        </div>
+        <div class="rep-card">
+          <div class="rep-icon">💼</div>
+          <div class="rep-t">Investor Pack</div>
+          <div class="rep-d">Polished MRR / margin / cohorts page — perfect for partners or buyers.</div>
+          <div class="rep-fmt"><span class="rep-fmt-pill">PDF</span><span class="rep-fmt-pill">Slides</span></div>
+        </div>
+        <div class="rep-card">
+          <div class="rep-icon">📈</div>
+          <div class="rep-t">12-Month Forecast</div>
+          <div class="rep-d">Projection model with three scenarios — conservative, baseline, aggressive.</div>
+          <div class="rep-fmt"><span class="rep-fmt-pill">Excel</span></div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+<!-- FAB -->
+<button class="fab" onclick="goView('add')" title="Log a sale">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+</button>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="tdot"></span>
+  <span id="toastTxt">Saved.</span>
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   STATE & DATA
+══════════════════════════════════════════ */
+const STATE = {
+  currency: 'MAD',
+  lang: 'en'
+};
+
+/* International currencies — 25 of the most-used globally */
+const CURRENCIES = [
+  // North Africa / MENA
+  {code:'MAD', name:'Moroccan Dirham', flag:'🇲🇦', symbol:'DH', rate:1, region:'MENA'},
+  {code:'AED', name:'UAE Dirham', flag:'🇦🇪', symbol:'AED', rate:0.367, region:'MENA'},
+  {code:'SAR', name:'Saudi Riyal', flag:'🇸🇦', symbol:'SAR', rate:0.375, region:'MENA'},
+  {code:'EGP', name:'Egyptian Pound', flag:'🇪🇬', symbol:'E£', rate:4.85, region:'MENA'},
+  {code:'TND', name:'Tunisian Dinar', flag:'🇹🇳', symbol:'TND', rate:0.31, region:'MENA'},
+  {code:'DZD', name:'Algerian Dinar', flag:'🇩🇿', symbol:'DA', rate:13.4, region:'MENA'},
+  // Major Global
+  {code:'USD', name:'US Dollar', flag:'🇺🇸', symbol:'$', rate:0.1, region:'Global'},
+  {code:'EUR', name:'Euro', flag:'🇪🇺', symbol:'€', rate:0.092, region:'Global'},
+  {code:'GBP', name:'British Pound', flag:'🇬🇧', symbol:'£', rate:0.079, region:'Global'},
+  {code:'CHF', name:'Swiss Franc', flag:'🇨🇭', symbol:'CHF', rate:0.089, region:'Global'},
+  {code:'CAD', name:'Canadian Dollar', flag:'🇨🇦', symbol:'C$', rate:0.137, region:'Global'},
+  {code:'AUD', name:'Australian Dollar', flag:'🇦🇺', symbol:'A$', rate:0.152, region:'Global'},
+  // Asia
+  {code:'INR', name:'Indian Rupee', flag:'🇮🇳', symbol:'₹', rate:8.42, region:'Asia'},
+  {code:'CNY', name:'Chinese Yuan', flag:'🇨🇳', symbol:'¥', rate:0.72, region:'Asia'},
+  {code:'JPY', name:'Japanese Yen', flag:'🇯🇵', symbol:'¥', rate:15.4, region:'Asia'},
+  {code:'KRW', name:'South Korean Won', flag:'🇰🇷', symbol:'₩', rate:137, region:'Asia'},
+  {code:'IDR', name:'Indonesian Rupiah', flag:'🇮🇩', symbol:'Rp', rate:1620, region:'Asia'},
+  {code:'PKR', name:'Pakistani Rupee', flag:'🇵🇰', symbol:'₨', rate:28.1, region:'Asia'},
+  // Africa Sub-Saharan
+  {code:'NGN', name:'Nigerian Naira', flag:'🇳🇬', symbol:'₦', rate:148, region:'Africa'},
+  {code:'ZAR', name:'South African Rand', flag:'🇿🇦', symbol:'R', rate:1.84, region:'Africa'},
+  {code:'KES', name:'Kenyan Shilling', flag:'🇰🇪', symbol:'KSh', rate:12.9, region:'Africa'},
+  {code:'GHS', name:'Ghanaian Cedi', flag:'🇬🇭', symbol:'GH₵', rate:1.56, region:'Africa'},
+  // Latam
+  {code:'BRL', name:'Brazilian Real', flag:'🇧🇷', symbol:'R$', rate:0.52, region:'Latam'},
+  {code:'MXN', name:'Mexican Peso', flag:'🇲🇽', symbol:'Mex$', rate:1.71, region:'Latam'},
+  {code:'ARS', name:'Argentine Peso', flag:'🇦🇷', symbol:'AR$', rate:88, region:'Latam'},
+  // Crypto (bonus international)
+  {code:'BTC', name:'Bitcoin', flag:'₿', symbol:'₿', rate:0.0000016, region:'Crypto'},
+  {code:'USDT', name:'Tether (Stablecoin)', flag:'🪙', symbol:'USDT', rate:0.1, region:'Crypto'}
+];
+
+/* Demo products (the heart of product-based tracking) */
+const PRODUCTS = [
+  {id:1,emoji:'⌚',name:'Smart Watch Pro',cat:'E-commerce · COD',units:240,revenue:83760,profit:35180,margin:42,perUnit:147,trend:[10,12,15,14,18,22,28,32,38,44,52,58],status:'scaling',ec:'ec'},
+  {id:2,emoji:'👟',name:'Sport Running Shoes',cat:'E-commerce · COD',units:185,revenue:55500,profit:14430,margin:26,perUnit:78,trend:[14,16,18,17,20,22,21,24,26,28,30,32],status:'stable',ec:'ec'},
+  {id:3,emoji:'🎬',name:'Course: "TikTok Cash"',cat:'Creator · Digital',units:62,revenue:31000,profit:23560,margin:76,perUnit:380,trend:[5,8,10,9,12,18,22,28,32,36,40,44],status:'scaling',ec:'cr'},
+  {id:4,emoji:'🎧',name:'Bluetooth Earbuds',cat:'E-commerce · COD',units:128,revenue:21760,profit:-2840,margin:-13,perUnit:-22,trend:[20,18,16,12,10,8,6,4,2,0,-3,-6],status:'declining',ec:'ec'},
+  {id:5,emoji:'💼',name:'Logo Design (Pkg)',cat:'Freelance · Direct',units:14,revenue:18900,profit:13230,margin:70,perUnit:945,trend:[8,9,10,11,12,11,12,13,13,14,14,15],status:'stable',ec:'fr'},
+  {id:6,emoji:'☕',name:'Premium Coffee Bag',cat:'E-commerce · D2C',units:312,revenue:14040,profit:5462,margin:39,perUnit:17,trend:[12,14,13,15,17,18,17,19,20,22,24,26],status:'scaling',ec:'ec'},
+  {id:7,emoji:'📸',name:'Sponsored Reels',cat:'Creator · Sponsor',units:6,revenue:18000,profit:14400,margin:80,perUnit:2400,trend:[3,4,3,5,5,6,5,6,6,7,8,8],status:'stable',ec:'cr'},
+  {id:8,emoji:'🌿',name:'Argan Oil 100ml',cat:'E-commerce · D2C',units:96,revenue:7680,profit:1690,margin:22,perUnit:18,trend:[18,17,16,15,14,15,13,12,11,10,11,9],status:'watch',ec:'ec'},
+  {id:9,emoji:'🪑',name:'Webflow Build',cat:'Freelance · Direct',units:3,revenue:24000,profit:18600,margin:77,perUnit:6200,trend:[1,1,2,1,2,2,3,2,3,3,3,3],status:'stable',ec:'fr'},
+  {id:10,emoji:'🛍️',name:'Handmade Bag',cat:'E-commerce · D2C',units:48,revenue:8640,profit:2074,margin:24,perUnit:43,trend:[5,6,7,6,7,8,7,8,8,9,9,10],status:'watch',ec:'ec'},
+  {id:11,emoji:'📚',name:'eBook: "COD Maroc"',cat:'Creator · Digital',units:118,revenue:7080,profit:5604,margin:79,perUnit:47,trend:[5,7,8,10,12,14,16,17,18,20,22,24],status:'scaling',ec:'cr'},
+  {id:12,emoji:'🏷️',name:'Vintage T-shirts',cat:'E-commerce · COD',units:74,revenue:11100,profit:-490,margin:-4,perUnit:-7,trend:[15,14,13,11,10,9,8,7,5,4,3,2],status:'declining',ec:'ec'}
+];
+
+/* ═══════════════════════════════════════
+   FORMATTERS
+══════════════════════════════════════════ */
+function fmt(amount,cur=STATE.currency){
+  const c = CURRENCIES.find(x=>x.code===cur) || CURRENCIES[0];
+  const conv = amount * c.rate;
+  const abs = Math.abs(conv);
+  let str;
+  if(abs >= 1000000) str = (conv/1000000).toFixed(2)+'M';
+  else if(abs >= 10000) str = Math.round(conv).toLocaleString('en-US');
+  else if(abs >= 100) str = conv.toLocaleString('en-US',{maximumFractionDigits:abs<1?2:0});
+  else str = conv.toLocaleString('en-US',{maximumFractionDigits:2});
+  return str;
+}
+
+function updateAllAmounts(){
+  document.querySelectorAll('[data-amt]').forEach(el=>{
+    const raw = parseFloat(el.getAttribute('data-amt'));
+    el.textContent = fmt(raw);
+  });
+  document.querySelectorAll('[data-cur-sym]').forEach(el=>{ el.textContent = STATE.currency; });
+  document.querySelectorAll('[data-cur-sym-tiny]').forEach(el=>{ el.textContent = STATE.currency; });
+}
+
+/* ═══════════════════════════════════════
+   CURRENCY PICKER
+══════════════════════════════════════════ */
+function buildCurList(filter=''){
+  const list = document.getElementById('curList');
+  const grps = {};
+  CURRENCIES.filter(c=>{
+    if(!filter) return true;
+    const f = filter.toLowerCase();
+    return c.code.toLowerCase().includes(f) || c.name.toLowerCase().includes(f) || c.region.toLowerCase().includes(f);
+  }).forEach(c=>{ (grps[c.region] = grps[c.region]||[]).push(c); });
+
+  let html = '';
+  Object.keys(grps).forEach(reg=>{
+    html += `<div class="cp-grp">${reg}</div>`;
+    grps[reg].forEach(c=>{
+      const active = c.code === STATE.currency ? 'active' : '';
+      html += `<div class="cp-item ${active}" onclick="setCurrency('${c.code}','${c.flag}')">
+        <span class="cp-item-flag">${c.flag}</span>
+        <div class="cp-item-info">
+          <div class="cp-item-code">${c.code}</div>
+          <div class="cp-item-name">${c.name}</div>
+        </div>
+        <span class="cp-item-rate">1 MAD = ${c.rate < 0.01 ? c.rate.toExponential(2) : c.rate}</span>
+      </div>`;
+    });
+  });
+  list.innerHTML = html;
+}
+function filterCurrencies(v){ buildCurList(v); }
+
+function setCurrency(code,flag){
+  STATE.currency = code;
+  document.getElementById('curCode').textContent = code;
+  document.getElementById('curFlag').textContent = flag;
+  document.getElementById('curMenu').classList.remove('open');
+  updateAllAmounts();
+  buildPmat();
+  buildTopProducts();
+  buildProductGrid();
+  calcWiz();
+  toast(`Switched to ${code}`);
+}
+
+function setLang(lang,flag,code,dir){
+  STATE.lang = lang;
+  document.getElementById('langCode').textContent = code;
+  document.getElementById('langFlag').textContent = flag;
+  document.getElementById('langMenu').classList.remove('open');
+  document.documentElement.setAttribute('dir', dir);
+  toast(`Language: ${code}`);
+}
+
+function toggleMenu(id){
+  document.querySelectorAll('.cp-menu').forEach(m=>{
+    if(m.id !== id) m.classList.remove('open');
+  });
+  document.getElementById(id).classList.toggle('open');
+}
+
+document.addEventListener('click',(e)=>{
+  if(!e.target.closest('.cur-picker') && !e.target.closest('.lang-picker')){
+    document.querySelectorAll('.cp-menu').forEach(m=>m.classList.remove('open'));
+  }
+});
+
+/* ═══════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════ */
+function goView(name,el){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  if(el){
+    document.querySelectorAll('.nv').forEach(n=>n.classList.remove('active'));
+    el.classList.add('active');
+  } else {
+    document.querySelectorAll('.nv').forEach((n,i)=>{
+      n.classList.remove('active');
+      const txt = n.querySelector('span:nth-child(2)')?.textContent.toLowerCase()||'';
+      if((name==='overview'&&txt==='overview')||
+         (name==='products'&&txt==='products')||
+         (name==='add'&&txt==='log a sale')||
+         (name==='insights'&&txt==='ai insights')||
+         (name==='reports'&&txt==='reports')) n.classList.add('active');
+    });
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(name==='products') buildProductGrid();
+  document.getElementById('sb').classList.remove('open');
+}
+
+function setRange(btn,r){
+  btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  refreshPulse(r);
+}
+
+function setPulse(btn,g){
+  btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  refreshPulse(g);
+}
+
+/* ═══════════════════════════════════════
+   TOAST
+══════════════════════════════════════════ */
+function toast(msg){
+  const t = document.getElementById('toast');
+  document.getElementById('toastTxt').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window.__toastT);
+  window.__toastT = setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+/* ═══════════════════════════════════════
+   PRODUCT MATRIX
+══════════════════════════════════════════ */
+function statusBadge(s){
+  const map = {scaling:'Scaling',stable:'Stable',watch:'Watch',declining:'Declining'};
+  return `<span class="status-pill ${s}"><span class="sd"></span>${map[s]}</span>`;
+}
+
+function miniSpark(data,color){
+  const max = Math.max(...data.map(Math.abs));
+  const min = Math.min(...data);
+  const range = max - min || 1;
+  const pts = data.map((v,i)=>{
+    const x = (i/(data.length-1))*60 + 2;
+    const y = 22 - ((v-min)/range)*18;
+    return `${x},${y}`;
+  }).join(' ');
+  return `<svg class="sparkmini" viewBox="0 0 64 24" preserveAspectRatio="none">
+    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="${(data.length-1)/(data.length-1)*60+2}" cy="${22-((data[data.length-1]-min)/range)*18}" r="2" fill="${color}"/>
+  </svg>`;
+}
+
+function buildPmat(){
+  const body = document.getElementById('pmatBody');
+  body.innerHTML = PRODUCTS.map(p=>{
+    const profitClass = p.profit >= 0 ? 'amt-pos' : 'amt-neg';
+    const margClass = p.margin >= 30 ? 'hi' : p.margin >= 15 ? 'md' : 'lo';
+    const sparkColor = p.status === 'scaling' ? '#0F6E5C' : p.status === 'declining' ? '#DC3556' : p.status === 'watch' ? '#D4A53C' : '#1E2761';
+    return `<tr onclick="goView('products')">
+      <td><div class="pcell">
+        <div class="pemoji">${p.emoji}</div>
+        <div><div class="pname">${p.name}</div><div class="pmeta">${p.cat}</div></div>
+      </div></td>
+      <td class="n">${p.units}</td>
+      <td class="n">${fmt(p.revenue)}</td>
+      <td class="n ${profitClass}">${p.profit>=0?'':'−'}${fmt(Math.abs(p.profit))}</td>
+      <td class="n"><span class="marg ${margClass}">${p.margin>0?'':''}${p.margin}%</span></td>
+      <td class="n">${p.perUnit>=0?'':'−'}${fmt(Math.abs(p.perUnit))}</td>
+      <td class="c">${miniSpark(p.trend,sparkColor)}</td>
+      <td class="c">${statusBadge(p.status)}</td>
+      <td><div class="row-acts">
+        <button class="ra-btn" title="View"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        <button class="ra-btn" title="Edit"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9 M16.5 3.5a2.1 2.1 0 113 3L7 19l-4 1 1-4z"/></svg></button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════
+   TOP PRODUCTS
+══════════════════════════════════════════ */
+function buildTopProducts(){
+  const sorted = [...PRODUCTS].sort((a,b)=>b.profit-a.profit).slice(0,5);
+  const max = sorted[0].profit;
+  const colors = ['linear-gradient(90deg,#D4A53C,#E8BD58)','linear-gradient(90deg,#1E2761,#3B4FA3)','linear-gradient(90deg,#0F6E5C,#15A37F)','linear-gradient(90deg,#E76F4A,#FFA37A)','linear-gradient(90deg,#7C3AED,#A78BFA)'];
+  const ranks = ['gold','silver','bronze','',''];
+  document.getElementById('tprod').innerHTML = sorted.map((p,i)=>`
+    <div class="tp">
+      <div class="tp-rank ${ranks[i]}">${i+1}</div>
+      <div class="tp-body">
+        <div class="tp-top">
+          <div class="tp-name">${p.emoji} ${p.name}</div>
+          <div class="tp-val">${fmt(p.profit)}</div>
+        </div>
+        <div class="tp-bar"><div class="tp-fill" style="width:${(p.profit/max)*100}%;background:${colors[i]};"></div></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ═══════════════════════════════════════
+   PRODUCT GRID
+══════════════════════════════════════════ */
+function buildProductGrid(){
+  document.getElementById('pgrid').innerHTML = PRODUCTS.map((p,i)=>{
+    const profClass = p.profit>=0?'pos':'neg';
+    return `<div class="prod-card">
+      <div class="prod-card-top">
+        <div class="prod-emoji">${p.emoji}</div>
+        ${statusBadge(p.status)}
+      </div>
+      <div class="prod-name">${p.name}</div>
+      <div class="prod-cat" style="margin-bottom:12px;">${p.cat}</div>
+      <div class="prod-amt-lbl">Net profit</div>
+      <div class="prod-amt ${profClass}">${p.profit>=0?'':'−'}${STATE.currency} ${fmt(Math.abs(p.profit))}</div>
+      <div class="prod-stats">
+        <div class="psd"><div class="psd-v">${p.units}</div><div class="psd-l">Units</div></div>
+        <div class="psd"><div class="psd-v">${p.margin}%</div><div class="psd-l">Margin</div></div>
+        <div class="psd"><div class="psd-v">${fmt(p.revenue/1000)}k</div><div class="psd-l">Revenue</div></div>
+      </div>
+      <div class="prod-spark"><canvas id="ps${i}"></canvas></div>
+    </div>`;
+  }).join('');
+  setTimeout(()=>{
+    PRODUCTS.forEach((p,i)=>drawProdSpark(i,p));
+  },50);
+}
+
+function drawProdSpark(i,p){
+  const c = document.getElementById('ps'+i);
+  if(!c) return;
+  const ctx = c.getContext('2d');
+  const colors = {scaling:'#0F6E5C',stable:'#1E2761',watch:'#D4A53C',declining:'#DC3556'};
+  const col = colors[p.status];
+  new Chart(ctx,{
+    type:'line',
+    data:{labels:p.trend.map((_,i)=>i),datasets:[{data:p.trend,borderColor:col,backgroundColor:col+'22',borderWidth:1.5,fill:true,tension:0.4,pointRadius:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{display:false},y:{display:false}}}
+  });
+}
+
+/* ═══════════════════════════════════════
+   CHARTS
+══════════════════════════════════════════ */
+let charts = {};
+
+function genPulseData(g){
+  const base = g==='monthly'?12:g==='weekly'?12:30;
+  const labels=[];const data=[];const cmp=[];
+  const labelFmt = g==='monthly'?['May 25','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan 26','Feb','Mar','Apr']:g==='weekly'?Array.from({length:12},(_,i)=>`W${i+1}`):Array.from({length:30},(_,i)=>`Apr ${i+1}`);
+  for(let i=0;i<base;i++){
+    labels.push(labelFmt[i]);
+    const trend = 1500 + i*120;
+    const noise = Math.sin(i*0.8)*1200 + Math.cos(i*0.5)*600;
+    data.push(Math.max(0,Math.round(trend+noise+(i===17?3000:0))));
+    cmp.push(Math.max(0,Math.round(1200 + i*80 + Math.sin(i*0.6)*900)));
+  }
+  data[2]=-340;data[6]=4500;data[17]=6840;
+  return {labels,data,cmp};
+}
+
+function drawPulse(g='daily'){
+  const ctx = document.getElementById('pulseChart').getContext('2d');
+  const {labels,data,cmp} = genPulseData(g);
+  const grad = ctx.createLinearGradient(0,0,0,240);
+  grad.addColorStop(0,'rgba(30,39,97,0.25)');
+  grad.addColorStop(1,'rgba(30,39,97,0)');
+  if(charts.pulse) charts.pulse.destroy();
+  charts.pulse = new Chart(ctx,{
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        {label:'Previous period',data:cmp,borderColor:'#D1D5DB',backgroundColor:'transparent',borderWidth:1.5,borderDash:[4,4],tension:0.35,pointRadius:0},
+        {label:'Net profit',data,borderColor:'#1E2761',backgroundColor:grad,borderWidth:2.5,tension:0.35,fill:true,pointRadius:0,pointHoverRadius:5,pointHoverBackgroundColor:'#1E2761',pointHoverBorderColor:'#fff',pointHoverBorderWidth:2}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#0A0F1E',titleColor:'#fff',bodyColor:'#D1D5DB',padding:11,borderColor:'#1E2761',borderWidth:1,cornerRadius:8,displayColors:true,boxPadding:4,
+          callbacks:{label:(c)=>`${c.dataset.label}: ${STATE.currency} ${fmt(c.raw)}`}
+        }
+      },
+      scales:{
+        x:{grid:{display:false},ticks:{color:'#9CA3AF',font:{size:10},maxTicksLimit:7}},
+        y:{grid:{color:'#EBE7DC',drawBorder:false},ticks:{color:'#9CA3AF',font:{size:10},callback:v=>STATE.currency+' '+(v>=1000?(v/1000).toFixed(1)+'k':v)}}
+      }
+    }
+  });
+}
+
+function refreshPulse(g){
+  drawPulse(g==='weekly'?'weekly':g==='monthly'?'monthly':'daily');
+}
+
+function drawSparkline(id,data,color){
+  const c = document.getElementById(id);
+  if(!c) return;
+  const ctx = c.getContext('2d');
+  const grad = ctx.createLinearGradient(0,0,0,54);
+  grad.addColorStop(0,color+'55');
+  grad.addColorStop(1,color+'00');
+  new Chart(ctx,{
+    type:'line',
+    data:{labels:data.map((_,i)=>i),datasets:[{data,borderColor:color,backgroundColor:grad,borderWidth:2,fill:true,tension:0.4,pointRadius:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{display:false},y:{display:false}}}
+  });
+}
+
+function drawDonut(id,data,colors,centerCutout=72){
+  const c = document.getElementById(id);
+  if(!c) return;
+  new Chart(c.getContext('2d'),{
+    type:'doughnut',
+    data:{datasets:[{data,backgroundColor:colors,borderWidth:0,hoverOffset:8}]},
+    options:{
+      responsive:true,maintainAspectRatio:false,cutout:centerCutout+'%',
+      plugins:{legend:{display:false},tooltip:{backgroundColor:'#0A0F1E',padding:10,cornerRadius:8,displayColors:true}}
+    }
+  });
+}
+
+/* ═══════════════════════════════════════
+   WIZARD CALCULATION
+══════════════════════════════════════════ */
+function selType(el,type){
+  el.parentElement.querySelectorAll('.tcard').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function calcWiz(){
+  const price = +document.getElementById('wPrice').value||0;
+  const units = +document.getElementById('wUnits').value||0;
+  const cogs = +document.getElementById('wCogs').value||0;
+  const pack = +document.getElementById('wPack').value||0;
+  const ship = +document.getElementById('wShip').value||0;
+  const ret = +document.getElementById('wReturn').value||0;
+  const ads = +document.getElementById('wAds').value||0;
+  const fees = +document.getElementById('wFees').value||0;
+
+  const successUnits = units * (1 - ret/100);
+  const revenue = price * successUnits;
+  const cogsTotal = (cogs + pack) * units;
+  const shipTotal = ship * units;
+  const feesTotal = revenue * fees/100;
+  const net = revenue - cogsTotal - shipTotal - ads - feesTotal;
+  const margin = revenue > 0 ? (net/revenue*100) : 0;
+  const perUnit = successUnits > 0 ? net/successUnits : 0;
+
+  let health = 50;
+  if(margin > 40) health = 92;
+  else if(margin > 25) health = 80;
+  else if(margin > 15) health = 65;
+  else if(margin > 5) health = 50;
+  else if(margin > 0) health = 35;
+  else health = 18;
+
+  let verdict;
+  if(health >= 80) verdict = '⚡ Scale this product';
+  else if(health >= 60) verdict = '✓ Stable performer';
+  else if(health >= 40) verdict = '⚠ Needs optimization';
+  else verdict = '🛑 Reconsider or pause';
+
+  document.getElementById('wNet').textContent = fmt(Math.round(net));
+  document.getElementById('wNetUnit').textContent = fmt(Math.round(perUnit));
+  document.getElementById('wMargin').textContent = margin.toFixed(1)+'%';
+  document.getElementById('wHealth').textContent = health;
+  document.getElementById('wVerdict').textContent = verdict;
+}
+
+function saveProduct(){
+  toast('Product saved & tracking started');
+  setTimeout(()=>goView('overview'),900);
+}
+
+/* ═══════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+window.addEventListener('DOMContentLoaded',()=>{
+  buildCurList();
+  updateAllAmounts();
+  buildPmat();
+  buildTopProducts();
+  calcWiz();
+
+  // Sparklines for KPIs
+  drawSparkline('sparkProfit',[2.4,2.8,2.2,3.1,2.6,3.4,3.8,3.2,3.9,4.2,3.6,4.5,4.1,4.8,5.2,4.6,5.4,6.1,5.7,6.4,5.9,6.8,7.2,6.6,7.5,8.0,7.6,8.3,8.8,8.4],'#FFFFFF');
+  drawSparkline('sparkRevenue',[8,9,8.5,10,9.5,11,12,11.5,12.5,13,12.5,13.5,14,13.5,14.5,15,14.5,15.5,16,15.5,16.5,17,16.5,17.5,18,17.5,18.5,19,18.5,19.5],'#1E2761');
+  drawSparkline('sparkMargin',[24,24.5,25,24.8,25.2,25.5,25.8,26,25.7,26.2,26.5,26.8,26.5,26.9,27.2,26.8,27,27.5,27.2,27.8,27.5,27.9,28,27.6,27.8,28.2,27.9,28.5,28.8,27.4],'#E76F4A');
+
+  drawPulse('daily');
+  drawDonut('revMix',[63,24,13],['#1E2761','#E76F4A','#0F6E5C']);
+  drawDonut('costMix',[42,27,17,14],['#1E2761','#E76F4A','#D4A53C','#7C3AED']);
+
+  // Animate hero kpis count
+  document.querySelectorAll('.kpi-val').forEach(el=>el.style.animation='countUp 0.6s ease');
+
+  // Welcome toast
+  setTimeout(()=>toast('Welcome back, Abdessamad'),700);
+});
+
+// Keyboard shortcut
+document.addEventListener('keydown',(e)=>{
+  if((e.metaKey||e.ctrlKey) && e.key==='k'){
+    e.preventDefault();
+    document.querySelector('.tb-search input').focus();
+  }
+});
+</script>
+</body>
+</html>

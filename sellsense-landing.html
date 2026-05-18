@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SellSense — Profit Intelligence for Online Earners</title>
+<meta name="description" content="The decision platform for ecom, creators & freelancers. Know your real profit, by product. Track. Calculate. Scale."/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#FAFAF7;
+  --bg-soft:#F4F2EC;
+  --surface:#FFFFFF;
+  --surface-2:#FBFAF6;
+  --surface-3:#F1EFE8;
+  --ink:#0A0F1E;
+  --ink-2:#1A2238;
+  --text:#0D1424;
+  --text-2:#3B4358;
+  --text-3:#6B7280;
+  --muted:#9CA3AF;
+  --muted-2:#D1D5DB;
+  --border:#EBE7DC;
+  --border-2:#E2DDD0;
+  --border-3:#D5CFC0;
+  --primary:#1E2761;
+  --primary-2:#2C3679;
+  --accent:#E76F4A;
+  --accent-2:#FF8A66;
+  --gold:#D4A53C;
+  --gold-2:#E8BD58;
+  --emerald:#0F6E5C;
+  --emerald-2:#15A37F;
+  --ruby:#DC3556;
+  --violet:#7C3AED;
+  --sky:#0EA5E9;
+  --pos:#0F6E5C;
+  --pos-soft:#E6F5F1;
+  --neg:#DC3556;
+  --neg-soft:#FCE9ED;
+  --grad-1:linear-gradient(135deg,#1E2761 0%,#3B4FA3 100%);
+  --grad-aurora:linear-gradient(135deg,#1E2761 0%,#7C3AED 50%,#E76F4A 100%);
+  --sh-xs:0 1px 2px rgba(13,20,36,0.04);
+  --sh-sm:0 2px 8px rgba(13,20,36,0.06),0 1px 2px rgba(13,20,36,0.04);
+  --sh-md:0 8px 28px rgba(13,20,36,0.08),0 2px 6px rgba(13,20,36,0.04);
+  --sh-lg:0 24px 60px rgba(13,20,36,0.12),0 8px 18px rgba(13,20,36,0.06);
+  --ff-sans:'Inter',system-ui,sans-serif;
+  --ff-display:'Instrument Serif',Georgia,serif;
+  --ff-mono:'JetBrains Mono',Menlo,monospace;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--ff-sans);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+a{text-decoration:none;color:inherit;}
+
+/* NAV */
+.nav{position:sticky;top:0;background:rgba(250,250,247,0.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border);z-index:100;}
+.nav-in{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:68px;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--accent));border-radius:9px;display:flex;align-items:center;justify-content:center;position:relative;box-shadow:0 4px 12px rgba(212,165,60,0.35);}
+.logo-mark::after{content:'';position:absolute;inset:1.5px;border-radius:8px;background:linear-gradient(135deg,rgba(255,255,255,0.2),transparent 60%);}
+.logo-name{font-family:var(--ff-display);font-size:22px;font-style:italic;letter-spacing:-0.5px;color:var(--text);}
+.nav-links{display:flex;align-items:center;gap:2px;}
+.nav-l{font-size:13.5px;font-weight:500;color:var(--text-3);padding:8px 14px;border-radius:8px;transition:all .12s;}
+.nav-l:hover{background:var(--surface-3);color:var(--text);}
+.nav-cta-2{font-size:13.5px;font-weight:600;color:var(--text);padding:8px 16px;margin-right:6px;border-radius:8px;transition:all .12s;}
+.nav-cta-2:hover{background:var(--surface-3);}
+.nav-cta{background:var(--ink);color:#fff;font-size:13.5px;font-weight:600;padding:9px 16px;border-radius:9px;display:inline-flex;align-items:center;gap:6px;transition:all .15s;}
+.nav-cta:hover{background:var(--primary);transform:translateY(-1px);box-shadow:var(--sh-md);}
+.burger{display:none;width:38px;height:38px;border-radius:9px;border:1px solid var(--border);background:#fff;align-items:center;justify-content:center;}
+.mob{display:none;flex-direction:column;background:var(--surface);border-bottom:1px solid var(--border);padding:14px 24px 20px;gap:4px;}
+.mob.open{display:flex;}
+
+/* HERO */
+.hero{padding:96px 24px 80px;text-align:center;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(30,39,97,0.06),transparent 60%),radial-gradient(ellipse at 80% 30%,rgba(231,111,74,0.08),transparent 50%),radial-gradient(ellipse at 20% 60%,rgba(212,165,60,0.06),transparent 50%);}
+.hero-grain{position:absolute;inset:0;opacity:0.4;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.025 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none;}
+.hero-in{position:relative;max-width:880px;margin:0 auto;}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border-2);border-radius:30px;padding:6px 14px 6px 6px;font-size:12.5px;font-weight:600;color:var(--text-2);margin-bottom:32px;box-shadow:var(--sh-xs);}
+.eb-tag{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,var(--gold-2),var(--gold));color:var(--ink);font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;}
+.h1{font-family:var(--ff-display);font-size:clamp(48px,8vw,86px);font-weight:400;letter-spacing:-2px;line-height:1.0;color:var(--text);margin-bottom:24px;}
+.h1 em{font-style:italic;color:var(--primary);}
+.h1 .strike{position:relative;color:var(--text-3);}
+.h1 .strike::after{content:'';position:absolute;left:-2%;right:-2%;top:48%;height:3px;background:var(--accent);transform:rotate(-3deg);border-radius:2px;}
+.h-sub{font-size:18px;color:var(--text-3);max-width:580px;margin:0 auto 38px;line-height:1.55;font-weight:400;}
+.h-sub strong{color:var(--text);font-weight:600;}
+.h-btns{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:34px;flex-wrap:wrap;}
+.btn-primary{display:inline-flex;align-items:center;gap:7px;background:var(--ink);color:#fff;font-size:15px;font-weight:600;padding:14px 24px;border-radius:12px;transition:all .15s;box-shadow:var(--sh-md);}
+.btn-primary:hover{background:var(--primary);transform:translateY(-2px);box-shadow:var(--sh-lg);}
+.btn-secondary{display:inline-flex;align-items:center;gap:7px;background:#fff;color:var(--text);font-size:14.5px;font-weight:600;padding:13px 22px;border-radius:12px;border:1px solid var(--border-2);transition:all .15s;}
+.btn-secondary:hover{border-color:var(--text);}
+.h-trust{display:inline-flex;align-items:center;gap:14px;font-size:13px;color:var(--text-3);}
+.h-trust strong{color:var(--text);font-weight:600;}
+.av-stack{display:inline-flex;}
+.av-stack > div{width:24px;height:24px;border-radius:50%;border:2px solid var(--bg);margin-left:-7px;background:var(--grad-aurora);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;}
+.av-stack > div:first-child{margin-left:0;}
+.av-stack > div:nth-child(2){background:linear-gradient(135deg,var(--emerald-2),var(--emerald));}
+.av-stack > div:nth-child(3){background:linear-gradient(135deg,var(--gold-2),var(--gold));}
+.av-stack > div:nth-child(4){background:linear-gradient(135deg,var(--violet),#A78BFA);}
+
+/* HERO DASHBOARD MOCKUP */
+.hero-preview{max-width:1100px;margin:60px auto 0;position:relative;}
+.hero-preview::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(30,39,97,0.12),transparent 70%);transform:translateY(40%);filter:blur(40px);z-index:0;}
+.preview-frame{position:relative;background:var(--surface);border:1px solid var(--border-2);border-radius:18px;padding:18px;box-shadow:var(--sh-lg);z-index:1;}
+.pf-bar{display:flex;align-items:center;gap:6px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.pf-bar span{width:10px;height:10px;border-radius:50%;background:#E5E7EB;}
+.pf-bar span:nth-child(1){background:#FF5F57;}
+.pf-bar span:nth-child(2){background:#FFBD2E;}
+.pf-bar span:nth-child(3){background:#28C940;}
+.pf-bar small{font-family:var(--ff-mono);font-size:11px;color:var(--muted);margin-left:14px;}
+.pf-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+.pf-kpi{background:linear-gradient(135deg,var(--surface-2),var(--surface));border:1px solid var(--border);border-radius:10px;padding:12px;text-align:left;}
+.pf-kpi.primary{background:var(--grad-1);border-color:transparent;color:#fff;}
+.pf-kpi-l{font-size:9.5px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:6px;}
+.pf-kpi.primary .pf-kpi-l{color:rgba(255,255,255,0.6);}
+.pf-kpi-v{font-family:var(--ff-display);font-size:22px;font-weight:400;color:var(--text);line-height:1;}
+.pf-kpi.primary .pf-kpi-v{color:#fff;}
+.pf-kpi-t{font-size:10.5px;color:var(--pos);margin-top:4px;}
+.pf-kpi.primary .pf-kpi-t{color:#7AE0BD;}
+.pf-body{display:grid;grid-template-columns:1.5fr 1fr;gap:10px;}
+.pf-chart{background:linear-gradient(180deg,rgba(30,39,97,0.06),rgba(30,39,97,0.01));border:1px solid var(--border);border-radius:10px;padding:14px;}
+.pf-ch-t{font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.pf-ch-svg{width:100%;height:80px;}
+.pf-side{background:var(--ink);border-radius:10px;padding:13px;color:#fff;}
+.pf-side-t{font-size:11px;font-weight:700;color:#fff;margin-bottom:9px;display:flex;align-items:center;gap:5px;}
+.pf-side-t .b{font-size:9px;font-weight:700;background:var(--gold);color:var(--ink);padding:2px 6px;border-radius:4px;}
+.pf-rec{background:rgba(255,255,255,0.06);border-radius:7px;padding:8px 9px;font-size:10.5px;margin-bottom:6px;color:rgba(255,255,255,0.85);line-height:1.4;}
+.pf-rec strong{color:#5FE3B8;}
+.pf-rec.r{color:rgba(255,255,255,0.85);}
+.pf-rec.r strong{color:#FF8B9E;}
+
+/* INTERNATIONAL BADGES */
+.intl{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:32px 24px;overflow:hidden;}
+.intl-in{max-width:1200px;margin:0 auto;}
+.intl-lbl{text-align:center;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:18px;}
+.intl-track{display:flex;gap:36px;animation:scroll 30s linear infinite;width:max-content;}
+.intl-i{display:flex;align-items:center;gap:7px;font-size:14px;color:var(--text-2);white-space:nowrap;font-weight:500;}
+.intl-i .flag{font-size:18px;}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* SECTION */
+.sec{padding:96px 24px;max-width:1200px;margin:0 auto;}
+.sec-head{text-align:center;max-width:680px;margin:0 auto 48px;}
+.sec-tag{display:inline-block;font-size:11.5px;font-weight:700;color:var(--accent);background:rgba(231,111,74,0.1);padding:5px 13px;border-radius:20px;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:18px;}
+.sec-title{font-family:var(--ff-display);font-size:clamp(36px,5vw,56px);font-weight:400;letter-spacing:-1px;line-height:1.05;color:var(--text);margin-bottom:14px;}
+.sec-title em{font-style:italic;color:var(--primary);}
+.sec-sub{font-size:16.5px;color:var(--text-3);line-height:1.55;}
+
+/* PROBLEM SECTION */
+.prob{background:var(--ink);color:#fff;padding:100px 24px;position:relative;overflow:hidden;}
+.prob::before{content:'';position:absolute;top:-100px;right:-100px;width:400px;height:400px;background:radial-gradient(circle,var(--accent) 0%,transparent 60%);opacity:0.18;}
+.prob::after{content:'';position:absolute;bottom:-100px;left:-100px;width:400px;height:400px;background:radial-gradient(circle,var(--primary) 0%,transparent 60%);opacity:0.3;}
+.prob-in{max-width:1100px;margin:0 auto;position:relative;}
+.prob-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:60px;align-items:center;}
+.prob-left .sec-tag{background:rgba(231,111,74,0.15);color:var(--accent-2);}
+.prob-left .sec-title{color:#fff;text-align:left;}
+.prob-left .sec-title em{color:var(--gold);}
+.prob-left .sec-sub{color:rgba(255,255,255,0.65);text-align:left;}
+.prob-list{margin-top:32px;display:flex;flex-direction:column;gap:14px;}
+.prob-i{display:flex;gap:14px;align-items:flex-start;}
+.prob-i-x{width:28px;height:28px;border-radius:8px;background:rgba(220,53,86,0.15);color:#FF8B9E;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;}
+.prob-i-t{font-size:15px;font-weight:600;color:#fff;line-height:1.4;margin-bottom:3px;}
+.prob-i-d{font-size:13.5px;color:rgba(255,255,255,0.55);line-height:1.5;}
+.prob-mock{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:24px;backdrop-filter:blur(10px);}
+.pm-row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.08);font-size:13.5px;}
+.pm-row:last-child{border-bottom:none;padding-top:18px;font-size:16px;font-weight:700;}
+.pm-lbl{color:rgba(255,255,255,0.6);}
+.pm-val{font-family:var(--ff-mono);color:#fff;font-weight:500;}
+.pm-val.neg{color:#FF8B9E;}
+.pm-val.fin{color:#DC3556;font-family:var(--ff-display);font-size:22px;font-weight:400;}
+.pm-tag{display:inline-block;font-size:10.5px;font-weight:700;background:rgba(220,53,86,0.18);color:#FF8B9E;padding:3px 8px;border-radius:5px;margin-bottom:14px;letter-spacing:0.05em;text-transform:uppercase;}
+
+/* WHO */
+.who{padding:96px 24px;background:var(--bg);}
+.who-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1200px;margin:0 auto;}
+.wc{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:32px;transition:all .25s;position:relative;overflow:hidden;}
+.wc:hover{border-color:var(--border-3);transform:translateY(-4px);box-shadow:var(--sh-lg);}
+.wc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.wc.a::before{background:linear-gradient(90deg,var(--primary),var(--violet));}
+.wc.b::before{background:linear-gradient(90deg,var(--accent),var(--gold));}
+.wc.c::before{background:linear-gradient(90deg,var(--emerald),var(--sky));}
+.wc-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:22px;}
+.wc.a .wc-icon{background:var(--info-soft,rgba(30,39,97,0.08));}
+.wc.b .wc-icon{background:rgba(231,111,74,0.1);}
+.wc.c .wc-icon{background:var(--pos-soft);}
+.wc-t{font-family:var(--ff-display);font-size:26px;font-weight:400;letter-spacing:-0.3px;color:var(--text);margin-bottom:6px;}
+.wc-s{font-size:13.5px;color:var(--text-3);margin-bottom:20px;}
+.wc-list{display:flex;flex-direction:column;gap:9px;}
+.wc-li{display:flex;align-items:flex-start;gap:9px;font-size:13.5px;color:var(--text-2);line-height:1.45;}
+.wc-li::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;margin-top:8px;flex-shrink:0;opacity:0.4;}
+.wc-foot{margin-top:24px;padding-top:18px;border-top:1px solid var(--border);font-size:12.5px;color:var(--text-3);}
+.wc-foot strong{color:var(--text);font-weight:600;}
+
+/* FEATURES */
+.feat{background:var(--surface);padding:96px 24px;}
+.feat-in{max-width:1200px;margin:0 auto;}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.ft{padding:24px;border-radius:18px;border:1px solid var(--border);background:var(--bg);transition:all .2s;}
+.ft:hover{border-color:var(--border-3);background:#fff;box-shadow:var(--sh-md);}
+.ft-icon{width:44px;height:44px;border-radius:11px;background:var(--surface-3);display:flex;align-items:center;justify-content:center;margin-bottom:18px;color:var(--primary);}
+.ft.acc .ft-icon{background:rgba(30,39,97,0.08);}
+.ft.acc2 .ft-icon{background:rgba(231,111,74,0.1);color:var(--accent);}
+.ft.acc3 .ft-icon{background:rgba(15,110,92,0.1);color:var(--pos);}
+.ft.acc4 .ft-icon{background:rgba(212,165,60,0.12);color:var(--gold);}
+.ft.acc5 .ft-icon{background:rgba(124,58,237,0.1);color:var(--violet);}
+.ft.acc6 .ft-icon{background:rgba(14,165,233,0.1);color:var(--sky);}
+.ft-t{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.ft-d{font-size:13.5px;color:var(--text-3);line-height:1.55;}
+
+/* STEPS */
+.steps{padding:96px 24px;}
+.steps-grid{max-width:1100px;margin:48px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:0;background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:hidden;}
+.st{padding:36px 32px;border-right:1px solid var(--border);position:relative;}
+.st:last-child{border-right:none;}
+.st-n{font-family:var(--ff-display);font-size:60px;font-weight:400;color:var(--surface-3);line-height:1;letter-spacing:-3px;margin-bottom:14px;}
+.st-t{font-family:var(--ff-display);font-size:24px;font-weight:400;letter-spacing:-0.3px;color:var(--text);margin-bottom:8px;}
+.st-d{font-size:13.5px;color:var(--text-3);line-height:1.55;}
+
+/* PRICING */
+.price{background:var(--bg);padding:96px 24px;}
+.price-in{max-width:1100px;margin:0 auto;}
+.toggle{display:inline-flex;background:var(--surface);border:1px solid var(--border-2);border-radius:30px;padding:4px;margin:20px auto 44px;}
+.toggle-w{display:flex;justify-content:center;}
+.tg-btn{font-size:13.5px;font-weight:600;color:var(--text-3);padding:9px 20px;border-radius:30px;transition:all .15s;}
+.tg-btn.on{background:var(--ink);color:#fff;}
+.tg-save{font-size:10.5px;font-weight:700;background:var(--gold);color:var(--ink);padding:2px 7px;border-radius:20px;margin-left:6px;}
+
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.plan{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:32px 28px;position:relative;transition:all .2s;}
+.plan:hover{transform:translateY(-4px);box-shadow:var(--sh-lg);}
+.plan.feat{border:2px solid var(--ink);background:linear-gradient(135deg,var(--ink) 0%,var(--primary) 100%);color:#fff;}
+.plan.feat::before{content:'Most popular';position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--ink);font-size:11px;font-weight:700;padding:5px 14px;border-radius:20px;letter-spacing:0.04em;}
+.plan-n{font-size:13px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;}
+.plan.feat .plan-n{color:rgba(255,255,255,0.55);}
+.plan-p{font-family:var(--ff-display);font-size:54px;font-weight:400;letter-spacing:-2px;color:var(--text);line-height:1;margin-bottom:2px;}
+.plan.feat .plan-p{color:#fff;}
+.plan-p small{font-family:var(--ff-sans);font-size:14px;color:var(--text-3);font-weight:500;margin-left:4px;}
+.plan.feat .plan-p small{color:rgba(255,255,255,0.55);}
+.plan-d{font-size:13px;color:var(--text-3);margin-bottom:24px;line-height:1.5;}
+.plan.feat .plan-d{color:rgba(255,255,255,0.65);}
+.plan-cta{display:block;width:100%;text-align:center;background:var(--surface-3);color:var(--text);font-size:14px;font-weight:600;padding:13px;border-radius:12px;margin-bottom:24px;transition:all .15s;}
+.plan-cta:hover{background:var(--ink);color:#fff;}
+.plan.feat .plan-cta{background:var(--gold);color:var(--ink);}
+.plan.feat .plan-cta:hover{background:var(--gold-2);}
+.plan-list{display:flex;flex-direction:column;gap:11px;}
+.plan-li{font-size:13.5px;color:var(--text-2);display:flex;align-items:flex-start;gap:9px;}
+.plan-li::before{content:'✓';color:var(--pos);font-weight:700;flex-shrink:0;}
+.plan.feat .plan-li{color:rgba(255,255,255,0.85);}
+.plan.feat .plan-li::before{color:var(--gold);}
+
+/* TESTI */
+.testi{padding:96px 24px;}
+.t-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1200px;margin:0 auto;}
+.tc{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:26px;transition:all .2s;}
+.tc:hover{border-color:var(--border-3);box-shadow:var(--sh-md);}
+.tc-stars{color:var(--gold);font-size:14px;letter-spacing:1.5px;margin-bottom:14px;}
+.tc-q{font-size:15px;color:var(--text);line-height:1.6;margin-bottom:20px;font-style:italic;}
+.tc-auth{display:flex;align-items:center;gap:11px;padding-top:18px;border-top:1px solid var(--border);}
+.tc-av{width:38px;height:38px;border-radius:50%;color:#fff;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;}
+.tc-n{font-size:13.5px;font-weight:700;color:var(--text);}
+.tc-r{font-size:11.5px;color:var(--text-3);}
+
+/* CTA */
+.cta{background:var(--ink);color:#fff;padding:120px 24px;text-align:center;position:relative;overflow:hidden;}
+.cta::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,var(--gold) 0%,transparent 60%);opacity:0.1;}
+.cta::after{content:'';position:absolute;bottom:-100px;right:-100px;width:400px;height:400px;background:radial-gradient(circle,var(--accent) 0%,transparent 60%);opacity:0.15;}
+.cta-in{position:relative;max-width:680px;margin:0 auto;}
+.cta-t{font-family:var(--ff-display);font-size:clamp(40px,7vw,72px);font-weight:400;letter-spacing:-1.5px;line-height:1;color:#fff;margin-bottom:18px;}
+.cta-t em{font-style:italic;color:var(--gold);}
+.cta-s{font-size:17px;color:rgba(255,255,255,0.65);margin-bottom:34px;}
+.cta-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.cta-prim{background:#fff;color:var(--ink);font-size:15px;font-weight:700;padding:14px 26px;border-radius:12px;transition:all .15s;}
+.cta-prim:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(255,255,255,0.2);}
+.cta-sec{background:rgba(255,255,255,0.08);color:#fff;font-size:14.5px;font-weight:600;padding:14px 22px;border-radius:12px;border:1px solid rgba(255,255,255,0.18);transition:all .15s;}
+.cta-sec:hover{background:rgba(255,255,255,0.14);}
+.cta-foot{font-size:12.5px;color:rgba(255,255,255,0.4);margin-top:22px;}
+
+/* FOOTER */
+.foot{background:#070A14;color:rgba(255,255,255,0.6);padding:60px 24px 36px;}
+.foot-in{max-width:1200px;margin:0 auto;}
+.foot-top{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1fr;gap:36px;margin-bottom:42px;}
+.foot-brand .logo-name{color:#fff;}
+.foot-p{font-size:13.5px;color:rgba(255,255,255,0.4);margin-top:14px;max-width:260px;line-height:1.55;}
+.foot-h{font-size:11px;font-weight:700;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:14px;}
+.foot-l{display:block;font-size:13.5px;color:rgba(255,255,255,0.55);margin-bottom:10px;transition:color .12s;}
+.foot-l:hover{color:#fff;}
+.foot-bot{display:flex;justify-content:space-between;align-items:center;padding-top:24px;border-top:1px solid rgba(255,255,255,0.06);font-size:12.5px;color:rgba(255,255,255,0.3);gap:18px;flex-wrap:wrap;}
+
+.rev{opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s;}
+.rev.vis{opacity:1;transform:translateY(0);}
+
+@media(max-width:1100px){
+  .prob-grid{grid-template-columns:1fr;}
+  .who-grid,.t-grid,.plans,.feat-grid,.steps-grid{grid-template-columns:1fr;}
+  .st{border-right:none;border-bottom:1px solid var(--border);}
+  .st:last-child{border-bottom:none;}
+  .foot-top{grid-template-columns:1fr 1fr;}
+  .pf-grid{grid-template-columns:1fr 1fr;}
+  .pf-body{grid-template-columns:1fr;}
+}
+@media(max-width:768px){
+  .nav-links .nav-l,.nav-cta-2{display:none;}
+  .burger{display:flex;}
+  .hero{padding:60px 20px 50px;}
+  .sec,.prob,.who,.feat,.steps,.price,.testi{padding:70px 20px;}
+  .foot-top{grid-template-columns:1fr;gap:24px;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-in">
+    <a href="sellsense-landing.html" class="logo">
+      <div class="logo-mark">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M8 1L15 5V11L8 15L1 11V5L8 1Z" stroke="#0A0F1E" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M8 5L11 7V9L8 11L5 9V7L8 5Z" fill="#0A0F1E"/>
+        </svg>
+      </div>
+      <span class="logo-name">SellSense</span>
+    </a>
+    <div class="nav-links">
+      <a href="#features" class="nav-l">Features</a>
+      <a href="#who" class="nav-l">Who it's for</a>
+      <a href="#how" class="nav-l">How it works</a>
+      <a href="sellsense-help.html" class="nav-l">Help</a>
+      <a href="sellsense-auth.html" class="nav-cta-2">Sign in</a>
+      <a href="sellsense-dashboard.html" class="nav-cta">
+        Open dashboard
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+    <button class="burger" onclick="document.getElementById('mob').classList.toggle('open')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+  <div class="mob" id="mob">
+    <a href="#features" class="nav-l">Features</a>
+    <a href="#who" class="nav-l">Who it's for</a>
+    <a href="#how" class="nav-l">How it works</a>
+    <a href="sellsense-help.html" class="nav-l">Help</a>
+    <a href="sellsense-auth.html" class="nav-l">Sign in</a>
+    <a href="sellsense-dashboard.html" class="nav-cta" style="margin-top:8px;justify-content:center;">Open dashboard →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grain"></div>
+  <div class="hero-in">
+    <div class="eyebrow">
+      <span class="eb-tag">NEW</span>
+      <span>AI Decision Center — know what to scale, pause, or fix</span>
+    </div>
+    <h1 class="h1">
+      Stop counting <span class="strike">revenue.</span><br/>
+      Start tracking <em>real profit.</em>
+    </h1>
+    <p class="h-sub">
+      SellSense is the <strong>profit intelligence platform</strong> for ecom, creators & freelancers. Track each product's true unit economics, get AI scaling recommendations, and decide with numbers — not guesses.
+    </p>
+    <div class="h-btns">
+      <a href="sellsense-dashboard.html" class="btn-primary">
+        Try the live dashboard
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#features" class="btn-secondary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        See how it works
+      </a>
+    </div>
+    <div class="h-trust">
+      <div class="av-stack"><div>S</div><div>K</div><div>M</div><div>A</div></div>
+      <span><strong>2,400+ founders</strong> · 28 countries · 27 currencies</span>
+    </div>
+  </div>
+
+  <!-- Hero Preview -->
+  <div class="hero-preview">
+    <div class="preview-frame">
+      <div class="pf-bar">
+        <span></span><span></span><span></span>
+        <small>app.sellsense.io / overview</small>
+      </div>
+      <div class="pf-grid">
+        <div class="pf-kpi primary">
+          <div class="pf-kpi-l">Net profit</div>
+          <div class="pf-kpi-v">$8,429</div>
+          <div class="pf-kpi-t">▲ 23.4% vs prev. 30d</div>
+        </div>
+        <div class="pf-kpi">
+          <div class="pf-kpi-l">Revenue</div>
+          <div class="pf-kpi-v">$31,250</div>
+          <div class="pf-kpi-t">▲ 18.2%</div>
+        </div>
+        <div class="pf-kpi">
+          <div class="pf-kpi-l">Margin</div>
+          <div class="pf-kpi-v">26.9%</div>
+          <div class="pf-kpi-t">▲ 2.1pp</div>
+        </div>
+        <div class="pf-kpi">
+          <div class="pf-kpi-l">Health score</div>
+          <div class="pf-kpi-v">82/100</div>
+          <div class="pf-kpi-t">▲ 4 pts</div>
+        </div>
+      </div>
+      <div class="pf-body">
+        <div class="pf-chart">
+          <div class="pf-ch-t">Profit Pulse · 30 days</div>
+          <svg class="pf-ch-svg" viewBox="0 0 300 80" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="pulseG" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#1E2761" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#1E2761" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path d="M 0 60 L 20 55 L 40 58 L 60 50 L 80 52 L 100 42 L 120 45 L 140 36 L 160 38 L 180 28 L 200 30 L 220 22 L 240 24 L 260 14 L 280 16 L 300 8 L 300 80 L 0 80 Z" fill="url(#pulseG)"/>
+            <path d="M 0 60 L 20 55 L 40 58 L 60 50 L 80 52 L 100 42 L 120 45 L 140 36 L 160 38 L 180 28 L 200 30 L 220 22 L 240 24 L 260 14 L 280 16 L 300 8" fill="none" stroke="#1E2761" stroke-width="2"/>
+            <circle cx="300" cy="8" r="3" fill="#1E2761"/>
+          </svg>
+        </div>
+        <div class="pf-side">
+          <div class="pf-side-t">Decision Center <span class="b">AI</span></div>
+          <div class="pf-rec"><strong>↑ Scale</strong> Smart Watch — ROAS 4.8×</div>
+          <div class="pf-rec r"><strong>⏸ Pause</strong> Earbuds — bleeding $184/wk</div>
+          <div class="pf-rec"><strong>⚡ Optimize</strong> COD shipping — save $820</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INTERNATIONAL TICKER -->
+<div class="intl">
+  <div class="intl-in">
+    <div class="intl-lbl">Built for online earners in 28+ countries</div>
+    <div class="intl-track">
+      <div class="intl-i"><span class="flag">🇺🇸</span> USD</div>
+      <div class="intl-i"><span class="flag">🇪🇺</span> EUR</div>
+      <div class="intl-i"><span class="flag">🇬🇧</span> GBP</div>
+      <div class="intl-i"><span class="flag">🇲🇦</span> MAD</div>
+      <div class="intl-i"><span class="flag">🇦🇪</span> AED</div>
+      <div class="intl-i"><span class="flag">🇸🇦</span> SAR</div>
+      <div class="intl-i"><span class="flag">🇪🇬</span> EGP</div>
+      <div class="intl-i"><span class="flag">🇮🇳</span> INR</div>
+      <div class="intl-i"><span class="flag">🇳🇬</span> NGN</div>
+      <div class="intl-i"><span class="flag">🇿🇦</span> ZAR</div>
+      <div class="intl-i"><span class="flag">🇧🇷</span> BRL</div>
+      <div class="intl-i"><span class="flag">🇲🇽</span> MXN</div>
+      <div class="intl-i"><span class="flag">🇨🇦</span> CAD</div>
+      <div class="intl-i"><span class="flag">🇦🇺</span> AUD</div>
+      <div class="intl-i"><span class="flag">🇨🇳</span> CNY</div>
+      <div class="intl-i"><span class="flag">🇯🇵</span> JPY</div>
+      <div class="intl-i"><span class="flag">🇰🇷</span> KRW</div>
+      <div class="intl-i"><span class="flag">🇨🇭</span> CHF</div>
+      <div class="intl-i"><span class="flag">🇹🇳</span> TND</div>
+      <div class="intl-i"><span class="flag">🇩🇿</span> DZD</div>
+      <div class="intl-i"><span class="flag">🇮🇩</span> IDR</div>
+      <div class="intl-i"><span class="flag">🇵🇰</span> PKR</div>
+      <div class="intl-i"><span class="flag">🇰🇪</span> KES</div>
+      <div class="intl-i"><span class="flag">🇬🇭</span> GHS</div>
+      <div class="intl-i"><span class="flag">🇦🇷</span> ARS</div>
+      <div class="intl-i"><span class="flag">₿</span> BTC</div>
+      <div class="intl-i"><span class="flag">🪙</span> USDT</div>
+      <!-- Duplicate for seamless loop -->
+      <div class="intl-i"><span class="flag">🇺🇸</span> USD</div>
+      <div class="intl-i"><span class="flag">🇪🇺</span> EUR</div>
+      <div class="intl-i"><span class="flag">🇬🇧</span> GBP</div>
+      <div class="intl-i"><span class="flag">🇲🇦</span> MAD</div>
+      <div class="intl-i"><span class="flag">🇦🇪</span> AED</div>
+      <div class="intl-i"><span class="flag">🇸🇦</span> SAR</div>
+      <div class="intl-i"><span class="flag">🇪🇬</span> EGP</div>
+      <div class="intl-i"><span class="flag">🇮🇳</span> INR</div>
+      <div class="intl-i"><span class="flag">🇳🇬</span> NGN</div>
+      <div class="intl-i"><span class="flag">🇿🇦</span> ZAR</div>
+      <div class="intl-i"><span class="flag">🇧🇷</span> BRL</div>
+      <div class="intl-i"><span class="flag">🇲🇽</span> MXN</div>
+    </div>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section class="prob">
+  <div class="prob-in">
+    <div class="prob-grid">
+      <div class="prob-left">
+        <span class="sec-tag">The hidden cost</span>
+        <h2 class="sec-title">Most sellers <em>celebrate the wrong number.</em></h2>
+        <p class="sec-sub">Revenue feels like winning. But by the time you count COGS, ads, shipping, returns, platform fees, and chargebacks — there's often nothing left. SellSense shows the part nobody else does.</p>
+        <div class="prob-list">
+          <div class="prob-i">
+            <div class="prob-i-x">×</div>
+            <div>
+              <div class="prob-i-t">You can't tell which products actually make money</div>
+              <div class="prob-i-d">Total profit hides which products are profitable and which are silently bleeding cash.</div>
+            </div>
+          </div>
+          <div class="prob-i">
+            <div class="prob-i-x">×</div>
+            <div>
+              <div class="prob-i-t">Campaign-level metrics lie</div>
+              <div class="prob-i-d">A 4× ROAS ad can still lose money once delivery, returns, and COGS hit.</div>
+            </div>
+          </div>
+          <div class="prob-i">
+            <div class="prob-i-x">×</div>
+            <div>
+              <div class="prob-i-t">Excel spreadsheets break the moment you grow</div>
+              <div class="prob-i-d">You started in a sheet. Now you have 12 products in 3 channels — and no clarity at all.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="prob-mock">
+        <div class="pm-tag">A real product · last 30 days</div>
+        <div style="font-family:var(--ff-display);font-size:24px;font-weight:400;letter-spacing:-0.3px;margin-bottom:18px;">🎧 Bluetooth Earbuds</div>
+        <div class="pm-row"><span class="pm-lbl">Revenue (128 units)</span><span class="pm-val">$2,176</span></div>
+        <div class="pm-row"><span class="pm-lbl">COGS</span><span class="pm-val neg">−$1,280</span></div>
+        <div class="pm-row"><span class="pm-lbl">Ad spend</span><span class="pm-val neg">−$890</span></div>
+        <div class="pm-row"><span class="pm-lbl">Shipping</span><span class="pm-val neg">−$520</span></div>
+        <div class="pm-row"><span class="pm-lbl">Returns (12%)</span><span class="pm-val neg">−$216</span></div>
+        <div class="pm-row"><span class="pm-lbl">Platform fees (2.5%)</span><span class="pm-val neg">−$54</span></div>
+        <div class="pm-row">
+          <span class="pm-lbl" style="color:#fff;font-weight:700;">Real net profit</span>
+          <span class="pm-val fin">−$784</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO -->
+<section class="who" id="who">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="sec-head">
+      <span class="sec-tag">Built for online earners</span>
+      <h2 class="sec-title">Whatever you sell, <em>we speak your numbers.</em></h2>
+      <p class="sec-sub">Each business type unlocks its own smart input form — relevant fields only, terminology that fits, no irrelevant noise.</p>
+    </div>
+
+    <div class="who-grid">
+      <div class="wc a">
+        <div class="wc-icon">📦</div>
+        <div class="wc-t">E-commerce · D2C · COD</div>
+        <div class="wc-s">Dropshipping, online stores, Cash-on-Delivery sellers</div>
+        <div class="wc-list">
+          <div class="wc-li">Per-product unit economics</div>
+          <div class="wc-li">COD success rate & return cost</div>
+          <div class="wc-li">Multi-channel ad spend (Meta, TikTok)</div>
+          <div class="wc-li">Packaging, shipping, COD fees</div>
+          <div class="wc-li">Payment processor fees (Stripe, CMI…)</div>
+        </div>
+        <div class="wc-foot"><strong>Most loved by:</strong> Dropshippers, COD operators, niche store owners</div>
+      </div>
+
+      <div class="wc b">
+        <div class="wc-icon">🎬</div>
+        <div class="wc-t">Content Creator · Influencer</div>
+        <div class="wc-s">YouTube, TikTok, Instagram, courses, digital products</div>
+        <div class="wc-list">
+          <div class="wc-li">AdSense, TikTok Pulse, brand deals</div>
+          <div class="wc-li">Course & ebook sales tracking</div>
+          <div class="wc-li">Merch margin & fulfillment</div>
+          <div class="wc-li">Editor, equipment, software costs</div>
+          <div class="wc-li">Manager / agency commission</div>
+        </div>
+        <div class="wc-foot"><strong>Most loved by:</strong> YouTubers, TikTokers, course creators</div>
+      </div>
+
+      <div class="wc c">
+        <div class="wc-icon">💻</div>
+        <div class="wc-t">Freelance · Agency · Service</div>
+        <div class="wc-s">Upwork, Fiverr, agencies, direct clients</div>
+        <div class="wc-list">
+          <div class="wc-li">Effective hourly rate by project</div>
+          <div class="wc-li">Platform commissions (Upwork 10%, Fiverr 20%)</div>
+          <div class="wc-li">FX & wire transfer costs</div>
+          <div class="wc-li">Subcontractor payouts</div>
+          <div class="wc-li">Tools, software, coworking</div>
+        </div>
+        <div class="wc-foot"><strong>Most loved by:</strong> Freelancers, agency owners, consultants</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="feat" id="features">
+  <div class="feat-in">
+    <div class="sec-head">
+      <span class="sec-tag">A real decision platform</span>
+      <h2 class="sec-title">Not a calculator. <em>A co-pilot.</em></h2>
+      <p class="sec-sub">SellSense doesn't just compute numbers. It tells you what to do with them.</p>
+    </div>
+
+    <div class="feat-grid">
+      <div class="ft acc">
+        <div class="ft-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 6-6"/></svg></div>
+        <div class="ft-t">Product Performance Matrix</div>
+        <div class="ft-d">Every SKU scored on revenue, profit, margin, units & per-unit economics — sorted by health status.</div>
+      </div>
+
+      <div class="ft acc2">
+        <div class="ft-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/><circle cx="12" cy="12" r="4"/></svg></div>
+        <div class="ft-t">AI Decision Center</div>
+        <div class="ft-d">Daily actions: <em>"scale this product"</em>, <em>"pause this one"</em>, <em>"renegotiate shipping"</em>. Every recommendation has a projected dollar impact.</div>
+      </div>
+
+      <div class="ft acc3">
+        <div class="ft-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12L7 8l4 4 6-6 4 4"/><path d="M3 19h18"/></svg></div>
+        <div class="ft-t">Profit Pulse Chart</div>
+        <div class="ft-d">Live profit evolution, compared with previous period. Spot losing days instantly. Best & worst day flagged automatically.</div>
+      </div>
+
+      <div class="ft acc4">
+        <div class="ft-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 22h20z"/><path d="M12 8v6M12 18h.01"/></svg></div>
+        <div class="ft-t">Health Score by Product</div>
+        <div class="ft-d">Each product gets a 0–100 score factoring margin, trend, return rate & CPA. Know what's golden vs. what to fix.</div>
+      </div>
+
+      <div class="ft acc5">
+        <div class="ft-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg></div>
+        <div class="ft-t">27 currencies · 8 languages</div>
+        <div class="ft-d">From MAD to USDT. Live FX rates. RTL Arabic support. Localized number formatting. Truly global from day one.</div>
+      </div>
+
+      <div class="ft acc6">
+        <div class="ft-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M3 9h18"/></svg></div>
+        <div class="ft-t">Investor-grade reports</div>
+        <div class="ft-d">One-click P&L, VAT, cohort & forecast exports — formatted for accountants, partners, and your future Series A.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STEPS -->
+<section class="steps" id="how">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="sec-head">
+      <span class="sec-tag">How it works</span>
+      <h2 class="sec-title">From hidden costs to <em>clear decisions</em> — in three steps.</h2>
+    </div>
+
+    <div class="steps-grid">
+      <div class="st">
+        <div class="st-n">01</div>
+        <div class="st-t">Add your products</div>
+        <div class="st-d">Pick your business type. We adapt the cost inputs to your reality — COD, creator income, hourly rate, all covered.</div>
+      </div>
+      <div class="st">
+        <div class="st-n">02</div>
+        <div class="st-t">Log sales daily</div>
+        <div class="st-d">Two-minute daily logging. Or connect channels for auto-import. Profit, margin, and health score update live.</div>
+      </div>
+      <div class="st">
+        <div class="st-n">03</div>
+        <div class="st-t">Act on AI insights</div>
+        <div class="st-d">Wake up to "scale this, pause that, fix here." Each insight ties to a projected dollar impact. Decide. Repeat.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACCESS BANNER -->
+<section class="steps" style="background:linear-gradient(135deg,#FAFAF7,#F4F2EC);">
+  <div style="max-width:980px;margin:0 auto;text-align:center;">
+    <span class="sec-tag" style="background:rgba(15,110,92,0.1);color:#0F6E5C;">Early access</span>
+    <h2 class="sec-title">Free. <em>Unlimited.</em> Everything.</h2>
+    <p class="sec-sub" style="max-width:620px;margin:0 auto 36px;">No credit card. No trial countdown. No "Pro" gates. Unlimited products, full AI Decision Center, every chart, every report, every currency — open to everyone while we're still building.</p>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:880px;margin:0 auto 30px;">
+      <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px 14px;text-align:center;">
+        <div style="font-size:24px;margin-bottom:8px;">📦</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text);">Unlimited products</div>
+        <div style="font-size:11.5px;color:var(--text-3);margin-top:3px;">Track every SKU</div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px 14px;text-align:center;">
+        <div style="font-size:24px;margin-bottom:8px;">🧠</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text);">AI Decision Center</div>
+        <div style="font-size:11.5px;color:var(--text-3);margin-top:3px;">Full access, daily</div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px 14px;text-align:center;">
+        <div style="font-size:24px;margin-bottom:8px;">📊</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text);">All charts & KPIs</div>
+        <div style="font-size:11.5px;color:var(--text-3);margin-top:3px;">No blurred views</div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px 14px;text-align:center;">
+        <div style="font-size:24px;margin-bottom:8px;">📑</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text);">All reports</div>
+        <div style="font-size:11.5px;color:var(--text-3);margin-top:3px;">PDF · Excel · CSV</div>
+      </div>
+    </div>
+    <a href="sellsense-auth.html" class="btn-primary" style="display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;font-size:15px;font-weight:600;padding:14px 24px;border-radius:12px;text-decoration:none;">
+      Get started — it's free
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- TESTI -->
+<section class="testi">
+  <div class="sec-head">
+    <span class="sec-tag">Real users</span>
+    <h2 class="sec-title">They stopped guessing. <em>Then started scaling.</em></h2>
+  </div>
+
+  <div class="t-grid">
+    <div class="tc">
+      <div class="tc-stars">★★★★★</div>
+      <p class="tc-q">"I'd been doing COD for 8 months. SellSense showed me I was losing $4 on every shoe order because of failed deliveries. Pivoted the offer in a week."</p>
+      <div class="tc-auth">
+        <div class="tc-av" style="background:linear-gradient(135deg,#1E2761,#3B4FA3);">KA</div>
+        <div><div class="tc-n">Karim A.</div><div class="tc-r">COD seller · Casablanca 🇲🇦</div></div>
+      </div>
+    </div>
+
+    <div class="tc">
+      <div class="tc-stars">★★★★★</div>
+      <p class="tc-q">"As a YouTuber with brand deals, AdSense, and merch, I had no idea what I was actually keeping. SellSense gave me a CFO without hiring one."</p>
+      <div class="tc-auth">
+        <div class="tc-av" style="background:linear-gradient(135deg,#E76F4A,#D4A53C);">SP</div>
+        <div><div class="tc-n">Sophie P.</div><div class="tc-r">Creator · 240k subs · Paris 🇫🇷</div></div>
+      </div>
+    </div>
+
+    <div class="tc">
+      <div class="tc-stars">★★★★★</div>
+      <p class="tc-q">"It's the first tool that understands Upwork commissions, wire fees, and tax in one place. Finally I know my real hourly rate."</p>
+      <div class="tc-auth">
+        <div class="tc-av" style="background:linear-gradient(135deg,#0F6E5C,#15A37F);">RV</div>
+        <div><div class="tc-n">Raj V.</div><div class="tc-r">Developer · Mumbai 🇮🇳</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="cta-in">
+    <h2 class="cta-t">Stop guessing.<br/>Start <em>knowing.</em></h2>
+    <p class="cta-s">2,400+ founders already see their real profit. You're 2 minutes away from joining them.</p>
+    <div class="cta-btns">
+      <a href="sellsense-dashboard.html" class="cta-prim">Open the dashboard →</a>
+      <a href="sellsense-auth.html" class="cta-sec">Create free account</a>
+    </div>
+    <div class="cta-foot">Unlimited everything · No credit card · Free while we're still building</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="foot">
+  <div class="foot-in">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <a href="sellsense-landing.html" class="logo">
+          <div class="logo-mark">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M8 1L15 5V11L8 15L1 11V5L8 1Z" stroke="#0A0F1E" stroke-width="1.5" stroke-linejoin="round"/>
+              <path d="M8 5L11 7V9L8 11L5 9V7L8 5Z" fill="#0A0F1E"/>
+            </svg>
+          </div>
+          <span class="logo-name">SellSense</span>
+        </a>
+        <p class="foot-p">Profit intelligence for the world's online earners. Built international from day one.</p>
+      </div>
+      <div>
+        <div class="foot-h">Product</div>
+        <a class="foot-l" href="#features">Features</a>
+        <a class="foot-l" href="#who">Use cases</a>
+        <a class="foot-l" href="#how">How it works</a>
+        <a class="foot-l" href="sellsense-dashboard.html">Live demo</a>
+      </div>
+      <div>
+        <div class="foot-h">Resources</div>
+        <a class="foot-l" href="sellsense-help.html">Help center</a>
+        <a class="foot-l" href="sellsense-help.html">Profit guide</a>
+        <a class="foot-l" href="sellsense-help.html">FX calculator</a>
+        <a class="foot-l" href="sellsense-help.html">API docs</a>
+      </div>
+      <div>
+        <div class="foot-h">Company</div>
+        <a class="foot-l" href="#">About</a>
+        <a class="foot-l" href="#">Careers</a>
+        <a class="foot-l" href="#">Contact</a>
+        <a class="foot-l" href="#">Press</a>
+      </div>
+      <div>
+        <div class="foot-h">Legal</div>
+        <a class="foot-l" href="#">Terms</a>
+        <a class="foot-l" href="#">Privacy</a>
+        <a class="foot-l" href="#">Security</a>
+        <a class="foot-l" href="#">DPA</a>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span>© 2026 SellSense Inc. · Built for makers worldwide.</span>
+      <span>27 currencies · 8 languages · 28 countries</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleBill(btn,type){
+  btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  if(type==='y'){
+    document.querySelector('[data-mp]').textContent='$11';
+    document.querySelector('[data-mb]').textContent='$29';
+  } else {
+    document.querySelector('[data-mp]').textContent='$19';
+    document.querySelector('[data-mb]').textContent='$49';
+  }
+}
+
+// Reveal animations
+const obs = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('vis'); });
+},{threshold:0.1});
+document.querySelectorAll('.rev').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

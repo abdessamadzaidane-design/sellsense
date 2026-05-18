@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SellSense — Welcome aboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#FAFAF7;--bg-soft:#F4F2EC;--surface:#FFFFFF;--surface-2:#FBFAF6;--surface-3:#F1EFE8;
+  --ink:#0A0F1E;--text:#0D1424;--text-2:#3B4358;--text-3:#6B7280;
+  --muted:#9CA3AF;--muted-2:#D1D5DB;
+  --border:#EBE7DC;--border-2:#E2DDD0;--border-3:#D5CFC0;
+  --primary:#1E2761;--primary-2:#2C3679;--accent:#E76F4A;--accent-2:#FF8A66;
+  --gold:#D4A53C;--gold-2:#E8BD58;--emerald:#0F6E5C;--emerald-2:#15A37F;
+  --ruby:#DC3556;--violet:#7C3AED;
+  --pos:#0F6E5C;--pos-soft:#E6F5F1;--info-soft:#E8EAF5;
+  --sh-xs:0 1px 2px rgba(13,20,36,0.04);
+  --sh-sm:0 2px 8px rgba(13,20,36,0.06),0 1px 2px rgba(13,20,36,0.04);
+  --sh-md:0 8px 28px rgba(13,20,36,0.08),0 2px 6px rgba(13,20,36,0.04);
+  --sh-lg:0 24px 60px rgba(13,20,36,0.12),0 8px 18px rgba(13,20,36,0.06);
+  --sh-glow:0 0 0 4px rgba(30,39,97,0.08);
+  --ff-sans:'Inter',system-ui,sans-serif;
+  --ff-display:'Instrument Serif',Georgia,serif;
+  --ff-mono:'JetBrains Mono',Menlo,monospace;
+}
+html,body{height:100%;}
+body{background:var(--bg);color:var(--text);font-family:var(--ff-sans);font-size:14px;line-height:1.55;overflow-x:hidden;-webkit-font-smoothing:antialiased;min-height:100vh;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+input,select{font-family:inherit;font-size:inherit;}
+a{color:inherit;text-decoration:none;}
+
+/* TOP BAR */
+.tb{padding:24px 32px;display:flex;align-items:center;justify-content:space-between;}
+.logo{display:inline-flex;align-items:center;gap:10px;}
+.logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--accent));border-radius:9px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(212,165,60,0.35);position:relative;}
+.logo-mark::after{content:'';position:absolute;inset:1.5px;border-radius:8px;background:linear-gradient(135deg,rgba(255,255,255,0.2),transparent 60%);}
+.logo-name{font-family:var(--ff-display);font-size:22px;font-style:italic;letter-spacing:-0.5px;color:var(--text);}
+.skip-link{font-size:13px;color:var(--text-3);font-weight:500;padding:7px 13px;border-radius:9px;}
+.skip-link:hover{background:var(--surface-3);color:var(--text);}
+
+/* SHELL */
+.shell{max-width:760px;margin:0 auto;padding:24px 24px 80px;}
+
+/* PROGRESS */
+.steps-bar{display:flex;align-items:center;gap:0;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 20px;margin-bottom:24px;box-shadow:var(--sh-sm);}
+.step{display:flex;align-items:center;gap:9px;flex:1;}
+.step-n{width:26px;height:26px;border-radius:50%;background:var(--surface-3);color:var(--text-3);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+.step.active .step-n{background:var(--primary);color:#fff;box-shadow:var(--sh-glow);}
+.step.done .step-n{background:var(--pos);color:#fff;}
+.step-lbl{font-size:12.5px;font-weight:600;color:var(--text-3);}
+.step.active .step-lbl,.step.done .step-lbl{color:var(--text);}
+.step-sep{flex:1;height:1px;background:var(--border);margin:0 8px;}
+.step.done + .step-sep{background:var(--pos);}
+
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:36px;box-shadow:var(--sh-sm);margin-bottom:18px;}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;background:var(--info-soft);color:var(--primary);font-size:11.5px;font-weight:700;padding:5px 13px;border-radius:20px;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:18px;}
+.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--primary);}
+
+h1.title{font-family:var(--ff-display);font-size:38px;font-weight:400;letter-spacing:-0.8px;color:var(--text);line-height:1.05;margin-bottom:10px;}
+h1.title em{font-style:italic;color:var(--primary);}
+.sub{font-size:15px;color:var(--text-3);margin-bottom:28px;max-width:560px;}
+
+/* TYPE GRID */
+.type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:22px;}
+.tc{background:var(--surface-2);border:1.5px solid var(--border-2);border-radius:14px;padding:22px 18px;cursor:pointer;transition:all .2s;position:relative;}
+.tc:hover{border-color:var(--border-3);background:#fff;transform:translateY(-2px);box-shadow:var(--sh-md);}
+.tc.sel{border-color:var(--primary);background:var(--info-soft);box-shadow:var(--sh-glow);}
+.tc::after{content:'';position:absolute;top:14px;right:14px;width:20px;height:20px;border-radius:50%;background:var(--surface-3);transition:all .2s;}
+.tc.sel::after{content:'✓';background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;}
+.tc-ic{font-size:30px;margin-bottom:13px;display:block;}
+.tc-n{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.tc-d{font-size:12.5px;color:var(--text-3);line-height:1.5;}
+.tc-tags{margin-top:10px;display:flex;gap:5px;flex-wrap:wrap;}
+.tc-tag{font-size:10px;font-weight:600;color:var(--text-2);background:var(--surface-3);padding:2px 7px;border-radius:4px;}
+.tc.sel .tc-tag{background:rgba(30,39,97,0.1);color:var(--primary);}
+
+/* FORM */
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:6px;}
+.fld{display:flex;flex-direction:column;gap:7px;margin-bottom:14px;}
+.fld.full{grid-column:1 / -1;}
+.fld label{font-size:11.5px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:0.06em;display:flex;align-items:center;gap:5px;}
+.fld label .hint{font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);font-size:11px;}
+.iwrap{position:relative;}
+.iwrap .suffix{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:600;color:var(--muted);background:var(--surface-3);padding:2px 7px;border-radius:5px;pointer-events:none;}
+.iwrap input,.iwrap select,.fld input,.fld select{width:100%;background:var(--surface-2);border:1.5px solid var(--border-2);border-radius:10px;padding:11px 13px;font-size:13.5px;color:var(--text);transition:all .15s;font-variant-numeric:tabular-nums;}
+.iwrap input:focus,.iwrap select:focus,.fld input:focus,.fld select:focus{outline:none;border-color:var(--primary);background:#fff;box-shadow:var(--sh-glow);}
+.iwrap.has-suffix input{padding-right:60px;}
+
+/* CURRENCY GRID */
+.cur-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+.cu{background:var(--surface-2);border:1.5px solid var(--border-2);border-radius:10px;padding:11px 13px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:9px;}
+.cu:hover{border-color:var(--border-3);background:#fff;}
+.cu.sel{border-color:var(--primary);background:var(--info-soft);box-shadow:var(--sh-glow);}
+.cu-flag{font-size:18px;}
+.cu-code{font-size:13px;font-weight:700;color:var(--text);}
+.cu-name{font-size:11px;color:var(--text-3);}
+.show-all{font-size:12px;color:var(--primary);font-weight:600;cursor:pointer;margin-top:10px;display:inline-block;}
+.show-all:hover{text-decoration:underline;}
+
+/* PREVIEW */
+.preview{background:linear-gradient(135deg,#0A0F1E 0%,#1E2761 100%);border-radius:16px;padding:24px;color:#fff;margin-top:18px;position:relative;overflow:hidden;}
+.preview::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,var(--gold) 0%,transparent 65%);opacity:0.15;}
+.preview-lbl{font-size:11px;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:7px;}
+.preview-amt{font-family:var(--ff-display);font-size:38px;font-weight:400;color:#fff;letter-spacing:-1px;line-height:1;margin-bottom:14px;}
+.preview-amt span.cur{font-family:var(--ff-sans);font-size:15px;font-weight:600;color:rgba(255,255,255,0.6);margin-right:6px;}
+.preview-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.pv-it{padding-top:14px;border-top:1px solid rgba(255,255,255,0.08);}
+.pv-l{font-size:10.5px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;margin-bottom:4px;}
+.pv-v{font-family:var(--ff-display);font-size:20px;color:#fff;line-height:1;}
+.pv-v.pos{color:#7AE0BD;}
+.pv-v.neg{color:#FFA8B6;}
+.pv-d{font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px;}
+
+/* ACTIONS */
+.actions{display:flex;justify-content:space-between;align-items:center;margin-top:18px;}
+.btn-back{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1.5px solid var(--border-2);color:var(--text-2);font-size:13.5px;font-weight:600;padding:11px 18px;border-radius:11px;transition:all .15s;cursor:pointer;}
+.btn-back:hover{border-color:var(--text-2);}
+.btn-next{display:inline-flex;align-items:center;gap:7px;background:var(--ink);color:#fff;font-size:13.5px;font-weight:600;padding:11px 22px;border-radius:11px;transition:all .15s;cursor:pointer;box-shadow:var(--sh-sm);}
+.btn-next:hover{background:var(--primary);transform:translateY(-1px);box-shadow:var(--sh-md);}
+.skip{font-size:13px;color:var(--text-3);font-weight:500;cursor:pointer;}
+.skip:hover{color:var(--text);}
+
+/* WELCOME SCREEN */
+.welcome-card{text-align:center;padding:48px 40px;}
+.celebrate{font-size:54px;margin-bottom:20px;display:block;animation:bounce 1.5s ease infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.welcome-h{font-family:var(--ff-display);font-size:46px;font-weight:400;letter-spacing:-1px;color:var(--text);line-height:1.05;margin-bottom:14px;}
+.welcome-h em{font-style:italic;color:var(--primary);}
+.welcome-s{font-size:16px;color:var(--text-3);max-width:480px;margin:0 auto 32px;}
+
+.unlocked{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:540px;margin:0 auto 30px;}
+.unlock-i{background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:left;}
+.unlock-em{font-size:22px;margin-bottom:8px;display:block;}
+.unlock-t{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.unlock-d{font-size:11px;color:var(--text-3);line-height:1.4;}
+
+.panel{display:none;}
+.panel.on{display:block;animation:fadeIn 0.4s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:760px){
+  .shell{padding:14px;}
+  .card{padding:24px;}
+  .type-grid,.cur-grid,.fgrid,.preview-row,.unlocked{grid-template-columns:1fr;}
+  h1.title,.welcome-h{font-size:28px;}
+  .step-lbl{display:none;}
+}
+</style>
+</head>
+<body>
+
+<header class="tb">
+  <a href="sellsense-landing.html" class="logo">
+    <div class="logo-mark">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M8 1L15 5V11L8 15L1 11V5L8 1Z" stroke="#0A0F1E" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M8 5L11 7V9L8 11L5 9V7L8 5Z" fill="#0A0F1E"/>
+      </svg>
+    </div>
+    <span class="logo-name">SellSense</span>
+  </a>
+  <a href="sellsense-dashboard.html" class="skip-link">Skip onboarding →</a>
+</header>
+
+<div class="shell">
+
+  <div class="steps-bar">
+    <div class="step active" id="s1"><div class="step-n">1</div><div class="step-lbl">Business type</div></div>
+    <div class="step-sep"></div>
+    <div class="step" id="s2"><div class="step-n">2</div><div class="step-lbl">Currency & region</div></div>
+    <div class="step-sep"></div>
+    <div class="step" id="s3"><div class="step-n">3</div><div class="step-lbl">First product</div></div>
+    <div class="step-sep"></div>
+    <div class="step" id="s4"><div class="step-n">4</div><div class="step-lbl">Welcome</div></div>
+  </div>
+
+  <!-- STEP 1: BUSINESS TYPE -->
+  <div class="panel on" id="p1">
+    <div class="card">
+      <div class="eyebrow"><span class="dot"></span> Step 1 of 4</div>
+      <h1 class="title">What kind of business <em>powers your income?</em></h1>
+      <p class="sub">SellSense adapts its language, cost categories, and AI insights to your business model. Pick one — you can always add more later.</p>
+
+      <div class="type-grid">
+        <div class="tc sel" onclick="selType(this,'ecom')">
+          <span class="tc-ic">📦</span>
+          <div class="tc-n">E-commerce</div>
+          <div class="tc-d">D2C stores, dropshipping, COD operators</div>
+          <div class="tc-tags">
+            <span class="tc-tag">Shopify</span>
+            <span class="tc-tag">COD</span>
+            <span class="tc-tag">Meta Ads</span>
+          </div>
+        </div>
+
+        <div class="tc" onclick="selType(this,'creator')">
+          <span class="tc-ic">🎬</span>
+          <div class="tc-n">Content Creator</div>
+          <div class="tc-d">YouTube, TikTok, Instagram, courses, digital products</div>
+          <div class="tc-tags">
+            <span class="tc-tag">AdSense</span>
+            <span class="tc-tag">Sponsors</span>
+            <span class="tc-tag">Courses</span>
+          </div>
+        </div>
+
+        <div class="tc" onclick="selType(this,'freelance')">
+          <span class="tc-ic">💻</span>
+          <div class="tc-n">Freelance / Agency</div>
+          <div class="tc-d">Upwork, Fiverr, direct clients, service businesses</div>
+          <div class="tc-tags">
+            <span class="tc-tag">Upwork</span>
+            <span class="tc-tag">Direct</span>
+            <span class="tc-tag">Agency</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <span></span>
+      <button class="btn-next" onclick="next(2)">
+        Continue
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 2: CURRENCY -->
+  <div class="panel" id="p2">
+    <div class="card">
+      <div class="eyebrow"><span class="dot"></span> Step 2 of 4</div>
+      <h1 class="title">Your <em>home currency.</em></h1>
+      <p class="sub">SellSense supports 27 currencies with live FX. Pick your primary — you can switch any time from the dashboard.</p>
+
+      <div class="cur-grid">
+        <div class="cu sel" onclick="selCur(this)"><span class="cu-flag">🇺🇸</span><div><div class="cu-code">USD</div><div class="cu-name">US Dollar</div></div></div>
+        <div class="cu" onclick="selCur(this)"><span class="cu-flag">🇪🇺</span><div><div class="cu-code">EUR</div><div class="cu-name">Euro</div></div></div>
+        <div class="cu" onclick="selCur(this)"><span class="cu-flag">🇬🇧</span><div><div class="cu-code">GBP</div><div class="cu-name">British Pound</div></div></div>
+        <div class="cu" onclick="selCur(this)"><span class="cu-flag">🇲🇦</span><div><div class="cu-code">MAD</div><div class="cu-name">Dirham</div></div></div>
+        <div class="cu" onclick="selCur(this)"><span class="cu-flag">🇦🇪</span><div><div class="cu-code">AED</div><div class="cu-name">UAE Dirham</div></div></div>
+        <div class="cu" onclick="selCur(this)"><span class="cu-flag">🇸🇦</span><div><div class="cu-code">SAR</div><div class="cu-name">Saudi Riyal</div></div></div>
+        <div class="cu" onclick="selCur(this)"><span class="cu-flag">🇮🇳</span><div><div class="cu-code">INR</div><div class="cu-name">Indian Rupee</div></div></div>
+        <div class="cu" onclick="selCur(this)"><span class="cu-flag">🇳🇬</span><div><div class="cu-code">NGN</div><div class="cu-name">Naira</div></div></div>
+        <div class="cu" onclick="selCur(this)"><span class="cu-flag">🇧🇷</span><div><div class="cu-code">BRL</div><div class="cu-name">Brazil Real</div></div></div>
+        <div class="cu" onclick="selCur(this)"><span class="cu-flag">🇿🇦</span><div><div class="cu-code">ZAR</div><div class="cu-name">Rand</div></div></div>
+        <div class="cu" onclick="selCur(this)"><span class="cu-flag">🇲🇽</span><div><div class="cu-code">MXN</div><div class="cu-name">Peso</div></div></div>
+        <div class="cu" onclick="selCur(this)"><span class="cu-flag">🇨🇦</span><div><div class="cu-code">CAD</div><div class="cu-name">Canada $</div></div></div>
+      </div>
+      <span class="show-all">Show all 27 currencies →</span>
+    </div>
+
+    <div class="actions">
+      <button class="btn-back" onclick="next(1)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M11 5l-7 7 7 7"/></svg>
+        Back
+      </button>
+      <button class="btn-next" onclick="next(3)">
+        Continue
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 3: FIRST PRODUCT -->
+  <div class="panel" id="p3">
+    <div class="card">
+      <div class="eyebrow"><span class="dot"></span> Step 3 of 4</div>
+      <h1 class="title">Add your <em>first product.</em></h1>
+      <p class="sub">Let's set up one product so you can see the magic. We'll calculate profit, margin and health score live as you type.</p>
+
+      <div class="fgrid">
+        <div class="fld">
+          <label>Product name</label>
+          <input type="text" placeholder="e.g. Smart Watch Pro" value="Smart Watch Pro"/>
+        </div>
+        <div class="fld">
+          <label>Icon / emoji</label>
+          <input type="text" placeholder="📦" value="⌚" maxlength="2"/>
+        </div>
+        <div class="fld">
+          <label>Selling price <span class="hint">per unit</span></label>
+          <div class="iwrap has-suffix">
+            <input type="number" value="349" oninput="liveCalc()" id="oPrice"/>
+            <span class="suffix">USD</span>
+          </div>
+        </div>
+        <div class="fld">
+          <label>Units sold <span class="hint">last 30 days</span></label>
+          <input type="number" value="180" oninput="liveCalc()" id="oUnits"/>
+        </div>
+        <div class="fld">
+          <label>COGS <span class="hint">supplier cost / unit</span></label>
+          <div class="iwrap has-suffix">
+            <input type="number" value="95" oninput="liveCalc()" id="oCogs"/>
+            <span class="suffix">USD</span>
+          </div>
+        </div>
+        <div class="fld">
+          <label>Ad spend <span class="hint">last 30 days</span></label>
+          <div class="iwrap has-suffix">
+            <input type="number" value="9800" oninput="liveCalc()" id="oAds"/>
+            <span class="suffix">USD</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIVE PREVIEW -->
+      <div class="preview">
+        <div class="preview-lbl">Net profit · last 30 days</div>
+        <div class="preview-amt"><span class="cur">USD</span><span id="oNet">45,260</span></div>
+        <div class="preview-row">
+          <div class="pv-it">
+            <div class="pv-l">Margin</div>
+            <div class="pv-v pos" id="oMarg">72%</div>
+            <div class="pv-d">Excellent margin</div>
+          </div>
+          <div class="pv-it">
+            <div class="pv-l">Per unit</div>
+            <div class="pv-v" id="oUnit">$251</div>
+            <div class="pv-d">After all costs</div>
+          </div>
+          <div class="pv-it">
+            <div class="pv-l">Health</div>
+            <div class="pv-v pos" id="oH">94/100</div>
+            <div class="pv-d" id="oVerdict">⚡ Scale this</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-back" onclick="next(2)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M11 5l-7 7 7 7"/></svg>
+        Back
+      </button>
+      <button class="btn-next" onclick="next(4)">
+        Save & continue
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 4: WELCOME -->
+  <div class="panel" id="p4">
+    <div class="card welcome-card">
+      <span class="celebrate">🎉</span>
+      <h1 class="welcome-h">You're <em>all set,</em> Sam.</h1>
+      <p class="welcome-s">Your workspace is ready. Everything below is unlocked — unlimited, forever. Just for being early.</p>
+
+      <div class="unlocked">
+        <div class="unlock-i">
+          <span class="unlock-em">📦</span>
+          <div class="unlock-t">Unlimited products</div>
+          <div class="unlock-d">Track as many SKUs as you want.</div>
+        </div>
+        <div class="unlock-i">
+          <span class="unlock-em">🧠</span>
+          <div class="unlock-t">AI Decision Center</div>
+          <div class="unlock-d">Daily scaling recommendations.</div>
+        </div>
+        <div class="unlock-i">
+          <span class="unlock-em">📊</span>
+          <div class="unlock-t">Full analytics suite</div>
+          <div class="unlock-d">Profit Pulse, matrix, reports.</div>
+        </div>
+        <div class="unlock-i">
+          <span class="unlock-em">🌍</span>
+          <div class="unlock-t">27 currencies</div>
+          <div class="unlock-d">Live FX & multi-currency.</div>
+        </div>
+        <div class="unlock-i">
+          <span class="unlock-em">📑</span>
+          <div class="unlock-t">All reports</div>
+          <div class="unlock-d">P&L, tax, investor packs.</div>
+        </div>
+        <div class="unlock-i">
+          <span class="unlock-em">🚀</span>
+          <div class="unlock-t">Forecasting</div>
+          <div class="unlock-d">12-month projections.</div>
+        </div>
+      </div>
+
+      <button class="btn-next" style="font-size:15px;padding:14px 28px;" onclick="goDash()">
+        Enter my dashboard
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function selType(el,type){
+  el.parentElement.querySelectorAll('.tc').forEach(t=>t.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function selCur(el){
+  el.parentElement.querySelectorAll('.cu').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function next(step){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p'+step).classList.add('on');
+  for(let i=1;i<=4;i++){
+    const s = document.getElementById('s'+i);
+    s.classList.remove('active','done');
+    if(i<step) s.classList.add('done');
+    if(i===step) s.classList.add('active');
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function fmt(n){return Math.round(n).toLocaleString('en-US');}
+function liveCalc(){
+  const price = +document.getElementById('oPrice').value||0;
+  const units = +document.getElementById('oUnits').value||0;
+  const cogs = +document.getElementById('oCogs').value||0;
+  const ads = +document.getElementById('oAds').value||0;
+  const revenue = price * units;
+  const cost = cogs * units + ads;
+  const net = revenue - cost;
+  const margin = revenue > 0 ? (net/revenue*100) : 0;
+  const perUnit = units > 0 ? net/units : 0;
+  let h = 50;
+  if(margin > 40) h = 92;
+  else if(margin > 25) h = 80;
+  else if(margin > 15) h = 65;
+  else if(margin > 5) h = 50;
+  else if(margin > 0) h = 35;
+  else h = 18;
+  let v;
+  if(h >= 80) v = '⚡ Scale this';
+  else if(h >= 60) v = '✓ Stable';
+  else if(h >= 40) v = '⚠ Optimize';
+  else v = '🛑 Reconsider';
+  document.getElementById('oNet').textContent = fmt(net);
+  document.getElementById('oMarg').textContent = margin.toFixed(0)+'%';
+  document.getElementById('oUnit').textContent = '$'+fmt(perUnit);
+  document.getElementById('oH').textContent = h+'/100';
+  document.getElementById('oVerdict').textContent = v;
+  const mEl = document.getElementById('oMarg');
+  const hEl = document.getElementById('oH');
+  mEl.className = 'pv-v '+(margin>=20?'pos':margin>=0?'':'neg');
+  hEl.className = 'pv-v '+(h>=60?'pos':h>=40?'':'neg');
+}
+function goDash(){window.location.href='sellsense-dashboard.html';}
+liveCalc();
+</script>
+</body>
+</html>
