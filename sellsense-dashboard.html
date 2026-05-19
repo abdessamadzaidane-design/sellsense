@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SellSense — Profit Intelligence Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#FAFAF7;--surface:#FFFFFF;--surface-2:#FBFAF6;--surface-3:#F1EFE8;
+  --ink:#0A0F1E;--text:#0D1424;--text-2:#3B4358;--text-3:#6B7280;
+  --muted:#9CA3AF;--muted-2:#D1D5DB;
+  --border:#EBE7DC;--border-2:#E2DDD0;--border-3:#D5CFC0;
+  --primary:#1E2761;--primary-2:#2C3679;--accent:#E76F4A;--accent-2:#FF8A66;
+  --gold:#D4A53C;--gold-2:#E8BD58;--emerald:#0F6E5C;--emerald-2:#15A37F;
+  --ruby:#DC3556;--violet:#7C3AED;--sky:#0EA5E9;
+  --pos:#0F6E5C;--pos-soft:#E6F5F1;--neg:#DC3556;--neg-soft:#FCE9ED;
+  --warn:#D4A53C;--warn-soft:#FBF3DC;--info-soft:#E8EAF5;
+  --grad-1:linear-gradient(135deg,#1E2761 0%,#2D3A8A 100%);
+  --grad-aurora:linear-gradient(135deg,#1E2761 0%,#7C3AED 50%,#E76F4A 100%);
+  --sh-xs:0 1px 2px rgba(13,20,36,0.04);
+  --sh-sm:0 2px 8px rgba(13,20,36,0.06);
+  --sh-md:0 8px 28px rgba(13,20,36,0.08);
+  --sh-lg:0 24px 60px rgba(13,20,36,0.12);
+  --sh-glow:0 0 0 4px rgba(30,39,97,0.08);
+  --ff-sans:'Inter',system-ui,sans-serif;
+  --ff-display:'Instrument Serif',Georgia,serif;
+  --ff-mono:'JetBrains Mono',Menlo,monospace;
+  --sw:240px;--tb:60px;
+}
+html,body{height:100%;}
+body{background:var(--bg);color:var(--text);font-family:var(--ff-sans);font-size:14px;line-height:1.55;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+input,select{font-family:inherit;font-size:inherit;}
+a{color:inherit;text-decoration:none;}
+
+.app{display:flex;min-height:100vh;}
+
+.sb{width:var(--sw);background:var(--ink);color:#fff;position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:90;}
+.sbg{position:absolute;inset:0;background:radial-gradient(circle at 0% 0%,rgba(30,39,97,0.4),transparent 50%),radial-gradient(circle at 100% 100%,rgba(231,111,74,0.15),transparent 60%);pointer-events:none;}
+.sbl{padding:20px 18px 16px;display:flex;align-items:center;gap:10px;position:relative;z-index:1;}
+.lm{width:30px;height:30px;background:linear-gradient(135deg,var(--gold),var(--accent));border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(212,165,60,0.35);position:relative;}
+.lm::after{content:'';position:absolute;inset:1.5px;border-radius:7px;background:linear-gradient(135deg,rgba(255,255,255,0.18),transparent 60%);}
+.ln{font-family:var(--ff-display);font-size:21px;font-style:italic;letter-spacing:-0.5px;color:#fff;}
+
+.ws{margin:6px 12px 14px;padding:9px 11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:10px;display:flex;align-items:center;gap:9px;cursor:pointer;position:relative;z-index:1;}
+.ws:hover{background:rgba(255,255,255,0.07);}
+.wa{width:24px;height:24px;border-radius:6px;background:var(--grad-aurora);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#fff;}
+.wn{font-size:13px;font-weight:600;color:#fff;line-height:1.1;}
+.wsub{font-size:10.5px;color:rgba(255,255,255,0.45);line-height:1;margin-top:1px;}
+
+.nav{padding:6px 10px;position:relative;z-index:1;flex:1;}
+.ngl{font-size:10px;font-weight:600;color:rgba(255,255,255,0.32);text-transform:uppercase;letter-spacing:0.1em;padding:6px 10px;margin-top:8px;}
+.nvi{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.65);cursor:pointer;margin-bottom:1px;position:relative;text-decoration:none;}
+.nvi:hover{background:rgba(255,255,255,0.04);color:#fff;}
+.nvi.act{background:linear-gradient(90deg,rgba(212,165,60,0.18),rgba(212,165,60,0.05));color:#fff;}
+.nvi.act::before{content:'';position:absolute;left:-10px;top:8px;bottom:8px;width:2px;border-radius:0 2px 2px 0;background:var(--gold);}
+.nvi svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.8;fill:none;}
+.nvi .bd{margin-left:auto;font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:20px;background:var(--gold);color:var(--ink);}
+.nvi .dt{margin-left:auto;width:6px;height:6px;border-radius:50%;background:var(--accent);}
+
+.sbot{padding:10px 12px 14px;position:relative;z-index:1;}
+.up{background:linear-gradient(135deg,rgba(212,165,60,0.18),rgba(231,111,74,0.18));border:1px solid rgba(212,165,60,0.25);border-radius:14px;padding:12px;margin-bottom:10px;position:relative;overflow:hidden;}
+.up::before{content:'';position:absolute;top:-30px;right:-30px;width:80px;height:80px;background:radial-gradient(circle,var(--gold) 0%,transparent 70%);opacity:0.35;}
+.upt{font-size:12px;font-weight:700;color:#fff;margin-bottom:3px;}
+.ups{font-size:11px;color:rgba(255,255,255,0.55);margin-bottom:9px;line-height:1.4;}
+.upb{background:#fff;color:var(--ink);font-size:11.5px;font-weight:700;padding:7px 11px;border-radius:7px;cursor:pointer;width:100%;}
+.upb:hover{background:var(--gold);}
+.ub{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:9px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);cursor:pointer;}
+.ua{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--gold));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#fff;}
+.ubn{font-size:12.5px;font-weight:600;color:#fff;line-height:1.1;}
+.ube{font-size:10.5px;color:rgba(255,255,255,0.4);line-height:1;margin-top:1px;}
+
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-width:0;}
+
+.tb{height:var(--tb);background:rgba(250,250,247,0.85);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50;}
+.brg{display:none;width:36px;height:36px;border-radius:9px;border:1px solid var(--border-2);background:#fff;align-items:center;justify-content:center;cursor:pointer;}
+.srch{flex:1;max-width:380px;position:relative;}
+.srch input{width:100%;background:rgba(255,255,255,0.65);border:1px solid var(--border);border-radius:10px;padding:9px 14px 9px 38px;font-size:13px;}
+.srch input:focus{outline:none;background:#fff;border-color:var(--primary);box-shadow:var(--sh-glow);}
+.si{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted);}
+.skbd{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-family:var(--ff-mono);font-size:10px;font-weight:500;color:var(--muted);background:var(--surface-3);border:1px solid var(--border);padding:2px 6px;border-radius:5px;}
+.act{display:flex;align-items:center;gap:6px;margin-left:auto;}
+.pk{position:relative;}
+.pkb{display:flex;align-items:center;gap:6px;padding:7px 11px;background:#fff;border:1px solid var(--border);border-radius:9px;font-size:12.5px;font-weight:600;cursor:pointer;}
+.pkb:hover{border-color:var(--border-3);background:var(--surface-2);}
+.pkf{font-size:14px;}
+.pkc{font-weight:700;letter-spacing:0.02em;}
+.pkv{font-size:9px;color:var(--muted);}
+.pkm{position:absolute;top:calc(100% + 6px);right:0;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--sh-lg);min-width:280px;max-height:380px;overflow-y:auto;padding:6px;display:none;z-index:60;}
+.pkm.op{display:block;}
+.pksrch{position:sticky;top:0;background:#fff;padding:8px 6px 10px;border-bottom:1px solid var(--border);margin-bottom:4px;}
+.pksrch input{width:100%;border:1px solid var(--border);border-radius:8px;padding:7px 11px;font-size:12.5px;}
+.pkgrp{font-size:10px;font-weight:600;color:var(--muted);padding:6px 10px 4px;letter-spacing:0.08em;text-transform:uppercase;}
+.pkit{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;cursor:pointer;}
+.pkit:hover{background:var(--surface-3);}
+.pkit.on{background:var(--info-soft);}
+.pkit-f{font-size:16px;width:20px;}
+.pkit-c{font-size:12.5px;font-weight:700;}
+.pkit-n{font-size:11px;color:var(--muted);}
+.pkit-r{font-family:var(--ff-mono);font-size:10.5px;color:var(--text-3);margin-left:auto;}
+
+.tbic{width:36px;height:36px;border-radius:9px;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-2);cursor:pointer;position:relative;}
+.tbic:hover{background:var(--surface-2);border-color:var(--border-3);color:var(--text);}
+.nd{position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:var(--accent);border:1.5px solid #fff;}
+.tbp{display:flex;align-items:center;gap:7px;padding:8px 14px;background:var(--primary);color:#fff;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;}
+.tbp:hover{background:var(--primary-2);transform:translateY(-1px);}
+
+.view{display:none;padding:22px 24px 60px;}
+.view.act{display:block;animation:vIn .3s ease;}
+@keyframes vIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.phdr{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:22px;gap:18px;flex-wrap:wrap;}
+.phl{flex:1;min-width:240px;}
+.pbc{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-bottom:6px;}
+.pttl{font-family:var(--ff-display);font-size:34px;font-weight:400;letter-spacing:-0.5px;line-height:1.05;margin-bottom:4px;}
+.pttl em{font-style:italic;color:var(--primary);}
+.psub{font-size:13.5px;color:var(--text-3);max-width:560px;}
+.phr{display:flex;align-items:center;gap:8px;}
+.rp{display:inline-flex;background:var(--surface-3);border-radius:10px;padding:3px;}
+.rp button{padding:6px 11px;border-radius:7px;font-size:12px;font-weight:600;color:var(--text-3);}
+.rp button.on{background:#fff;color:var(--text);box-shadow:var(--sh-xs);}
+.bex{display:inline-flex;align-items:center;gap:6px;padding:8px 13px;background:#fff;border:1px solid var(--border);border-radius:9px;font-size:12.5px;font-weight:600;color:var(--text-2);cursor:pointer;}
+.bex:hover{border-color:var(--border-3);background:var(--surface-2);}
+
+.hk{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+.k{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:18px 18px 0;position:relative;overflow:hidden;transition:all .2s;}
+.k:hover{border-color:var(--border-3);box-shadow:var(--sh-md);transform:translateY(-2px);}
+.khdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.klbl{font-size:11.5px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.08em;display:flex;align-items:center;gap:6px;}
+.klbd{width:6px;height:6px;border-radius:50%;}
+.kii{width:14px;height:14px;border-radius:50%;background:var(--surface-3);color:var(--muted);font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:700;}
+.kv{font-family:var(--ff-display);font-size:34px;font-weight:400;letter-spacing:-1px;line-height:1;display:flex;align-items:baseline;gap:6px;}
+.kv .cur{font-family:var(--ff-sans);font-size:14px;font-weight:600;color:var(--text-3);}
+.krw{display:flex;align-items:center;justify-content:space-between;margin-top:8px;}
+.ktr{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;padding:3px 8px;border-radius:20px;}
+.ktr.up{background:var(--pos-soft);color:var(--pos);}
+.ktr.dn{background:var(--neg-soft);color:var(--neg);}
+.kcmp{font-size:10.5px;color:var(--muted);}
+.ksp{margin:0 -18px;margin-top:8px;height:54px;}
+.ksp canvas{width:100%!important;height:54px!important;display:block;}
+.k.pri{background:linear-gradient(135deg,#1E2761 0%,#2D3A8A 100%);color:#fff;border-color:transparent;}
+.k.pri .klbl{color:rgba(255,255,255,0.6);}
+.k.pri .kv{color:#fff;}
+.k.pri .kv .cur{color:rgba(255,255,255,0.6);}
+.k.pri .kii{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);}
+.k.pri .kcmp{color:rgba(255,255,255,0.5);}
+.k.pri .ktr.up{background:rgba(15,110,92,0.3);color:#7AE0BD;}
+.k.pri::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,var(--gold) 0%,transparent 65%);opacity:0.18;}
+.kgg{width:100%;height:54px;display:flex;align-items:flex-end;justify-content:center;margin-top:8px;}
+
+.dr{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;margin-bottom:22px;}
+.cd{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:20px;}
+.cdh{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;gap:12px;}
+.ct{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.ct .pl{font-size:10px;font-weight:600;color:var(--primary);background:var(--info-soft);padding:2px 8px;border-radius:20px;letter-spacing:0.04em;}
+.cs{font-size:11.5px;color:var(--text-3);margin-top:2px;}
+.seg{display:inline-flex;background:var(--surface-3);border-radius:8px;padding:2px;}
+.seg button{padding:5px 9px;border-radius:6px;font-size:11px;font-weight:600;color:var(--text-3);}
+.seg button.on{background:#fff;color:var(--text);box-shadow:var(--sh-xs);}
+
+.pls{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.pli .pll{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;font-weight:600;}
+.pliv{font-family:var(--ff-display);font-size:22px;font-weight:400;line-height:1;}
+.plis{font-size:11px;color:var(--text-3);margin-top:3px;}
+.plis strong{color:var(--pos);}
+.pli.ng .plis strong{color:var(--neg);}
+
+.pchrt{height:240px;position:relative;}
+
+.aic{position:relative;overflow:hidden;background:linear-gradient(135deg,#0D1424 0%,#1E2761 100%);color:#fff;border:none;}
+.aic::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,var(--gold) 0%,transparent 65%);opacity:0.15;}
+.aic .ct{color:#fff;}
+.aic .cs{color:rgba(255,255,255,0.55);}
+.ab{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,var(--gold),var(--gold-2));color:var(--ink);font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;letter-spacing:0.04em;text-transform:uppercase;}
+.arc{display:flex;flex-direction:column;gap:10px;position:relative;z-index:1;}
+.ar{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:13px 14px;cursor:pointer;transition:all .15s;display:flex;align-items:flex-start;gap:11px;}
+.ar:hover{background:rgba(255,255,255,0.09);border-color:rgba(255,255,255,0.15);transform:translateX(2px);}
+.aric{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;}
+.ar.sc .aric{background:rgba(15,163,127,0.18);color:#5FE3B8;}
+.ar.ps .aric{background:rgba(220,53,86,0.18);color:#FF8B9E;}
+.ar.op .aric{background:rgba(212,165,60,0.2);color:#F5D177;}
+.artg{display:inline-block;font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;}
+.ar.sc .artg{background:rgba(15,163,127,0.18);color:#5FE3B8;}
+.ar.ps .artg{background:rgba(220,53,86,0.18);color:#FF8B9E;}
+.ar.op .artg{background:rgba(212,165,60,0.2);color:#F5D177;}
+.art{font-size:13px;font-weight:600;color:#fff;margin-bottom:3px;line-height:1.3;}
+.ard{font-size:11.5px;color:rgba(255,255,255,0.6);line-height:1.45;}
+.ard strong{color:#fff;}
+.arrw{color:rgba(255,255,255,0.4);font-size:14px;align-self:center;}
+
+.pmc{background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:hidden;margin-bottom:22px;}
+.pmh{padding:18px 22px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);gap:12px;flex-wrap:wrap;}
+.pml{flex:1;min-width:200px;}
+.pmt{font-size:15px;font-weight:700;display:flex;align-items:center;gap:9px;}
+.pmcnt{font-size:11px;font-weight:600;color:var(--text-3);background:var(--surface-3);padding:2px 8px;border-radius:20px;}
+.pms{font-size:11.5px;color:var(--text-3);margin-top:2px;}
+.pma{display:flex;align-items:center;gap:8px;}
+.pmfl{display:inline-flex;background:var(--surface-3);border-radius:8px;padding:2px;}
+.pmfl button{padding:5px 10px;border-radius:6px;font-size:11.5px;font-weight:600;color:var(--text-3);display:inline-flex;align-items:center;gap:5px;}
+.pmfl button.on{background:#fff;color:var(--text);box-shadow:var(--sh-xs);}
+.pmfl .ind{width:6px;height:6px;border-radius:50%;}
+.badd{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;background:var(--primary);color:#fff;border-radius:8px;font-size:12px;font-weight:600;}
+.badd:hover{background:var(--primary-2);}
+
+.pmt2{width:100%;border-collapse:collapse;}
+.pmt2 thead th{font-size:10.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;padding:11px 16px;text-align:left;background:var(--surface-2);border-bottom:1px solid var(--border);}
+.pmt2 thead th.n{text-align:right;}
+.pmt2 thead th.c{text-align:center;}
+.pmt2 tbody td{padding:13px 16px;font-size:13px;border-bottom:1px solid var(--border);}
+.pmt2 tbody tr{cursor:pointer;}
+.pmt2 tbody tr:hover{background:var(--surface-2);}
+.pmt2 tbody tr:last-child td{border-bottom:none;}
+.pmt2 td.n{text-align:right;font-variant-numeric:tabular-nums;}
+.pmt2 td.c{text-align:center;}
+.pc{display:flex;align-items:center;gap:11px;}
+.pem{width:36px;height:36px;border-radius:9px;background:var(--surface-3);display:flex;align-items:center;justify-content:center;font-size:18px;border:1px solid var(--border);}
+.pnm{font-weight:600;line-height:1.2;}
+.pmm{font-size:11px;color:var(--muted);margin-top:2px;}
+.amp{color:var(--pos);font-weight:600;}
+.amn{color:var(--neg);font-weight:600;}
+.mg.hi{color:var(--pos);font-weight:600;}.mg.md{color:var(--gold);font-weight:600;}.mg.lo{color:var(--neg);font-weight:600;}
+.spk{display:inline-block;width:64px;height:24px;vertical-align:middle;}
+.sp{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;}
+.sp .sd{width:5px;height:5px;border-radius:50%;}
+.sp.scaling{background:var(--pos-soft);color:var(--pos);}
+.sp.scaling .sd{background:var(--pos);animation:pd 1.8s infinite;}
+.sp.stable{background:var(--info-soft);color:var(--primary);}
+.sp.stable .sd{background:var(--primary);}
+.sp.watch{background:var(--warn-soft);color:#9C7B12;}
+.sp.watch .sd{background:var(--warn);}
+.sp.declining{background:var(--neg-soft);color:var(--neg);}
+.sp.declining .sd{background:var(--neg);}
+@keyframes pd{0%{box-shadow:0 0 0 0 rgba(15,110,92,0.5)}70%{box-shadow:0 0 0 6px rgba(15,110,92,0)}100%{box-shadow:0 0 0 0 rgba(15,110,92,0)}}
+
+.trp{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:22px;}
+.dnw{position:relative;height:200px;display:flex;align-items:center;justify-content:center;margin:8px 0;}
+.dnw canvas{max-height:200px!important;}
+.dnc{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;}
+.dnv{font-family:var(--ff-display);font-size:24px;font-weight:400;line-height:1;}
+.dnl{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-top:3px;}
+.lg{display:flex;flex-direction:column;gap:7px;margin-top:14px;}
+.lgi{display:flex;align-items:center;gap:9px;font-size:12px;}
+.lgd{width:9px;height:9px;border-radius:3px;flex-shrink:0;}
+.lgn{color:var(--text-2);flex:1;}
+.lgv{font-weight:600;font-variant-numeric:tabular-nums;}
+.lgp{font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums;}
+
+.tprod{display:flex;flex-direction:column;gap:11px;}
+.tp{display:flex;align-items:center;gap:11px;}
+.tpr{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:var(--surface-3);color:var(--text-3);}
+.tpr.gold{background:linear-gradient(135deg,var(--gold-2),var(--gold));color:var(--ink);}
+.tpr.silver{background:linear-gradient(135deg,#E8E8E8,#C0C0C0);color:var(--ink);}
+.tpr.bronze{background:linear-gradient(135deg,#F0B98A,#CD7F32);color:#fff;}
+.tpb{flex:1;min-width:0;}
+.tpt{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.tpn{font-size:12.5px;font-weight:600;}
+.tpv{font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;}
+.tpbar{height:5px;background:var(--surface-3);border-radius:3px;overflow:hidden;}
+.tpf{height:100%;border-radius:3px;}
+
+.fab{position:fixed;bottom:24px;right:24px;width:54px;height:54px;border-radius:50%;background:var(--grad-1);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 32px rgba(30,39,97,0.35);z-index:80;}
+.fab:hover{transform:translateY(-3px);}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:#fff;border-radius:11px;padding:12px 18px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:9px;transform:translateY(60px);opacity:0;transition:all .25s;z-index:300;}
+.toast.show{transform:translateY(0);opacity:1;}
+.tdot{width:8px;height:8px;border-radius:50%;background:var(--pos);}
+
+@media(max-width:1180px){.hk{grid-template-columns:1fr 1fr;}.dr,.trp{grid-template-columns:1fr;}}
+@media(max-width:900px){.sb{transform:translateX(-100%);transition:transform .2s;}.sb.op{transform:translateX(0);}.main{margin-left:0;}.brg{display:flex;}.srch{display:none;}}
+@media(max-width:640px){.hk{grid-template-columns:1fr;}.view{padding:14px;}.pttl{font-size:28px;}.tb{padding:0 14px;}.pmt2{display:block;overflow-x:auto;}}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sb" id="sb">
+    <div class="sbg"></div>
+    <div class="sbl"><div class="lm"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1L15 5V11L8 15L1 11V5L8 1Z" stroke="#0A0F1E" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 5L11 7V9L8 11L5 9V7L8 5Z" fill="#0A0F1E"/></svg></div><div class="ln">SellSense</div></div>
+    <div class="ws"><div class="wa">AB</div><div style="flex:1;min-width:0;"><div class="wn">Atelier Beldi</div><div class="wsub">3 brands · Workspace</div></div><span style="color:rgba(255,255,255,0.4);font-size:10px;">▾</span></div>
+
+    <nav class="nav">
+      <div class="ngl">Workspace</div>
+      <a class="nvi act" onclick="gv('overview',this)"><svg viewBox="0 0 24 24"><path d="M3 12L12 4l9 8M5 10v10h14V10"/></svg>Overview</a>
+      <a class="nvi" onclick="gv('products',this)"><svg viewBox="0 0 24 24"><path d="M3 9l9-6 9 6v12H3z M9 21V12h6v9"/></svg>Products<span class="bd">12</span></a>
+      <a class="nvi" onclick="gv('add',this)"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Log a Sale</a>
+      <a class="nvi" onclick="gv('insights',this)"><svg viewBox="0 0 24 24"><path d="M9.6 4.6a2 2 0 014.8 0c0 .8.6 1.6 1.4 1.7"/><circle cx="12" cy="20" r="1"/><path d="M12 7v6M9 10h6"/></svg>AI Insights<span class="dt"></span></a>
+      <a class="nvi" onclick="gv('reports',this)"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z M14 2v6h6 M16 13H8 M16 17H8"/></svg>Reports</a>
+
+      <div class="ngl">Manage</div>
+      <a class="nvi" href="sellsense-settings.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8"/></svg>Settings</a>
+      <a class="nvi" href="sellsense-help.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3 M12 17h.01"/></svg>Help & Docs</a>
+    </nav>
+
+    <div class="sbot">
+      <div class="up">
+        <div class="upt">🎁 Full access · free</div>
+        <div class="ups">Unlimited products, AI insights, all reports — open while we're building.</div>
+        <button class="upb" onclick="window.location.href='sellsense-help.html'">What's new →</button>
+      </div>
+      <div class="ub" onclick="window.location.href='sellsense-settings.html'">
+        <div class="ua">AZ</div>
+        <div style="flex:1;min-width:0;"><div class="ubn">Abdessamad Z.</div><div class="ube">abdessamad@sellsense.io</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <header class="tb">
+      <button class="brg" onclick="document.getElementById('sb').classList.toggle('op')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <div class="srch">
+        <span class="si"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
+        <input type="text" placeholder="Search products, sales, insights…"/>
+        <span class="skbd">⌘ K</span>
+      </div>
+      <div class="act">
+        <div class="pk">
+          <button class="pkb" onclick="tm('curm')"><span class="pkf" id="cF">🇲🇦</span><span class="pkc" id="cC">MAD</span><span class="pkv">▾</span></button>
+          <div class="pkm" id="curm"><div class="pksrch"><input type="text" placeholder="Search currency…" oninput="fc(this.value)" id="cS"/></div><div id="cL"></div></div>
+        </div>
+        <div class="pk">
+          <button class="pkb" onclick="tm('lm')"><span class="pkf" id="lF">🇬🇧</span><span class="pkc" id="lC">EN</span><span class="pkv">▾</span></button>
+          <div class="pkm" id="lm" style="min-width:180px;">
+            <div class="pkit" onclick="sl('🇬🇧','EN')"><span class="pkit-f">🇬🇧</span><div class="pkit-c">English</div></div>
+            <div class="pkit" onclick="sl('🇫🇷','FR')"><span class="pkit-f">🇫🇷</span><div class="pkit-c">Français</div></div>
+            <div class="pkit" onclick="sl('🇲🇦','AR')"><span class="pkit-f">🇲🇦</span><div class="pkit-c">العربية</div></div>
+            <div class="pkit" onclick="sl('🇪🇸','ES')"><span class="pkit-f">🇪🇸</span><div class="pkit-c">Español</div></div>
+            <div class="pkit" onclick="sl('🇧🇷','PT')"><span class="pkit-f">🇧🇷</span><div class="pkit-c">Português</div></div>
+            <div class="pkit" onclick="sl('🇩🇪','DE')"><span class="pkit-f">🇩🇪</span><div class="pkit-c">Deutsch</div></div>
+            <div class="pkit" onclick="sl('🇮🇳','HI')"><span class="pkit-f">🇮🇳</span><div class="pkit-c">हिन्दी</div></div>
+            <div class="pkit" onclick="sl('🇨🇳','ZH')"><span class="pkit-f">🇨🇳</span><div class="pkit-c">中文</div></div>
+          </div>
+        </div>
+        <button class="tbic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg><span class="nd"></span></button>
+        <button class="tbp"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>Log sale</button>
+      </div>
+    </header>
+
+    <section class="view act" id="v-overview">
+      <div class="phdr">
+        <div class="phl">
+          <div class="pbc"><a>Workspace</a> <span>›</span> <span>Overview</span></div>
+          <h1 class="pttl">Good morning, Sam <em>—</em> your <em>profit pulse</em></h1>
+          <p class="psub">Real-time view of profitability across all your products. Updated 2 minutes ago.</p>
+        </div>
+        <div class="phr">
+          <div class="rp"><button>7d</button><button class="on">30d</button><button>90d</button><button>1y</button></div>
+          <button class="bex"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Export</button>
+        </div>
+      </div>
+
+      <div class="hk">
+        <div class="k pri">
+          <div class="khdr"><div class="klbl"><span class="klbd" style="background:#7AE0BD;"></span>Net Profit</div><span class="kii">i</span></div>
+          <div class="kv"><span class="cur" data-cs>MAD</span><span data-am="84290">84,290</span></div>
+          <div class="krw"><span class="ktr up">▲ 23.4%</span><span class="kcmp">vs. previous 30d</span></div>
+          <div class="ksp"><canvas id="spP"></canvas></div>
+        </div>
+        <div class="k">
+          <div class="khdr"><div class="klbl"><span class="klbd" style="background:var(--primary);"></span>Revenue</div><span class="kii">i</span></div>
+          <div class="kv"><span class="cur" data-cs>MAD</span><span data-am="312500">312,500</span></div>
+          <div class="krw"><span class="ktr up">▲ 18.2%</span><span class="kcmp">8,420 orders</span></div>
+          <div class="ksp"><canvas id="spR"></canvas></div>
+        </div>
+        <div class="k">
+          <div class="khdr"><div class="klbl"><span class="klbd" style="background:var(--accent);"></span>Profit Margin</div><span class="kii">i</span></div>
+          <div class="kv">26.9<span class="cur">%</span></div>
+          <div class="krw"><span class="ktr up">▲ 2.1pp</span><span class="kcmp">healthy zone</span></div>
+          <div class="ksp"><canvas id="spM"></canvas></div>
+        </div>
+        <div class="k">
+          <div class="khdr"><div class="klbl"><span class="klbd" style="background:var(--gold);"></span>Business Health</div><span class="kii">i</span></div>
+          <div class="kv">82<span class="cur">/100</span></div>
+          <div class="krw"><span class="ktr up">▲ 4 pts</span><span class="kcmp">excellent</span></div>
+          <div class="kgg">
+            <svg viewBox="0 0 130 65" width="130" height="65">
+              <path d="M 12 60 A 53 53 0 0 1 118 60" stroke="#EBE7DC" stroke-width="8" fill="none" stroke-linecap="round"/>
+              <path d="M 12 60 A 53 53 0 0 1 118 60" stroke="url(#gg)" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="166" stroke-dashoffset="30"/>
+              <defs><linearGradient id="gg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#E76F4A"/><stop offset="50%" stop-color="#D4A53C"/><stop offset="100%" stop-color="#0F6E5C"/></linearGradient></defs>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="dr">
+        <div class="cd">
+          <div class="cdh">
+            <div><div class="ct">Profit Pulse <span class="pl">LIVE</span></div><div class="cs">Net profit evolution across all products</div></div>
+            <div class="seg"><button class="on">Daily</button><button>Weekly</button><button>Monthly</button></div>
+          </div>
+          <div class="pls">
+            <div class="pli"><div class="pll">Best day</div><div class="pliv"><span data-cst>MAD</span> <span data-am="6840">6,840</span></div><div class="plis">Apr 18 · <strong>+42% vs avg</strong></div></div>
+            <div class="pli"><div class="pll">Daily average</div><div class="pliv"><span data-cst>MAD</span> <span data-am="2810">2,810</span></div><div class="plis">vs <strong>2,280</strong> last period</div></div>
+            <div class="pli ng"><div class="pll">Worst day</div><div class="pliv"><span data-cst>MAD</span> <span data-am="-340">−340</span></div><div class="plis">Apr 3 · <strong>ad waste</strong></div></div>
+          </div>
+          <div class="pchrt"><canvas id="pulseChart"></canvas></div>
+        </div>
+
+        <div class="cd aic">
+          <div class="cdh"><div><div class="ct">Decision Center <span class="ab">AI</span></div><div class="cs">3 actions to scale profits this week</div></div></div>
+          <div class="arc">
+            <div class="ar sc"><div class="aric">📈</div><div style="flex:1;"><span class="artg">Scale now</span><div class="art">Push budget on Smart Watch Pro</div><div class="ard">ROAS at <strong>4.8×</strong>, margin <strong>42%</strong>. Doubling ad spend could add <strong data-cst>MAD</strong> <strong data-am="12400">12,400</strong>/mo.</div></div><span class="arrw">→</span></div>
+            <div class="ar ps"><div class="aric">⏸️</div><div style="flex:1;"><span class="artg">Pause</span><div class="art">Bluetooth Earbuds losing money</div><div class="ard">Bleeding <strong data-cst>MAD</strong> <strong data-am="-1840">−1,840</strong>/wk. CPA exceeds margin by 28%.</div></div><span class="arrw">→</span></div>
+            <div class="ar op"><div class="aric">⚡</div><div style="flex:1;"><span class="artg">Optimize</span><div class="art">Lower delivery costs on COD orders</div><div class="ard">Negotiate with carrier — saving 5 MAD/order = <strong data-cst>MAD</strong> <strong data-am="8200">8,200</strong>/mo.</div></div><span class="arrw">→</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pmc">
+        <div class="pmh">
+          <div class="pml"><div class="pmt">Product Performance Matrix <span class="pmcnt">12 active</span></div><div class="pms">Track every product's true profitability — by unit, not by campaign.</div></div>
+          <div class="pma">
+            <div class="pmfl">
+              <button class="on">All</button>
+              <button><span class="ind" style="background:var(--pos);"></span> Scaling</button>
+              <button><span class="ind" style="background:var(--primary);"></span> Stable</button>
+              <button><span class="ind" style="background:var(--warn);"></span> Watch</button>
+              <button><span class="ind" style="background:var(--neg);"></span> Declining</button>
+            </div>
+            <button class="badd"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>Add Product</button>
+          </div>
+        </div>
+        <table class="pmt2">
+          <thead><tr><th>Product</th><th class="n">Units</th><th class="n">Revenue</th><th class="n">Net Profit</th><th class="n">Margin</th><th class="n">Per Unit</th><th class="c">Trend</th><th class="c">Status</th></tr></thead>
+          <tbody id="pmBody"></tbody>
+        </table>
+      </div>
+
+      <div class="trp">
+        <div class="cd">
+          <div class="cdh"><div><div class="ct">Revenue Mix</div><div class="cs">By business stream</div></div></div>
+          <div class="dnw"><canvas id="rvMix"></canvas><div class="dnc"><div class="dnv"><span data-cst>MAD</span> 312k</div><div class="dnl">Total</div></div></div>
+          <div class="lg">
+            <div class="lgi"><span class="lgd" style="background:#1E2761;"></span><span class="lgn">E-commerce / COD</span><span class="lgv">198,400</span><span class="lgp">63%</span></div>
+            <div class="lgi"><span class="lgd" style="background:#E76F4A;"></span><span class="lgn">Creator income</span><span class="lgv">76,200</span><span class="lgp">24%</span></div>
+            <div class="lgi"><span class="lgd" style="background:#0F6E5C;"></span><span class="lgn">Freelance gigs</span><span class="lgv">37,900</span><span class="lgp">13%</span></div>
+          </div>
+        </div>
+        <div class="cd">
+          <div class="cdh"><div><div class="ct">Where Profit Leaks</div><div class="cs">Cost breakdown</div></div></div>
+          <div class="dnw"><canvas id="ctMix"></canvas><div class="dnc"><div class="dnv">73<span style="font-size:14px;">%</span></div><div class="dnl">of revenue</div></div></div>
+          <div class="lg">
+            <div class="lgi"><span class="lgd" style="background:#1E2761;"></span><span class="lgn">COGS</span><span class="lgv">94,800</span><span class="lgp">42%</span></div>
+            <div class="lgi"><span class="lgd" style="background:#E76F4A;"></span><span class="lgn">Ad spend</span><span class="lgv">62,400</span><span class="lgp">27%</span></div>
+            <div class="lgi"><span class="lgd" style="background:#D4A53C;"></span><span class="lgn">Shipping & returns</span><span class="lgv">38,600</span><span class="lgp">17%</span></div>
+            <div class="lgi"><span class="lgd" style="background:#7C3AED;"></span><span class="lgn">Platform fees</span><span class="lgv">31,400</span><span class="lgp">14%</span></div>
+          </div>
+        </div>
+        <div class="cd">
+          <div class="cdh"><div><div class="ct">Top Profit Drivers</div><div class="cs">Best performers, this period</div></div></div>
+          <div class="tprod" id="tprod"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="v-products">
+      <div class="phdr"><div class="phl"><div class="pbc"><a>Workspace</a> <span>›</span> <span>Products</span></div><h1 class="pttl">Every product, <em>scored</em></h1><p class="psub">A boardroom view of what's really making money.</p></div></div>
+      <div id="pgrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;"></div>
+    </section>
+
+    <section class="view" id="v-add">
+      <div class="phdr"><div class="phl"><div class="pbc"><a onclick="gv('overview')">Workspace</a> <span>›</span> <span>Log a Sale</span></div><h1 class="pttl">Add a product or <em>log today's numbers</em></h1><p class="psub">Adapts to your business type. Profit, margin & health calculated in real time.</p></div></div>
+      <div style="max-width:880px;margin:0 auto;">
+        <div class="cd"><div class="cdh"><div><div class="ct">Quick add product</div></div></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px;">
+            <div style="display:flex;flex-direction:column;gap:6px;"><label style="font-size:11.5px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:0.06em;">Product name</label><input type="text" value="Smart Watch Pro" style="background:var(--surface-2);border:1.5px solid var(--border-2);border-radius:10px;padding:10px 13px;font-size:13.5px;"/></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label style="font-size:11.5px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:0.06em;">Selling price</label><input type="number" value="349" id="wPrice" oninput="calcWiz()" style="background:var(--surface-2);border:1.5px solid var(--border-2);border-radius:10px;padding:10px 13px;font-size:13.5px;"/></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label style="font-size:11.5px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:0.06em;">Units sold</label><input type="number" value="180" id="wUnits" oninput="calcWiz()" style="background:var(--surface-2);border:1.5px solid var(--border-2);border-radius:10px;padding:10px 13px;font-size:13.5px;"/></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label style="font-size:11.5px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:0.06em;">COGS / unit</label><input type="number" value="95" id="wCogs" oninput="calcWiz()" style="background:var(--surface-2);border:1.5px solid var(--border-2);border-radius:10px;padding:10px 13px;font-size:13.5px;"/></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label style="font-size:11.5px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:0.06em;">Shipping / order</label><input type="number" value="25" id="wShip" oninput="calcWiz()" style="background:var(--surface-2);border:1.5px solid var(--border-2);border-radius:10px;padding:10px 13px;font-size:13.5px;"/></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label style="font-size:11.5px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:0.06em;">Ad spend total</label><input type="number" value="9800" id="wAds" oninput="calcWiz()" style="background:var(--surface-2);border:1.5px solid var(--border-2);border-radius:10px;padding:10px 13px;font-size:13.5px;"/></div>
+          </div>
+        </div>
+        <div style="background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-radius:18px;padding:20px 24px;margin-top:14px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;">
+          <div><div style="font-size:10.5px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;">Net profit</div><div style="font-family:var(--ff-display);font-size:30px;font-weight:400;letter-spacing:-0.3px;"><span data-cst>MAD</span> <span id="wNet">22,140</span></div><div style="font-size:12.5px;color:rgba(255,255,255,0.7);"><span id="wNetUnit">123</span> per unit · <span id="wMargin">35.2%</span> margin</div></div>
+          <div><div style="font-size:10.5px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;">Health score</div><div style="font-family:var(--ff-display);font-size:30px;font-weight:400;"><span id="wHealth">88</span><span style="font-size:14px;opacity:0.6;">/100</span></div><div style="font-size:12.5px;color:rgba(255,255,255,0.85);"><span id="wVerdict">⚡ Scale this product</span></div></div>
+          <button style="background:var(--gold);color:var(--ink);font-size:13px;font-weight:700;padding:11px 18px;border-radius:10px;" onclick="sv()">Save product →</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="v-insights">
+      <div class="phdr"><div class="phl"><div class="pbc"><a>Workspace</a> <span>›</span> <span>AI Insights</span></div><h1 class="pttl">Your business, <em>read out loud</em></h1><p class="psub">Plain-language insights from your numbers. Each tied to a specific action.</p></div></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;">
+        <div class="cd"><div style="width:36px;height:36px;border-radius:10px;background:var(--pos-soft);color:var(--pos);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:13px;">🏆</div><div style="font-size:14px;font-weight:700;margin-bottom:5px;">Smart Watch Pro is your golden goose</div><div style="font-size:12.5px;color:var(--text-3);line-height:1.5;margin-bottom:13px;">Accounts for <strong>34% of total profit</strong> but only <strong>22% of revenue</strong>. Margin sits at <strong>42%</strong>.</div><div style="display:flex;align-items:center;justify-content:space-between;padding-top:13px;border-top:1px solid var(--border);"><div style="font-size:11px;color:var(--muted);">Impact · <strong style="color:var(--pos);">+12,400/mo</strong></div><a style="font-size:12px;font-weight:600;color:var(--primary);cursor:pointer;">Scale it →</a></div></div>
+        <div class="cd"><div style="width:36px;height:36px;border-radius:10px;background:var(--neg-soft);color:var(--neg);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:13px;">🩸</div><div style="font-size:14px;font-weight:700;margin-bottom:5px;">Bluetooth Earbuds bleed every week</div><div style="font-size:12.5px;color:var(--text-3);line-height:1.5;margin-bottom:13px;">CPA <strong>112 MAD</strong> on margin <strong>78 MAD</strong>. Lose <strong>34/sale</strong>.</div><div style="display:flex;align-items:center;justify-content:space-between;padding-top:13px;border-top:1px solid var(--border);"><div style="font-size:11px;color:var(--muted);">Recovery · <strong>−1,840/wk</strong></div><a style="font-size:12px;font-weight:600;color:var(--primary);cursor:pointer;">Fix it →</a></div></div>
+        <div class="cd"><div style="width:36px;height:36px;border-radius:10px;background:var(--warn-soft);color:#9C7B12;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:13px;">📦</div><div style="font-size:14px;font-weight:700;margin-bottom:5px;">Your return rate is climbing</div><div style="font-size:12.5px;color:var(--text-3);line-height:1.5;margin-bottom:13px;">Up from <strong>9.2% to 12.4%</strong> in 30 days. Each return costs ~31 MAD.</div><div style="display:flex;align-items:center;justify-content:space-between;padding-top:13px;border-top:1px solid var(--border);"><div style="font-size:11px;color:var(--muted);">Save · <strong>+3,200/mo</strong></div><a style="font-size:12px;font-weight:600;color:var(--primary);cursor:pointer;">Investigate →</a></div></div>
+        <div class="cd"><div style="width:36px;height:36px;border-radius:10px;background:var(--info-soft);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:13px;">💸</div><div style="font-size:14px;font-weight:700;margin-bottom:5px;">Friday is your most profitable day</div><div style="font-size:12.5px;color:var(--text-3);line-height:1.5;margin-bottom:13px;">Average <strong>+62% profit</strong> vs other days. Concentrate ads Thursday eve through Friday.</div><div style="display:flex;align-items:center;justify-content:space-between;padding-top:13px;border-top:1px solid var(--border);"><div style="font-size:11px;color:var(--muted);">Upside · <strong style="color:var(--pos);">+4,100/mo</strong></div><a style="font-size:12px;font-weight:600;color:var(--primary);cursor:pointer;">See pattern →</a></div></div>
+        <div class="cd"><div style="width:36px;height:36px;border-radius:10px;background:var(--pos-soft);color:var(--pos);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:13px;">🎯</div><div style="font-size:14px;font-weight:700;margin-bottom:5px;">Ad efficiency improved</div><div style="font-size:12.5px;color:var(--text-3);line-height:1.5;margin-bottom:13px;">ROAS climbed from <strong>2.8× to 3.4×</strong>. CPA dropped 19%.</div><div style="display:flex;align-items:center;justify-content:space-between;padding-top:13px;border-top:1px solid var(--border);"><div style="font-size:11px;color:var(--muted);">Saved · <strong style="color:var(--pos);">2,840 this mo</strong></div><a style="font-size:12px;font-weight:600;color:var(--primary);cursor:pointer;">See ads →</a></div></div>
+        <div class="cd"><div style="width:36px;height:36px;border-radius:10px;background:var(--warn-soft);color:#9C7B12;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:13px;">⚖️</div><div style="font-size:14px;font-weight:700;margin-bottom:5px;">Cash flow alert: April 28</div><div style="font-size:12.5px;color:var(--text-3);line-height:1.5;margin-bottom:13px;">Need <strong>~28,000 MAD</strong> in working capital by month-end.</div><div style="display:flex;align-items:center;justify-content:space-between;padding-top:13px;border-top:1px solid var(--border);"><div style="font-size:11px;color:var(--muted);">Confidence · <strong>87%</strong></div><a style="font-size:12px;font-weight:600;color:var(--primary);cursor:pointer;">Plan ahead →</a></div></div>
+      </div>
+    </section>
+
+    <section class="view" id="v-reports">
+      <div class="phdr"><div class="phl"><div class="pbc"><a>Workspace</a> <span>›</span> <span>Reports</span></div><h1 class="pttl">Pull a report, <em>any shape</em></h1><p class="psub">Pre-built reports for taxes, partners, and your own peace of mind.</p></div></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;">
+        <div class="cd" style="cursor:pointer;"><div style="width:42px;height:42px;border-radius:11px;background:var(--info-soft);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px;">📊</div><div style="font-size:14px;font-weight:700;margin-bottom:4px;">Monthly P&L Statement</div><div style="font-size:12px;color:var(--text-3);line-height:1.5;margin-bottom:13px;">Income, expenses & net profit summary.</div><div style="display:inline-flex;gap:6px;"><span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;background:var(--surface-3);color:var(--text-3);text-transform:uppercase;">PDF</span><span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;background:var(--surface-3);color:var(--text-3);text-transform:uppercase;">Excel</span></div></div>
+        <div class="cd" style="cursor:pointer;"><div style="width:42px;height:42px;border-radius:11px;background:var(--info-soft);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px;">🧾</div><div style="font-size:14px;font-weight:700;margin-bottom:4px;">VAT / Tax Report</div><div style="font-size:12px;color:var(--text-3);line-height:1.5;margin-bottom:13px;">Localized by country.</div><div style="display:inline-flex;gap:6px;"><span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;background:var(--surface-3);color:var(--text-3);text-transform:uppercase;">PDF</span><span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;background:var(--surface-3);color:var(--text-3);text-transform:uppercase;">CSV</span></div></div>
+        <div class="cd" style="cursor:pointer;"><div style="width:42px;height:42px;border-radius:11px;background:var(--info-soft);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px;">🚀</div><div style="font-size:14px;font-weight:700;margin-bottom:4px;">Scaling Playbook</div><div style="font-size:12px;color:var(--text-3);line-height:1.5;margin-bottom:13px;">AI-built: which products to push, pause, or rework.</div><div style="display:inline-flex;gap:6px;"><span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;background:var(--surface-3);color:var(--text-3);text-transform:uppercase;">PDF</span></div></div>
+        <div class="cd" style="cursor:pointer;"><div style="width:42px;height:42px;border-radius:11px;background:var(--info-soft);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px;">📦</div><div style="font-size:14px;font-weight:700;margin-bottom:4px;">Per-Product Deep Dive</div><div style="font-size:12px;color:var(--text-3);line-height:1.5;margin-bottom:13px;">Full SKU report — unit economics, trends.</div><div style="display:inline-flex;gap:6px;"><span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;background:var(--surface-3);color:var(--text-3);text-transform:uppercase;">PDF</span></div></div>
+        <div class="cd" style="cursor:pointer;"><div style="width:42px;height:42px;border-radius:11px;background:var(--info-soft);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px;">💼</div><div style="font-size:14px;font-weight:700;margin-bottom:4px;">Investor Pack</div><div style="font-size:12px;color:var(--text-3);line-height:1.5;margin-bottom:13px;">Polished MRR / margin / cohorts page.</div><div style="display:inline-flex;gap:6px;"><span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;background:var(--surface-3);color:var(--text-3);text-transform:uppercase;">PDF</span><span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;background:var(--surface-3);color:var(--text-3);text-transform:uppercase;">Slides</span></div></div>
+        <div class="cd" style="cursor:pointer;"><div style="width:42px;height:42px;border-radius:11px;background:var(--info-soft);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px;">📈</div><div style="font-size:14px;font-weight:700;margin-bottom:4px;">12-Month Forecast</div><div style="font-size:12px;color:var(--text-3);line-height:1.5;margin-bottom:13px;">3 scenarios — conservative, baseline, aggressive.</div><div style="display:inline-flex;gap:6px;"><span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;background:var(--surface-3);color:var(--text-3);text-transform:uppercase;">Excel</span></div></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<button class="fab" onclick="gv('add')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg></button>
+
+<div class="toast" id="tst"><span class="tdot"></span><span id="tstx">Saved.</span></div>
+
+<script>
+const ST = {currency:'MAD',lang:'en'};
+const CUR = [
+  {code:'MAD',name:'Moroccan Dirham',flag:'🇲🇦',rate:1,region:'MENA'},
+  {code:'AED',name:'UAE Dirham',flag:'🇦🇪',rate:0.367,region:'MENA'},
+  {code:'SAR',name:'Saudi Riyal',flag:'🇸🇦',rate:0.375,region:'MENA'},
+  {code:'EGP',name:'Egyptian Pound',flag:'🇪🇬',rate:4.85,region:'MENA'},
+  {code:'TND',name:'Tunisian Dinar',flag:'🇹🇳',rate:0.31,region:'MENA'},
+  {code:'DZD',name:'Algerian Dinar',flag:'🇩🇿',rate:13.4,region:'MENA'},
+  {code:'USD',name:'US Dollar',flag:'🇺🇸',rate:0.1,region:'Global'},
+  {code:'EUR',name:'Euro',flag:'🇪🇺',rate:0.092,region:'Global'},
+  {code:'GBP',name:'British Pound',flag:'🇬🇧',rate:0.079,region:'Global'},
+  {code:'CHF',name:'Swiss Franc',flag:'🇨🇭',rate:0.089,region:'Global'},
+  {code:'CAD',name:'Canadian Dollar',flag:'🇨🇦',rate:0.137,region:'Global'},
+  {code:'AUD',name:'Australian Dollar',flag:'🇦🇺',rate:0.152,region:'Global'},
+  {code:'INR',name:'Indian Rupee',flag:'🇮🇳',rate:8.42,region:'Asia'},
+  {code:'CNY',name:'Chinese Yuan',flag:'🇨🇳',rate:0.72,region:'Asia'},
+  {code:'JPY',name:'Japanese Yen',flag:'🇯🇵',rate:15.4,region:'Asia'},
+  {code:'KRW',name:'Korean Won',flag:'🇰🇷',rate:137,region:'Asia'},
+  {code:'IDR',name:'Indonesian Rupiah',flag:'🇮🇩',rate:1620,region:'Asia'},
+  {code:'PKR',name:'Pakistani Rupee',flag:'🇵🇰',rate:28.1,region:'Asia'},
+  {code:'NGN',name:'Nigerian Naira',flag:'🇳🇬',rate:148,region:'Africa'},
+  {code:'ZAR',name:'South African Rand',flag:'🇿🇦',rate:1.84,region:'Africa'},
+  {code:'KES',name:'Kenyan Shilling',flag:'🇰🇪',rate:12.9,region:'Africa'},
+  {code:'GHS',name:'Ghana Cedi',flag:'🇬🇭',rate:1.56,region:'Africa'},
+  {code:'BRL',name:'Brazil Real',flag:'🇧🇷',rate:0.52,region:'Latam'},
+  {code:'MXN',name:'Mexican Peso',flag:'🇲🇽',rate:1.71,region:'Latam'},
+  {code:'ARS',name:'Argentine Peso',flag:'🇦🇷',rate:88,region:'Latam'},
+  {code:'BTC',name:'Bitcoin',flag:'₿',rate:0.0000016,region:'Crypto'},
+  {code:'USDT',name:'Tether',flag:'🪙',rate:0.1,region:'Crypto'}
+];
+const PROD = [
+  {id:1,emoji:'⌚',name:'Smart Watch Pro',cat:'E-commerce · COD',units:240,revenue:83760,profit:35180,margin:42,perUnit:147,trend:[10,12,15,14,18,22,28,32,38,44,52,58],status:'scaling'},
+  {id:2,emoji:'👟',name:'Sport Running Shoes',cat:'E-commerce · COD',units:185,revenue:55500,profit:14430,margin:26,perUnit:78,trend:[14,16,18,17,20,22,21,24,26,28,30,32],status:'stable'},
+  {id:3,emoji:'🎬',name:'Course: "TikTok Cash"',cat:'Creator · Digital',units:62,revenue:31000,profit:23560,margin:76,perUnit:380,trend:[5,8,10,9,12,18,22,28,32,36,40,44],status:'scaling'},
+  {id:4,emoji:'🎧',name:'Bluetooth Earbuds',cat:'E-commerce · COD',units:128,revenue:21760,profit:-2840,margin:-13,perUnit:-22,trend:[20,18,16,12,10,8,6,4,2,0,-3,-6],status:'declining'},
+  {id:5,emoji:'💼',name:'Logo Design (Pkg)',cat:'Freelance · Direct',units:14,revenue:18900,profit:13230,margin:70,perUnit:945,trend:[8,9,10,11,12,11,12,13,13,14,14,15],status:'stable'},
+  {id:6,emoji:'☕',name:'Premium Coffee Bag',cat:'E-commerce · D2C',units:312,revenue:14040,profit:5462,margin:39,perUnit:17,trend:[12,14,13,15,17,18,17,19,20,22,24,26],status:'scaling'},
+  {id:7,emoji:'📸',name:'Sponsored Reels',cat:'Creator · Sponsor',units:6,revenue:18000,profit:14400,margin:80,perUnit:2400,trend:[3,4,3,5,5,6,5,6,6,7,8,8],status:'stable'},
+  {id:8,emoji:'🌿',name:'Argan Oil 100ml',cat:'E-commerce · D2C',units:96,revenue:7680,profit:1690,margin:22,perUnit:18,trend:[18,17,16,15,14,15,13,12,11,10,11,9],status:'watch'},
+  {id:9,emoji:'🪑',name:'Webflow Build',cat:'Freelance · Direct',units:3,revenue:24000,profit:18600,margin:77,perUnit:6200,trend:[1,1,2,1,2,2,3,2,3,3,3,3],status:'stable'},
+  {id:10,emoji:'🛍️',name:'Handmade Bag',cat:'E-commerce · D2C',units:48,revenue:8640,profit:2074,margin:24,perUnit:43,trend:[5,6,7,6,7,8,7,8,8,9,9,10],status:'watch'},
+  {id:11,emoji:'📚',name:'eBook: "COD Maroc"',cat:'Creator · Digital',units:118,revenue:7080,profit:5604,margin:79,perUnit:47,trend:[5,7,8,10,12,14,16,17,18,20,22,24],status:'scaling'},
+  {id:12,emoji:'🏷️',name:'Vintage T-shirts',cat:'E-commerce · COD',units:74,revenue:11100,profit:-490,margin:-4,perUnit:-7,trend:[15,14,13,11,10,9,8,7,5,4,3,2],status:'declining'}
+];
+
+function fmt(am,c){
+  c=c||ST.currency;const cu=CUR.find(x=>x.code===c)||CUR[0];const v=am*cu.rate;const a=Math.abs(v);
+  if(a>=1000000)return(v/1000000).toFixed(2)+'M';
+  if(a>=10000)return Math.round(v).toLocaleString('en-US');
+  if(a>=100)return v.toLocaleString('en-US',{maximumFractionDigits:0});
+  return v.toLocaleString('en-US',{maximumFractionDigits:2});
+}
+function ua(){
+  document.querySelectorAll('[data-am]').forEach(el=>{const r=parseFloat(el.getAttribute('data-am'));el.textContent=fmt(r);});
+  document.querySelectorAll('[data-cs]').forEach(el=>{el.textContent=ST.currency;});
+  document.querySelectorAll('[data-cst]').forEach(el=>{el.textContent=ST.currency;});
+}
+function bC(filter){
+  filter=filter||'';
+  const list=document.getElementById('cL');const grps={};
+  CUR.filter(c=>{if(!filter)return true;const f=filter.toLowerCase();return c.code.toLowerCase().includes(f)||c.name.toLowerCase().includes(f)||c.region.toLowerCase().includes(f);}).forEach(c=>{(grps[c.region]=grps[c.region]||[]).push(c);});
+  let h='';
+  Object.keys(grps).forEach(r=>{h+='<div class="pkgrp">'+r+'</div>';grps[r].forEach(c=>{const a=c.code===ST.currency?'on':'';h+='<div class="pkit '+a+'" onclick="sc(\''+c.code+'\',\''+c.flag+'\')"><span class="pkit-f">'+c.flag+'</span><div><div class="pkit-c">'+c.code+'</div><div class="pkit-n">'+c.name+'</div></div><span class="pkit-r">'+c.rate+'</span></div>';});});
+  list.innerHTML=h;
+}
+function fc(v){bC(v);}
+function sc(code,flag){
+  ST.currency=code;
+  document.getElementById('cC').textContent=code;
+  document.getElementById('cF').textContent=flag;
+  document.getElementById('curm').classList.remove('op');
+  ua();bP();bT();bG();calcWiz();
+  tt('Switched to '+code);
+}
+function sl(flag,code){
+  document.getElementById('lC').textContent=code;
+  document.getElementById('lF').textContent=flag;
+  document.getElementById('lm').classList.remove('op');
+  tt('Language: '+code);
+}
+function tm(id){document.querySelectorAll('.pkm').forEach(m=>{if(m.id!==id)m.classList.remove('op');});document.getElementById(id).classList.toggle('op');}
+document.addEventListener('click',(e)=>{if(!e.target.closest('.pk'))document.querySelectorAll('.pkm').forEach(m=>m.classList.remove('op'));});
+
+function gv(n,el){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('act'));
+  document.getElementById('v-'+n).classList.add('act');
+  if(el){document.querySelectorAll('.nvi').forEach(x=>x.classList.remove('act'));el.classList.add('act');}
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(n==='products')bG();
+}
+
+function tt(m){const t=document.getElementById('tst');document.getElementById('tstx').textContent=m||'Saved.';t.classList.add('show');clearTimeout(window.__tt);window.__tt=setTimeout(()=>t.classList.remove('show'),2200);}
+
+function ms(d,col){
+  const mx=Math.max(...d.map(Math.abs));const mn=Math.min(...d);const r=mx-mn||1;
+  const pts=d.map((v,i)=>{const x=(i/(d.length-1))*60+2;const y=22-((v-mn)/r)*18;return x+','+y;}).join(' ');
+  return '<svg class="spk" viewBox="0 0 64 24" preserveAspectRatio="none"><polyline points="'+pts+'" fill="none" stroke="'+col+'" stroke-width="1.5" stroke-linecap="round"/></svg>';
+}
+function sb(s){const m={scaling:'Scaling',stable:'Stable',watch:'Watch',declining:'Declining'};return '<span class="sp '+s+'"><span class="sd"></span>'+m[s]+'</span>';}
+function bP(){
+  const body=document.getElementById('pmBody');
+  body.innerHTML=PROD.map(p=>{
+    const pc=p.profit>=0?'amp':'amn';
+    const mc=p.margin>=30?'hi':p.margin>=15?'md':'lo';
+    const col=p.status==='scaling'?'#0F6E5C':p.status==='declining'?'#DC3556':p.status==='watch'?'#D4A53C':'#1E2761';
+    return '<tr><td><div class="pc"><div class="pem">'+p.emoji+'</div><div><div class="pnm">'+p.name+'</div><div class="pmm">'+p.cat+'</div></div></div></td><td class="n">'+p.units+'</td><td class="n">'+fmt(p.revenue)+'</td><td class="n '+pc+'">'+(p.profit>=0?'':'−')+fmt(Math.abs(p.profit))+'</td><td class="n"><span class="mg '+mc+'">'+p.margin+'%</span></td><td class="n">'+(p.perUnit>=0?'':'−')+fmt(Math.abs(p.perUnit))+'</td><td class="c">'+ms(p.trend,col)+'</td><td class="c">'+sb(p.status)+'</td></tr>';
+  }).join('');
+}
+function bT(){
+  const s=[...PROD].sort((a,b)=>b.profit-a.profit).slice(0,5);const mx=s[0].profit;
+  const cols=['linear-gradient(90deg,#D4A53C,#E8BD58)','linear-gradient(90deg,#1E2761,#3B4FA3)','linear-gradient(90deg,#0F6E5C,#15A37F)','linear-gradient(90deg,#E76F4A,#FFA37A)','linear-gradient(90deg,#7C3AED,#A78BFA)'];
+  const rk=['gold','silver','bronze','',''];
+  document.getElementById('tprod').innerHTML=s.map((p,i)=>'<div class="tp"><div class="tpr '+rk[i]+'">'+(i+1)+'</div><div class="tpb"><div class="tpt"><div class="tpn">'+p.emoji+' '+p.name+'</div><div class="tpv">'+fmt(p.profit)+'</div></div><div class="tpbar"><div class="tpf" style="width:'+((p.profit/mx)*100)+'%;background:'+cols[i]+';"></div></div></div></div>').join('');
+}
+function bG(){
+  document.getElementById('pgrid').innerHTML=PROD.map(p=>{
+    const pc=p.profit>=0?'#0F6E5C':'#DC3556';
+    return '<div class="cd" style="padding:18px;cursor:pointer;"><div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;"><div style="width:44px;height:44px;border-radius:11px;background:var(--surface-3);display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid var(--border);">'+p.emoji+'</div>'+sb(p.status)+'</div><div style="font-size:14px;font-weight:700;margin-bottom:3px;">'+p.name+'</div><div style="font-size:11px;color:var(--text-3);margin-bottom:14px;">'+p.cat+'</div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Net profit</div><div style="font-family:var(--ff-display);font-size:24px;font-weight:400;color:'+pc+';margin-bottom:14px;">'+(p.profit>=0?'':'−')+ST.currency+' '+fmt(Math.abs(p.profit))+'</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding-top:13px;border-top:1px solid var(--border);"><div style="text-align:center;"><div style="font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;">'+p.units+'</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;margin-top:2px;">Units</div></div><div style="text-align:center;"><div style="font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;">'+p.margin+'%</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-top:2px;">Margin</div></div><div style="text-align:center;"><div style="font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;">'+fmt(p.revenue/1000)+'k</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-top:2px;">Revenue</div></div></div></div>';
+  }).join('');
+}
+
+function dSp(id,d,col){
+  const c=document.getElementById(id);if(!c)return;const ctx=c.getContext('2d');
+  const g=ctx.createLinearGradient(0,0,0,54);g.addColorStop(0,col+'55');g.addColorStop(1,col+'00');
+  new Chart(ctx,{type:'line',data:{labels:d.map((_,i)=>i),datasets:[{data:d,borderColor:col,backgroundColor:g,borderWidth:2,fill:true,tension:0.4,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{display:false},y:{display:false}}}});
+}
+function dPC(){
+  const ctx=document.getElementById('pulseChart').getContext('2d');
+  const lbls=Array.from({length:30},(_,i)=>'Apr '+(i+1));const data=[];const cmp=[];
+  for(let i=0;i<30;i++){const t=1500+i*120;const n=Math.sin(i*0.8)*1200+Math.cos(i*0.5)*600;data.push(Math.max(0,Math.round(t+n+(i===17?3000:0))));cmp.push(Math.max(0,Math.round(1200+i*80+Math.sin(i*0.6)*900)));}
+  data[2]=-340;data[6]=4500;data[17]=6840;
+  const g=ctx.createLinearGradient(0,0,0,240);g.addColorStop(0,'rgba(30,39,97,0.25)');g.addColorStop(1,'rgba(30,39,97,0)');
+  new Chart(ctx,{type:'line',data:{labels:lbls,datasets:[{label:'Previous period',data:cmp,borderColor:'#D1D5DB',backgroundColor:'transparent',borderWidth:1.5,borderDash:[4,4],tension:0.35,pointRadius:0},{label:'Net profit',data:data,borderColor:'#1E2761',backgroundColor:g,borderWidth:2.5,tension:0.35,fill:true,pointRadius:0,pointHoverRadius:5}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{backgroundColor:'#0A0F1E',titleColor:'#fff',bodyColor:'#D1D5DB',padding:11,cornerRadius:8,callbacks:{label:(c)=>c.dataset.label+': '+ST.currency+' '+fmt(c.raw)}}},scales:{x:{grid:{display:false},ticks:{color:'#9CA3AF',font:{size:10},maxTicksLimit:7}},y:{grid:{color:'#EBE7DC'},ticks:{color:'#9CA3AF',font:{size:10},callback:v=>ST.currency+' '+(v>=1000?(v/1000).toFixed(1)+'k':v)}}}}});
+}
+function dDn(id,d,c){const el=document.getElementById(id);if(!el)return;new Chart(el.getContext('2d'),{type:'doughnut',data:{datasets:[{data:d,backgroundColor:c,borderWidth:0,hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false},tooltip:{backgroundColor:'#0A0F1E',padding:10,cornerRadius:8}}}});}
+
+function calcWiz(){
+  const p=+document.getElementById('wPrice').value||0,u=+document.getElementById('wUnits').value||0,c=+document.getElementById('wCogs').value||0,s=+document.getElementById('wShip').value||0,a=+document.getElementById('wAds').value||0;
+  const rv=p*u,co=c*u+s*u+a,nt=rv-co,m=rv>0?(nt/rv*100):0,pu=u>0?nt/u:0;
+  let h=50;if(m>40)h=92;else if(m>25)h=80;else if(m>15)h=65;else if(m>5)h=50;else if(m>0)h=35;else h=18;
+  const v=h>=80?'⚡ Scale this product':h>=60?'✓ Stable performer':h>=40?'⚠ Needs optimization':'🛑 Reconsider or pause';
+  document.getElementById('wNet').textContent=fmt(Math.round(nt));
+  document.getElementById('wNetUnit').textContent=fmt(Math.round(pu));
+  document.getElementById('wMargin').textContent=m.toFixed(1)+'%';
+  document.getElementById('wHealth').textContent=h;
+  document.getElementById('wVerdict').textContent=v;
+}
+function sv(){tt('Product saved & tracking started');setTimeout(()=>gv('overview'),900);}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  bC();ua();bP();bT();calcWiz();
+  dSp('spP',[2.4,2.8,2.2,3.1,2.6,3.4,3.8,3.2,3.9,4.2,3.6,4.5,4.1,4.8,5.2,4.6,5.4,6.1,5.7,6.4,5.9,6.8,7.2,6.6,7.5,8.0,7.6,8.3,8.8,8.4],'#FFFFFF');
+  dSp('spR',[8,9,8.5,10,9.5,11,12,11.5,12.5,13,12.5,13.5,14,13.5,14.5,15,14.5,15.5,16,15.5,16.5,17,16.5,17.5,18,17.5,18.5,19,18.5,19.5],'#1E2761');
+  dSp('spM',[24,24.5,25,24.8,25.2,25.5,25.8,26,25.7,26.2,26.5,26.8,26.5,26.9,27.2,26.8,27,27.5,27.2,27.8,27.5,27.9,28,27.6,27.8,28.2,27.9,28.5,28.8,27.4],'#E76F4A');
+  dPC();dDn('rvMix',[63,24,13],['#1E2761','#E76F4A','#0F6E5C']);dDn('ctMix',[42,27,17,14],['#1E2761','#E76F4A','#D4A53C','#7C3AED']);
+  setTimeout(()=>tt('Welcome back, Sam'),700);
+});
+document.addEventListener('keydown',(e)=>{if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();document.querySelector('.srch input').focus();}});
+</script>
+</body>
+</html>

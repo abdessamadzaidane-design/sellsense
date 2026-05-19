@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SellSense — Profit Intelligence for Online Earners</title>
+<meta name="description" content="The decision platform for ecom, creators & freelancers. Know your real profit, by product."/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#FAFAF7;--surface:#FFFFFF;--surface-2:#FBFAF6;--surface-3:#F1EFE8;
+  --ink:#0A0F1E;--text:#0D1424;--text-2:#3B4358;--text-3:#6B7280;
+  --muted:#9CA3AF;--muted-2:#D1D5DB;
+  --border:#EBE7DC;--border-2:#E2DDD0;--border-3:#D5CFC0;
+  --primary:#1E2761;--primary-2:#2C3679;--accent:#E76F4A;--accent-2:#FF8A66;
+  --gold:#D4A53C;--gold-2:#E8BD58;--emerald:#0F6E5C;--emerald-2:#15A37F;
+  --ruby:#DC3556;--violet:#7C3AED;--sky:#0EA5E9;
+  --pos:#0F6E5C;--pos-soft:#E6F5F1;
+  --grad-1:linear-gradient(135deg,#1E2761 0%,#3B4FA3 100%);
+  --grad-aurora:linear-gradient(135deg,#1E2761 0%,#7C3AED 50%,#E76F4A 100%);
+  --sh-xs:0 1px 2px rgba(13,20,36,0.04);--sh-sm:0 2px 8px rgba(13,20,36,0.06);
+  --sh-md:0 8px 28px rgba(13,20,36,0.08);--sh-lg:0 24px 60px rgba(13,20,36,0.12);
+  --ff-sans:'Inter',system-ui,sans-serif;--ff-display:'Instrument Serif',Georgia,serif;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--ff-sans);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+a{text-decoration:none;color:inherit;}
+
+.nav{position:sticky;top:0;background:rgba(250,250,247,0.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);z-index:100;}
+.ni{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:68px;}
+.logo{display:flex;align-items:center;gap:10px;}
+.lm{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--accent));border-radius:9px;display:flex;align-items:center;justify-content:center;position:relative;box-shadow:0 4px 12px rgba(212,165,60,0.35);}
+.lm::after{content:'';position:absolute;inset:1.5px;border-radius:8px;background:linear-gradient(135deg,rgba(255,255,255,0.2),transparent 60%);}
+.ln{font-family:var(--ff-display);font-size:22px;font-style:italic;letter-spacing:-0.5px;color:var(--text);}
+.nl{display:flex;align-items:center;gap:2px;}
+.nl a{font-size:13.5px;font-weight:500;color:var(--text-3);padding:8px 14px;border-radius:8px;}
+.nl a:hover{background:var(--surface-3);color:var(--text);}
+.nc2{font-size:13.5px;font-weight:600;color:var(--text);padding:8px 16px;margin-right:6px;border-radius:8px;}
+.nc2:hover{background:var(--surface-3);}
+.nc{background:var(--ink);color:#fff;font-size:13.5px;font-weight:600;padding:9px 16px;border-radius:9px;display:inline-flex;align-items:center;gap:6px;transition:all .15s;}
+.nc:hover{background:var(--primary);transform:translateY(-1px);box-shadow:var(--sh-md);}
+.burg{display:none;width:38px;height:38px;border-radius:9px;border:1px solid var(--border);background:#fff;align-items:center;justify-content:center;}
+.mob{display:none;flex-direction:column;background:var(--surface);border-bottom:1px solid var(--border);padding:14px 24px 20px;gap:4px;}
+.mob.op{display:flex;}
+
+.hero{padding:96px 24px 80px;text-align:center;position:relative;overflow:hidden;}
+.hbg{position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(30,39,97,0.06),transparent 60%),radial-gradient(ellipse at 80% 30%,rgba(231,111,74,0.08),transparent 50%),radial-gradient(ellipse at 20% 60%,rgba(212,165,60,0.06),transparent 50%);}
+.hin{position:relative;max-width:880px;margin:0 auto;}
+.eb{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border-2);border-radius:30px;padding:6px 14px 6px 6px;font-size:12.5px;font-weight:600;color:var(--text-2);margin-bottom:32px;box-shadow:var(--sh-xs);}
+.ebt{background:linear-gradient(135deg,var(--gold-2),var(--gold));color:var(--ink);font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;}
+.h1{font-family:var(--ff-display);font-size:clamp(48px,8vw,86px);font-weight:400;letter-spacing:-2px;line-height:1.0;color:var(--text);margin-bottom:24px;}
+.h1 em{font-style:italic;color:var(--primary);}
+.h1 .sk{position:relative;color:var(--text-3);}
+.h1 .sk::after{content:'';position:absolute;left:-2%;right:-2%;top:48%;height:3px;background:var(--accent);transform:rotate(-3deg);border-radius:2px;}
+.hs{font-size:18px;color:var(--text-3);max-width:580px;margin:0 auto 38px;line-height:1.55;}
+.hs strong{color:var(--text);font-weight:600;}
+.hb{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:34px;flex-wrap:wrap;}
+.bp{display:inline-flex;align-items:center;gap:7px;background:var(--ink);color:#fff;font-size:15px;font-weight:600;padding:14px 24px;border-radius:12px;transition:all .15s;box-shadow:var(--sh-md);}
+.bp:hover{background:var(--primary);transform:translateY(-2px);box-shadow:var(--sh-lg);}
+.bsc{display:inline-flex;align-items:center;gap:7px;background:#fff;color:var(--text);font-size:14.5px;font-weight:600;padding:13px 22px;border-radius:12px;border:1px solid var(--border-2);}
+.bsc:hover{border-color:var(--text);}
+.ht{display:inline-flex;align-items:center;gap:14px;font-size:13px;color:var(--text-3);}
+.ht strong{color:var(--text);font-weight:600;}
+.av{display:inline-flex;}
+.av>div{width:24px;height:24px;border-radius:50%;border:2px solid var(--bg);margin-left:-7px;background:var(--grad-aurora);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;}
+.av>div:first-child{margin-left:0;}
+.av>div:nth-child(2){background:linear-gradient(135deg,var(--emerald-2),var(--emerald));}
+.av>div:nth-child(3){background:linear-gradient(135deg,var(--gold-2),var(--gold));}
+.av>div:nth-child(4){background:linear-gradient(135deg,var(--violet),#A78BFA);}
+
+.hp{max-width:1100px;margin:60px auto 0;position:relative;}
+.pf{position:relative;background:var(--surface);border:1px solid var(--border-2);border-radius:18px;padding:18px;box-shadow:var(--sh-lg);}
+.pfb{display:flex;align-items:center;gap:6px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.pfb span{width:10px;height:10px;border-radius:50%;background:#E5E7EB;}
+.pfb span:nth-child(1){background:#FF5F57;}
+.pfb span:nth-child(2){background:#FFBD2E;}
+.pfb span:nth-child(3){background:#28C940;}
+.pfb small{font-size:11px;color:var(--muted);margin-left:14px;}
+.pfg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+.pk{background:linear-gradient(135deg,var(--surface-2),var(--surface));border:1px solid var(--border);border-radius:10px;padding:12px;}
+.pk.pri{background:var(--grad-1);border-color:transparent;color:#fff;}
+.pkl{font-size:9.5px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:6px;}
+.pk.pri .pkl{color:rgba(255,255,255,0.6);}
+.pkv{font-family:var(--ff-display);font-size:22px;font-weight:400;color:var(--text);line-height:1;}
+.pk.pri .pkv{color:#fff;}
+.pkt{font-size:10.5px;color:var(--pos);margin-top:4px;}
+.pk.pri .pkt{color:#7AE0BD;}
+.pbd{display:grid;grid-template-columns:1.5fr 1fr;gap:10px;}
+.pch{background:linear-gradient(180deg,rgba(30,39,97,0.06),rgba(30,39,97,0.01));border:1px solid var(--border);border-radius:10px;padding:14px;}
+.pct{font-size:11px;font-weight:700;margin-bottom:8px;}
+.pcs{width:100%;height:80px;}
+.psd{background:var(--ink);border-radius:10px;padding:13px;color:#fff;}
+.psdt{font-size:11px;font-weight:700;margin-bottom:9px;display:flex;align-items:center;gap:5px;}
+.psdt .b{font-size:9px;font-weight:700;background:var(--gold);color:var(--ink);padding:2px 6px;border-radius:4px;}
+.psr{background:rgba(255,255,255,0.06);border-radius:7px;padding:8px 9px;font-size:10.5px;margin-bottom:6px;color:rgba(255,255,255,0.85);}
+.psr strong{color:#5FE3B8;}
+.psr.r strong{color:#FF8B9E;}
+
+.intl{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:32px 24px;overflow:hidden;}
+.iin{max-width:1200px;margin:0 auto;}
+.il{text-align:center;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:18px;}
+.it{display:flex;gap:36px;animation:sc 30s linear infinite;width:max-content;}
+.itm{display:flex;align-items:center;gap:7px;font-size:14px;color:var(--text-2);white-space:nowrap;font-weight:500;}
+.itm .fg{font-size:18px;}
+@keyframes sc{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+.sec{padding:96px 24px;max-width:1200px;margin:0 auto;}
+.sh{text-align:center;max-width:680px;margin:0 auto 48px;}
+.st{display:inline-block;font-size:11.5px;font-weight:700;color:var(--accent);background:rgba(231,111,74,0.1);padding:5px 13px;border-radius:20px;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:18px;}
+.stt{font-family:var(--ff-display);font-size:clamp(36px,5vw,56px);font-weight:400;letter-spacing:-1px;line-height:1.05;margin-bottom:14px;}
+.stt em{font-style:italic;color:var(--primary);}
+.ss{font-size:16.5px;color:var(--text-3);line-height:1.55;}
+
+.prob{background:var(--ink);color:#fff;padding:100px 24px;position:relative;overflow:hidden;}
+.prob::before{content:'';position:absolute;top:-100px;right:-100px;width:400px;height:400px;background:radial-gradient(circle,var(--accent) 0%,transparent 60%);opacity:0.18;}
+.prob::after{content:'';position:absolute;bottom:-100px;left:-100px;width:400px;height:400px;background:radial-gradient(circle,var(--primary) 0%,transparent 60%);opacity:0.3;}
+.pin{max-width:1100px;margin:0 auto;position:relative;}
+.pg{display:grid;grid-template-columns:1.1fr 1fr;gap:60px;align-items:center;}
+.pl .st{background:rgba(231,111,74,0.15);color:var(--accent-2);}
+.pl .stt{color:#fff;text-align:left;}
+.pl .stt em{color:var(--gold);}
+.pl .ss{color:rgba(255,255,255,0.65);text-align:left;}
+.pls{margin-top:32px;display:flex;flex-direction:column;gap:14px;}
+.pi{display:flex;gap:14px;align-items:flex-start;}
+.pix{width:28px;height:28px;border-radius:8px;background:rgba(220,53,86,0.15);color:#FF8B9E;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;}
+.pit{font-size:15px;font-weight:600;color:#fff;margin-bottom:3px;}
+.pid{font-size:13.5px;color:rgba(255,255,255,0.55);}
+.pmk{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:24px;}
+.pmr{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.08);font-size:13.5px;}
+.pmr:last-child{border-bottom:none;padding-top:18px;font-size:16px;font-weight:700;}
+.pml{color:rgba(255,255,255,0.6);}
+.pmv{font-family:monospace;color:#fff;font-weight:500;}
+.pmv.neg{color:#FF8B9E;}
+.pmv.fin{color:#DC3556;font-family:var(--ff-display);font-size:22px;font-weight:400;}
+.pmt{display:inline-block;font-size:10.5px;font-weight:700;background:rgba(220,53,86,0.18);color:#FF8B9E;padding:3px 8px;border-radius:5px;margin-bottom:14px;letter-spacing:0.05em;text-transform:uppercase;}
+
+.who{padding:96px 24px;background:var(--bg);}
+.wg{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1200px;margin:0 auto;}
+.wc{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:32px;transition:all .25s;position:relative;overflow:hidden;}
+.wc:hover{border-color:var(--border-3);transform:translateY(-4px);box-shadow:var(--sh-lg);}
+.wc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.wc.a::before{background:linear-gradient(90deg,var(--primary),var(--violet));}
+.wc.b::before{background:linear-gradient(90deg,var(--accent),var(--gold));}
+.wc.c::before{background:linear-gradient(90deg,var(--emerald),var(--sky));}
+.wci{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:22px;}
+.wc.a .wci{background:rgba(30,39,97,0.08);}
+.wc.b .wci{background:rgba(231,111,74,0.1);}
+.wc.c .wci{background:var(--pos-soft);}
+.wct{font-family:var(--ff-display);font-size:26px;font-weight:400;letter-spacing:-0.3px;margin-bottom:6px;}
+.wcs{font-size:13.5px;color:var(--text-3);margin-bottom:20px;}
+.wcl{display:flex;flex-direction:column;gap:9px;}
+.wci2{display:flex;align-items:flex-start;gap:9px;font-size:13.5px;color:var(--text-2);}
+.wci2::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;margin-top:8px;flex-shrink:0;opacity:0.4;}
+
+.feat{background:var(--surface);padding:96px 24px;}
+.fin{max-width:1200px;margin:0 auto;}
+.fg{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.ft{padding:24px;border-radius:18px;border:1px solid var(--border);background:var(--bg);}
+.ft:hover{border-color:var(--border-3);background:#fff;box-shadow:var(--sh-md);}
+.fic{width:44px;height:44px;border-radius:11px;background:var(--surface-3);display:flex;align-items:center;justify-content:center;margin-bottom:18px;color:var(--primary);}
+.ft.a .fic{background:rgba(30,39,97,0.08);}.ft.b .fic{background:rgba(231,111,74,0.1);color:var(--accent);}.ft.c .fic{background:rgba(15,110,92,0.1);color:var(--pos);}
+.ft.d .fic{background:rgba(212,165,60,0.12);color:var(--gold);}.ft.e .fic{background:rgba(124,58,237,0.1);color:var(--violet);}.ft.f .fic{background:rgba(14,165,233,0.1);color:var(--sky);}
+.ftt{font-size:16px;font-weight:700;margin-bottom:6px;}
+.ftd{font-size:13.5px;color:var(--text-3);line-height:1.55;}
+
+.steps{padding:96px 24px;}
+.sgr{max-width:1100px;margin:48px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:0;background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:hidden;}
+.stp{padding:36px 32px;border-right:1px solid var(--border);}
+.stp:last-child{border-right:none;}
+.stn{font-family:var(--ff-display);font-size:60px;font-weight:400;color:var(--surface-3);line-height:1;letter-spacing:-3px;margin-bottom:14px;}
+.stpt{font-family:var(--ff-display);font-size:24px;font-weight:400;letter-spacing:-0.3px;margin-bottom:8px;}
+.stpd{font-size:13.5px;color:var(--text-3);line-height:1.55;}
+
+.access{padding:96px 24px;background:linear-gradient(135deg,#FAFAF7,#F4F2EC);}
+.acin{max-width:980px;margin:0 auto;text-align:center;}
+.acin .st{background:rgba(15,110,92,0.1);color:#0F6E5C;}
+.fg4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:880px;margin:0 auto 30px;}
+.fc4{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px 14px;text-align:center;}
+.fc4e{font-size:24px;margin-bottom:8px;}
+.fc4t{font-size:13px;font-weight:700;}
+.fc4d{font-size:11.5px;color:var(--text-3);margin-top:3px;}
+
+.tes{padding:96px 24px;}
+.tg{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1200px;margin:0 auto;}
+.tc{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:26px;}
+.tc:hover{border-color:var(--border-3);box-shadow:var(--sh-md);}
+.tcs{color:var(--gold);font-size:14px;letter-spacing:1.5px;margin-bottom:14px;}
+.tcq{font-size:15px;line-height:1.6;margin-bottom:20px;font-style:italic;}
+.tca{display:flex;align-items:center;gap:11px;padding-top:18px;border-top:1px solid var(--border);}
+.tcav{width:38px;height:38px;border-radius:50%;color:#fff;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;}
+.tcn{font-size:13.5px;font-weight:700;}
+.tcr{font-size:11.5px;color:var(--text-3);}
+
+.cta{background:var(--ink);color:#fff;padding:120px 24px;text-align:center;position:relative;overflow:hidden;}
+.cta::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,var(--gold) 0%,transparent 60%);opacity:0.1;}
+.cin{position:relative;max-width:680px;margin:0 auto;}
+.ct{font-family:var(--ff-display);font-size:clamp(40px,7vw,72px);font-weight:400;letter-spacing:-1.5px;line-height:1;color:#fff;margin-bottom:18px;}
+.ct em{font-style:italic;color:var(--gold);}
+.csub{font-size:17px;color:rgba(255,255,255,0.65);margin-bottom:34px;}
+.cbt{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.cp{background:#fff;color:var(--ink);font-size:15px;font-weight:700;padding:14px 26px;border-radius:12px;}
+.cs{background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.18);font-size:14.5px;font-weight:600;padding:14px 22px;border-radius:12px;}
+.cf{font-size:12.5px;color:rgba(255,255,255,0.4);margin-top:22px;}
+
+.foot{background:#070A14;color:rgba(255,255,255,0.6);padding:60px 24px 36px;}
+.foi{max-width:1200px;margin:0 auto;}
+.fot{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1fr;gap:36px;margin-bottom:42px;}
+.fop{font-size:13.5px;color:rgba(255,255,255,0.4);margin-top:14px;max-width:260px;line-height:1.55;}
+.foh{font-size:11px;font-weight:700;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:14px;}
+.fol{display:block;font-size:13.5px;color:rgba(255,255,255,0.55);margin-bottom:10px;}
+.fol:hover{color:#fff;}
+.fob{display:flex;justify-content:space-between;align-items:center;padding-top:24px;border-top:1px solid rgba(255,255,255,0.06);font-size:12.5px;color:rgba(255,255,255,0.3);gap:18px;flex-wrap:wrap;}
+
+@media(max-width:1100px){.pg,.wg,.tg,.fg,.sgr{grid-template-columns:1fr;}.stp{border-right:none;border-bottom:1px solid var(--border);}.stp:last-child{border-bottom:none;}.fot{grid-template-columns:1fr 1fr;}.pfg{grid-template-columns:1fr 1fr;}.pbd{grid-template-columns:1fr;}.fg4{grid-template-columns:1fr 1fr;}}
+@media(max-width:768px){.nl,.nc2{display:none;}.burg{display:flex;}.hero,.sec,.prob,.who,.feat,.steps,.tes,.access{padding:60px 20px;}.fot{grid-template-columns:1fr;gap:24px;}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="ni">
+    <a href="sellsense-landing.html" class="logo"><div class="lm"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1L15 5V11L8 15L1 11V5L8 1Z" stroke="#0A0F1E" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 5L11 7V9L8 11L5 9V7L8 5Z" fill="#0A0F1E"/></svg></div><span class="ln">SellSense</span></a>
+    <div class="nl">
+      <a href="#features">Features</a><a href="#who">Who it's for</a><a href="#how">How it works</a>
+      <a href="sellsense-help.html">Help</a>
+      <a href="sellsense-auth.html" class="nc2">Sign in</a>
+      <a href="sellsense-dashboard.html" class="nc">Open dashboard <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+    </div>
+    <button class="burg" onclick="document.getElementById('mob').classList.toggle('op')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+  </div>
+  <div class="mob" id="mob">
+    <a href="#features">Features</a><a href="#who">Who it's for</a><a href="#how">How it works</a>
+    <a href="sellsense-help.html">Help</a><a href="sellsense-auth.html">Sign in</a>
+    <a href="sellsense-dashboard.html" class="nc" style="margin-top:8px;justify-content:center;">Open dashboard →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hbg"></div>
+  <div class="hin">
+    <div class="eb"><span class="ebt">NEW</span><span>AI Decision Center — know what to scale, pause, or fix</span></div>
+    <h1 class="h1">Stop counting <span class="sk">revenue.</span><br/>Start tracking <em>real profit.</em></h1>
+    <p class="hs">SellSense is the <strong>profit intelligence platform</strong> for ecom, creators & freelancers. Track each product's true unit economics, get AI scaling recommendations, decide with numbers.</p>
+    <div class="hb">
+      <a href="sellsense-dashboard.html" class="bp">Try the live dashboard <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+      <a href="#features" class="bsc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>See how it works</a>
+    </div>
+    <div class="ht"><div class="av"><div>S</div><div>K</div><div>M</div><div>A</div></div><span><strong>2,400+ founders</strong> · 28 countries · 27 currencies</span></div>
+  </div>
+
+  <div class="hp">
+    <div class="pf">
+      <div class="pfb"><span></span><span></span><span></span><small>app.sellsense.io / overview</small></div>
+      <div class="pfg">
+        <div class="pk pri"><div class="pkl">Net profit</div><div class="pkv">$8,429</div><div class="pkt">▲ 23.4% vs prev. 30d</div></div>
+        <div class="pk"><div class="pkl">Revenue</div><div class="pkv">$31,250</div><div class="pkt">▲ 18.2%</div></div>
+        <div class="pk"><div class="pkl">Margin</div><div class="pkv">26.9%</div><div class="pkt">▲ 2.1pp</div></div>
+        <div class="pk"><div class="pkl">Health</div><div class="pkv">82/100</div><div class="pkt">▲ 4 pts</div></div>
+      </div>
+      <div class="pbd">
+        <div class="pch">
+          <div class="pct">Profit Pulse · 30 days</div>
+          <svg class="pcs" viewBox="0 0 300 80" preserveAspectRatio="none">
+            <defs><linearGradient id="pg" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#1E2761" stop-opacity="0.3"/><stop offset="100%" stop-color="#1E2761" stop-opacity="0"/></linearGradient></defs>
+            <path d="M0,60 L20,55 L40,58 L60,50 L80,52 L100,42 L120,45 L140,36 L160,38 L180,28 L200,30 L220,22 L240,24 L260,14 L280,16 L300,8 L300,80 L0,80 Z" fill="url(#pg)"/>
+            <path d="M0,60 L20,55 L40,58 L60,50 L80,52 L100,42 L120,45 L140,36 L160,38 L180,28 L200,30 L220,22 L240,24 L260,14 L280,16 L300,8" fill="none" stroke="#1E2761" stroke-width="2"/>
+            <circle cx="300" cy="8" r="3" fill="#1E2761"/>
+          </svg>
+        </div>
+        <div class="psd">
+          <div class="psdt">Decision Center <span class="b">AI</span></div>
+          <div class="psr"><strong>↑ Scale</strong> Smart Watch — ROAS 4.8×</div>
+          <div class="psr r"><strong>⏸ Pause</strong> Earbuds — bleeding $184/wk</div>
+          <div class="psr"><strong>⚡ Optimize</strong> COD shipping — save $820</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="intl">
+  <div class="iin">
+    <div class="il">Built for online earners in 28+ countries</div>
+    <div class="it">
+      <div class="itm"><span class="fg">🇺🇸</span> USD</div><div class="itm"><span class="fg">🇪🇺</span> EUR</div><div class="itm"><span class="fg">🇬🇧</span> GBP</div>
+      <div class="itm"><span class="fg">🇲🇦</span> MAD</div><div class="itm"><span class="fg">🇦🇪</span> AED</div><div class="itm"><span class="fg">🇸🇦</span> SAR</div>
+      <div class="itm"><span class="fg">🇪🇬</span> EGP</div><div class="itm"><span class="fg">🇮🇳</span> INR</div><div class="itm"><span class="fg">🇳🇬</span> NGN</div>
+      <div class="itm"><span class="fg">🇿🇦</span> ZAR</div><div class="itm"><span class="fg">🇧🇷</span> BRL</div><div class="itm"><span class="fg">🇲🇽</span> MXN</div>
+      <div class="itm"><span class="fg">🇨🇦</span> CAD</div><div class="itm"><span class="fg">🇦🇺</span> AUD</div><div class="itm"><span class="fg">🇨🇳</span> CNY</div>
+      <div class="itm"><span class="fg">🇯🇵</span> JPY</div><div class="itm"><span class="fg">🇰🇷</span> KRW</div><div class="itm"><span class="fg">🇨🇭</span> CHF</div>
+      <div class="itm"><span class="fg">🇹🇳</span> TND</div><div class="itm"><span class="fg">🇩🇿</span> DZD</div><div class="itm"><span class="fg">🇮🇩</span> IDR</div>
+      <div class="itm"><span class="fg">🇵🇰</span> PKR</div><div class="itm"><span class="fg">🇰🇪</span> KES</div><div class="itm"><span class="fg">🇬🇭</span> GHS</div>
+      <div class="itm"><span class="fg">🇦🇷</span> ARS</div><div class="itm"><span class="fg">₿</span> BTC</div><div class="itm"><span class="fg">🪙</span> USDT</div>
+      <div class="itm"><span class="fg">🇺🇸</span> USD</div><div class="itm"><span class="fg">🇪🇺</span> EUR</div><div class="itm"><span class="fg">🇬🇧</span> GBP</div>
+      <div class="itm"><span class="fg">🇲🇦</span> MAD</div><div class="itm"><span class="fg">🇦🇪</span> AED</div><div class="itm"><span class="fg">🇸🇦</span> SAR</div>
+      <div class="itm"><span class="fg">🇪🇬</span> EGP</div><div class="itm"><span class="fg">🇮🇳</span> INR</div><div class="itm"><span class="fg">🇳🇬</span> NGN</div>
+    </div>
+  </div>
+</div>
+
+<section class="prob">
+  <div class="pin"><div class="pg">
+    <div class="pl">
+      <span class="st">The hidden cost</span>
+      <h2 class="stt">Most sellers <em>celebrate the wrong number.</em></h2>
+      <p class="ss">Revenue feels like winning. But by the time you count COGS, ads, shipping, returns, platform fees, and chargebacks — there's often nothing left.</p>
+      <div class="pls">
+        <div class="pi"><div class="pix">×</div><div><div class="pit">You can't tell which products actually make money</div><div class="pid">Total profit hides which products are profitable and which are silently bleeding cash.</div></div></div>
+        <div class="pi"><div class="pix">×</div><div><div class="pit">Campaign-level metrics lie</div><div class="pid">A 4× ROAS ad can still lose money once delivery, returns, and COGS hit.</div></div></div>
+        <div class="pi"><div class="pix">×</div><div><div class="pit">Excel spreadsheets break the moment you grow</div><div class="pid">You started in a sheet. Now you have 12 products in 3 channels — no clarity.</div></div></div>
+      </div>
+    </div>
+    <div class="pmk">
+      <div class="pmt">A real product · last 30 days</div>
+      <div style="font-family:var(--ff-display);font-size:24px;font-weight:400;letter-spacing:-0.3px;margin-bottom:18px;">🎧 Bluetooth Earbuds</div>
+      <div class="pmr"><span class="pml">Revenue (128 units)</span><span class="pmv">$2,176</span></div>
+      <div class="pmr"><span class="pml">COGS</span><span class="pmv neg">−$1,280</span></div>
+      <div class="pmr"><span class="pml">Ad spend</span><span class="pmv neg">−$890</span></div>
+      <div class="pmr"><span class="pml">Shipping</span><span class="pmv neg">−$520</span></div>
+      <div class="pmr"><span class="pml">Returns (12%)</span><span class="pmv neg">−$216</span></div>
+      <div class="pmr"><span class="pml">Platform fees (2.5%)</span><span class="pmv neg">−$54</span></div>
+      <div class="pmr"><span class="pml" style="color:#fff;font-weight:700;">Real net profit</span><span class="pmv fin">−$784</span></div>
+    </div>
+  </div></div>
+</section>
+
+<section class="who" id="who">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="sh"><span class="st">Built for online earners</span><h2 class="stt">Whatever you sell, <em>we speak your numbers.</em></h2><p class="ss">Each business type unlocks its own smart input form.</p></div>
+    <div class="wg">
+      <div class="wc a">
+        <div class="wci">📦</div><div class="wct">E-commerce · D2C · COD</div><div class="wcs">Dropshipping, online stores, COD sellers</div>
+        <div class="wcl"><div class="wci2">Per-product unit economics</div><div class="wci2">COD success rate & return cost</div><div class="wci2">Multi-channel ad spend (Meta, TikTok)</div><div class="wci2">Packaging, shipping, COD fees</div><div class="wci2">Payment processor fees</div></div>
+      </div>
+      <div class="wc b">
+        <div class="wci">🎬</div><div class="wct">Content Creator · Influencer</div><div class="wcs">YouTube, TikTok, Instagram, courses</div>
+        <div class="wcl"><div class="wci2">AdSense, TikTok Pulse, brand deals</div><div class="wci2">Course & ebook sales tracking</div><div class="wci2">Merch margin & fulfillment</div><div class="wci2">Editor, equipment, software costs</div><div class="wci2">Manager / agency commission</div></div>
+      </div>
+      <div class="wc c">
+        <div class="wci">💻</div><div class="wct">Freelance · Agency · Service</div><div class="wcs">Upwork, Fiverr, agencies, direct clients</div>
+        <div class="wcl"><div class="wci2">Effective hourly rate by project</div><div class="wci2">Platform commissions (Upwork, Fiverr)</div><div class="wci2">FX & wire transfer costs</div><div class="wci2">Subcontractor payouts</div><div class="wci2">Tools, software, coworking</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="feat" id="features">
+  <div class="fin">
+    <div class="sh"><span class="st">A real decision platform</span><h2 class="stt">Not a calculator. <em>A co-pilot.</em></h2><p class="ss">SellSense doesn't just compute numbers. It tells you what to do with them.</p></div>
+    <div class="fg">
+      <div class="ft a"><div class="fic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 6-6"/></svg></div><div class="ftt">Product Performance Matrix</div><div class="ftd">Every SKU scored on revenue, profit, margin, units & per-unit economics.</div></div>
+      <div class="ft b"><div class="fic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg></div><div class="ftt">AI Decision Center</div><div class="ftd">Daily actions: scale, pause, optimize — every recommendation with projected dollar impact.</div></div>
+      <div class="ft c"><div class="fic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12L7 8l4 4 6-6 4 4"/><path d="M3 19h18"/></svg></div><div class="ftt">Profit Pulse Chart</div><div class="ftd">Live profit evolution vs previous period. Best & worst days flagged automatically.</div></div>
+      <div class="ft d"><div class="fic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 22h20z"/></svg></div><div class="ftt">Health Score by Product</div><div class="ftd">0–100 score factoring margin, trend, return rate & CPA.</div></div>
+      <div class="ft e"><div class="fic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg></div><div class="ftt">27 currencies · 8 languages</div><div class="ftd">From MAD to USDT. Live FX. RTL Arabic. Truly global from day one.</div></div>
+      <div class="ft f"><div class="fic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div><div class="ftt">Investor-grade reports</div><div class="ftd">One-click P&L, VAT, cohort & forecast exports.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="steps" id="how">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="sh"><span class="st">How it works</span><h2 class="stt">From hidden costs to <em>clear decisions</em> — in three steps.</h2></div>
+    <div class="sgr">
+      <div class="stp"><div class="stn">01</div><div class="stpt">Add your products</div><div class="stpd">Pick your business type. We adapt cost inputs to your reality.</div></div>
+      <div class="stp"><div class="stn">02</div><div class="stpt">Log sales daily</div><div class="stpd">Two-minute logging or connect channels for auto-import.</div></div>
+      <div class="stp"><div class="stn">03</div><div class="stpt">Act on AI insights</div><div class="stpd">Wake up to "scale this, pause that, fix here." Decide. Repeat.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="access">
+  <div class="acin">
+    <span class="st">Early access</span>
+    <h2 class="stt">Free. <em>Unlimited.</em> Everything.</h2>
+    <p class="ss" style="max-width:620px;margin:0 auto 36px;">No credit card. No trial countdown. No "Pro" gates. Unlimited products, full AI Decision Center, every chart, every report, every currency — open to everyone while we're still building.</p>
+    <div class="fg4">
+      <div class="fc4"><div class="fc4e">📦</div><div class="fc4t">Unlimited products</div><div class="fc4d">Track every SKU</div></div>
+      <div class="fc4"><div class="fc4e">🧠</div><div class="fc4t">AI Decision Center</div><div class="fc4d">Full access, daily</div></div>
+      <div class="fc4"><div class="fc4e">📊</div><div class="fc4t">All charts & KPIs</div><div class="fc4d">No blurred views</div></div>
+      <div class="fc4"><div class="fc4e">📑</div><div class="fc4t">All reports</div><div class="fc4d">PDF · Excel · CSV</div></div>
+    </div>
+    <a href="sellsense-auth.html" class="bp">Get started — it's free <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+  </div>
+</section>
+
+<section class="tes">
+  <div class="sh"><span class="st">Real users</span><h2 class="stt">They stopped guessing. <em>Then started scaling.</em></h2></div>
+  <div class="tg">
+    <div class="tc"><div class="tcs">★★★★★</div><p class="tcq">"I'd been doing COD for 8 months. SellSense showed me I was losing $4 on every shoe order. Pivoted in a week."</p><div class="tca"><div class="tcav" style="background:linear-gradient(135deg,#1E2761,#3B4FA3);">KA</div><div><div class="tcn">Karim A.</div><div class="tcr">COD seller · Casablanca 🇲🇦</div></div></div></div>
+    <div class="tc"><div class="tcs">★★★★★</div><p class="tcq">"YouTuber with brand deals, AdSense, merch. SellSense gave me a CFO without hiring one."</p><div class="tca"><div class="tcav" style="background:linear-gradient(135deg,#E76F4A,#D4A53C);">SP</div><div><div class="tcn">Sophie P.</div><div class="tcr">Creator · 240k subs · Paris 🇫🇷</div></div></div></div>
+    <div class="tc"><div class="tcs">★★★★★</div><p class="tcq">"First tool that understands Upwork commissions, wire fees, and tax in one place. Finally know my real hourly rate."</p><div class="tca"><div class="tcav" style="background:linear-gradient(135deg,#0F6E5C,#15A37F);">RV</div><div><div class="tcn">Raj V.</div><div class="tcr">Developer · Mumbai 🇮🇳</div></div></div></div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="cin">
+    <h2 class="ct">Stop guessing.<br/>Start <em>knowing.</em></h2>
+    <p class="csub">2,400+ founders already see their real profit. You're 2 minutes away.</p>
+    <div class="cbt"><a href="sellsense-dashboard.html" class="cp">Open the dashboard →</a><a href="sellsense-auth.html" class="cs">Create free account</a></div>
+    <div class="cf">Unlimited everything · No credit card · Free while we're still building</div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="foi">
+    <div class="fot">
+      <div>
+        <a href="sellsense-landing.html" class="logo"><div class="lm"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1L15 5V11L8 15L1 11V5L8 1Z" stroke="#0A0F1E" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 5L11 7V9L8 11L5 9V7L8 5Z" fill="#0A0F1E"/></svg></div><span class="ln" style="color:#fff;">SellSense</span></a>
+        <p class="fop">Profit intelligence for the world's online earners. Built international from day one.</p>
+      </div>
+      <div><div class="foh">Product</div><a class="fol" href="#features">Features</a><a class="fol" href="#who">Use cases</a><a class="fol" href="#how">How it works</a><a class="fol" href="sellsense-dashboard.html">Live demo</a></div>
+      <div><div class="foh">Resources</div><a class="fol" href="sellsense-help.html">Help center</a><a class="fol" href="sellsense-help.html">Profit guide</a><a class="fol" href="sellsense-help.html">FX calculator</a><a class="fol" href="sellsense-help.html">API docs</a></div>
+      <div><div class="foh">Company</div><a class="fol">About</a><a class="fol">Careers</a><a class="fol">Contact</a><a class="fol">Press</a></div>
+      <div><div class="foh">Legal</div><a class="fol">Terms</a><a class="fol">Privacy</a><a class="fol">Security</a></div>
+    </div>
+    <div class="fob"><span>© 2026 SellSense Inc. · Built for makers worldwide.</span><span>27 currencies · 8 languages · 28 countries</span></div>
+  </div>
+</footer>
+</body>
+</html>

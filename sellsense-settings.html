@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SellSense — Settings</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#FAFAF7;--surface:#FFFFFF;--surface-2:#FBFAF6;--surface-3:#F1EFE8;
+  --ink:#0A0F1E;--text:#0D1424;--text-2:#3B4358;--text-3:#6B7280;
+  --muted:#9CA3AF;--border:#EBE7DC;--border-2:#E2DDD0;--border-3:#D5CFC0;
+  --primary:#1E2761;--accent:#E76F4A;--gold:#D4A53C;--gold-2:#E8BD58;
+  --emerald:#0F6E5C;--emerald-2:#15A37F;--violet:#7C3AED;--ruby:#DC3556;
+  --pos:#0F6E5C;--pos-soft:#E6F5F1;--neg:#DC3556;--neg-soft:#FCE9ED;
+  --warn:#D4A53C;--warn-soft:#FBF3DC;--info-soft:#E8EAF5;
+  --grad-aurora:linear-gradient(135deg,#1E2761 0%,#7C3AED 50%,#E76F4A 100%);
+  --sh-xs:0 1px 2px rgba(13,20,36,0.04);--sh-sm:0 2px 8px rgba(13,20,36,0.06);
+  --sh-md:0 8px 28px rgba(13,20,36,0.08);--sh-lg:0 24px 60px rgba(13,20,36,0.12);
+  --sh-glow:0 0 0 4px rgba(30,39,97,0.08);
+  --ff-sans:'Inter',system-ui,sans-serif;--ff-display:'Instrument Serif',Georgia,serif;
+  --sw:240px;--tb:60px;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--ff-sans);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+input,select,textarea{font-family:inherit;font-size:inherit;}
+a{color:inherit;text-decoration:none;}
+
+.app{display:flex;min-height:100vh;}
+
+.sb{width:var(--sw);background:var(--ink);color:#fff;position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:90;}
+.sbg{position:absolute;inset:0;background:radial-gradient(circle at 0% 0%,rgba(30,39,97,0.4),transparent 50%),radial-gradient(circle at 100% 100%,rgba(231,111,74,0.15),transparent 60%);pointer-events:none;}
+.sbl{padding:20px 18px 16px;display:flex;align-items:center;gap:10px;position:relative;z-index:1;}
+.lm{width:30px;height:30px;background:linear-gradient(135deg,var(--gold),var(--accent));border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(212,165,60,0.35);position:relative;}
+.lm::after{content:'';position:absolute;inset:1.5px;border-radius:7px;background:linear-gradient(135deg,rgba(255,255,255,0.18),transparent 60%);}
+.ln{font-family:var(--ff-display);font-size:21px;font-style:italic;letter-spacing:-0.5px;line-height:1;color:#fff;}
+
+.ws{margin:6px 12px 14px;padding:9px 11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:10px;display:flex;align-items:center;gap:9px;cursor:pointer;position:relative;z-index:1;}
+.wa{width:24px;height:24px;border-radius:6px;background:var(--grad-aurora);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#fff;}
+.wn{font-size:13px;font-weight:600;color:#fff;line-height:1.1;}
+.wsub{font-size:10.5px;color:rgba(255,255,255,0.45);line-height:1;margin-top:1px;}
+
+.nv{padding:6px 10px;position:relative;z-index:1;flex:1;}
+.ngl{font-size:10px;font-weight:600;color:rgba(255,255,255,0.32);text-transform:uppercase;letter-spacing:0.1em;padding:6px 10px;margin-top:8px;}
+.ni{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.65);cursor:pointer;margin-bottom:1px;position:relative;}
+.ni:hover{background:rgba(255,255,255,0.04);color:#fff;}
+.ni.act{background:linear-gradient(90deg,rgba(212,165,60,0.18),rgba(212,165,60,0.05));color:#fff;}
+.ni.act::before{content:'';position:absolute;left:-10px;top:8px;bottom:8px;width:2px;border-radius:0 2px 2px 0;background:var(--gold);}
+.ni svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.8;fill:none;}
+
+.sbot{padding:10px 12px 14px;position:relative;z-index:1;}
+.ub{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:9px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);cursor:pointer;}
+.ua{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--gold));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#fff;}
+.ubn{font-size:12.5px;font-weight:600;color:#fff;line-height:1.1;}
+.ube{font-size:10.5px;color:rgba(255,255,255,0.4);line-height:1;margin-top:1px;}
+
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-width:0;}
+.tb{height:var(--tb);background:rgba(250,250,247,0.85);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50;}
+.tbt{font-family:var(--ff-display);font-size:22px;font-style:italic;font-weight:400;letter-spacing:-0.3px;}
+.tba{margin-left:auto;}
+.bsv{background:var(--ink);color:#fff;padding:8px 16px;font-size:13px;font-weight:600;border-radius:9px;}
+.bsv:hover{background:var(--primary);}
+
+.shl{display:grid;grid-template-columns:240px 1fr;gap:24px;padding:24px 24px 60px;}
+.sn{position:sticky;top:calc(var(--tb) + 24px);align-self:start;}
+.snl{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;padding:6px 12px;}
+.snv{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:9px;font-size:13px;font-weight:500;color:var(--text-3);cursor:pointer;margin-bottom:1px;}
+.snv:hover{background:var(--surface-3);color:var(--text);}
+.snv.act{background:var(--ink);color:#fff;font-weight:600;}
+.snv svg{width:14px;height:14px;stroke:currentColor;stroke-width:1.8;fill:none;}
+
+.sm{min-width:0;}
+.sec{background:var(--surface);border:1px solid var(--border);border-radius:16px;margin-bottom:18px;overflow:hidden;}
+.shdr{padding:20px 24px 18px;border-bottom:1px solid var(--border);}
+.st{font-size:16px;font-weight:700;margin-bottom:4px;}
+.ssub{font-size:13px;color:var(--text-3);}
+.sbd{padding:20px 24px;}
+.pn{display:none;}
+.pn.on{display:block;animation:fI .3s ease;}
+@keyframes fI{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.ph{font-family:var(--ff-display);font-size:30px;font-weight:400;letter-spacing:-0.5px;margin-bottom:6px;}
+.ph em{font-style:italic;color:var(--primary);}
+.ps{font-size:14px;color:var(--text-3);margin-bottom:22px;}
+
+.ar{display:flex;align-items:center;gap:18px;}
+.alg{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--gold));color:#fff;font-weight:700;font-size:24px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(231,111,74,0.25);}
+.aa{display:flex;flex-direction:column;gap:6px;}
+.aa button{font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:8px;}
+.aup{background:var(--ink);color:#fff;}
+.arm{background:var(--surface-3);color:var(--text-2);}
+
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.fl{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.fl.full{grid-column:1/-1;}
+.fl label{font-size:11.5px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:0.06em;}
+.fl input,.fl select,.fl textarea{background:var(--surface-2);border:1.5px solid var(--border-2);border-radius:10px;padding:10px 13px;font-size:13.5px;color:var(--text);width:100%;}
+.fl input:focus,.fl select:focus,.fl textarea:focus{outline:none;border-color:var(--primary);background:#fff;box-shadow:var(--sh-glow);}
+
+.tr{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:13px 0;border-bottom:1px solid var(--border);}
+.tr:last-child{border-bottom:none;}
+.trt{font-size:13.5px;font-weight:600;margin-bottom:3px;}
+.trd{font-size:12px;color:var(--text-3);max-width:480px;line-height:1.5;}
+.sw{position:relative;width:38px;height:22px;background:var(--border-2);border-radius:20px;cursor:pointer;flex-shrink:0;margin-top:2px;transition:all .2s;}
+.sw::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;background:#fff;border-radius:50%;transition:all .2s;box-shadow:var(--sh-xs);}
+.sw.on{background:var(--primary);}
+.sw.on::after{left:18px;}
+
+.fvg{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;}
+.fv{background:var(--surface-2);border:1.5px solid var(--border-2);border-radius:10px;padding:10px 12px;cursor:pointer;display:flex;align-items:center;gap:9px;}
+.fv:hover{border-color:var(--border-3);background:#fff;}
+.fv.on{border-color:var(--primary);background:var(--info-soft);}
+.fv .flg{font-size:16px;}
+.fv .cd{font-size:12.5px;font-weight:700;}
+.fv .nm{font-size:10.5px;color:var(--text-3);}
+
+.bad{display:inline-flex;align-items:center;gap:6px;background:var(--ink);color:#fff;font-size:13px;font-weight:600;padding:9px 14px;border-radius:9px;cursor:pointer;}
+.bad:hover{background:var(--primary);}
+
+.wsl{display:flex;flex-direction:column;gap:9px;}
+.wi{display:flex;align-items:center;gap:14px;padding:13px 16px;background:var(--surface-2);border:1px solid var(--border);border-radius:12px;}
+.wi-av{width:38px;height:38px;border-radius:9px;font-weight:700;font-size:13px;color:#fff;display:flex;align-items:center;justify-content:center;}
+.wi-n{font-size:13.5px;font-weight:600;}
+.wi-d{font-size:11.5px;color:var(--text-3);margin-top:2px;}
+.wi-b{font-size:10px;font-weight:700;background:var(--info-soft);color:var(--primary);padding:3px 8px;border-radius:5px;text-transform:uppercase;letter-spacing:0.05em;margin-left:auto;}
+
+.tml{display:flex;flex-direction:column;}
+.trw{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);}
+.trw:last-child{border-bottom:none;}
+.tav{width:36px;height:36px;border-radius:50%;color:#fff;font-weight:700;font-size:12.5px;display:flex;align-items:center;justify-content:center;}
+.tnm{font-size:13.5px;font-weight:600;}
+.tem{font-size:11.5px;color:var(--text-3);margin-top:1px;}
+.trole{font-size:11px;font-weight:600;padding:3px 9px;border-radius:5px;letter-spacing:0.04em;text-transform:uppercase;margin-left:auto;}
+.trole.ow{background:var(--warn-soft);color:#9C7B12;}
+.trole.ad{background:var(--info-soft);color:var(--primary);}
+.trole.mb{background:var(--surface-3);color:var(--text-2);}
+
+.ig{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.int{background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;align-items:center;gap:13px;}
+.int-ic{width:42px;height:42px;border-radius:10px;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;}
+.int-n{font-size:13.5px;font-weight:700;margin-bottom:2px;}
+.int-d{font-size:11.5px;color:var(--text-3);}
+.int-b{font-size:12px;font-weight:600;padding:6px 12px;border-radius:7px;border:1px solid var(--border-2);background:#fff;}
+.int-b.on{background:var(--pos);color:#fff;border-color:var(--pos);}
+
+.dg{border:1.5px solid rgba(220,53,86,0.25);border-radius:14px;padding:18px 22px;background:rgba(220,53,86,0.04);margin-bottom:14px;}
+.dg-t{font-size:14px;font-weight:700;color:var(--neg);margin-bottom:4px;}
+.dg-d{font-size:12.5px;color:var(--text-2);margin-bottom:14px;}
+.bdng{background:#fff;color:var(--neg);border:1.5px solid var(--neg);font-size:13px;font-weight:600;padding:9px 14px;border-radius:9px;}
+.bdng:hover{background:var(--neg);color:#fff;}
+
+@media(max-width:980px){.shl{grid-template-columns:1fr;}.sn{position:static;}.fg,.fvg,.ig{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sb">
+    <div class="sbg"></div>
+    <div class="sbl"><div class="lm"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1L15 5V11L8 15L1 11V5L8 1Z" stroke="#0A0F1E" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 5L11 7V9L8 11L5 9V7L8 5Z" fill="#0A0F1E"/></svg></div><div class="ln">SellSense</div></div>
+    <div class="ws"><div class="wa">AB</div><div style="flex:1;min-width:0;"><div class="wn">Atelier Beldi</div><div class="wsub">3 brands · Workspace</div></div></div>
+    <nav class="nv">
+      <div class="ngl">Workspace</div>
+      <a class="ni" href="sellsense-dashboard.html"><svg viewBox="0 0 24 24"><path d="M3 12L12 4l9 8M5 10v10h14V10"/></svg>Overview</a>
+      <a class="ni" href="sellsense-dashboard.html"><svg viewBox="0 0 24 24"><path d="M3 9l9-6 9 6v12H3z"/></svg>Products</a>
+      <a class="ni" href="sellsense-dashboard.html"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Log a Sale</a>
+      <a class="ni" href="sellsense-dashboard.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8"/></svg>AI Insights</a>
+      <a class="ni" href="sellsense-dashboard.html"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>Reports</a>
+      <div class="ngl">Manage</div>
+      <a class="ni act"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg>Settings</a>
+      <a class="ni" href="sellsense-help.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>Help & Docs</a>
+    </nav>
+    <div class="sbot"><div class="ub"><div class="ua">AZ</div><div style="flex:1;min-width:0;"><div class="ubn">Abdessamad Z.</div><div class="ube">abdessamad@sellsense.io</div></div></div></div>
+  </aside>
+
+  <main class="main">
+    <header class="tb"><div class="tbt">Settings</div><div class="tba"><button class="bsv" onclick="tt()">Save changes</button></div></header>
+
+    <div class="shl">
+
+      <aside class="sn">
+        <div class="snl">Account</div>
+        <div class="snv act" onclick="gp(this,'profile')"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>Profile</div>
+        <div class="snv" onclick="gp(this,'security')"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Security</div>
+        <div class="snv" onclick="gp(this,'notif')"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>Notifications</div>
+        <div class="snl">Workspace</div>
+        <div class="snv" onclick="gp(this,'wsp')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Workspaces</div>
+        <div class="snv" onclick="gp(this,'team')"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M3 21a6 6 0 0112 0"/></svg>Team</div>
+        <div class="snv" onclick="gp(this,'int')"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007 0l4-4a5 5 0 00-7-7"/></svg>Integrations</div>
+        <div class="snl">Preferences</div>
+        <div class="snv" onclick="gp(this,'cur')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v12"/></svg>Currencies</div>
+        <div class="snv" onclick="gp(this,'lang')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg>Language</div>
+        <div class="snv" onclick="gp(this,'app')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>Appearance</div>
+        <div class="snl">Data</div>
+        <div class="snv" onclick="gp(this,'data')"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Export & Import</div>
+        <div class="snv" onclick="gp(this,'dng')"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>Danger zone</div>
+      </aside>
+
+      <div class="sm">
+
+        <div class="pn on" id="pane-profile">
+          <h1 class="ph">Your <em>profile.</em></h1>
+          <p class="ps">How you appear across SellSense.</p>
+          <div class="sec"><div class="shdr"><div class="st">Avatar</div><div class="ssub">A square image. PNG or JPG, max 2MB.</div></div><div class="sbd"><div class="ar"><div class="alg">AZ</div><div class="aa"><button class="aup">Upload new</button><button class="arm">Remove</button></div></div></div></div>
+          <div class="sec"><div class="shdr"><div class="st">Personal info</div><div class="ssub">Used in exports and your dashboard.</div></div>
+            <div class="sbd"><div class="fg">
+              <div class="fl"><label>Full name</label><input value="Abdessamad Zaidane"/></div>
+              <div class="fl"><label>Display name</label><input value="Sam"/></div>
+              <div class="fl"><label>Email</label><input type="email" value="abdessamad@sellsense.io"/></div>
+              <div class="fl"><label>Phone</label><input value="+212 6 12 34 56 78"/></div>
+              <div class="fl"><label>Business type</label><select><option>📦 E-commerce</option><option>🎬 Creator</option><option>💻 Freelance</option></select></div>
+              <div class="fl"><label>Country</label><select><option>🇲🇦 Morocco</option><option>🇺🇸 United States</option><option>🇫🇷 France</option></select></div>
+              <div class="fl full"><label>Bio</label><textarea rows="2">Founder of Atelier Beldi · 3 brands across ecom, content & courses</textarea></div>
+            </div></div></div>
+        </div>
+
+        <div class="pn" id="pane-security">
+          <h1 class="ph"><em>Security</em> & access.</h1>
+          <p class="ps">Keep your account locked down.</p>
+          <div class="sec"><div class="shdr"><div class="st">Password</div><div class="ssub">Last changed 14 days ago.</div></div><div class="sbd"><div class="fg"><div class="fl full"><label>Current password</label><input type="password" value="••••••••"/></div><div class="fl"><label>New password</label><input type="password"/></div><div class="fl"><label>Confirm</label><input type="password"/></div></div></div></div>
+          <div class="sec"><div class="shdr"><div class="st">Two-factor authentication</div></div><div class="sbd">
+            <div class="tr"><div><div class="trt">Authenticator app</div><div class="trd">Google Authenticator, Authy, or 1Password.</div></div><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="tr"><div><div class="trt">SMS backup</div><div class="trd">Backup code by SMS at sign-in.</div></div><div class="sw" onclick="this.classList.toggle('on')"></div></div>
+            <div class="tr"><div><div class="trt">Passkeys</div><div class="trd">Face ID, fingerprint or hardware key.</div></div><div class="sw" onclick="this.classList.toggle('on')"></div></div>
+          </div></div>
+        </div>
+
+        <div class="pn" id="pane-notif">
+          <h1 class="ph"><em>Notifications</em> & alerts.</h1>
+          <p class="ps">Choose what we tell you about.</p>
+          <div class="sec"><div class="shdr"><div class="st">Email</div></div><div class="sbd">
+            <div class="tr"><div><div class="trt">Daily profit digest</div><div class="trd">Tomorrow's plan based on today's numbers — 8 AM your time.</div></div><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="tr"><div><div class="trt">Critical alerts</div><div class="trd">Product turns unprofitable, CPA spike, returns surge.</div></div><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="tr"><div><div class="trt">Weekly insights</div><div class="trd">AI Decision Center summary every Monday.</div></div><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="tr"><div><div class="trt">Product news</div><div class="trd">Features, tips. No spam.</div></div><div class="sw" onclick="this.classList.toggle('on')"></div></div>
+          </div></div>
+          <div class="sec"><div class="shdr"><div class="st">In-app & push</div></div><div class="sbd">
+            <div class="tr"><div><div class="trt">Health score drops</div><div class="trd">Any product score drops 10+ points.</div></div><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="tr"><div><div class="trt">Scaling opportunities</div><div class="trd">AI detects a product worth pushing.</div></div><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="tr"><div><div class="trt">Cash-flow warnings</div><div class="trd">Heads-up before working capital runs low.</div></div><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
+          </div></div>
+        </div>
+
+        <div class="pn" id="pane-wsp">
+          <h1 class="ph">Your <em>workspaces.</em></h1>
+          <p class="ps">Separate brands. Each gets its own products, currency, team.</p>
+          <div class="sec"><div class="shdr" style="display:flex;align-items:center;justify-content:space-between;"><div><div class="st">All workspaces</div><div class="ssub">3 of unlimited used</div></div><button class="bad">+ New workspace</button></div>
+            <div class="sbd"><div class="wsl">
+              <div class="wi"><div class="wi-av" style="background:var(--grad-aurora);">AB</div><div style="flex:1;"><div class="wi-n">Atelier Beldi</div><div class="wi-d">Ecom · MAD · 12 products · 4 members</div></div><span class="wi-b">Active</span></div>
+              <div class="wi"><div class="wi-av" style="background:linear-gradient(135deg,var(--emerald-2),var(--emerald));">SC</div><div style="flex:1;"><div class="wi-n">Sahara Coffee Co.</div><div class="wi-d">D2C · USD · 5 products · 2 members</div></div></div>
+              <div class="wi"><div class="wi-av" style="background:linear-gradient(135deg,var(--gold-2),var(--gold));">SC</div><div style="flex:1;"><div class="wi-n">Sam Creates</div><div class="wi-d">Creator · EUR · 6 products · 1 member</div></div></div>
+            </div></div></div>
+        </div>
+
+        <div class="pn" id="pane-team">
+          <h1 class="ph">Your <em>team.</em></h1>
+          <p class="ps">Unlimited seats, fully free.</p>
+          <div class="sec"><div class="shdr" style="display:flex;align-items:center;justify-content:space-between;"><div><div class="st">Members</div><div class="ssub">4 active members</div></div><button class="bad">+ Invite member</button></div>
+            <div class="sbd"><div class="tml">
+              <div class="trw"><div class="tav" style="background:linear-gradient(135deg,var(--accent),var(--gold));">AZ</div><div style="flex:1;"><div class="tnm">Abdessamad Z. (you)</div><div class="tem">abdessamad@sellsense.io</div></div><span class="trole ow">Owner</span></div>
+              <div class="trw"><div class="tav" style="background:linear-gradient(135deg,var(--primary),var(--violet));">YM</div><div style="flex:1;"><div class="tnm">Youssef M.</div><div class="tem">youssef@atelierbeldi.com</div></div><span class="trole ad">Admin</span></div>
+              <div class="trw"><div class="tav" style="background:linear-gradient(135deg,var(--emerald),var(--emerald-2));">SR</div><div style="flex:1;"><div class="tnm">Sofia R.</div><div class="tem">sofia@atelierbeldi.com</div></div><span class="trole mb">Member</span></div>
+              <div class="trw"><div class="tav" style="background:linear-gradient(135deg,var(--ruby),var(--accent));">KA</div><div style="flex:1;"><div class="tnm">Karim A.</div><div class="tem">karim@atelierbeldi.com</div></div><span class="trole mb">Member</span></div>
+            </div></div></div>
+        </div>
+
+        <div class="pn" id="pane-int">
+          <h1 class="ph"><em>Integrations.</em></h1>
+          <p class="ps">Auto-sync data from your stores, ads, and accounting tools.</p>
+          <div class="sec"><div class="shdr"><div class="st">E-commerce</div></div><div class="sbd"><div class="ig">
+            <div class="int"><div class="int-ic">🛍️</div><div style="flex:1;"><div class="int-n">Shopify</div><div class="int-d">Auto-import orders, products & costs</div></div><button class="int-b on">Connected</button></div>
+            <div class="int"><div class="int-ic">🟢</div><div style="flex:1;"><div class="int-n">WooCommerce</div><div class="int-d">Sync your WordPress store</div></div><button class="int-b">Connect</button></div>
+            <div class="int"><div class="int-ic">⚡</div><div style="flex:1;"><div class="int-n">YouCan</div><div class="int-d">MENA COD platform</div></div><button class="int-b">Connect</button></div>
+            <div class="int"><div class="int-ic">🟠</div><div style="flex:1;"><div class="int-n">Etsy</div><div class="int-d">Handmade & vintage orders</div></div><button class="int-b">Connect</button></div>
+          </div></div></div>
+          <div class="sec"><div class="shdr"><div class="st">Ad platforms</div></div><div class="sbd"><div class="ig">
+            <div class="int"><div class="int-ic">🔵</div><div style="flex:1;"><div class="int-n">Meta Ads</div><div class="int-d">Facebook & Instagram</div></div><button class="int-b on">Connected</button></div>
+            <div class="int"><div class="int-ic">⚫</div><div style="flex:1;"><div class="int-n">TikTok Ads</div><div class="int-d">Live ad spend & ROAS</div></div><button class="int-b on">Connected</button></div>
+            <div class="int"><div class="int-ic">🟦</div><div style="flex:1;"><div class="int-n">Google Ads</div><div class="int-d">Search & shopping campaigns</div></div><button class="int-b">Connect</button></div>
+            <div class="int"><div class="int-ic">📌</div><div style="flex:1;"><div class="int-n">Pinterest Ads</div><div class="int-d">Visual ad performance</div></div><button class="int-b">Connect</button></div>
+          </div></div></div>
+          <div class="sec"><div class="shdr"><div class="st">Payments</div></div><div class="sbd"><div class="ig">
+            <div class="int"><div class="int-ic">💳</div><div style="flex:1;"><div class="int-n">Stripe</div><div class="int-d">Fees & transactions</div></div><button class="int-b">Connect</button></div>
+            <div class="int"><div class="int-ic">💰</div><div style="flex:1;"><div class="int-n">PayPal</div><div class="int-d">Global payments</div></div><button class="int-b">Connect</button></div>
+            <div class="int"><div class="int-ic">🏦</div><div style="flex:1;"><div class="int-n">CMI Morocco</div><div class="int-d">Local payment gateway</div></div><button class="int-b">Connect</button></div>
+            <div class="int"><div class="int-ic">📊</div><div style="flex:1;"><div class="int-n">QuickBooks</div><div class="int-d">Sync to your books</div></div><button class="int-b">Connect</button></div>
+          </div></div></div>
+        </div>
+
+        <div class="pn" id="pane-cur">
+          <h1 class="ph"><em>Currencies</em> & FX.</h1>
+          <p class="ps">All 27 currencies available, free.</p>
+          <div class="sec"><div class="shdr"><div class="st">Primary currency</div></div><div class="sbd">
+            <div class="fl"><label>Primary</label><select><option>🇺🇸 USD · US Dollar</option><option>🇪🇺 EUR · Euro</option><option>🇲🇦 MAD · Dirham</option></select></div>
+            <div class="tr"><div><div class="trt">Show secondary currency</div><div class="trd">Display USD alongside your primary.</div></div><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="tr"><div><div class="trt">Live FX rates</div><div class="trd">Auto-update every hour.</div></div><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
+          </div></div>
+          <div class="sec"><div class="shdr"><div class="st">Favorites</div></div><div class="sbd"><div class="fvg">
+            <div class="fv on"><span class="flg">🇺🇸</span><div><div class="cd">USD</div><div class="nm">Dollar</div></div></div>
+            <div class="fv on"><span class="flg">🇪🇺</span><div><div class="cd">EUR</div><div class="nm">Euro</div></div></div>
+            <div class="fv on"><span class="flg">🇲🇦</span><div><div class="cd">MAD</div><div class="nm">Dirham</div></div></div>
+            <div class="fv on"><span class="flg">🇬🇧</span><div><div class="cd">GBP</div><div class="nm">Pound</div></div></div>
+            <div class="fv"><span class="flg">🇦🇪</span><div><div class="cd">AED</div><div class="nm">UAE Dh</div></div></div>
+            <div class="fv"><span class="flg">🇮🇳</span><div><div class="cd">INR</div><div class="nm">Rupee</div></div></div>
+            <div class="fv"><span class="flg">🇳🇬</span><div><div class="cd">NGN</div><div class="nm">Naira</div></div></div>
+            <div class="fv"><span class="flg">🇧🇷</span><div><div class="cd">BRL</div><div class="nm">Real</div></div></div>
+          </div></div></div>
+        </div>
+
+        <div class="pn" id="pane-lang">
+          <h1 class="ph"><em>Language</em> & region.</h1>
+          <p class="ps">8 languages including full RTL Arabic.</p>
+          <div class="sec"><div class="shdr"><div class="st">Display language</div></div><div class="sbd"><div class="fvg">
+            <div class="fv on"><span class="flg">🇬🇧</span><div><div class="cd">English</div><div class="nm">EN</div></div></div>
+            <div class="fv"><span class="flg">🇫🇷</span><div><div class="cd">Français</div><div class="nm">FR</div></div></div>
+            <div class="fv"><span class="flg">🇲🇦</span><div><div class="cd">العربية</div><div class="nm">AR · RTL</div></div></div>
+            <div class="fv"><span class="flg">🇪🇸</span><div><div class="cd">Español</div><div class="nm">ES</div></div></div>
+            <div class="fv"><span class="flg">🇧🇷</span><div><div class="cd">Português</div><div class="nm">PT</div></div></div>
+            <div class="fv"><span class="flg">🇩🇪</span><div><div class="cd">Deutsch</div><div class="nm">DE</div></div></div>
+            <div class="fv"><span class="flg">🇮🇳</span><div><div class="cd">हिन्दी</div><div class="nm">HI</div></div></div>
+            <div class="fv"><span class="flg">🇨🇳</span><div><div class="cd">中文</div><div class="nm">ZH</div></div></div>
+          </div></div></div>
+          <div class="sec"><div class="shdr"><div class="st">Format</div></div><div class="sbd"><div class="fg">
+            <div class="fl"><label>Timezone</label><select><option>Africa/Casablanca (UTC+1)</option></select></div>
+            <div class="fl"><label>Date format</label><select><option>DD/MM/YYYY</option><option>MM/DD/YYYY</option></select></div>
+            <div class="fl"><label>Number format</label><select><option>1,234,567.89</option></select></div>
+            <div class="fl"><label>Week starts</label><select><option>Monday</option><option>Sunday</option></select></div>
+          </div></div></div>
+        </div>
+
+        <div class="pn" id="pane-app">
+          <h1 class="ph"><em>Appearance.</em></h1>
+          <p class="ps">Make SellSense yours.</p>
+          <div class="sec"><div class="shdr"><div class="st">Theme</div></div><div class="sbd"><div class="fvg" style="grid-template-columns:repeat(3,1fr);">
+            <div class="fv on" style="padding:18px;flex-direction:column;text-align:center;"><div style="width:100%;height:60px;background:linear-gradient(135deg,#FAFAF7,#F4F2EC);border:1px solid var(--border);border-radius:8px;margin-bottom:9px;"></div><div class="cd">Light</div></div>
+            <div class="fv" style="padding:18px;flex-direction:column;text-align:center;"><div style="width:100%;height:60px;background:linear-gradient(135deg,#0A0F1E,#1E2761);border-radius:8px;margin-bottom:9px;"></div><div class="cd">Dark</div></div>
+            <div class="fv" style="padding:18px;flex-direction:column;text-align:center;"><div style="width:100%;height:60px;background:linear-gradient(135deg,#FAFAF7 50%,#0A0F1E 50%);border-radius:8px;margin-bottom:9px;"></div><div class="cd">Auto</div></div>
+          </div></div></div>
+          <div class="sec"><div class="shdr"><div class="st">Accent color</div></div><div class="sbd"><div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <div style="width:36px;height:36px;border-radius:9px;background:#1E2761;cursor:pointer;border:2px solid var(--text);"></div>
+            <div style="width:36px;height:36px;border-radius:9px;background:#E76F4A;cursor:pointer;"></div>
+            <div style="width:36px;height:36px;border-radius:9px;background:#0F6E5C;cursor:pointer;"></div>
+            <div style="width:36px;height:36px;border-radius:9px;background:#D4A53C;cursor:pointer;"></div>
+            <div style="width:36px;height:36px;border-radius:9px;background:#7C3AED;cursor:pointer;"></div>
+            <div style="width:36px;height:36px;border-radius:9px;background:#0EA5E9;cursor:pointer;"></div>
+            <div style="width:36px;height:36px;border-radius:9px;background:#DC3556;cursor:pointer;"></div>
+          </div></div></div>
+        </div>
+
+        <div class="pn" id="pane-data">
+          <h1 class="ph">Your <em>data.</em></h1>
+          <p class="ps">Export, import, back up — it's all yours.</p>
+          <div class="sec"><div class="shdr"><div class="st">Export</div><div class="ssub">Download in machine-readable format.</div></div><div class="sbd" style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="bad">📊 Export all products (CSV)</button>
+            <button class="bad" style="background:var(--surface-3);color:var(--text);">📑 Export sales (Excel)</button>
+            <button class="bad" style="background:var(--surface-3);color:var(--text);">📦 Full backup (.zip)</button>
+          </div></div>
+          <div class="sec"><div class="shdr"><div class="st">Import</div></div><div class="sbd">
+            <div style="border:2px dashed var(--border-2);border-radius:12px;padding:32px;text-align:center;background:var(--surface-2);">
+              <div style="font-size:36px;margin-bottom:10px;">📥</div>
+              <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Drop a CSV file here</div>
+              <div style="font-size:12px;color:var(--text-3);">or <a style="color:var(--primary);font-weight:600;cursor:pointer;">browse files</a></div>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="pn" id="pane-dng">
+          <h1 class="ph" style="color:var(--neg);">Danger <em style="color:var(--neg);">zone.</em></h1>
+          <p class="ps">Irreversible actions.</p>
+          <div class="dg"><div class="dg-t">Reset all data</div><div class="dg-d">Removes all products, sales, and history. Cannot be undone.</div><button class="bdng">Reset workspace data</button></div>
+          <div class="dg"><div class="dg-t">Delete workspace</div><div class="dg-d">Permanently removes this workspace.</div><button class="bdng">Delete this workspace</button></div>
+          <div class="dg"><div class="dg-t">Delete account</div><div class="dg-d">Permanently delete your SellSense account.</div><button class="bdng">Delete my account</button></div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="tst" style="position:fixed;bottom:24px;right:24px;background:var(--ink);color:#fff;padding:12px 18px;border-radius:11px;font-size:13px;font-weight:500;display:flex;gap:9px;align-items:center;transform:translateY(60px);opacity:0;transition:all .25s;z-index:300;box-shadow:var(--sh-lg);">
+  <span style="width:8px;height:8px;border-radius:50%;background:var(--pos);"></span> Settings saved.
+</div>
+
+<script>
+function gp(el,n){
+  document.querySelectorAll('.snv').forEach(s=>s.classList.remove('act'));el.classList.add('act');
+  document.querySelectorAll('.pn').forEach(p=>p.classList.remove('on'));
+  document.getElementById('pane-'+n).classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function tt(){const t=document.getElementById('tst');t.style.opacity='1';t.style.transform='translateY(0)';setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(60px)';},2400);}
+</script>
+</body>
+</html>

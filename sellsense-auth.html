@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SellSense — Sign in</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#FAFAF7;--surface:#FFFFFF;--surface-2:#FBFAF6;--surface-3:#F1EFE8;
+  --ink:#0A0F1E;--text:#0D1424;--text-2:#3B4358;--text-3:#6B7280;
+  --muted:#9CA3AF;--border:#EBE7DC;--border-2:#E2DDD0;--border-3:#D5CFC0;
+  --primary:#1E2761;--accent:#E76F4A;--gold:#D4A53C;--gold-2:#E8BD58;
+  --emerald:#0F6E5C;--emerald-2:#15A37F;--violet:#7C3AED;
+  --pos:#0F6E5C;--pos-soft:#E6F5F1;--info-soft:#E8EAF5;
+  --sh-xs:0 1px 2px rgba(13,20,36,0.04);
+  --sh-md:0 8px 28px rgba(13,20,36,0.08);
+  --sh-lg:0 24px 60px rgba(13,20,36,0.12);
+  --sh-glow:0 0 0 4px rgba(30,39,97,0.08);
+  --ff-sans:'Inter',system-ui,sans-serif;
+  --ff-display:'Instrument Serif',Georgia,serif;
+  --grad-aurora:linear-gradient(135deg,#1E2761 0%,#7C3AED 50%,#E76F4A 100%);
+}
+html,body{height:100%;}
+body{background:var(--bg);color:var(--text);font-family:var(--ff-sans);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+a{text-decoration:none;color:inherit;}
+input,select{font-family:inherit;font-size:inherit;}
+
+.split{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;}
+
+.promo{background:var(--ink);color:#fff;padding:38px;position:relative;overflow:hidden;display:flex;flex-direction:column;}
+.promo::before{content:'';position:absolute;top:-160px;right:-160px;width:480px;height:480px;background:radial-gradient(circle,var(--accent) 0%,transparent 60%);opacity:0.18;}
+.promo::after{content:'';position:absolute;bottom:-200px;left:-200px;width:500px;height:500px;background:radial-gradient(circle,var(--primary) 0%,transparent 60%);opacity:0.35;}
+.promo-in{position:relative;z-index:1;display:flex;flex-direction:column;height:100%;}
+
+.logo{display:inline-flex;align-items:center;gap:10px;}
+.lm{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--accent));border-radius:9px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(212,165,60,0.35);position:relative;}
+.lm::after{content:'';position:absolute;inset:1.5px;border-radius:8px;background:linear-gradient(135deg,rgba(255,255,255,0.2),transparent 60%);}
+.ln{font-family:var(--ff-display);font-size:22px;font-style:italic;letter-spacing:-0.5px;color:#fff;}
+
+.promo-hero{margin-top:auto;margin-bottom:auto;}
+.eb{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);font-size:11.5px;font-weight:600;color:rgba(255,255,255,0.75);padding:6px 12px;border-radius:30px;margin-bottom:26px;}
+.eb .d{width:7px;height:7px;border-radius:50%;background:var(--gold);}
+.ph{font-family:var(--ff-display);font-size:46px;font-weight:400;letter-spacing:-1px;line-height:1.05;color:#fff;margin-bottom:18px;}
+.ph em{font-style:italic;color:var(--gold);}
+.pp{font-size:15.5px;color:rgba(255,255,255,0.6);line-height:1.55;max-width:420px;margin-bottom:34px;}
+
+.mk{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:16px;backdrop-filter:blur(10px);max-width:420px;}
+.mkr{display:flex;align-items:center;gap:10px;font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.mkr .lbl{font-size:9.5px;text-transform:uppercase;letter-spacing:0.08em;}
+.mkr .pulse{display:inline-flex;align-items:center;gap:5px;margin-left:auto;font-size:10.5px;color:#7AE0BD;font-weight:600;}
+.mkr .pulse .pd{width:6px;height:6px;border-radius:50%;background:#7AE0BD;animation:pulse 2s infinite;}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(122,224,189,0.6)}70%{box-shadow:0 0 0 8px rgba(122,224,189,0)}100%{box-shadow:0 0 0 0 rgba(122,224,189,0)}}
+.mks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.mkst{background:rgba(255,255,255,0.04);border-radius:9px;padding:11px;}
+.mkstl{font-size:9.5px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:5px;}
+.mkstv{font-family:var(--ff-display);font-size:22px;color:#fff;line-height:1;}
+.mkstt{font-size:10.5px;color:#7AE0BD;margin-top:4px;}
+.mkc{height:74px;margin-top:4px;display:block;}
+.mkf{margin-top:10px;display:flex;gap:7px;}
+.mkpl{font-size:10.5px;padding:4px 9px;border-radius:6px;background:rgba(212,165,60,0.18);color:var(--gold-2);font-weight:600;}
+
+.pfo{margin-top:24px;display:flex;align-items:center;gap:20px;font-size:12.5px;color:rgba(255,255,255,0.4);flex-wrap:wrap;}
+.pfo strong{color:rgba(255,255,255,0.85);font-weight:600;}
+.av{display:inline-flex;}
+.av>div{width:24px;height:24px;border-radius:50%;border:2px solid var(--ink);margin-left:-7px;background:var(--grad-aurora);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;}
+.av>div:first-child{margin-left:0;}
+.av>div:nth-child(2){background:linear-gradient(135deg,var(--emerald-2),var(--emerald));}
+.av>div:nth-child(3){background:linear-gradient(135deg,var(--gold-2),var(--gold));}
+.av>div:nth-child(4){background:linear-gradient(135deg,var(--violet),#A78BFA);}
+
+.auth{background:var(--bg);padding:38px;display:flex;flex-direction:column;justify-content:center;position:relative;}
+.tabs{display:inline-flex;background:var(--surface-3);border-radius:10px;padding:3px;margin-bottom:24px;}
+.tabs button{padding:7px 14px;border-radius:7px;font-size:12.5px;font-weight:600;color:var(--text-3);transition:all .12s;}
+.tabs button.on{background:#fff;color:var(--text);box-shadow:var(--sh-xs);}
+
+.ac{max-width:380px;width:100%;margin:0 auto;}
+.ah{font-family:var(--ff-display);font-size:34px;font-weight:400;letter-spacing:-0.6px;line-height:1.05;margin-bottom:6px;}
+.ah em{font-style:italic;color:var(--primary);}
+.as{font-size:14px;color:var(--text-3);margin-bottom:26px;}
+
+.bn{display:flex;align-items:center;gap:9px;background:var(--pos-soft);border:1px solid rgba(15,110,92,0.15);border-radius:10px;padding:11px 13px;margin-bottom:22px;}
+.bn-i{font-size:16px;}
+.bn-t{font-size:12.5px;font-weight:600;color:var(--pos);}
+.bn-d{font-size:11px;color:var(--text-2);}
+
+.oa{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;background:#fff;border:1.5px solid var(--border-2);color:var(--text);font-size:13.5px;font-weight:600;padding:11px 14px;border-radius:11px;cursor:pointer;margin-bottom:9px;transition:all .15s;}
+.oa:hover{border-color:var(--text);background:var(--surface-2);}
+.oa.dk{background:var(--ink);color:#fff;border-color:var(--ink);}
+.oa.dk:hover{background:var(--primary);border-color:var(--primary);}
+.oa svg{width:16px;height:16px;}
+
+.div{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--muted);font-size:11.5px;font-weight:500;}
+.div::before,.div::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.fl{display:flex;flex-direction:column;gap:7px;margin-bottom:14px;}
+.fl label{font-size:11px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:0.06em;}
+.fl input{background:#fff;border:1.5px solid var(--border-2);border-radius:10px;padding:11px 13px;font-size:13.5px;transition:all .15s;}
+.fl input:focus{outline:none;border-color:var(--primary);box-shadow:var(--sh-glow);}
+.fr{display:flex;align-items:center;justify-content:space-between;}
+.fr a{font-size:11.5px;color:var(--primary);font-weight:600;cursor:pointer;}
+
+.tg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.tm{background:#fff;border:1.5px solid var(--border-2);border-radius:10px;padding:13px 8px;text-align:center;cursor:pointer;transition:all .15s;}
+.tm:hover{border-color:var(--border-3);}
+.tm.sel{border-color:var(--primary);background:var(--info-soft);box-shadow:var(--sh-glow);}
+.tm-i{font-size:20px;margin-bottom:5px;display:block;}
+.tm-n{font-size:11.5px;font-weight:600;color:var(--text);}
+
+.bs{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;background:var(--ink);color:#fff;font-size:14px;font-weight:600;padding:12px;border-radius:11px;margin-top:14px;cursor:pointer;transition:all .15s;}
+.bs:hover{background:var(--primary);transform:translateY(-1px);}
+
+.af{margin-top:18px;text-align:center;font-size:12.5px;color:var(--text-3);}
+.af a{color:var(--primary);font-weight:600;cursor:pointer;}
+.tos{font-size:11px;color:var(--muted);margin-top:14px;text-align:center;line-height:1.5;}
+.tos a{color:var(--text-3);text-decoration:underline;}
+
+.pn{display:none;}
+.pn.on{display:block;animation:fIn 0.3s ease;}
+@keyframes fIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.scs{text-align:center;padding:24px 0;}
+.scs-ic{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--emerald-2),var(--emerald));color:#fff;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 18px;box-shadow:0 8px 32px rgba(15,110,92,0.3);}
+
+@media(max-width:980px){.split{grid-template-columns:1fr;}.promo{padding:30px 24px;}.auth{padding:28px 20px;}.ph{font-size:34px;}}
+</style>
+</head>
+<body>
+
+<div class="split">
+
+  <div class="promo">
+    <div class="promo-in">
+      <a href="sellsense-landing.html" class="logo">
+        <div class="lm"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1L15 5V11L8 15L1 11V5L8 1Z" stroke="#0A0F1E" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 5L11 7V9L8 11L5 9V7L8 5Z" fill="#0A0F1E"/></svg></div>
+        <span class="ln">SellSense</span>
+      </a>
+      <div class="promo-hero">
+        <div class="eb"><span class="d"></span> AI Decision Center · Live now</div>
+        <h1 class="ph">Profit intelligence,<br/><em>by product</em> — not by guess.</h1>
+        <p class="pp">The decision platform for ecom sellers, creators & freelancers. Track real profit per SKU, get daily scaling recommendations, decide with numbers.</p>
+        <div class="mk">
+          <div class="mkr">
+            <span class="lbl">PROFIT PULSE · 30D</span>
+            <span class="pulse"><span class="pd"></span> LIVE</span>
+          </div>
+          <div class="mks">
+            <div class="mkst"><div class="mkstl">Net profit</div><div class="mkstv">$8,429</div><div class="mkstt">▲ 23.4%</div></div>
+            <div class="mkst"><div class="mkstl">Margin</div><div class="mkstv">26.9%</div><div class="mkstt">▲ 2.1pp</div></div>
+          </div>
+          <svg class="mkc" viewBox="0 0 400 74" preserveAspectRatio="none">
+            <defs><linearGradient id="mg" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#D4A53C" stop-opacity="0.4"/><stop offset="100%" stop-color="#D4A53C" stop-opacity="0"/></linearGradient></defs>
+            <path d="M0,58 L30,52 L60,55 L90,46 L120,48 L150,38 L180,42 L210,32 L240,34 L270,24 L300,28 L330,18 L360,20 L400,8 L400,74 L0,74 Z" fill="url(#mg)"/>
+            <path d="M0,58 L30,52 L60,55 L90,46 L120,48 L150,38 L180,42 L210,32 L240,34 L270,24 L300,28 L330,18 L360,20 L400,8" fill="none" stroke="#D4A53C" stroke-width="2"/>
+            <circle cx="400" cy="8" r="3.5" fill="#D4A53C"/>
+          </svg>
+          <div class="mkf"><span class="mkpl">⚡ Scale Smart Watch</span><span class="mkpl">⏸ Pause Earbuds</span></div>
+        </div>
+      </div>
+      <div class="pfo">
+        <div class="av"><div>S</div><div>K</div><div>M</div><div>A</div></div>
+        <span><strong>2,400+ founders</strong> in 28 countries already track their real profit.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth">
+    <div class="ac">
+      <div class="tabs">
+        <button class="on" id="tSi" onclick="sp('signin')">Sign in</button>
+        <button id="tSu" onclick="sp('signup')">Create account</button>
+      </div>
+
+      <div class="pn on" id="p-signin">
+        <h2 class="ah">Welcome back<em>.</em></h2>
+        <p class="as">Sign in to your profit intelligence workspace.</p>
+        <div class="bn"><span class="bn-i">⚡</span><div><div class="bn-t">Full access — unlimited & free</div><div class="bn-d">All features unlocked. No credit card needed.</div></div></div>
+        <button class="oa" onclick="gd()"><svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>Continue with Google</button>
+        <button class="oa dk" onclick="gd()"><svg viewBox="0 0 24 24" fill="#fff"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>Continue with Apple</button>
+        <div class="div">or with email</div>
+        <div class="fl"><label>Email</label><input type="email" placeholder="you@company.com"/></div>
+        <div class="fl"><div class="fr"><label>Password</label><a onclick="sp('forgot')">Forgot?</a></div><input type="password" placeholder="••••••••"/></div>
+        <button class="bs" onclick="gd()">Sign in <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
+        <div class="af">New to SellSense? <a onclick="sp('signup')">Create your free account</a></div>
+      </div>
+
+      <div class="pn" id="p-signup">
+        <h2 class="ah">Your real profit, <em>uncovered.</em></h2>
+        <p class="as">Create your workspace in 30 seconds. Free forever.</p>
+        <div class="bn"><span class="bn-i">⚡</span><div><div class="bn-t">Unlimited everything · No credit card</div><div class="bn-d">Products, AI insights, currencies — all free.</div></div></div>
+        <button class="oa" onclick="go()"><svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>Sign up with Google</button>
+        <button class="oa dk" onclick="go()"><svg viewBox="0 0 24 24" fill="#fff"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>Sign up with Apple</button>
+        <div class="div">or with email</div>
+        <div class="fl"><label>Full name</label><input type="text" placeholder="Sam Carter"/></div>
+        <div class="fl"><label>Email</label><input type="email" placeholder="you@company.com"/></div>
+        <div class="fl"><label>Create a password</label><input type="password" placeholder="At least 8 characters"/></div>
+        <div class="fl"><label>I'm primarily a…</label>
+          <div class="tg">
+            <div class="tm sel" onclick="st(this)"><span class="tm-i">📦</span><div class="tm-n">Ecom · COD</div></div>
+            <div class="tm" onclick="st(this)"><span class="tm-i">🎬</span><div class="tm-n">Creator</div></div>
+            <div class="tm" onclick="st(this)"><span class="tm-i">💻</span><div class="tm-n">Freelancer</div></div>
+          </div>
+        </div>
+        <button class="bs" onclick="go()">Create my free account <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
+        <div class="tos">By creating an account, you agree to our <a>Terms</a> & <a>Privacy</a>.</div>
+        <div class="af">Already have an account? <a onclick="sp('signin')">Sign in</a></div>
+      </div>
+
+      <div class="pn" id="p-forgot">
+        <h2 class="ah">Reset your <em>password.</em></h2>
+        <p class="as">Enter your email — we'll send you a reset link.</p>
+        <div class="fl"><label>Email</label><input type="email" placeholder="you@company.com"/></div>
+        <button class="bs" onclick="sp('sent')">Send reset link <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
+        <div class="af"><a onclick="sp('signin')">← Back to sign in</a></div>
+      </div>
+
+      <div class="pn" id="p-sent">
+        <div class="scs">
+          <div class="scs-ic">✓</div>
+          <h2 class="ah">Check your <em>inbox.</em></h2>
+          <p class="as">If an account exists, we sent a reset link.</p>
+          <button class="bs" onclick="sp('signin')">Back to sign in</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function sp(n){
+  document.querySelectorAll('.pn').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p-'+n).classList.add('on');
+  if(n==='signin'){document.getElementById('tSi').classList.add('on');document.getElementById('tSu').classList.remove('on');}
+  if(n==='signup'){document.getElementById('tSu').classList.add('on');document.getElementById('tSi').classList.remove('on');}
+}
+function st(el){el.parentElement.querySelectorAll('.tm').forEach(t=>t.classList.remove('sel'));el.classList.add('sel');}
+function gd(){window.location.href='sellsense-dashboard.html';}
+function go(){window.location.href='sellsense-onboarding.html';}
+</script>
+</body>
+</html>
