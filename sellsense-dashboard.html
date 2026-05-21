@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SellSense — Dashboard</title>
+<title>SellSense â Dashboard</title>
 <meta name="theme-color" content="#0C1322"/>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%234F82F0'/%3E%3Cpath d='M16 5l10 6v10l-10 6-10-6V11z' fill='none' stroke='white' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M16 11l5 3v6l-5 3-5-3v-6z' fill='none' stroke='white' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -34,7 +34,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--fb);font-size:15px
 [dir="rtl"]{direction:rtl;}
 button{font-family:var(--fb);}
 
-/* ── AMBIENT GLOW ── */
+/* ââ AMBIENT GLOW ââ */
 body::before{
   content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
@@ -43,7 +43,7 @@ body::before{
     radial-gradient(500px 400px at 60% 30%,rgba(230,178,60,0.04),transparent 65%);
 }
 
-/* ── LOADING ── */
+/* ââ LOADING ââ */
 #ls{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;z-index:999;}
 .ll{font-family:var(--fd);font-size:28px;font-weight:800;}
 .ll span{color:var(--blue-2);}
@@ -53,7 +53,7 @@ body::before{
 
 .app{display:flex;min-height:100vh;position:relative;z-index:1;}
 
-/* ── SIDEBAR ── */
+/* ââ SIDEBAR ââ */
 .sidebar{width:var(--sw);flex-shrink:0;background:rgba(11,15,35,0.85);backdrop-filter:blur(18px);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:transform .3s;}
 [dir="rtl"] .sidebar{left:auto;right:0;border-right:0;border-left:1px solid var(--border);}
 .sl{padding:22px 20px 18px;border-bottom:1px solid var(--border);}
@@ -86,7 +86,7 @@ body::before{
 .btn-logout{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:9px;font-size:13px;color:var(--muted);cursor:pointer;transition:all .2s;}
 .btn-logout:hover{background:rgba(255,107,107,0.12);border-color:rgba(255,107,107,0.3);color:#FF9090;}
 
-/* ── MAIN ── */
+/* ââ MAIN ââ */
 .main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh;}
 [dir="rtl"] .main{margin-left:0;margin-right:var(--sw);}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:15px 28px;border-bottom:1px solid var(--border);background:rgba(12,19,34,0.88);backdrop-filter:blur(16px);position:sticky;top:0;z-index:50;}
@@ -100,7 +100,7 @@ body::before{
 .view.active{display:block;animation:fIn .35s ease;}
 @keyframes fIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-/* ── WELCOME BANNER (health ring) ── */
+/* ââ WELCOME BANNER (health ring) ââ */
 .welcome{
   background:linear-gradient(135deg,rgba(79,130,240,0.10),rgba(34,201,168,0.06),rgba(230,178,60,0.04));
   border:1px solid var(--border-2);
@@ -123,7 +123,7 @@ body::before{
 .ring-val{font-family:var(--fm);font-size:26px;font-weight:700;line-height:1;}
 .ring-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:3px;}
 
-/* ── STATS GRID ── */
+/* ââ STATS GRID ââ */
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
 .stat{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--r2);padding:20px;transition:all .25s;position:relative;overflow:hidden;}
 .stat:hover{border-color:var(--border-2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.2);}
@@ -138,13 +138,13 @@ body::before{
 .stat-spark{position:absolute;right:14px;bottom:14px;width:72px;height:28px;opacity:0.55;}
 [dir="rtl"] .stat-spark{right:auto;left:14px;transform:scaleX(-1);}
 
-/* ── SECTION HEADER ── */
+/* ââ SECTION HEADER ââ */
 .sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px;flex-wrap:wrap;}
 .sh-title{font-family:var(--fd);font-size:17px;font-weight:700;}
 .btn-new{background:var(--grad);color:#fff;border:none;border-radius:10px;padding:10px 20px;font-family:var(--fd);font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 6px 18px rgba(79,130,240,0.28);}
 .btn-new:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(79,130,240,0.4);}
 
-/* ── PROJECT CARDS ── */
+/* ââ PROJECT CARDS ââ */
 .proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;}
 .proj-card{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--r2);padding:22px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;}
 .proj-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
@@ -168,6 +168,8 @@ body::before{
 .proj-nocalc{font-size:13px;color:var(--muted);padding:14px 0;text-align:center;}
 .proj-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);}
 .calc-link{color:var(--blue-2);font-weight:600;}
+.proj-del{background:none;border:none;cursor:pointer;font-size:13px;padding:2px 5px;border-radius:6px;opacity:0.45;transition:.2s;margin-left:6px;}
+.proj-del:hover{opacity:1;background:rgba(255,107,107,.15);}
 
 /* EMPTY */
 .empty{text-align:center;padding:64px 24px;background:linear-gradient(135deg,rgba(79,130,240,0.06),rgba(34,201,168,0.03));border:1.5px dashed var(--border-2);border-radius:var(--r2);}
@@ -177,7 +179,7 @@ body::before{
 .btn-empty{background:var(--grad);color:#fff;border:none;border-radius:12px;padding:14px 36px;font-family:var(--fd);font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 8px 24px rgba(79,130,240,0.32);}
 .btn-empty:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(79,130,240,0.45);}
 
-/* ── LOCKED ── */
+/* ââ LOCKED ââ */
 .locked-s{background:linear-gradient(135deg,rgba(230,178,60,0.06),rgba(79,130,240,0.04));border:1px solid rgba(230,178,60,0.22);border-radius:var(--r2);padding:56px 24px;text-align:center;}
 .locked-icon{width:72px;height:72px;border-radius:50%;background:rgba(230,178,60,0.12);border:2px solid rgba(230,178,60,0.3);display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 20px;box-shadow:0 0 24px rgba(230,178,60,0.2);}
 .locked-title{font-family:var(--fd);font-size:22px;font-weight:700;color:var(--gold);margin-bottom:8px;}
@@ -187,7 +189,7 @@ body::before{
 .btn-unlock{background:var(--grad-gold);border:none;border-radius:12px;padding:13px 32px;font-family:var(--fd);font-size:14px;font-weight:700;color:#3A2C08;cursor:pointer;transition:all .2s;}
 .btn-unlock:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(230,178,60,0.32);}
 
-/* ── CALCULATOR ── */
+/* ââ CALCULATOR ââ */
 .calc-header{display:flex;align-items:center;gap:14px;margin-bottom:22px;}
 .back-btn{background:var(--surface);border:1px solid var(--border-2);border-radius:10px;padding:9px 16px;color:var(--text-2);font-size:14px;cursor:pointer;transition:all .2s;}
 .back-btn:hover{border-color:var(--blue);color:var(--blue-2);}
@@ -212,7 +214,7 @@ body::before{
 .cinput:focus{outline:none;border-color:var(--blue);background:var(--surface);box-shadow:0 0 0 3px rgba(79,130,240,0.12);}
 .cinput::placeholder{color:var(--muted-2);font-family:var(--fb);}
 
-/* ── RESULT PANEL ── */
+/* ââ RESULT PANEL ââ */
 .result-panel{background:var(--bg-3);border:1px solid var(--border-2);border-radius:var(--r2);padding:24px;position:sticky;top:84px;overflow:hidden;}
 .result-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad);}
 .rp-lbl{font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;font-weight:600;}
@@ -251,7 +253,7 @@ body::before{
 .btn-save.ld .bt{display:none;}.btn-save.ld .sp{display:block;}
 .save-note{font-size:12px;color:var(--muted);text-align:center;margin-top:8px;}
 
-/* ── MODAL ── */
+/* ââ MODAL ââ */
 .modal-ov{position:fixed;inset:0;background:rgba(5,8,16,0.75);backdrop-filter:blur(8px);z-index:300;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .3s;}
 .modal-ov.open{opacity:1;pointer-events:all;}
 .modal-box{background:var(--bg-3);border:1px solid var(--border-2);border-radius:24px;width:100%;max-width:480px;padding:34px;position:relative;transform:translateY(20px);transition:transform .3s;box-shadow:0 24px 60px rgba(0,0,0,0.5);}
@@ -283,7 +285,7 @@ body::before{
 .alert-b.show{display:block;}
 .ae{background:rgba(255,107,107,0.10);border:1px solid rgba(255,107,107,0.3);color:#FF9090;}
 
-/* ── TOAST ── */
+/* ââ TOAST ââ */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--bg-4);border:1px solid var(--blue);border-radius:13px;padding:14px 20px;font-size:14px;color:var(--text);transform:translateY(80px);opacity:0;transition:all .3s;z-index:500;box-shadow:var(--shadow);font-weight:500;}
 [dir="rtl"] .toast{right:auto;left:24px;}
 .toast.show{transform:translateY(0);opacity:1;}
@@ -296,7 +298,7 @@ body::before{
 </head>
 <body>
 <div id="ls"><div class="ll">Sell<span>Sense</span></div><div class="lb"><div class="lf"></div></div><div style="font-size:13px;color:var(--muted);" id="ls-txt">Chargement...</div></div>
-<div class="toast" id="toast"><span id="toast-msg">Sauvegardé</span></div>
+<div class="toast" id="toast"><span id="toast-msg">SauvegardÃ©</span></div>
 
 <div class="app" id="app" style="display:none;">
 
@@ -311,19 +313,19 @@ body::before{
     </div>
     <nav class="nav">
       <span class="nl" data-t="menu">Menu</span>
-      <button class="ni active" id="nav-ov" onclick="showView('overview')"><span class="ni-icon">⬡</span><span data-t="overview">Vue d'ensemble</span></button>
-      <button class="ni" id="nav-pr" onclick="showView('projects')"><span class="ni-icon">📊</span><span data-t="projects">Mes projets</span></button>
-      <button class="ni" onclick="showLocked('dailyTracking')"><span class="ni-icon">📅</span><span data-t="dailyTracking">Suivi journalier</span><span class="ni-badge" data-t="premiumOnly">Premium</span></button>
-      <button class="ni" onclick="showLocked('analytics')"><span class="ni-icon">📈</span><span data-t="analytics">Analyses</span><span class="ni-badge" data-t="premiumOnly">Premium</span></button>
-      <button class="ni" onclick="showLocked('exportPdf')"><span class="ni-icon">📤</span><span data-t="exportPdf">Export PDF</span><span class="ni-badge" data-t="premiumOnly">Premium</span></button>
+      <button class="ni active" id="nav-ov" onclick="showView('overview')"><span class="ni-icon">â¬¡</span><span data-t="overview">Vue d'ensemble</span></button>
+      <button class="ni" id="nav-pr" onclick="showView('projects')"><span class="ni-icon">ð</span><span data-t="projects">Mes projets</span></button>
+      <button class="ni" onclick="showLocked('dailyTracking')"><span class="ni-icon">ð</span><span data-t="dailyTracking">Suivi journalier</span><span class="ni-badge" data-t="premiumOnly">Premium</span></button>
+      <button class="ni" onclick="showLocked('analytics')"><span class="ni-icon">ð</span><span data-t="analytics">Analyses</span><span class="ni-badge" data-t="premiumOnly">Premium</span></button>
+      <button class="ni" onclick="showLocked('exportPdf')"><span class="ni-icon">ð¤</span><span data-t="exportPdf">Export PDF</span><span class="ni-badge" data-t="premiumOnly">Premium</span></button>
       <span class="nl" data-t="account">Compte</span>
-      <a class="ni" href="sellsense-landing.html"><span class="ni-icon">🏠</span><span data-t="navHome">Accueil</span></a>
-      <a class="ni" href="sellsense-payment.html"><span class="ni-icon">⭐</span><span data-t="navPricing">Premium & Tarifs</span></a>
+      <a class="ni" href="sellsense-landing.html"><span class="ni-icon">ð </span><span data-t="navHome">Accueil</span></a>
+      <a class="ni" href="sellsense-payment.html"><span class="ni-icon">â­</span><span data-t="navPricing">Premium & Tarifs</span></a>
     </nav>
     <div class="lang-sw">
       <button class="lang-btn active" onclick="setLang('fr',this)">FR</button>
       <button class="lang-btn" onclick="setLang('en',this)">EN</button>
-      <button class="lang-btn" onclick="setLang('ar',this)">عر</button>
+      <button class="lang-btn" onclick="setLang('ar',this)">Ø¹Ø±</button>
     </div>
     <div class="sb-bottom">
       <div class="user-row">
@@ -333,8 +335,8 @@ body::before{
           <div class="user-plan" id="uplan">Plan Gratuit</div>
         </div>
       </div>
-      <button class="btn-upgrade" onclick="location.href='sellsense-payment.html'">⭐ <span data-t="upgradeBtn">Passer au Premium</span></button>
-      <button class="btn-logout" onclick="doLogout()" data-t="logout">Déconnexion</button>
+      <button class="btn-upgrade" onclick="location.href='sellsense-payment.html'">â­ <span data-t="upgradeBtn">Passer au Premium</span></button>
+      <button class="btn-logout" onclick="doLogout()" data-t="logout">DÃ©connexion</button>
     </div>
   </aside>
 
@@ -342,7 +344,7 @@ body::before{
   <div class="main">
     <div class="topbar">
       <div style="display:flex;align-items:center;gap:12px;">
-        <button class="hambtn" onclick="toggleSB()" aria-label="Menu">☰</button>
+        <button class="hambtn" onclick="toggleSB()" aria-label="Menu">â°</button>
         <div class="topbar-title" id="topbar-title">Vue d'ensemble</div>
       </div>
       <div class="topbar-right">
@@ -354,27 +356,27 @@ body::before{
     <div class="view active" id="view-overview">
       <div class="welcome">
         <div class="welcome-txt">
-          <h2 id="wname">Bonjour 👋</h2>
-          <p id="wsub">Voici un résumé de tes projets actifs.</p>
+          <h2 id="wname">Bonjour ð</h2>
+          <p id="wsub">Voici un rÃ©sumÃ© de tes projets actifs.</p>
         </div>
         <div class="health-ring">
           <svg viewBox="0 0 80 80"><circle class="ring-bg" cx="40" cy="40" r="34"/><circle class="ring-fg" id="ring-fg" cx="40" cy="40" r="34" stroke="#22C9A8"/></svg>
-          <div class="ring-center"><div class="ring-val" id="ring-val">0%</div><div class="ring-lbl" data-t="health">Santé</div></div>
+          <div class="ring-center"><div class="ring-val" id="ring-val">0%</div><div class="ring-lbl" data-t="health">SantÃ©</div></div>
         </div>
       </div>
       <div class="stats">
         <div class="stat">
-          <div class="stat-top"><div class="stat-ic">💰</div><div class="stat-lbl" data-t="ca">Chiffre d'affaires</div></div>
-          <div class="stat-val pos" id="ov-ca">0</div><div class="stat-cur" id="ov-ca-c">MAD</div>
+          <div class="stat-top"><div class="stat-ic">ð°</div><div class="stat-lbl" data-t="ca">Chiffre d'affaires</div></div>
+          <div class="stat-val pos" id="ov-ca">0</div><div class="stat-cur" id="ov-ca-c" title="⚠️ Agrégation multi-devises — valeurs non converties">MAD *</div>
           <svg class="stat-spark" viewBox="0 0 72 28"><polyline points="0,22 12,19 24,16 36,18 48,12 60,8 72,4" stroke="#4F82F0" stroke-width="1.5" fill="none"/><polyline points="0,22 12,19 24,16 36,18 48,12 60,8 72,4 72,28 0,28" fill="rgba(79,130,240,0.12)"/></svg>
         </div>
         <div class="stat">
-          <div class="stat-top"><div class="stat-ic">📈</div><div class="stat-lbl" data-t="profitNet">Profit net</div></div>
+          <div class="stat-top"><div class="stat-ic">ð</div><div class="stat-lbl" data-t="profitNet">Profit net</div></div>
           <div class="stat-val pos" id="ov-profit">0</div><div class="stat-cur" id="ov-profit-c">MAD</div>
           <svg class="stat-spark" viewBox="0 0 72 28"><polyline points="0,20 12,18 24,20 36,14 48,11 60,8 72,5" stroke="#22C9A8" stroke-width="1.5" fill="none"/><polyline points="0,20 12,18 24,20 36,14 48,11 60,8 72,5 72,28 0,28" fill="rgba(34,201,168,0.12)"/></svg>
         </div>
         <div class="stat">
-          <div class="stat-top"><div class="stat-ic">🎯</div><div class="stat-lbl" data-t="marge">Marge</div></div>
+          <div class="stat-top"><div class="stat-ic">ð¯</div><div class="stat-lbl" data-t="marge">Marge</div></div>
           <div class="stat-val" id="ov-margin">0%</div><div class="stat-cur" data-t="allProjects">tous projets</div>
           <svg class="stat-spark" viewBox="0 0 72 28"><polyline points="0,24 12,20 24,18 36,16 48,13 60,10 72,7" stroke="#E6B23C" stroke-width="1.5" fill="none"/><polyline points="0,24 12,20 24,18 36,16 48,13 60,10 72,7 72,28 0,28" fill="rgba(230,178,60,0.10)"/></svg>
         </div>
@@ -392,17 +394,17 @@ body::before{
     <!-- CALCULATOR -->
     <div class="view" id="view-calc">
       <div class="calc-header">
-        <button class="back-btn" onclick="goBack()" data-t="back">← Retour</button>
+        <button class="back-btn" onclick="goBack()" data-t="back">â Retour</button>
         <div><div class="calc-proj-name" id="calc-name">Projet</div><div class="calc-proj-type" id="calc-type">Type</div></div>
       </div>
       <div style="font-size:13px;color:var(--muted);margin-bottom:10px;" data-t="devise">Devise</div>
       <div class="devise-row">
-        <button class="devise-btn active" onclick="setDevise('MAD',this)">🇲🇦 MAD</button>
-        <button class="devise-btn" onclick="setDevise('USD',this)">🇺🇸 USD</button>
-        <button class="devise-btn" onclick="setDevise('EUR',this)">🇪🇺 EUR</button>
+        <button class="devise-btn active" onclick="setDevise('MAD',this)">ð²ð¦ MAD</button>
+        <button class="devise-btn" onclick="setDevise('USD',this)">ðºð¸ USD</button>
+        <button class="devise-btn" onclick="setDevise('EUR',this)">ðªðº EUR</button>
       </div>
       <div class="calc-layout">
-        <div id="calc-fields"></div>
+        <div id="calc-prev" style="display:none;padding:10px 14px;margin-bottom:14px;background:rgba(79,130,240,0.08);border:1px solid rgba(79,130,240,0.2);border-radius:10px;font-size:12px;color:var(--text-2);line-height:1.5;"></div><div id="calc-fields"></div>
         <div>
           <div class="result-panel">
             <div class="rp-lbl" data-t="profitNet">Profit net</div>
@@ -418,10 +420,10 @@ body::before{
             <div class="health-box h-good" id="rp-health" style="display:none;"></div>
             <div class="rp-insight" id="rp-insight"></div>
             <button class="btn-save" id="btn-save" onclick="saveCalc()">
-              <span class="bt" id="save-txt">💾 Sauvegarder ce calcul</span>
+              <span class="bt" id="save-txt">ð¾ Sauvegarder ce calcul</span>
               <div class="sp"></div>
             </button>
-            <div class="save-note" data-t="savedHistory">Sauvegardé dans ton historique</div>
+            <div class="save-note" data-t="savedHistory">SauvegardÃ© dans ton historique</div>
           </div>
         </div>
       </div>
@@ -430,16 +432,16 @@ body::before{
     <!-- LOCKED -->
     <div class="view" id="view-locked">
       <div class="locked-s">
-        <div class="locked-icon">🔒</div>
-        <div class="locked-title" id="locked-title">Fonctionnalité Premium</div>
-        <div class="locked-sub" data-t="lockedSub">Cette fonctionnalité est disponible avec le plan Premium.</div>
+        <div class="locked-icon">ð</div>
+        <div class="locked-title" id="locked-title">FonctionnalitÃ© Premium</div>
+        <div class="locked-sub" data-t="lockedSub">Cette fonctionnalitÃ© est disponible avec le plan Premium.</div>
         <div class="locked-features">
-          <span class="lf-pill">📅 Suivi journalier</span>
-          <span class="lf-pill">📈 Graphiques 6 mois</span>
-          <span class="lf-pill">📤 Export PDF & Excel</span>
-          <span class="lf-pill">∞ Projets illimités</span>
+          <span class="lf-pill">ð Suivi journalier</span>
+          <span class="lf-pill">ð Graphiques 6 mois</span>
+          <span class="lf-pill">ð¤ Export PDF & Excel</span>
+          <span class="lf-pill">â Projets illimitÃ©s</span>
         </div>
-        <button class="btn-unlock" onclick="location.href='sellsense-payment.html'">⭐ <span data-t="seePremium">Découvrir Premium</span></button>
+        <button class="btn-unlock" onclick="location.href='sellsense-payment.html'">â­ <span data-t="seePremium">DÃ©couvrir Premium</span></button>
       </div>
     </div>
 
@@ -449,26 +451,26 @@ body::before{
 <!-- ADD MODAL -->
 <div class="modal-ov" id="add-modal" onclick="cov(event,'add-modal')">
   <div class="modal-box">
-    <button class="modal-close" onclick="cm('add-modal')" aria-label="Fermer">✕</button>
+    <button class="modal-close" onclick="cm('add-modal')" aria-label="Fermer">â</button>
     <div class="modal-title" data-t="newProject">Nouveau projet</div>
-    <div class="modal-sub" data-t="newProjectSub">Crée un projet pour commencer à calculer.</div>
+    <div class="modal-sub" data-t="newProjectSub">CrÃ©e un projet pour commencer Ã  calculer.</div>
     <div class="alert-b ae" id="add-err"></div>
-    <div style="font-size:13px;color:var(--text-2);font-weight:500;margin-bottom:10px;" data-t="businessType">Type d'activité</div>
+    <div style="font-size:13px;color:var(--text-2);font-weight:500;margin-bottom:10px;" data-t="businessType">Type d'activitÃ©</div>
     <div class="type-cards">
-      <div class="tc" onclick="selT('ecom',this)"><div class="tc-icon">📦</div><div class="tc-name" data-t="typeEcom">E-com/COD</div><div class="tc-sub">COD, Drop</div></div>
-      <div class="tc" onclick="selT('creator',this)"><div class="tc-icon">🎬</div><div class="tc-name" data-t="typeCreator">Créateur</div><div class="tc-sub">YT, TikTok</div></div>
-      <div class="tc" onclick="selT('freelancer',this)"><div class="tc-icon">💻</div><div class="tc-name" data-t="typeFreelancer">Freelance</div><div class="tc-sub">Upwork</div></div>
+      <div class="tc" onclick="selT('ecom',this)"><div class="tc-icon">ð¦</div><div class="tc-name" data-t="typeEcom">E-com/COD</div><div class="tc-sub">COD, Drop</div></div>
+      <div class="tc" onclick="selT('creator',this)"><div class="tc-icon">ð¬</div><div class="tc-name" data-t="typeCreator">CrÃ©ateur</div><div class="tc-sub">YT, TikTok</div></div>
+      <div class="tc" onclick="selT('freelancer',this)"><div class="tc-icon">ð»</div><div class="tc-name" data-t="typeFreelancer">Freelance</div><div class="tc-sub">Upwork</div></div>
     </div>
-    <div class="mf"><label data-t="projectName">Nom du projet</label><input class="minput" type="text" id="pname" placeholder="ex: Boutique Vêtements Maroc"/></div>
+    <div class="mf"><label data-t="projectName">Nom du projet</label><input class="minput" type="text" id="pname" placeholder="ex: Boutique VÃªtements Maroc"/></div>
     <div class="mf">
       <label data-t="devise">Devise</label>
       <select class="mselect" id="pdevise">
-        <option value="MAD">🇲🇦 MAD — Dirham marocain</option>
-        <option value="USD">🇺🇸 USD — Dollar américain</option>
-        <option value="EUR">🇪🇺 EUR — Euro</option>
+        <option value="MAD">ð²ð¦ MAD â Dirham marocain</option>
+        <option value="USD">ðºð¸ USD â Dollar amÃ©ricain</option>
+        <option value="EUR">ðªðº EUR â Euro</option>
       </select>
     </div>
-    <button class="btn-create" onclick="createP()" data-t="createProject">Créer le projet →</button>
+    <button class="btn-create" onclick="createP()" data-t="createProject">CrÃ©er le projet â</button>
   </div>
 </div>
 
@@ -476,29 +478,29 @@ body::before{
 const {createClient}=supabase;
 const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
-/* ════ i18n ════ */
+/* ââââ i18n ââââ */
 const T={
-  fr:{overview:'Vue d\'ensemble',projects:'Mes projets',menu:'Menu',account:'Compte',addProject:'+ Nouveau projet',newProject:'Nouveau projet',newProjectSub:'Crée un projet pour commencer à calculer.',noProjects:'Aucun projet pour l\'instant',noProjectsDesc:'Crée ton premier projet pour commencer à calculer tes profits.',createFirst:'+ Créer mon premier projet',projectName:'Nom du projet',businessType:'Type d\'activité',createProject:'Créer le projet →',calcBtn:'Calculer →',noCalcYet:'Aucun calcul — clique pour commencer',profitNet:'Profit net',ca:'Chiffre d\'affaires',marge:'Marge',charges:'Total charges',health:'Santé',allProjects:'tous projets',save:'💾 Sauvegarder ce calcul',saving:'Sauvegarde...',saved:'✓ Calcul sauvegardé',savedHistory:'Sauvegardé dans ton historique',back:'← Retour',devise:'Devise',typeEcom:'E-com / COD',typeCreator:'Créateur',typeFreelancer:'Freelance',healthGood:'✓ Excellente marge !',healthOk:'~ Marge correcte — continue d\'optimiser',healthWarn:'⚠ Marge serrée — attention aux charges',healthBad:'✗ Tu perds de l\'argent — revois tes charges',planFree:'Plan Gratuit',planPremium:'⭐ Premium',premiumOnly:'Premium',upgradeBtn:'Passer au Premium',dailyTracking:'Suivi journalier',analytics:'Analyses',exportPdf:'Export PDF',logout:'Déconnexion',navHome:'Accueil',navPricing:'Premium & Tarifs',lockedSub:'Cette fonctionnalité est disponible avec le plan Premium.',seePremium:'Découvrir Premium',limitReached:'Limite de 3 projets atteinte — passe au Premium 🚀',projectCreated:'✓ Projet créé ! Clique pour calculer.',insightBiggest:'Plus grosse charge',insightOf:'des charges',hello:'Bonjour',
-  secRevenu:'💰 Revenus',secProduit:'📦 Coût des produits (COGS)',secLivraison:'🚚 Livraison & Logistique',secMarketing:'📣 Marketing & Publicité',secPlateforme:'💳 Frais plateforme & Paiement',secProduction:'🎬 Frais de production',secPromotion:'📣 Promotion',secPlatFreelance:'💳 Frais plateforme',secSousTraitance:'👥 Équipe & Sous-traitance',secOperationnel:'🛠️ Charges opérationnelles',
-  fCa:'Chiffre d\'affaires (ventes encaissées)',fCogs:'Achat produits (COGS)',fLivraison:'Frais livraison (transporteur)',fRetours:'Retours & non-livrés',fPackaging:'Emballage & packaging',fFbAds:'Facebook Ads',fTikAds:'TikTok Ads',fAutresAds:'Autres publicités',fShopify:'Shopify / plateforme',fCmi:'Frais paiement CMI/PayPal (%)',fAutresFrais:'Autres frais',
-  fAdsense:'Revenus AdSense (YouTube)',fTiktokRev:'TikTok Creator Fund',fSponsors:'Sponsoring & partenariats',fMerch:'Merch / Produits numériques',fAutresRev:'Autres revenus',fEquipement:'Matériel & équipement',fLogiciels:'Logiciels (Adobe, CapCut...)',fMontage:'Montage / production (sous-traité)',fPromotion:'Promotion payante',fCommissionAgence:'Commission agence/manager (%)',
-  fFacture:'Montant facturé (brut)',fPlatformeCut:'Commission plateforme (%)',fPlatformeInfo:'Upwork=20% · Fiverr=20% · Malt=10%',fVirement:'Frais virement/conversion (Wise...)',fSousTraitants:'Sous-traitants & collaborateurs',fLogicielsF:'Logiciels & outils',fCoworking:'Espace de travail / coworking',fFormation:'Formation & développement',fAutresF:'Autres charges'},
-  en:{overview:'Overview',projects:'My projects',menu:'Menu',account:'Account',addProject:'+ New project',newProject:'New project',newProjectSub:'Create a project to start calculating.',noProjects:'No projects yet',noProjectsDesc:'Create your first project to start calculating your profits.',createFirst:'+ Create my first project',projectName:'Project name',businessType:'Business type',createProject:'Create project →',calcBtn:'Calculate →',noCalcYet:'No calculation yet — click to start',profitNet:'Net profit',ca:'Revenue',marge:'Margin',charges:'Total expenses',health:'Health',allProjects:'all projects',save:'💾 Save this calculation',saving:'Saving...',saved:'✓ Calculation saved',savedHistory:'Saved to your history',back:'← Back',devise:'Currency',typeEcom:'E-com / COD',typeCreator:'Creator',typeFreelancer:'Freelancer',healthGood:'✓ Excellent margin!',healthOk:'~ Decent margin — keep optimizing',healthWarn:'⚠ Tight margin — watch your costs',healthBad:'✗ You\'re losing money — review your costs',planFree:'Free plan',planPremium:'⭐ Premium',premiumOnly:'Premium',upgradeBtn:'Go Premium',dailyTracking:'Daily tracking',analytics:'Analytics',exportPdf:'Export PDF',logout:'Log out',navHome:'Home',navPricing:'Premium & Pricing',lockedSub:'This feature is available with the Premium plan.',seePremium:'Discover Premium',limitReached:'3-project limit reached — go Premium 🚀',projectCreated:'✓ Project created! Click to calculate.',insightBiggest:'Biggest expense',insightOf:'of expenses',hello:'Hello',
-  secRevenu:'💰 Revenue',secProduit:'📦 Cost of Goods (COGS)',secLivraison:'🚚 Shipping & Logistics',secMarketing:'📣 Marketing & Ads',secPlateforme:'💳 Platform & Payment fees',secProduction:'🎬 Production costs',secPromotion:'📣 Promotion',secPlatFreelance:'💳 Platform fees',secSousTraitance:'👥 Team & Subcontractors',secOperationnel:'🛠️ Operating expenses',
+  fr:{overview:'Vue d\'ensemble',projects:'Mes projets',menu:'Menu',account:'Compte',addProject:'+ Nouveau projet',newProject:'Nouveau projet',newProjectSub:'CrÃ©e un projet pour commencer Ã  calculer.',noProjects:'Aucun projet pour l\'instant',noProjectsDesc:'CrÃ©e ton premier projet pour commencer Ã  calculer tes profits.',createFirst:'+ CrÃ©er mon premier projet',projectName:'Nom du projet',businessType:'Type d\'activitÃ©',createProject:'CrÃ©er le projet â',calcBtn:'Calculer â',noCalcYet:'Aucun calcul â clique pour commencer',profitNet:'Profit net',ca:'Chiffre d\'affaires',marge:'Marge',charges:'Total charges',health:'SantÃ©',allProjects:'tous projets',save:'ð¾ Sauvegarder ce calcul',saving:'Sauvegarde...',saved:'â Calcul sauvegardÃ©',savedHistory:'SauvegardÃ© dans ton historique',back:'â Retour',devise:'Devise',typeEcom:'E-com / COD',typeCreator:'CrÃ©ateur',typeFreelancer:'Freelance',healthGood:'â Excellente marge !',healthOk:'~ Marge correcte â continue d\'optimiser',healthWarn:'â  Marge serrÃ©e â attention aux charges',healthBad:'â Tu perds de l\'argent â revois tes charges',planFree:'Plan Gratuit',planPremium:'â­ Premium',premiumOnly:'Premium',upgradeBtn:'Passer au Premium',dailyTracking:'Suivi journalier',analytics:'Analyses',exportPdf:'Export PDF',logout:'DÃ©connexion',navHome:'Accueil',navPricing:'Premium & Tarifs',lockedSub:'Cette fonctionnalitÃ© est disponible avec le plan Premium.',seePremium:'DÃ©couvrir Premium',limitReached:'Limite de 3 projets atteinte â passe au Premium ð',projectCreated:'â Projet crÃ©Ã© ! Clique pour calculer.',insightBiggest:'Plus grosse charge',insightOf:'des charges',hello:'Bonjour',
+  secRevenu:'ð° Revenus',secProduit:'ð¦ CoÃ»t des produits (COGS)',secLivraison:'ð Livraison & Logistique',secMarketing:'ð£ Marketing & PublicitÃ©',secPlateforme:'ð³ Frais plateforme & Paiement',secProduction:'ð¬ Frais de production',secPromotion:'ð£ Promotion',secPlatFreelance:'ð³ Frais plateforme',secSousTraitance:'ð¥ Ãquipe & Sous-traitance',secOperationnel:'ð ï¸ Charges opÃ©rationnelles',
+  fCa:'Chiffre d\'affaires (ventes encaissÃ©es)',fCogs:'Achat produits (COGS)',fLivraison:'Frais livraison (transporteur)',fRetours:'Retours & non-livrÃ©s',fPackaging:'Emballage & packaging',fFbAds:'Facebook Ads',fTikAds:'TikTok Ads',fAutresAds:'Autres publicitÃ©s',fShopify:'Shopify / plateforme',fCmi:'Frais paiement CMI/PayPal (%)',fAutresFrais:'Autres frais',
+  fAdsense:'Revenus AdSense (YouTube)',fTiktokRev:'TikTok Creator Fund',fSponsors:'Sponsoring & partenariats',fMerch:'Merch / Produits numÃ©riques',fAutresRev:'Autres revenus',fEquipement:'MatÃ©riel & Ã©quipement',fLogiciels:'Logiciels (Adobe, CapCut...)',fMontage:'Montage / production (sous-traitÃ©)',fPromotion:'Promotion payante',fCommissionAgence:'Commission agence/manager (%)',
+  fFacture:'Montant facturÃ© (brut)',fPlatformeCut:'Commission plateforme (%)',fPlatformeInfo:'Upwork=20% Â· Fiverr=20% Â· Malt=10%',fVirement:'Frais virement/conversion (Wise...)',fSousTraitants:'Sous-traitants & collaborateurs',fLogicielsF:'Logiciels & outils',fCoworking:'Espace de travail / coworking',fFormation:'Formation & dÃ©veloppement',fAutresF:'Autres charges'},
+  en:{overview:'Overview',projects:'My projects',menu:'Menu',account:'Account',addProject:'+ New project',newProject:'New project',newProjectSub:'Create a project to start calculating.',noProjects:'No projects yet',noProjectsDesc:'Create your first project to start calculating your profits.',createFirst:'+ Create my first project',projectName:'Project name',businessType:'Business type',createProject:'Create project â',calcBtn:'Calculate â',noCalcYet:'No calculation yet â click to start',profitNet:'Net profit',ca:'Revenue',marge:'Margin',charges:'Total expenses',health:'Health',allProjects:'all projects',save:'ð¾ Save this calculation',saving:'Saving...',saved:'â Calculation saved',savedHistory:'Saved to your history',back:'â Back',devise:'Currency',typeEcom:'E-com / COD',typeCreator:'Creator',typeFreelancer:'Freelancer',healthGood:'â Excellent margin!',healthOk:'~ Decent margin â keep optimizing',healthWarn:'â  Tight margin â watch your costs',healthBad:'â You\'re losing money â review your costs',planFree:'Free plan',planPremium:'â­ Premium',premiumOnly:'Premium',upgradeBtn:'Go Premium',dailyTracking:'Daily tracking',analytics:'Analytics',exportPdf:'Export PDF',logout:'Log out',navHome:'Home',navPricing:'Premium & Pricing',lockedSub:'This feature is available with the Premium plan.',seePremium:'Discover Premium',limitReached:'3-project limit reached â go Premium ð',projectCreated:'â Project created! Click to calculate.',insightBiggest:'Biggest expense',insightOf:'of expenses',hello:'Hello',
+  secRevenu:'ð° Revenue',secProduit:'ð¦ Cost of Goods (COGS)',secLivraison:'ð Shipping & Logistics',secMarketing:'ð£ Marketing & Ads',secPlateforme:'ð³ Platform & Payment fees',secProduction:'ð¬ Production costs',secPromotion:'ð£ Promotion',secPlatFreelance:'ð³ Platform fees',secSousTraitance:'ð¥ Team & Subcontractors',secOperationnel:'ð ï¸ Operating expenses',
   fCa:'Revenue (total sales received)',fCogs:'Product cost (COGS)',fLivraison:'Shipping fees (carrier)',fRetours:'Returns & undelivered orders',fPackaging:'Packaging & supplies',fFbAds:'Facebook Ads budget',fTikAds:'TikTok Ads budget',fAutresAds:'Other advertising',fShopify:'Shopify / platform subscription',fCmi:'Payment fees CMI/PayPal (%)',fAutresFrais:'Other expenses',
   fAdsense:'AdSense revenue (YouTube)',fTiktokRev:'TikTok Creator Fund',fSponsors:'Sponsorships & brand deals',fMerch:'Merch / Digital products',fAutresRev:'Other revenue',fEquipement:'Equipment (camera, mic...)',fLogiciels:'Software (Adobe, CapCut...)',fMontage:'Video editing / production',fPromotion:'Paid promotion',fCommissionAgence:'Agency/manager commission (%)',
-  fFacture:'Amount invoiced (gross total)',fPlatformeCut:'Platform commission (%)',fPlatformeInfo:'Upwork=20% · Fiverr=20% · Malt=10%',fVirement:'Transfer/conversion fees (Wise...)',fSousTraitants:'Subcontractors & collaborators',fLogicielsF:'Software & professional tools',fCoworking:'Workspace / coworking',fFormation:'Training & development',fAutresF:'Other expenses'},
-  ar:{overview:'نظرة عامة',projects:'مشاريعي',menu:'القائمة',account:'الحساب',addProject:'+ مشروع جديد',newProject:'مشروع جديد',newProjectSub:'أنشئ مشروعاً لتبدأ الحساب.',noProjects:'لا توجد مشاريع بعد',noProjectsDesc:'أنشئ مشروعك الأول لتبدأ في حساب أرباحك.',createFirst:'+ إنشاء مشروعي الأول',projectName:'اسم المشروع',businessType:'نوع النشاط',createProject:'إنشاء المشروع ←',calcBtn:'احسب ←',noCalcYet:'لا يوجد حساب — انقر للبدء',profitNet:'صافي الربح',ca:'رقم الأعمال',marge:'الهامش',charges:'إجمالي المصاريف',health:'الصحة',allProjects:'كل المشاريع',save:'💾 حفظ هذا الحساب',saving:'جاري الحفظ...',saved:'✓ تم حفظ الحساب',savedHistory:'محفوظ في سجلك',back:'← رجوع',devise:'العملة',typeEcom:'تجارة / COD',typeCreator:'منشئ محتوى',typeFreelancer:'فريلانسر',healthGood:'✓ هامش ممتاز!',healthOk:'~ هامش جيد — واصل التحسين',healthWarn:'⚠ هامش ضيق — انتبه للمصاريف',healthBad:'✗ أنت تخسر — راجع مصاريفك',planFree:'الخطة المجانية',planPremium:'⭐ بريميوم',premiumOnly:'بريميوم',upgradeBtn:'الانتقال إلى بريميوم',dailyTracking:'المتابعة اليومية',analytics:'التحليلات',exportPdf:'تصدير PDF',logout:'تسجيل الخروج',navHome:'الرئيسية',navPricing:'بريميوم والأسعار',lockedSub:'هذه الميزة متاحة مع خطة البريميوم.',seePremium:'اكتشف البريميوم',limitReached:'تم الوصول لحد 3 مشاريع — انتقل إلى بريميوم 🚀',projectCreated:'✓ تم إنشاء المشروع! انقر للحساب.',insightBiggest:'أكبر مصروف',insightOf:'من المصاريف',hello:'مرحباً',
-  secRevenu:'💰 الإيرادات',secProduit:'📦 تكلفة البضاعة (COGS)',secLivraison:'🚚 التوصيل والشحن',secMarketing:'📣 التسويق والإعلانات',secPlateforme:'💳 رسوم المنصة والدفع',secProduction:'🎬 تكاليف الإنتاج',secPromotion:'📣 الترويج',secPlatFreelance:'💳 رسوم المنصة',secSousTraitance:'👥 الفريق والمقاولون',secOperationnel:'🛠️ المصاريف التشغيلية',
-  fCa:'رقم الأعمال (إجمالي المبيعات)',fCogs:'تكلفة البضاعة (COGS)',fLivraison:'رسوم الشحن (شركة التوصيل)',fRetours:'المرتجعات والطلبات غير المسلمة',fPackaging:'التغليف والمواد',fFbAds:'Facebook Ads',fTikAds:'TikTok Ads',fAutresAds:'إعلانات أخرى',fShopify:'اشتراك Shopify / المنصة',fCmi:'رسوم الدفع CMI/PayPal (%)',fAutresFrais:'مصاريف أخرى',
-  fAdsense:'عائدات AdSense (يوتيوب)',fTiktokRev:'TikTok Creator Fund',fSponsors:'الرعايات والشراكات',fMerch:'منتجات / محتوى رقمي',fAutresRev:'إيرادات أخرى',fEquipement:'المعدات (كاميرا، ميكروفون...)',fLogiciels:'البرامج (Adobe, CapCut...)',fMontage:'المونتاج / الإنتاج',fPromotion:'الترويج المدفوع',fCommissionAgence:'عمولة الوكالة/المدير (%)',
-  fFacture:'المبلغ المفوتر (الإجمالي)',fPlatformeCut:'عمولة المنصة (%)',fPlatformeInfo:'Upwork=20% · Fiverr=20%',fVirement:'رسوم التحويل (Wise...)',fSousTraitants:'المقاولون من الباطن',fLogicielsF:'البرامج والأدوات',fCoworking:'مساحة العمل / كوورك',fFormation:'التدريب والتطوير',fAutresF:'مصاريف أخرى'}
+  fFacture:'Amount invoiced (gross total)',fPlatformeCut:'Platform commission (%)',fPlatformeInfo:'Upwork=20% Â· Fiverr=20% Â· Malt=10%',fVirement:'Transfer/conversion fees (Wise...)',fSousTraitants:'Subcontractors & collaborators',fLogicielsF:'Software & professional tools',fCoworking:'Workspace / coworking',fFormation:'Training & development',fAutresF:'Other expenses'},
+  ar:{overview:'ÙØ¸Ø±Ø© Ø¹Ø§ÙØ©',projects:'ÙØ´Ø§Ø±ÙØ¹Ù',menu:'Ø§ÙÙØ§Ø¦ÙØ©',account:'Ø§ÙØ­Ø³Ø§Ø¨',addProject:'+ ÙØ´Ø±ÙØ¹ Ø¬Ø¯ÙØ¯',newProject:'ÙØ´Ø±ÙØ¹ Ø¬Ø¯ÙØ¯',newProjectSub:'Ø£ÙØ´Ø¦ ÙØ´Ø±ÙØ¹Ø§Ù ÙØªØ¨Ø¯Ø£ Ø§ÙØ­Ø³Ø§Ø¨.',noProjects:'ÙØ§ ØªÙØ¬Ø¯ ÙØ´Ø§Ø±ÙØ¹ Ø¨Ø¹Ø¯',noProjectsDesc:'Ø£ÙØ´Ø¦ ÙØ´Ø±ÙØ¹Ù Ø§ÙØ£ÙÙ ÙØªØ¨Ø¯Ø£ ÙÙ Ø­Ø³Ø§Ø¨ Ø£Ø±Ø¨Ø§Ø­Ù.',createFirst:'+ Ø¥ÙØ´Ø§Ø¡ ÙØ´Ø±ÙØ¹Ù Ø§ÙØ£ÙÙ',projectName:'Ø§Ø³Ù Ø§ÙÙØ´Ø±ÙØ¹',businessType:'ÙÙØ¹ Ø§ÙÙØ´Ø§Ø·',createProject:'Ø¥ÙØ´Ø§Ø¡ Ø§ÙÙØ´Ø±ÙØ¹ â',calcBtn:'Ø§Ø­Ø³Ø¨ â',noCalcYet:'ÙØ§ ÙÙØ¬Ø¯ Ø­Ø³Ø§Ø¨ â Ø§ÙÙØ± ÙÙØ¨Ø¯Ø¡',profitNet:'ØµØ§ÙÙ Ø§ÙØ±Ø¨Ø­',ca:'Ø±ÙÙ Ø§ÙØ£Ø¹ÙØ§Ù',marge:'Ø§ÙÙØ§ÙØ´',charges:'Ø¥Ø¬ÙØ§ÙÙ Ø§ÙÙØµØ§Ø±ÙÙ',health:'Ø§ÙØµØ­Ø©',allProjects:'ÙÙ Ø§ÙÙØ´Ø§Ø±ÙØ¹',save:'ð¾ Ø­ÙØ¸ ÙØ°Ø§ Ø§ÙØ­Ø³Ø§Ø¨',saving:'Ø¬Ø§Ø±Ù Ø§ÙØ­ÙØ¸...',saved:'â ØªÙ Ø­ÙØ¸ Ø§ÙØ­Ø³Ø§Ø¨',savedHistory:'ÙØ­ÙÙØ¸ ÙÙ Ø³Ø¬ÙÙ',back:'â Ø±Ø¬ÙØ¹',devise:'Ø§ÙØ¹ÙÙØ©',typeEcom:'ØªØ¬Ø§Ø±Ø© / COD',typeCreator:'ÙÙØ´Ø¦ ÙØ­ØªÙÙ',typeFreelancer:'ÙØ±ÙÙØ§ÙØ³Ø±',healthGood:'â ÙØ§ÙØ´ ÙÙØªØ§Ø²!',healthOk:'~ ÙØ§ÙØ´ Ø¬ÙØ¯ â ÙØ§ØµÙ Ø§ÙØªØ­Ø³ÙÙ',healthWarn:'â  ÙØ§ÙØ´ Ø¶ÙÙ â Ø§ÙØªØ¨Ù ÙÙÙØµØ§Ø±ÙÙ',healthBad:'â Ø£ÙØª ØªØ®Ø³Ø± â Ø±Ø§Ø¬Ø¹ ÙØµØ§Ø±ÙÙÙ',planFree:'Ø§ÙØ®Ø·Ø© Ø§ÙÙØ¬Ø§ÙÙØ©',planPremium:'â­ Ø¨Ø±ÙÙÙÙÙ',premiumOnly:'Ø¨Ø±ÙÙÙÙÙ',upgradeBtn:'Ø§ÙØ§ÙØªÙØ§Ù Ø¥ÙÙ Ø¨Ø±ÙÙÙÙÙ',dailyTracking:'Ø§ÙÙØªØ§Ø¨Ø¹Ø© Ø§ÙÙÙÙÙØ©',analytics:'Ø§ÙØªØ­ÙÙÙØ§Øª',exportPdf:'ØªØµØ¯ÙØ± PDF',logout:'ØªØ³Ø¬ÙÙ Ø§ÙØ®Ø±ÙØ¬',navHome:'Ø§ÙØ±Ø¦ÙØ³ÙØ©',navPricing:'Ø¨Ø±ÙÙÙÙÙ ÙØ§ÙØ£Ø³Ø¹Ø§Ø±',lockedSub:'ÙØ°Ù Ø§ÙÙÙØ²Ø© ÙØªØ§Ø­Ø© ÙØ¹ Ø®Ø·Ø© Ø§ÙØ¨Ø±ÙÙÙÙÙ.',seePremium:'Ø§ÙØªØ´Ù Ø§ÙØ¨Ø±ÙÙÙÙÙ',limitReached:'ØªÙ Ø§ÙÙØµÙÙ ÙØ­Ø¯ 3 ÙØ´Ø§Ø±ÙØ¹ â Ø§ÙØªÙÙ Ø¥ÙÙ Ø¨Ø±ÙÙÙÙÙ ð',projectCreated:'â ØªÙ Ø¥ÙØ´Ø§Ø¡ Ø§ÙÙØ´Ø±ÙØ¹! Ø§ÙÙØ± ÙÙØ­Ø³Ø§Ø¨.',insightBiggest:'Ø£ÙØ¨Ø± ÙØµØ±ÙÙ',insightOf:'ÙÙ Ø§ÙÙØµØ§Ø±ÙÙ',hello:'ÙØ±Ø­Ø¨Ø§Ù',
+  secRevenu:'ð° Ø§ÙØ¥ÙØ±Ø§Ø¯Ø§Øª',secProduit:'ð¦ ØªÙÙÙØ© Ø§ÙØ¨Ø¶Ø§Ø¹Ø© (COGS)',secLivraison:'ð Ø§ÙØªÙØµÙÙ ÙØ§ÙØ´Ø­Ù',secMarketing:'ð£ Ø§ÙØªØ³ÙÙÙ ÙØ§ÙØ¥Ø¹ÙØ§ÙØ§Øª',secPlateforme:'ð³ Ø±Ø³ÙÙ Ø§ÙÙÙØµØ© ÙØ§ÙØ¯ÙØ¹',secProduction:'ð¬ ØªÙØ§ÙÙÙ Ø§ÙØ¥ÙØªØ§Ø¬',secPromotion:'ð£ Ø§ÙØªØ±ÙÙØ¬',secPlatFreelance:'ð³ Ø±Ø³ÙÙ Ø§ÙÙÙØµØ©',secSousTraitance:'ð¥ Ø§ÙÙØ±ÙÙ ÙØ§ÙÙÙØ§ÙÙÙÙ',secOperationnel:'ð ï¸ Ø§ÙÙØµØ§Ø±ÙÙ Ø§ÙØªØ´ØºÙÙÙØ©',
+  fCa:'Ø±ÙÙ Ø§ÙØ£Ø¹ÙØ§Ù (Ø¥Ø¬ÙØ§ÙÙ Ø§ÙÙØ¨ÙØ¹Ø§Øª)',fCogs:'ØªÙÙÙØ© Ø§ÙØ¨Ø¶Ø§Ø¹Ø© (COGS)',fLivraison:'Ø±Ø³ÙÙ Ø§ÙØ´Ø­Ù (Ø´Ø±ÙØ© Ø§ÙØªÙØµÙÙ)',fRetours:'Ø§ÙÙØ±ØªØ¬Ø¹Ø§Øª ÙØ§ÙØ·ÙØ¨Ø§Øª ØºÙØ± Ø§ÙÙØ³ÙÙØ©',fPackaging:'Ø§ÙØªØºÙÙÙ ÙØ§ÙÙÙØ§Ø¯',fFbAds:'Facebook Ads',fTikAds:'TikTok Ads',fAutresAds:'Ø¥Ø¹ÙØ§ÙØ§Øª Ø£Ø®Ø±Ù',fShopify:'Ø§Ø´ØªØ±Ø§Ù Shopify / Ø§ÙÙÙØµØ©',fCmi:'Ø±Ø³ÙÙ Ø§ÙØ¯ÙØ¹ CMI/PayPal (%)',fAutresFrais:'ÙØµØ§Ø±ÙÙ Ø£Ø®Ø±Ù',
+  fAdsense:'Ø¹Ø§Ø¦Ø¯Ø§Øª AdSense (ÙÙØªÙÙØ¨)',fTiktokRev:'TikTok Creator Fund',fSponsors:'Ø§ÙØ±Ø¹Ø§ÙØ§Øª ÙØ§ÙØ´Ø±Ø§ÙØ§Øª',fMerch:'ÙÙØªØ¬Ø§Øª / ÙØ­ØªÙÙ Ø±ÙÙÙ',fAutresRev:'Ø¥ÙØ±Ø§Ø¯Ø§Øª Ø£Ø®Ø±Ù',fEquipement:'Ø§ÙÙØ¹Ø¯Ø§Øª (ÙØ§ÙÙØ±Ø§Ø ÙÙÙØ±ÙÙÙÙ...)',fLogiciels:'Ø§ÙØ¨Ø±Ø§ÙØ¬ (Adobe, CapCut...)',fMontage:'Ø§ÙÙÙÙØªØ§Ø¬ / Ø§ÙØ¥ÙØªØ§Ø¬',fPromotion:'Ø§ÙØªØ±ÙÙØ¬ Ø§ÙÙØ¯ÙÙØ¹',fCommissionAgence:'Ø¹ÙÙÙØ© Ø§ÙÙÙØ§ÙØ©/Ø§ÙÙØ¯ÙØ± (%)',
+  fFacture:'Ø§ÙÙØ¨ÙØº Ø§ÙÙÙÙØªØ± (Ø§ÙØ¥Ø¬ÙØ§ÙÙ)',fPlatformeCut:'Ø¹ÙÙÙØ© Ø§ÙÙÙØµØ© (%)',fPlatformeInfo:'Upwork=20% Â· Fiverr=20%',fVirement:'Ø±Ø³ÙÙ Ø§ÙØªØ­ÙÙÙ (Wise...)',fSousTraitants:'Ø§ÙÙÙØ§ÙÙÙÙ ÙÙ Ø§ÙØ¨Ø§Ø·Ù',fLogicielsF:'Ø§ÙØ¨Ø±Ø§ÙØ¬ ÙØ§ÙØ£Ø¯ÙØ§Øª',fCoworking:'ÙØ³Ø§Ø­Ø© Ø§ÙØ¹ÙÙ / ÙÙÙØ±Ù',fFormation:'Ø§ÙØªØ¯Ø±ÙØ¨ ÙØ§ÙØªØ·ÙÙØ±',fAutresF:'ÙØµØ§Ø±ÙÙ Ø£Ø®Ø±Ù'}
 };
 
-/* ════ STATE ════ */
+/* ââââ STATE ââââ */
 let lang='fr', user=null, profile=null, projects=[], curProj=null, curDevise='MAD', newType=null;
 
-/* ════ BOOT ════ */
+/* ââââ BOOT ââââ */
 async function boot(){
   const {data:{session}}=await sb.auth.getSession();
   if(!session){location.href='sellsense-auth.html';return;}
@@ -547,7 +549,7 @@ function renderUserBox(){
   const isPrem=profile?.plan==='premium';
   document.getElementById('uav').textContent=name.charAt(0).toUpperCase();
   document.getElementById('uname').textContent=name;
-  document.getElementById('wname').textContent=t.hello+' '+name.split(' ')[0]+' 👋';
+  document.getElementById('wname').textContent=t.hello+' '+name.split(' ')[0]+' ð';
   document.getElementById('uplan').textContent=isPrem?t.planPremium:t.planFree;
   const pb=document.getElementById('plan-badge');
   pb.textContent=isPrem?t.planPremium:t.planFree;
@@ -579,7 +581,7 @@ function updateStats(){
   rv.style.color=col;
   const t=T[lang];
   document.getElementById('wsub').textContent=projects.length
-    ? (lang==='ar'?(projects.length+' مشروع نشط'):(projects.length+(lang==='en'?' active project(s)':' projet(s) actif(s)')))
+    ? (lang==='ar'?(projects.length+' ÙØ´Ø±ÙØ¹ ÙØ´Ø·'):(projects.length+(lang==='en'?' active project(s)':' projet(s) actif(s)')))
     : t.noProjectsDesc;
 }
 
@@ -587,10 +589,10 @@ function renderProjects(containerId){
   const t=T[lang];
   const c=document.getElementById(containerId);
   if(!projects.length){
-    c.innerHTML=`<div class="empty"><div class="empty-icon">📊</div><div class="empty-title">${t.noProjects}</div><div class="empty-sub">${t.noProjectsDesc}</div><button class="btn-empty" onclick="openAdd()">${t.createFirst}</button></div>`;
+    c.innerHTML=`<div class="empty"><div class="empty-icon">ð</div><div class="empty-title">${t.noProjects}</div><div class="empty-sub">${t.noProjectsDesc}</div><button class="btn-empty" onclick="openAdd()">${t.createFirst}</button></div>`;
     return;
   }
-  const icons={ecom:'📦',creator:'🎬',freelancer:'💻'};
+  const icons={ecom:'ð¦',creator:'ð¬',freelancer:'ð»'};
   const typeKeys={ecom:'typeEcom',creator:'typeCreator',freelancer:'typeFreelancer'};
   const loc=lang==='ar'?'ar-MA':(lang==='en'?'en-GB':'fr-FR');
   c.innerHTML='<div class="proj-grid">'+projects.map(p=>{
@@ -601,21 +603,21 @@ function renderProjects(containerId){
     const pc=profit>=0?'pos':'neg';
     const tp=p.business_type;
     return `<div class="proj-card ${tp}" onclick="openCalc('${p.id}')">
-      <div class="proj-top"><div class="proj-icon">${icons[tp]||'📁'}</div><div class="proj-type-badge ${tp}">${t[typeKeys[tp]]||tp}</div></div>
+      <div class="proj-top"><div class="proj-icon">${icons[tp]||'ð'}</div><div class="proj-type-badge ${tp}">${t[typeKeys[tp]]||tp}</div></div>
       <div class="proj-name">${escapeHtml(p.name)}</div>
       ${hasCalc?`<div class="proj-stats">
         <div class="pstat"><div class="pstat-val">${fmt(ca)}</div><div class="pstat-lbl">${t.ca} (${p.currency||'MAD'})</div></div>
         <div class="pstat"><div class="pstat-val ${pc}">${profit>=0?'+':''}${fmt(profit)}</div><div class="pstat-lbl">${t.profitNet}</div></div>
         <div class="pstat"><div class="pstat-val">${margin}%</div><div class="pstat-lbl">${t.marge}</div></div>
       </div>`:`<div class="proj-nocalc">${t.noCalcYet}</div>`}
-      <div class="proj-footer"><span>${new Date(p.created_at).toLocaleDateString(loc)}</span><span class="calc-link">${t.calcBtn}</span></div>
+      <div class="proj-footer"><span>${new Date(p.created_at).toLocaleDateString(loc)}</span><span class="calc-link">${t.calcBtn}</span><button class="proj-del" onclick="event.stopPropagation();deleteProj('${p.id}')" title="Supprimer">🗑</button></div>
     </div>`;
   }).join('')+'</div>';
 }
 
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
-/* ════ CALCULATOR ════ */
+/* ââââ CALCULATOR ââââ */
 function openCalc(pid){
   curProj=projects.find(p=>p.id===pid);
   if(!curProj)return;
@@ -627,6 +629,7 @@ function openCalc(pid){
   document.querySelectorAll('.devise-btn').forEach(b=>b.classList.toggle('active',b.textContent.includes(curDevise)));
   document.getElementById('rp-cur').textContent=curDevise;
   buildFields();
+  sb.from('calculations').select('revenue,net_profit,margin_percent,calc_date').eq('project_id',pid).order('calc_date',{ascending:false}).limit(1).then(({data:h})=>{const b=document.getElementById('calc-prev');if(b&&h&&h[0]){b.textContent='📊 Dernière sauvegarde — CA : '+h[0].revenue+' | Profit : '+h[0].net_profit+' | Marge : '+h[0].margin_percent+'% ('+new Date(h[0].calc_date).toLocaleDateString('fr-FR')+')';b.style.display='block';}else if(b)b.style.display='none';});
   showView('calc');
   document.getElementById('topbar-title').textContent=curProj.name;
 }
@@ -734,7 +737,7 @@ function recalc(){
     const topItems=breakdown.filter(b=>b.amt>0).sort((a,b_)=>b_.amt-a.amt).slice(0,4);
     if(topItems.length>0){
       bbEl.style.display='flex';
-      bbEl.innerHTML='<div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:2px;">Répartition des charges</div>'+
+      bbEl.innerHTML='<div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:2px;">RÃ©partition des charges</div>'+
         topItems.map(item=>{
           const pct=((item.amt/costs)*100).toFixed(0);
           return `<div class="bb-row"><div class="bb-meta"><span>${item.label.substring(0,22)}</span><span>${pct}%</span></div><div class="bb-track"><div class="bb-fill" style="width:${pct}%"></div></div></div>`;
@@ -757,7 +760,7 @@ function recalc(){
     if(top&&top.amt>0){
       const share=((top.amt/costs)*100).toFixed(0);
       ins.style.display='block';
-      ins.innerHTML=`<span class="ic">💡</span><strong>${t.insightBiggest} :</strong> ${escapeHtml(top.label)} — ${fmt(top.amt)} ${curDevise} (${share}% ${t.insightOf})`;
+      ins.innerHTML=`<span class="ic">ð¡</span><strong>${t.insightBiggest} :</strong> ${escapeHtml(top.label)} â ${fmt(top.amt)} ${curDevise} (${share}% ${t.insightOf})`;
     } else {ins.style.display='none';}
   } else {ins.style.display='none';}
 
@@ -787,7 +790,7 @@ async function saveCalc(){
   updateStats();
 }
 
-/* ════ ADD PROJECT ════ */
+/* ââââ ADD PROJECT ââââ */
 function openAdd(){
   const isPrem=profile?.plan==='premium';
   if(!isPrem&&projects.length>=3){showToast(T[lang].limitReached,true);return;}
@@ -816,10 +819,19 @@ async function createP(){
   renderAll();
   cm('add-modal');
   showToast(t.projectCreated);
-  setTimeout(()=>openCalc(data.id),700);
+  /* BUG-04 FIXED: removed auto-open — dashboard stays on overview */
 }
 
-/* ════ UI ════ */
+/* ââââ UI ââââ */
+function deleteProj(pid){
+  if(!confirm('Supprimer ce projet et tous ses calculs ? Cette action est irréversible.'))return;
+  sb.from('calculations').delete().eq('project_id',pid).then(()=>{
+    sb.from('projects').delete().eq('id',pid).then(({error})=>{
+      if(error)showToast(error.message,true);
+      else{loadProjects();showView('projects');showToast('Projet supprimé ✓');}
+    });
+  });
+}
 function showView(v){
   document.querySelectorAll('.view').forEach(e=>e.classList.remove('active'));
   document.getElementById('view-'+v).classList.add('active');
@@ -836,7 +848,7 @@ function showLocked(key){
   document.querySelectorAll('.view').forEach(e=>e.classList.remove('active'));
   document.getElementById('view-locked').classList.add('active');
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
-  document.getElementById('locked-title').textContent=(T[lang][key]||key)+' — '+T[lang].premiumOnly;
+  document.getElementById('locked-title').textContent=(T[lang][key]||key)+' â '+T[lang].premiumOnly;
   document.getElementById('topbar-title').textContent=T[lang][key]||key;
   if(window.innerWidth<=760)document.getElementById('sidebar').classList.remove('open');
 }
@@ -859,7 +871,7 @@ function fmt(n){return Number(n||0).toLocaleString('fr-MA',{minimumFractionDigit
 
 async function doLogout(){await sb.auth.signOut();location.href='sellsense-auth.html';}
 
-/* ════ LANG ════ */
+/* ââââ LANG ââââ */
 function setLang(l,btn){
   lang=l;
   document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
@@ -885,7 +897,7 @@ function applyLang(){
   document.getElementById('save-txt').textContent=t.save;
 }
 
-/* ════ START ════ */
+/* ââââ START ââââ */
 boot();
 </script>
 </body>
