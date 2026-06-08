@@ -1,9 +1,0 @@
-{
-  "redirects": [
-    {
-      "source": "/sellsense-landing.html",
-      "destination": "/",
-      "permanent": true
-    }
-  ]
-}
