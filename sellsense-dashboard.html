@@ -1,0 +1,2280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SellSense — Dashboard</title>
+<meta name="theme-color" content="#4B1023"/>
+<link rel="icon" href="sellsense-star.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet"/>
+<script>
+const SUPABASE_URL='https://fmlmkxbcfeebeqtlzzvn.supabase.co';
+const SUPABASE_ANON_KEY='sb_publishable_M68a1m8LRq_DHQUov2k5pw_e-qrAefU';
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#4B1023;--bg-2:#19070E;--bg-3:#270B16;--bg-4:#350F1E;
+  --surface:rgba(255,245,238,0.055);--surface-2:rgba(255,245,238,0.10);
+  --border:rgba(244,202,91,0.16);--border-2:rgba(244,202,91,0.30);
+  --royal-red:#791D38;--deep-red:#3A0B1B;--morocco-green:#078A4B;--gold:#F4CA5B;--gold-soft:#FFE59A;--blue:var(--royal-red);--blue-2:var(--gold);--terra:var(--deep-red);--teal:var(--morocco-green);
+  --text:#FFF8F2;--text-2:#E4CFD4;--muted:#B999A3;--muted-2:#886A74;
+  --green:#12A75F;--red:#FF727C;
+  --fd:'Manrope','IBM Plex Sans Arabic',sans-serif;--fb:'IBM Plex Sans Arabic','Manrope',sans-serif;
+  --r:14px;--r2:20px;
+  --grad:linear-gradient(135deg,#8D2342 0%,var(--royal-red) 46%,#B98928 100%);
+  --shadow:0 12px 40px rgba(0,0,0,0.4);
+  --sw:264px;
+}
+html,body{height:100%;}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);font-size:15px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+[dir="rtl"]{direction:rtl;}
+button{font-family:var(--fb);cursor:pointer;}
+svg{display:block;}
+.icn{width:18px;height:18px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+/* LOADING */
+#ls{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;z-index:999;}
+.ll{font-family:var(--fd);font-size:28px;font-weight:800;}
+.ll span{color:var(--blue-2);}
+.lb{width:190px;height:3px;background:var(--surface-2);border-radius:2px;overflow:hidden;}
+.lf{height:100%;background:var(--grad);animation:lf 1s ease forwards;}
+@keyframes lf{from{width:0}to{width:100%}}
+
+.app{display:flex;min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar{width:var(--sw);flex-shrink:0;background:var(--bg-2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:transform .3s;}
+[dir="rtl"] .sidebar{left:auto;right:0;border-right:0;border-left:1px solid var(--border);}
+.sl{padding:22px 20px 16px;border-bottom:1px solid var(--border);}
+.sl-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.sl-box{width:32px;height:32px;background:var(--grad);border-radius:9px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(195,39,47,0.4);}
+.sl-name{font-family:var(--fd);font-size:19px;font-weight:800;color:var(--text);}
+.sl-name span{color:var(--blue-2);}
+.sl-tag{font-size:10px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:6px;display:block;}
+.nav{padding:14px 12px;flex:1;overflow-y:auto;}
+.nl{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted-2);padding:10px 10px 6px;display:block;}
+.ni{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;font-size:14px;color:var(--text-2);transition:all .15s;border:none;background:transparent;width:100%;text-align:inherit;margin-bottom:2px;text-decoration:none;}
+.ni:hover{background:var(--surface);color:var(--text);}
+.ni.active{background:rgba(195,39,47,0.14);color:var(--text);font-weight:600;box-shadow:inset 2px 0 0 var(--blue);}
+[dir="rtl"] .ni.active{box-shadow:inset -2px 0 0 var(--blue);}
+.ni .icn{width:17px;height:17px;}
+.ni.active .icn{color:var(--blue-2);}
+.lang-sw{display:flex;gap:5px;padding:10px 14px;}
+.lang-btn{flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:var(--fb);font-size:12px;font-weight:600;transition:all .2s;}
+.lang-btn:hover{color:var(--text);}
+.lang-btn.active{background:var(--surface-2);color:var(--text);border-color:var(--border-2);}
+.sb-bottom{padding:14px;border-top:1px solid var(--border);}
+.user-row{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;background:var(--surface);margin-bottom:10px;}
+.user-av{width:36px;height:36px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0;font-family:var(--fd);}
+.user-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.user-mail{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.btn-logout{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px;font-size:13px;color:var(--muted);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-logout:hover{background:rgba(255,107,107,0.12);border-color:rgba(255,107,107,0.3);color:#FF9090;}
+.btn-logout .icn{width:15px;height:15px;}
+
+/* MAIN */
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+[dir="rtl"] .main{margin-left:0;margin-right:var(--sw);}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:15px 28px;border-bottom:1px solid var(--border);background:rgba(12,19,34,0.86);backdrop-filter:blur(14px);position:sticky;top:0;z-index:50;}
+.topbar-title{font-family:var(--fd);font-size:18px;font-weight:700;}
+.topbar-date{font-size:13px;color:var(--muted);}
+.topbar-tools{display:flex;align-items:center;gap:12px;}
+.top-lang-sw{display:none;gap:3px;padding:3px;border:1px solid var(--border);border-radius:9px;background:var(--surface);}
+.top-lang-sw .lang-btn{min-width:38px;padding:6px 8px;}
+.hambtn{display:none;background:var(--surface);border:1px solid var(--border-2);border-radius:9px;width:40px;height:40px;align-items:center;justify-content:center;color:var(--text);}
+.view{display:none;padding:26px 28px 60px;flex:1;}
+.view.active{display:block;animation:fIn .3s ease;}
+@keyframes fIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* SECTION HEADER */
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px;flex-wrap:wrap;}
+.sh-title{font-family:var(--fd);font-size:17px;font-weight:700;}
+.sh-sub{font-size:13px;color:var(--muted);margin-top:1px;}
+.btn-pri{background:var(--grad);color:#fff;border:none;border-radius:10px;padding:10px 18px;font-family:var(--fd);font-size:14px;font-weight:700;transition:all .2s;display:inline-flex;align-items:center;gap:7px;box-shadow:0 6px 18px rgba(195,39,47,0.28);}
+.btn-pri:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(195,39,47,0.4);}
+.btn-pri .icn{width:15px;height:15px;}
+.btn-ghost{background:var(--surface);border:1px solid var(--border-2);color:var(--text-2);border-radius:10px;padding:9px 16px;font-size:13px;font-weight:600;transition:all .2s;display:inline-flex;align-items:center;gap:7px;}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue-2);}
+.btn-ghost .icn{width:15px;height:15px;}
+
+/* HERO (overview) */
+.hero{background:linear-gradient(135deg,rgba(195,39,47,0.13),rgba(0,122,61,0.07));border:1px solid var(--border-2);border-radius:var(--r2);padding:26px 28px;margin-bottom:18px;display:flex;gap:30px;align-items:center;flex-wrap:wrap;}
+.hero-main{flex:1;min-width:240px;}
+.hero-label{font-size:12px;color:var(--text-2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+.hero-val{font-family:var(--fd);font-size:46px;font-weight:800;letter-spacing:-.03em;line-height:1;}
+.hero-val.pos{color:var(--teal);}
+.hero-val.neg{color:var(--red);}
+.hero-cur{font-size:18px;color:var(--muted);font-weight:500;}
+.hero-sub{display:flex;gap:22px;margin-top:14px;flex-wrap:wrap;}
+.hero-sub div{font-size:13px;color:var(--muted);}
+.hero-sub b{display:block;font-family:var(--fd);font-size:17px;color:var(--text);font-weight:700;margin-top:2px;}
+.hero-spark{width:200px;height:74px;flex-shrink:0;}
+
+/* KPI CARDS */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;}
+.kpi{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--r);padding:18px;transition:all .2s;}
+.kpi:hover{border-color:var(--border-2);}
+.kpi-top{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.kpi-ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.kpi-ic .icn{width:16px;height:16px;}
+.kpi-lbl{font-size:12px;color:var(--muted);}
+.kpi-val{font-family:var(--fd);font-size:24px;font-weight:800;letter-spacing:-.02em;line-height:1;}
+.kpi-val.pos{color:var(--blue-2);}
+.kpi-val.neg{color:var(--red);}
+.kpi-foot{font-size:11px;color:var(--muted-2);margin-top:6px;}
+
+/* GRID PANELS */
+.grid2{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;margin-bottom:18px;}
+.panel{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--r2);padding:20px;}
+.panel-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.panel-title{font-family:var(--fd);font-size:15px;font-weight:700;}
+.panel-sub{font-size:12px;color:var(--muted);margin-bottom:14px;}
+.chart-wrap{position:relative;height:260px;}
+.chart-wrap.sm{height:220px;}
+.empty-chart{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted-2);gap:8px;text-align:center;}
+.empty-chart .icn{width:34px;height:34px;opacity:.5;}
+
+/* INSIGHTS */
+.insights{display:flex;flex-direction:column;gap:10px;}
+.insight{display:flex;gap:11px;padding:13px 14px;border-radius:11px;background:var(--surface);border:1px solid var(--border);}
+.insight-ic{width:30px;height:30px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.insight-ic .icn{width:16px;height:16px;}
+.insight.good .insight-ic{background:rgba(0,122,61,0.14);color:var(--teal);}
+.insight.warn .insight-ic{background:rgba(230,178,60,0.14);color:var(--gold);}
+.insight.bad .insight-ic{background:rgba(255,107,107,0.14);color:var(--red);}
+.insight.info .insight-ic{background:rgba(110,155,245,0.14);color:var(--blue-2);}
+.insight-tx{font-size:13px;color:var(--text-2);line-height:1.5;}
+.insight-tx b{color:var(--text);}
+
+/* PROJECT CARDS */
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;}
+.proj-card{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--r2);padding:20px;transition:all .25s;position:relative;overflow:hidden;}
+.proj-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.proj-card.ecom::before{background:linear-gradient(90deg,var(--blue),var(--blue-2));}
+.proj-card.creator::before{background:linear-gradient(90deg,var(--terra),var(--gold));}
+.proj-card.freelancer::before{background:linear-gradient(90deg,var(--teal),#5BE3C4);}
+.proj-card:hover{border-color:var(--border-2);transform:translateY(-3px);box-shadow:var(--shadow);}
+.proj-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.proj-icon{width:40px;height:40px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;}
+.proj-icon .icn{width:19px;height:19px;color:var(--text-2);}
+.proj-badge{font-size:11px;padding:4px 10px;border-radius:20px;font-weight:600;}
+.proj-badge.ecom{background:rgba(195,39,47,0.14);color:var(--blue-2);}
+.proj-badge.creator{background:rgba(246,195,74,0.14);color:var(--terra);}
+.proj-badge.freelancer{background:rgba(0,122,61,0.14);color:var(--teal);}
+.proj-name{font-family:var(--fd);font-size:16px;font-weight:700;margin-bottom:12px;}
+.proj-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.pstat{text-align:center;padding:10px 4px;background:var(--surface);border-radius:9px;}
+.pstat-val{font-family:var(--fd);font-size:14px;font-weight:700;line-height:1;}
+.pstat-cur{font-size:9px;color:var(--muted);font-weight:700;}
+.pstat-val.pos{color:var(--blue-2);}
+.pstat-val.neg{color:var(--red);}
+.pstat-lbl{font-size:10px;color:var(--muted);margin-top:4px;}
+.proj-nocalc{font-size:13px;color:var(--muted);padding:12px 0;text-align:center;}
+.proj-foot{display:flex;align-items:center;gap:8px;margin-top:14px;padding-top:13px;border-top:1px solid var(--border);}
+.proj-open{flex:1;background:var(--surface-2);border:1px solid var(--border-2);color:var(--text);border-radius:9px;padding:9px;font-size:13px;font-weight:600;font-family:var(--fd);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.proj-open:hover{border-color:var(--blue);color:var(--blue-2);}
+.proj-open .icn{width:14px;height:14px;}
+.icon-btn{width:36px;height:36px;border-radius:9px;background:var(--surface);border:1px solid var(--border);color:var(--muted);display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+.icon-btn:hover{background:rgba(255,107,107,0.12);border-color:rgba(255,107,107,0.35);color:#FF9090;}
+.icon-btn .icn{width:16px;height:16px;}
+
+/* EMPTY */
+.empty{text-align:center;padding:56px 24px;background:var(--bg-3);border:1.5px dashed var(--border-2);border-radius:var(--r2);}
+.empty-ic{width:56px;height:56px;border-radius:14px;background:var(--surface);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
+.empty-ic .icn{width:26px;height:26px;color:var(--muted);}
+.empty-title{font-family:var(--fd);font-size:20px;font-weight:700;margin-bottom:8px;}
+.empty-sub{color:var(--muted);font-size:14px;margin:0 auto 22px;max-width:380px;}
+
+/* CALCULATOR */
+.calc-head{display:flex;align-items:center;gap:14px;margin-bottom:20px;}
+.calc-name{font-family:var(--fd);font-size:22px;font-weight:800;letter-spacing:-.02em;}
+.calc-type{font-size:13px;color:var(--muted);margin-top:1px;}
+.devise-row{display:flex;gap:8px;margin-bottom:20px;}
+.devise-btn{padding:9px 18px;border-radius:9px;border:1px solid var(--border-2);background:var(--surface);color:var(--text-2);font-size:13px;font-weight:600;transition:all .2s;}
+.devise-btn.active{border-color:var(--blue);background:rgba(195,39,47,0.12);color:var(--blue-2);}
+.calc-context{display:grid;grid-template-columns:repeat(2,minmax(0,220px));gap:10px;margin-bottom:14px;}
+.calc-context label{display:flex;flex-direction:column;gap:6px;font-size:11px;color:var(--muted);font-weight:600;}
+.calc-context select,.calc-context input{width:100%;background:var(--bg-3);border:1px solid var(--border);color:var(--text);border-radius:9px;padding:9px 11px;font-family:var(--fb);font-size:12px;}
+.calc-layout{display:grid;grid-template-columns:1fr 330px;gap:20px;align-items:start;}
+.calc-section{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:13px;}
+.calc-sec-hd{padding:13px 18px;border-bottom:1px solid var(--border);background:var(--surface);font-family:var(--fd);font-size:13px;font-weight:700;}
+.calc-fields{padding:16px 18px;display:grid;grid-template-columns:1fr 1fr;gap:13px;}
+.cf{display:flex;flex-direction:column;gap:6px;}
+.cf label{font-size:12.5px;color:var(--text-2);font-weight:500;}
+.cf label small{color:var(--muted);font-weight:400;}
+.inp-wrap{position:relative;}
+.inp-suf{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--muted);pointer-events:none;font-weight:500;}
+[dir="rtl"] .inp-suf{right:auto;left:12px;}
+.cinput{width:100%;background:var(--bg-2);border:1px solid var(--border);border-radius:9px;padding:10px 48px 10px 13px;color:var(--text);font-family:var(--fb);font-size:14px;transition:all .2s;}
+[dir="rtl"] .cinput{padding:10px 13px 10px 48px;}
+.cinput:focus{outline:none;border-color:var(--blue);background:var(--surface);}
+.cinput::placeholder{color:var(--muted-2);}
+
+/* RESULT PANEL */
+.result{background:var(--bg-3);border:1px solid var(--border-2);border-radius:var(--r2);padding:22px;position:sticky;top:82px;overflow:hidden;}
+.result::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad);}
+.rp-lbl{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;}
+.rp-amount{font-family:var(--fd);font-size:42px;font-weight:800;letter-spacing:-.04em;line-height:1;}
+.rp-amount.pos{color:var(--teal);}
+.rp-amount.neg{color:var(--red);}
+.rp-cur{font-size:13px;color:var(--muted);margin:5px 0 14px;}
+.rp-bar{height:8px;border-radius:5px;background:var(--bg-2);overflow:hidden;display:flex;margin-bottom:8px;}
+.rp-bar i{display:block;height:100%;}
+.rp-legend{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:14px;}
+.rp-divider{height:1px;background:var(--border);margin:13px 0;}
+.rp-row{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:8px;}
+.rp-row .rl{color:var(--muted);}
+.rp-row .rv{font-weight:600;font-family:var(--fd);}
+.rv.inc{color:var(--green);}
+.rv.exp{color:var(--red);}
+.rv.tot{color:var(--blue-2);}
+.health{margin-top:12px;border-radius:11px;padding:11px 14px;font-size:13px;font-weight:600;text-align:center;}
+.h-good{background:rgba(0,122,61,0.12);color:var(--teal);}
+.h-ok{background:rgba(110,155,245,0.12);color:var(--blue-2);}
+.h-warn{background:rgba(230,178,60,0.12);color:var(--gold);}
+.h-bad{background:rgba(255,107,107,0.12);color:#FF9090;}
+.rp-insight{margin-top:10px;border-radius:11px;padding:11px 13px;font-size:12px;line-height:1.5;background:var(--surface);border:1px solid var(--border);color:var(--text-2);display:none;}
+.rp-insight b{color:var(--text);}
+.result-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0;}
+.result-metric{padding:10px;border:1px solid rgba(216,173,61,.18);border-radius:10px;background:rgba(255,255,255,.025);min-width:0;}
+.result-metric b{display:block;color:var(--gold-soft);font-family:var(--fd);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.result-metric span{display:block;color:var(--muted);font-size:9.5px;line-height:1.35;margin-top:3px;}
+.btn-save{width:100%;background:var(--grad);color:#fff;border:none;border-radius:11px;padding:13px;font-family:var(--fd);font-size:14px;font-weight:700;transition:all .2s;margin-top:14px;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 22px rgba(195,39,47,0.3);}
+.btn-save:hover{transform:translateY(-1px);}
+.btn-save:disabled{opacity:.55;}
+.btn-save .icn{width:15px;height:15px;}
+.btn-save .sp{display:none;width:15px;height:15px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;}
+.btn-save.ld .bt,.btn-save.ld .icn{display:none;}.btn-save.ld .sp{display:block;}
+
+/* HISTORY LIST */
+.hist{margin-top:16px;}
+.hist-row{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg-3);border:1px solid var(--border);border-radius:11px;margin-bottom:8px;}
+.hist-date{font-size:12px;color:var(--muted);min-width:88px;}
+.hist-mid{flex:1;}
+.hist-profit{font-family:var(--fd);font-weight:700;font-size:15px;}
+.hist-profit.pos{color:var(--blue-2);}
+.hist-profit.neg{color:var(--red);}
+.hist-meta{font-size:11px;color:var(--muted);}
+.hist-actions{display:flex;gap:6px;align-items:center;}
+
+/* TABLES (daily) */
+.dtable{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;}
+.dt-row{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 44px;gap:10px;padding:13px 18px;align-items:center;border-bottom:1px solid var(--border);}
+.dt-row:last-child{border-bottom:none;}
+.dt-row.head{background:var(--surface);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;}
+.dt-proj{display:flex;align-items:center;gap:9px;font-weight:600;font-size:13.5px;}
+.dt-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.dt-dot.ecom{background:var(--blue);}.dt-dot.creator{background:var(--terra);}.dt-dot.freelancer{background:var(--teal);}
+.dt-num{font-family:var(--fd);font-size:13.5px;font-weight:700;}
+.dt-num.pos{color:var(--blue-2);}.dt-num.neg{color:var(--red);}
+.dt-sub{font-size:12px;color:var(--muted);}
+@media(max-width:680px){.dt-row{grid-template-columns:1.3fr 1fr 40px;}.dt-hide{display:none;}}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(5,8,16,0.72);backdrop-filter:blur(6px);z-index:300;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .25s;}
+.modal-ov.open{opacity:1;pointer-events:all;}
+.modal{background:var(--bg-3);border:1px solid var(--border-2);border-radius:22px;width:100%;max-width:460px;padding:32px;position:relative;transform:translateY(18px);transition:transform .25s;box-shadow:var(--shadow);}
+.modal-ov.open .modal{transform:translateY(0);}
+#upgrade-modal{display:none!important;}
+.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad);border-radius:22px 22px 0 0;}
+.modal-x{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:8px;background:var(--surface);border:none;color:var(--muted);display:flex;align-items:center;justify-content:center;}
+[dir="rtl"] .modal-x{right:auto;left:14px;}
+.modal-x:hover{background:var(--surface-2);color:var(--text);}
+.modal-x .icn{width:15px;height:15px;}
+.modal-title{font-family:var(--fd);font-size:20px;font-weight:800;margin-bottom:6px;}
+.modal-sub{font-size:13.5px;color:var(--muted);margin-bottom:20px;}
+.type-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:16px;}
+.tc{border:1px solid var(--border);border-radius:11px;padding:14px 8px;text-align:center;background:var(--bg-2);transition:all .2s;}
+.tc:hover{border-color:var(--border-2);}
+.tc.sel{border-color:var(--blue);background:rgba(195,39,47,0.10);}
+.tc .icn{width:21px;height:21px;margin:0 auto 7px;color:var(--text-2);}
+.tc.sel .icn{color:var(--blue-2);}
+.tc-name{font-size:11.5px;font-weight:700;}
+.mf{margin-bottom:14px;}
+.mf label{display:block;font-size:13px;color:var(--text-2);font-weight:500;margin-bottom:7px;}
+.minput,.mselect{width:100%;background:var(--bg-2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text);font-family:var(--fb);font-size:14px;transition:all .2s;}
+.minput:focus,.mselect:focus{outline:none;border-color:var(--blue);background:var(--surface);}
+.minput::placeholder{color:var(--muted-2);}
+.mselect{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237C8499' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;}
+[dir="rtl"] .mselect{background-position:left 13px center;}
+.mselect option{background:var(--bg-3);}
+.modal-btns{display:flex;gap:10px;}
+.btn-modal{flex:1;border-radius:11px;padding:12px;font-family:var(--fd);font-size:14px;font-weight:700;transition:all .2s;}
+.btn-modal.pri{background:var(--grad);color:#fff;border:none;}
+.btn-modal.danger{background:var(--red);color:#fff;border:none;}
+.btn-modal.cancel{background:var(--surface);border:1px solid var(--border-2);color:var(--text-2);}
+.btn-modal:hover{transform:translateY(-1px);}
+.alert-b{border-radius:9px;padding:9px 13px;font-size:12.5px;margin-bottom:13px;display:none;background:rgba(255,107,107,0.10);border:1px solid rgba(255,107,107,0.3);color:#FF9090;}
+.alert-b.show{display:block;}
+
+/* SUBSCRIPTION / PREMIUM */
+.plan-status{display:flex;align-items:center;gap:8px;padding:5px 6px 5px 11px;border:1px solid rgba(216,173,61,.28);border-radius:12px;background:rgba(216,173,61,.07);font-size:11px;color:var(--gold-soft);font-weight:700;white-space:nowrap;}
+.plan-status button{border:0;border-radius:8px;background:var(--gold);color:#260711;font-family:var(--fd);font-size:11px;font-weight:800;padding:6px 9px;}
+.access-banner{position:relative;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 20px;border:1px solid rgba(216,173,61,.28);border-radius:16px;background:linear-gradient(135deg,rgba(216,173,61,.10),rgba(37,7,18,.94) 50%,rgba(13,117,74,.08));margin-bottom:18px;overflow:hidden;}
+.access-banner::after{content:"";position:absolute;width:150px;height:150px;right:-55px;top:-60px;background:var(--gold);opacity:.055;clip-path:polygon(50% 0,61% 31%,94% 6%,69% 39%,100% 50%,69% 61%,94% 94%,61% 69%,50% 100%,39% 69%,6% 94%,31% 61%,0 50%,31% 39%,6% 6%,39% 31%);}
+[dir="rtl"] .access-banner::after{right:auto;left:-55px;}
+.access-copy{position:relative;z-index:1;}
+.access-kicker{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--gold);font-weight:800;margin-bottom:3px;}
+.access-title{font-family:var(--fd);font-size:16px;font-weight:800;}
+.access-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+.access-btn{position:relative;z-index:1;border:1px solid var(--gold-soft);border-radius:10px;background:var(--grad);color:#260711;font-family:var(--fd);font-weight:800;font-size:12px;padding:10px 14px;white-space:nowrap;}
+.premium-lock{position:relative;border-radius:var(--r2);margin-bottom:18px;overflow:hidden;}
+.premium-lock-content{filter:blur(2.5px);opacity:.58;pointer-events:none;user-select:none;}
+.premium-lock::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(37,7,18,.08),rgba(37,7,18,.54));pointer-events:none;}
+.premium-lock-overlay{position:absolute;z-index:2;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;}
+.premium-lock-card{max-width:410px;border:1px solid rgba(216,173,61,.46);border-radius:18px;padding:22px;background:rgba(30,5,13,.94);box-shadow:0 18px 46px rgba(0,0,0,.36);}
+.premium-lock-icon{width:40px;height:40px;display:grid;place-items:center;margin:0 auto 10px;border-radius:12px;background:rgba(216,173,61,.12);border:1px solid rgba(216,173,61,.32);color:var(--gold);}
+.premium-lock-icon .icn{width:19px;height:19px;}
+.premium-lock-title{font-family:var(--fd);font-size:16px;font-weight:800;margin-bottom:5px;}
+.premium-lock-sub{font-size:12px;color:var(--muted);margin-bottom:14px;}
+.premium-lock-btn{border:1px solid var(--gold-soft);border-radius:10px;background:var(--grad);color:#260711;font-family:var(--fd);font-size:12px;font-weight:800;padding:9px 14px;}
+.nav-pro{margin-inline-start:auto;padding:2px 6px;border-radius:10px;background:rgba(216,173,61,.12);border:1px solid rgba(216,173,61,.25);color:var(--gold);font-size:8px;font-weight:800;letter-spacing:.08em;}
+.upgrade-modal{max-width:760px;}
+.upgrade-head{text-align:center;margin-bottom:22px;}
+.upgrade-star{width:48px;height:48px;display:grid;place-items:center;border-radius:15px;margin:0 auto 12px;background:linear-gradient(145deg,#731936,#260711);border:1px solid rgba(216,173,61,.72);}
+.upgrade-star .brand-star{width:29px;height:29px;}
+.upgrade-price{font-family:var(--fd);font-size:44px;font-weight:800;line-height:1;color:var(--gold-soft);letter-spacing:-.06em;margin:7px 0 5px;}
+.upgrade-price span{font-size:12px;color:var(--muted);letter-spacing:0;margin-inline-start:7px;}
+.upgrade-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:20px;}
+.upgrade-card{border:1px solid var(--border);border-radius:15px;padding:18px;background:rgba(255,255,255,.025);}
+.upgrade-card.premium{border-color:rgba(216,173,61,.42);background:rgba(216,173,61,.07);}
+.upgrade-card h4{font-family:var(--fd);font-size:14px;margin-bottom:10px;}
+.upgrade-list{display:flex;flex-direction:column;gap:8px;font-size:12px;color:var(--text-2);}
+.upgrade-list div{display:flex;gap:8px;align-items:flex-start;}
+.upgrade-list b{color:var(--gold);}
+.upgrade-note{text-align:center;font-size:11px;color:var(--muted);margin-top:12px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--bg-4);border:1px solid var(--blue);border-radius:12px;padding:13px 18px;font-size:14px;display:flex;align-items:center;gap:9px;transform:translateY(80px);opacity:0;transition:all .3s;z-index:500;box-shadow:var(--shadow);font-weight:500;}
+[dir="rtl"] .toast{right:auto;left:24px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.err{border-color:var(--red);}
+.toast .icn{width:16px;height:16px;}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:1040px){.kpis{grid-template-columns:repeat(2,1fr);}.grid2{grid-template-columns:1fr;}.calc-layout{grid-template-columns:1fr;}.result{position:static;}}
+@media(max-width:900px){.sidebar{transform:translateX(-100%);visibility:hidden;pointer-events:none;}[dir="rtl"] .sidebar{transform:translateX(100%);}.sidebar.open{transform:translateX(0)!important;visibility:visible;pointer-events:auto;}.main{margin-left:0!important;margin-right:0!important;}.hambtn{display:flex;}.top-lang-sw{display:flex;}.view{padding:18px;}.topbar{padding:12px 18px;}.calc-fields{grid-template-columns:1fr;}.hero{gap:18px;}}
+@media(max-width:560px){.view{padding:16px;}.topbar{padding:10px 14px;}.topbar-date{display:none;}.plan-status{padding:6px 8px;}.topbar-tools{gap:8px;}.topbar-title{font-size:16px;}.top-lang-sw .lang-btn{min-width:34px;padding:5px 7px;}.kpis{gap:10px;}.hero{padding:20px;}.proj-grid{grid-template-columns:minmax(0,1fr);}.modal{padding:28px 20px;}.type-cards,.upgrade-grid{grid-template-columns:1fr;}.access-banner{align-items:flex-start;flex-direction:column;}.access-btn{width:100%;}.premium-lock-overlay{padding:12px;}.premium-lock-card{padding:18px;}.result-metrics,.calc-context{grid-template-columns:1fr;}.hist-date{min-width:72px;}.hist-row{gap:8px;padding:12px;}}
+
+.brand-mark{position:relative;overflow:hidden;background:var(--royal-red)!important;border:1.5px solid rgba(246,195,74,.72);box-shadow:0 8px 24px rgba(195,39,47,.34),inset 0 0 0 1px rgba(255,255,255,.08)!important;}
+.brand-mark img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.12) contrast(1.06);}
+.brand-mark::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at center,rgba(0,0,0,.04),rgba(0,0,0,.24));}
+.brand-ring{position:absolute;z-index:1;left:50%;top:50%;width:48%;height:48%;border:2px solid var(--gold);transform:translate(-50%,-50%);box-shadow:0 0 0 1px rgba(0,0,0,.18),0 0 12px rgba(246,195,74,.35);}
+.brand-ring::before{content:"";position:absolute;inset:-2px;border:2px solid var(--gold);transform:rotate(45deg);}
+
+.sidebar{background:#17060D;}
+.topbar{background:rgba(25,7,14,.92);}
+.main{background:radial-gradient(900px 620px at 78% 4%,rgba(7,138,75,.08),transparent 72%),linear-gradient(180deg,rgba(75,16,35,.96),rgba(63,12,29,.98));}
+.sl-box{width:52px;height:34px;border-radius:8px;}
+.brand-mark{background:#C3272F!important;border-color:rgba(244,202,91,.82);box-shadow:0 7px 22px rgba(20,2,8,.52),0 0 0 1px rgba(244,202,91,.14)!important;}
+.brand-mark img{object-fit:cover;object-position:center;filter:saturate(1.12) contrast(1.04);}
+.brand-mark::after{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(0,0,0,.12));}
+.brand-ring{display:none;}
+.hero{background:linear-gradient(135deg,rgba(27,5,13,.92),rgba(58,11,27,.88) 62%,rgba(7,138,75,.10));border-color:rgba(244,202,91,.28);box-shadow:0 18px 44px rgba(24,3,10,.28);}
+.kpi,.panel,.proj-card,.calc-section,.result,.dtable,.modal,.hist-row{background:#260B16;box-shadow:0 12px 34px rgba(24,3,10,.22);}
+.ni.active{background:rgba(244,202,91,.10);box-shadow:inset 2px 0 0 var(--gold);}
+[dir="rtl"] .ni.active{box-shadow:inset -2px 0 0 var(--gold);}
+.btn-pri,.btn-save,.btn-modal.pri{background:linear-gradient(135deg,#066E3D,var(--morocco-green));border:1px solid rgba(244,202,91,.35);}
+.overview-currency{display:flex;align-items:center;gap:5px;padding:4px;border:1px solid var(--border);border-radius:11px;background:rgba(20,4,10,.42);width:max-content;margin:0 0 16px auto;}
+[dir="rtl"] .overview-currency{margin-left:0;margin-right:auto;}
+.sh .overview-currency{margin-bottom:0;}
+.overview-cur-btn{min-width:52px;padding:7px 12px;border:1px solid transparent;border-radius:8px;background:transparent;color:var(--muted);font-family:var(--fd);font-size:12px;font-weight:700;transition:all .2s;}
+.overview-cur-btn:hover{color:var(--text);border-color:var(--border);}
+.overview-cur-btn.active{background:var(--morocco-green);border-color:rgba(244,202,91,.45);color:#fff;box-shadow:0 5px 16px rgba(7,138,75,.28);}
+.kpi-val.pos,.pstat-val.pos,.hist-profit.pos,.dt-num.pos{color:var(--gold);}
+.rp-amount.pos,.hero-val.pos{color:#20B96B;}
+.result::before,.modal::before{background:linear-gradient(90deg,var(--royal-red),var(--gold),var(--morocco-green));}
+@media(max-width:560px){.overview-currency{margin-left:0;margin-right:0;}.sl-box{width:52px;height:34px;}}
+
+/* PREMIUM MOROCCAN IDENTITY */
+:root{--bg:#561229;--bg-2:#17050C;--bg-3:#270814;--bg-4:#330D1C;--royal-red:#6A1431;--deep-red:#250711;--morocco-green:#0D754A;--gold:#D8AD3D;--gold-soft:#F8DE8B;--text:#FFF9F3;--text-2:#E8D4D7;--muted:#BE9DA5;--muted-2:#8D6B75;--grad:linear-gradient(135deg,#F3D276 0%,#D8AD3D 52%,#A77820 100%);}
+.sidebar{background:#16050B;border-color:rgba(216,173,61,.14);}
+.topbar{background:rgba(22,5,11,.94);border-color:rgba(216,173,61,.14);}
+.main{position:relative;overflow:hidden;background:radial-gradient(900px 640px at 82% 4%,rgba(216,173,61,.08),transparent 72%),linear-gradient(180deg,#561229,#491022);}
+.main::before{content:"";position:absolute;width:410px;height:410px;right:-130px;top:110px;pointer-events:none;opacity:.045;background:linear-gradient(145deg,var(--gold-soft),var(--gold));clip-path:polygon(50% 0,61% 31%,94% 6%,69% 39%,100% 50%,69% 61%,94% 94%,61% 69%,50% 100%,39% 69%,6% 94%,31% 61%,0 50%,31% 39%,6% 6%,39% 31%);}
+[dir="rtl"] .main::before{right:auto;left:-130px;}
+.view{position:relative;z-index:1;}
+.sl-logo{gap:12px;}
+.sl-symbol{width:40px;height:40px;position:relative;display:inline-grid;place-items:center;flex:0 0 auto;border-radius:13px;background:linear-gradient(145deg,#731936,#260711);border:1px solid rgba(216,173,61,.72);box-shadow:0 8px 24px rgba(20,2,8,.48),inset 0 0 0 1px rgba(255,255,255,.05);}
+.brand-star{width:25px;height:25px;position:relative;display:block;background:linear-gradient(145deg,#FFEAA7,#D8AD3D 58%,#A77820);clip-path:polygon(50% 0,61% 31%,94% 6%,69% 39%,100% 50%,69% 61%,94% 94%,61% 69%,50% 100%,39% 69%,6% 94%,31% 61%,0 50%,31% 39%,6% 6%,39% 31%);}
+.brand-star::after{content:"";position:absolute;inset:30%;background:#68142F;transform:rotate(45deg);border-radius:1px;}
+.sl-name{position:relative;letter-spacing:-.045em;}.sl-name span{color:var(--gold);}
+.sl-name::after{content:"";position:absolute;left:1px;right:0;bottom:-4px;height:1px;background:linear-gradient(90deg,var(--gold),transparent 82%);opacity:.72;}
+[dir="rtl"] .sl-name::after{background:linear-gradient(270deg,var(--gold),transparent 82%);}
+.hero,.kpi,.panel,.proj-card,.calc-section,.result,.dtable,.modal,.hist-row{background:rgba(37,7,18,.94);border-color:rgba(216,173,61,.20);box-shadow:0 14px 38px rgba(20,2,8,.22);}
+.hero{background:linear-gradient(135deg,rgba(31,5,14,.96),rgba(76,14,35,.94));border-color:rgba(216,173,61,.34);}
+.btn-pri,.btn-save,.btn-modal.pri{background:var(--grad);border:1px solid rgba(255,235,166,.72);color:#260711;box-shadow:0 8px 22px rgba(20,2,8,.34),0 0 22px rgba(216,173,61,.08);}
+.btn-pri:hover,.btn-save:hover{box-shadow:0 12px 28px rgba(20,2,8,.42),0 0 25px rgba(216,173,61,.12);}
+.overview-cur-btn.active{background:var(--gold);border-color:var(--gold-soft);color:#260711;box-shadow:0 5px 16px rgba(20,2,8,.28);}
+.ni.active{background:rgba(216,173,61,.11);box-shadow:inset 2px 0 0 var(--gold);}.ni.active .icn{color:var(--gold);}
+[dir="rtl"] .ni.active{box-shadow:inset -2px 0 0 var(--gold);}
+.proj-card.ecom::before,.proj-card.creator::before,.proj-card.freelancer::before{background:linear-gradient(90deg,var(--royal-red),var(--gold));}
+.result::before,.modal::before{background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.rp-amount.pos,.hero-val.pos{color:#22A567;}
+.btn-ghost:hover,.proj-open:hover,.cinput:focus,.minput:focus,.mselect:focus{border-color:var(--gold);color:var(--gold-soft);}
+.user-av{background:linear-gradient(145deg,var(--royal-red),#9C711E);}
+
+
+@keyframes starSpin360{0%{transform:rotate(0) scale(1)}55%{transform:rotate(280deg) scale(1.08)}100%{transform:rotate(360deg) scale(1)}}
+@keyframes softRise{from{opacity:.92;transform:translateY(4px) scale(.995)}to{opacity:1;transform:translateY(0) scale(1)}}
+.brand-star{transition:filter .35s ease;transform-origin:50% 50%}.sl-logo:hover .brand-star,.upgrade-star:hover .brand-star{animation:starSpin360 .95s cubic-bezier(.22,.8,.24,1) both;filter:drop-shadow(0 0 8px rgba(216,173,61,.4))}
+.unit-model-note{margin:0 0 16px;padding:11px 13px;border:1px solid rgba(216,173,61,.22);border-radius:12px;background:rgba(216,173,61,.07);color:var(--text-2);font-size:12px;line-height:1.55;}
+.kpi,.panel,.proj-card,.calc-section,.result,.hist-row,.dtable{transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease;}
+.view.active .kpi,.view.active .panel,.view.active .proj-card,.view.active .calc-section,.view.active .result{animation:softRise .28s ease both}
+@media(hover:hover){.kpi:hover,.panel:hover,.calc-section:hover,.result:hover,.hist-row:hover,.dtable:hover{transform:scale(1.012)}.proj-card:hover{transform:translateY(-3px) scale(1.01)}.btn-pri:hover,.btn-save:hover,.proj-open:hover,.btn-ghost:hover{transform:translateY(-1px) scale(1.015)}}
+@media(prefers-reduced-motion:reduce){.brand-star,.view.active .kpi,.view.active .panel,.view.active .proj-card,.view.active .calc-section,.view.active .result{animation:none!important}.kpi,.panel,.proj-card,.calc-section,.result,.hist-row,.dtable{transition:none}}
+.btn-pri,.btn-save,.btn-modal.pri{position:relative;overflow:hidden}.btn-pri::after,.btn-save::after,.btn-modal.pri::after{content:"";position:absolute;inset:-60% auto -60% -45%;width:28%;transform:rotate(18deg);background:rgba(255,255,255,.24);transition:left .45s ease}.btn-pri:hover::after,.btn-save:hover::after,.btn-modal.pri:hover::after{left:120%}
+.lang-sw{gap:4px}.top-lang-sw{gap:2px}
+
+</style>
+</head>
+<body>
+<div id="ls"><div class="ll">Sell<span>Sense</span></div><div class="lb"><div class="lf"></div></div></div>
+<div class="toast" id="toast"><span id="toast-ic"></span><span id="toast-msg"></span></div>
+
+<div class="app" id="app" style="display:none;">
+  <aside class="sidebar" id="sidebar">
+    <div class="sl">
+      <a href="/" class="sl-logo">
+        <span class="sl-symbol" aria-hidden="true"><span class="brand-star"></span></span>
+        <span class="sl-name">Sell<span>Sense</span></span>
+      </a>
+      <small class="sl-tag" data-t="dashboard">Dashboard</small>
+    </div>
+    <nav class="nav" id="navmenu"></nav>
+    <div class="lang-sw">
+      <button class="lang-btn active" id="lng-en" data-lang="en" onclick="setLang('en')" aria-pressed="true">EN</button>
+      <button class="lang-btn" id="lng-fr" data-lang="fr" onclick="setLang('fr')" aria-pressed="false">FR</button>
+      <button class="lang-btn" id="lng-ar" data-lang="ar" onclick="setLang('ar')" aria-pressed="false">AR العربية</button>
+    </div>
+    <div class="sb-bottom">
+      <div class="user-row">
+        <div class="user-av" id="uav">S</div>
+        <div style="overflow:hidden;flex:1;">
+          <div class="user-name" id="uname">...</div>
+          <div class="user-mail" id="umail">...</div>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="doLogout()"><span id="logout-ic"></span><span data-t="logout">Log out</span></button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="hambtn" id="hamb" onclick="toggleSB()" aria-label="Menu"></button>
+        <div class="topbar-title" id="topbar-title">Overview</div>
+      </div>
+      <div class="topbar-tools">
+        <div class="plan-status" id="plan-status"></div>
+        <div class="top-lang-sw" aria-label="Language">
+          <button class="lang-btn active" data-lang="en" onclick="setLang('en')" aria-pressed="true">EN</button>
+          <button class="lang-btn" data-lang="fr" onclick="setLang('fr')" aria-pressed="false">FR</button>
+          <button class="lang-btn" data-lang="ar" onclick="setLang('ar')" aria-pressed="false">AR</button>
+        </div>
+        <div class="topbar-date" id="topbar-date"></div>
+      </div>
+    </div>
+
+    <div class="view active" id="view-overview"></div>
+    <div class="view" id="view-projects"></div>
+    <div class="view" id="view-calc"></div>
+    <div class="view" id="view-analytics"></div>
+    <div class="view" id="view-daily"></div>
+  </div>
+</div>
+
+<!-- ADD PROJECT MODAL -->
+<div class="modal-ov" id="add-modal" onclick="covr(event,'add-modal')">
+  <div class="modal">
+    <button class="modal-x" onclick="closeM('add-modal')" id="addx"></button>
+    <div class="modal-title" data-t="newProject">New project</div>
+    <div class="modal-sub" data-t="newProjectSub">Create a project to start calculating.</div>
+    <div class="alert-b" id="add-err"></div>
+    <div style="font-size:13px;color:var(--text-2);font-weight:500;margin-bottom:9px;" data-t="businessType">Business type</div>
+    <div class="type-cards" id="type-cards"></div>
+    <div class="mf"><label data-t="projectName">Project name</label><input class="minput" type="text" id="pname" placeholder="e.g. My Shopify Store"/></div>
+    <div class="mf"><label data-t="currency">Currency</label>
+      <select class="mselect" id="pdevise">
+        <option value="MAD" data-t="currencyMad">MAD — Moroccan Dirham</option>
+        <option value="USD" data-t="currencyUsd">USD — US Dollar</option>
+        <option value="EUR" data-t="currencyEur">EUR — Euro</option>
+      </select>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-modal cancel" onclick="closeM('add-modal')" data-t="cancel">Cancel</button>
+      <button class="btn-modal pri" onclick="createProject()" data-t="createProject">Create project</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="modal-ov" id="confirm-modal" onclick="covr(event,'confirm-modal')">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-title" id="cf-title" data-t="confirmTitle">Confirm</div>
+    <div class="modal-sub" id="cf-msg"></div>
+    <div class="modal-btns">
+      <button class="btn-modal cancel" onclick="closeM('confirm-modal')" data-t="cancel">Cancel</button>
+      <button class="btn-modal danger" id="cf-yes" data-t="delete">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- UPGRADE MODAL -->
+<div class="modal-ov" id="upgrade-modal" onclick="covr(event,'upgrade-modal')">
+  <div class="modal upgrade-modal">
+    <button class="modal-x" onclick="closeM('upgrade-modal')" id="upgradex"></button>
+    <div class="upgrade-head">
+      <div class="upgrade-star"><span class="brand-star"></span></div>
+      <div class="modal-title" data-t="upgradeTitle">Unlock the full picture</div>
+      <div class="modal-sub" data-t="upgradeSub">Go Premium for unlimited projects, complete insights and daily tracking.</div>
+      <div class="upgrade-price">$10 <span data-t="perMonth">/ month</span></div>
+    </div>
+    <div class="upgrade-grid">
+      <div class="upgrade-card">
+        <h4 data-t="freePlan">Free plan</h4>
+        <div class="upgrade-list">
+          <div><b>1</b><span data-t="freeProjectLimit">1 project only</span></div>
+          <div><b>7</b><span data-t="trialVisibility">Full visibility for 7 days</span></div>
+          <div><b>—</b><span data-t="limitedAfterTrial">Advanced visibility locks after the trial</span></div>
+        </div>
+      </div>
+      <div class="upgrade-card premium">
+        <h4>SellSense Premium</h4>
+        <div class="upgrade-list">
+          <div><b>✓</b><span data-t="unlimitedProjects">Unlimited projects</span></div>
+          <div><b>✓</b><span data-t="fullInsights">Full visibility and insights</span></div>
+          <div><b>✓</b><span data-t="dailyHistory">Daily tracking and complete history</span></div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-modal pri" style="width:100%;" onclick="beginCheckout()" data-t="goPremium">Go Premium</button>
+    <div class="upgrade-note" data-t="checkoutNote">Secure checkout will be connected to your payment provider.</div>
+  </div>
+</div>
+
+<script>
+/* ════════ SUPABASE ════════ */
+const {createClient}=supabase;
+const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+
+/* ════════ ICONS (inline SVG — no emoji, encoding-proof) ════════ */
+const P={
+  grid:'<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>',
+  folder:'<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>',
+  bars:'<line x1="6" y1="20" x2="6" y2="14"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="10"/>',
+  calendar:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+  home:'<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
+  logout:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>',
+  plus:'<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+  trash:'<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
+  arrowR:'<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>',
+  arrowL:'<line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>',
+  dollar:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',
+  trendUp:'<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>',
+  trendDown:'<polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/>',
+  percent:'<line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/>',
+  box:'<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 7 12 12 20.73 7"/><line x1="12" y1="22" x2="12" y2="12"/>',
+  video:'<polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/>',
+  laptop:'<rect x="3" y="4" width="18" height="12" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/>',
+  save:'<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>',
+  x:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+  bulb:'<path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.1 14c.2-1 .6-1.7 1.4-2.5A4.6 4.6 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.8.8 1.2 1.5 1.4 2.5"/>',
+  check:'<polyline points="20 6 9 17 4 12"/>',
+  alert:'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/>',
+  menu:'<line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>',
+  layers:'<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
+  pie:'<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>',
+  wallet:'<path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/>'
+  ,lock:'<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
+  edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4z"/>'
+};
+function ic(n,cls){return '<svg class="icn '+(cls||'')+'" viewBox="0 0 24 24">'+(P[n]||'')+'</svg>';}
+
+/* ════════ i18n (English + Arabic) ════════ */
+const T={
+  "en": {
+    "pageTitle": "SellSense — Dashboard",
+    "dashboard": "Dashboard",
+    "overview": "Business overview",
+    "projects": "Projects",
+    "analytics": "Business insights",
+    "daily": "Daily tracking",
+    "home": "Website",
+    "logout": "Log out",
+    "main": "Main",
+    "hello": "Hello",
+    "netProfit": "Net Profit",
+    "revenue": "Revenue",
+    "totalCosts": "Total Costs",
+    "margin": "Profit Margin",
+    "projectsCount": "Projects",
+    "calcsCount": "Calculations",
+    "acrossProjects": "across all projects",
+    "avgAll": "average, all projects",
+    "performance": "Performance",
+    "performanceSub": "Revenue and net profit over time",
+    "costBreakdown": "Cost Breakdown",
+    "costBreakdownSub": "Where the money goes",
+    "insights": "Decision signals",
+    "recentProjects": "Your businesses",
+    "allProjects": "all projects",
+    "addProject": "New project",
+    "newProject": "New project",
+    "newProjectSub": "Set up a business or income stream to start tracking.",
+    "projectName": "Project name",
+    "businessType": "Business type",
+    "currency": "Currency",
+    "createProject": "Create project",
+    "open": "Open",
+    "noProjects": "No projects yet",
+    "noProjectsDesc": "Create your first business or income stream to see what it truly earns.",
+    "createFirst": "Create my first project",
+    "noCalcYet": "No calculation yet",
+    "calcBtn": "Open calculator",
+    "ca": "Revenue",
+    "charges": "Total expenses",
+    "profitNetShort": "Net profit",
+    "back": "Back",
+    "reportingPeriod": "Reporting period",
+    "periodEnd": "Period end date",
+    "periodDay": "Day",
+    "periodWeek": "Week",
+    "periodMonth": "Month",
+    "periodProject": "Client project / campaign",
+    "save": "Save calculation",
+    "saving": "Saving...",
+    "saved": "Calculation saved",
+    "loaded": "Calculation loaded",
+    "loadCalc": "Load this calculation",
+    "invalidNumber": "Enter 0 or more for costs and revenue, and 0 to 100 for percentages.",
+    "history": "Calculation history",
+    "noHistory": "No saved calculation for this project yet.",
+    "healthGood": "Strong margin — the business keeps a healthy share.",
+    "healthOk": "Healthy start — keep improving the numbers.",
+    "healthWarn": "Tight margin — review costs and pricing.",
+    "healthBad": "The business is losing money — act on the largest costs.",
+    "biggestExpense": "Biggest expense",
+    "ofCosts": "of total costs",
+    "analyticsTitle": "Analytics",
+    "profitOverTime": "Net profit over time",
+    "revVsExp": "Revenue vs Expenses",
+    "marginTrend": "Profit margin trend",
+    "projectCompare": "Net profit by project",
+    "dailyTitle": "Daily Tracking",
+    "dailySub": "Every calculation you save, day by day.",
+    "dailyChart": "Net profit per entry",
+    "entries": "All entries",
+    "noEntries": "No entries yet. Save a calculation and it appears here.",
+    "date": "Date",
+    "project": "Project",
+    "typeEcom": "E-commerce / COD",
+    "typeCreator": "Content Creator",
+    "typeFreelancer": "Freelancer",
+    "currencyMad": "MAD — Moroccan dirham",
+    "currencyUsd": "USD — US dollar",
+    "currencyEur": "EUR — Euro",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirmTitle": "Confirm action",
+    "upgrade": "Upgrade",
+    "goPremium": "Go Premium",
+    "perMonth": "/ month",
+    "trialActive": "Premium trial",
+    "trialExpired": "Trial ended",
+    "premiumActive": "Premium active",
+    "fullAccessBeta": "Full access",
+    "mixedPeriodWarning": "These projects use different reporting periods. Compare day with day, week with week, or month with month before treating the combined total as a performance benchmark.",
+    "trialDaysLeft": "{n} days left",
+    "accessKicker": "Your plan",
+    "accessTitleTrial": "Full visibility is open",
+    "accessSubTrial": "You have {n} days of full visibility left. Premium unlocks unlimited projects and insights for $10/month.",
+    "accessTitleExpired": "Your 7-day visibility window ended",
+    "accessSubExpired": "Upgrade to continue with full insights, daily tracking and unlimited projects.",
+    "accessTitlePremium": "Premium is active",
+    "accessSubPremium": "Unlimited projects, complete insights and daily tracking are unlocked.",
+    "upgradeTitle": "Unlock the full picture",
+    "upgradeSub": "Go Premium for unlimited projects, complete insights and daily tracking.",
+    "freePlan": "Free plan",
+    "freeProjectLimit": "1 project only",
+    "trialVisibility": "Full visibility for 7 days",
+    "limitedAfterTrial": "Advanced visibility locks after the trial",
+    "unlimitedProjects": "Unlimited projects",
+    "fullInsights": "Full visibility and insights",
+    "dailyHistory": "Daily tracking and complete history",
+    "premiumLockedTitle": "Upgrade to access this feature",
+    "premiumLockedSub": "Premium unlocks full visibility, analytics and daily tracking.",
+    "projectLimitTitle": "Free plan includes 1 project",
+    "projectLimitSub": "Go Premium to create unlimited projects and keep your full visibility.",
+    "checkoutNote": "Secure checkout will be connected to your payment provider.",
+    "checkoutMissing": "Payment checkout still needs to be connected.",
+    "confirmDelProjectT": "Delete project?",
+    "confirmDelProjectM": "This removes \"{n}\" and its calculations from your dashboard. This cannot be undone.",
+    "confirmDelCalcT": "Delete this entry?",
+    "confirmDelCalcM": "This calculation will be permanently removed.",
+    "projectCreated": "Project created",
+    "projectDeleted": "Project deleted",
+    "calcDeleted": "Entry deleted",
+    "noData": "No data yet",
+    "noDataSub": "Save a calculation to see it here.",
+    "bProduct": "Product / COGS",
+    "bShipping": "Shipping & logistics",
+    "bMarketing": "Marketing & ads",
+    "bFees": "Platform & fees",
+    "bTools": "Tools & software",
+    "bProduction": "Production",
+    "bTeam": "Team",
+    "bOther": "Other",
+    "insLoss": "You are losing money overall — total expenses exceed revenue. Review your biggest costs.",
+    "insTight": "Your overall margin is <b>{m}%</b> — tight. Aim above 15% by trimming costs or raising prices.",
+    "insGood": "Strong overall margin of <b>{m}%</b>. You are keeping a healthy share of your revenue.",
+    "insBigCost": "<b>{c}</b> is your largest cost bucket at <b>{p}%</b> of total expenses.",
+    "insBest": "Your most profitable project is <b>{n}</b> with <b>{v}</b> net profit.",
+    "insWorst": "<b>{n}</b> is losing money — its expenses are higher than its revenue.",
+    "insStart": "Add a calculation to unlock decision signals and charts.",
+    "insMore": "Track consistently — the pattern matters more than one good day.",
+    "secRevenu": "Revenue",
+    "secProduit": "Cost of goods (COGS)",
+    "secLivraison": "Shipping & logistics",
+    "secMarketing": "Marketing & ads",
+    "secPlateforme": "Platform & payment fees",
+    "secProduction": "Production costs",
+    "secPromotion": "Promotion",
+    "secPlatFreelance": "Platform fees",
+    "secSousTraitance": "Team & subcontractors",
+    "secOperationnel": "Operating expenses",
+    "unitModelNote": "Enter price per unit and quantity. SellSense multiplies them automatically; taxes are not included.",
+    "modelNoteEcom": "Track delivered and failed COD orders separately. Product, delivery, return and packaging costs use the correct order counts. Taxes are not included.",
+    "modelNoteCreator": "Enter each revenue stream for the period. Content count is only used for averages; every video or post can earn a different amount. Taxes are not included.",
+    "modelNoteFreelancer": "Separate direct, platform and recurring client revenue. Platform commission applies only to platform revenue. Taxes are not included.",
+    "qtySuffix": "units",
+    "hoursSuffix": "hours",
+    "clientsSuffix": "clients",
+    "contentSuffix": "pieces",
+    "fOrderPrice": "Selling price per delivered order",
+    "fDeliveredOrders": "Delivered orders",
+    "fFailedOrders": "Returned / undelivered orders",
+    "fProductCostDelivered": "Product cost per delivered order",
+    "fProductLossFailed": "Product loss per failed order",
+    "fDeliveryCostDelivered": "Delivery cost per delivered order",
+    "fDeliveryCostFailed": "Delivery / return cost per failed order",
+    "fPackagingCostShipped": "Packaging cost per shipped order",
+    "fCreatorPieces": "Content pieces published",
+    "fAffiliateRev": "Affiliate revenue",
+    "fCreatorTeam": "Editors / production freelancers",
+    "fCreatorOtherCost": "Other creator costs",
+    "fDirectRevenue": "Direct client revenue collected",
+    "fPlatformRevenue": "Revenue collected through platforms",
+    "fRetainerRevenue": "Retainers / recurring revenue",
+    "fOtherServiceRevenue": "Other service revenue",
+    "fBillableHours": "Billable hours worked",
+    "fActiveClients": "Active paying clients",
+    "metricDeliveryRate": "Delivery rate",
+    "metricProfitOrder": "Profit per delivered order",
+    "metricShippedOrders": "Orders shipped",
+    "metricRevenueContent": "Revenue per content piece",
+    "metricProfitContent": "Profit per content piece",
+    "metricSponsorShare": "Sponsorship share",
+    "metricNetHourly": "Net effective hourly rate",
+    "metricRevenueClient": "Revenue per active client",
+    "metricPlatformFees": "Platform commission",
+    "fUnitPrice": "Selling price per unit",
+    "fUnitsSold": "Units sold / delivered",
+    "fUnitCogs": "Product cost per unit",
+    "fShippingUnit": "Shipping cost per delivered order",
+    "fReturnsCount": "Returned / undelivered orders",
+    "fReturnCostUnit": "Cost per returned order",
+    "fPackagingUnit": "Packaging cost per order",
+    "fCreatorUnitRate": "Revenue per content piece",
+    "fCreatorUnits": "Paid / monetized content pieces",
+    "fFreelanceUnitRate": "Price per service / deliverable",
+    "fFreelanceUnits": "Services / deliverables delivered",
+    "fCa": "Sales actually collected",
+    "fCogs": "Product cost (COGS)",
+    "fLivraison": "Shipping fees (carrier)",
+    "fRetours": "Returns & undelivered",
+    "fPackaging": "Packaging & supplies",
+    "fFbAds": "Facebook Ads",
+    "fTikAds": "TikTok Ads",
+    "fAutresAds": "Other advertising",
+    "fShopify": "Shopify / platform",
+    "fCmi": "Payment fees CMI/PayPal (%)",
+    "fAutresFrais": "Other fees",
+    "fAdsense": "AdSense revenue (YouTube)",
+    "fTiktokRev": "TikTok Creator Fund",
+    "fSponsors": "Sponsorships & brand deals",
+    "fMerch": "Merch / digital products",
+    "fAutresRev": "Other revenue",
+    "fEquipement": "Equipment & gear",
+    "fLogiciels": "Software (Adobe, CapCut...)",
+    "fMontage": "Video editing / production",
+    "fPromotion": "Paid promotion",
+    "fCommissionAgence": "Agency/manager commission (%)",
+    "fFacture": "Client payments received",
+    "fPlatformeCut": "Platform commission (%)",
+    "fPlatformeInfo": "Upwork 20% / Fiverr 20% / Malt 10%",
+    "fVirement": "Transfer/conversion fees",
+    "fSousTraitants": "Subcontractors & collaborators",
+    "fLogicielsF": "Software & tools",
+    "fCoworking": "Workspace / coworking",
+    "fFormation": "Training & development",
+    "fAutresF": "Other expenses"
+  },
+  "fr": {
+    "pageTitle": "SellSense — Tableau de bord",
+    "dashboard": "Tableau de bord",
+    "overview": "Vue d'ensemble",
+    "projects": "Projets",
+    "analytics": "Analyses",
+    "daily": "Suivi quotidien",
+    "home": "Site web",
+    "logout": "Déconnexion",
+    "main": "Principal",
+    "hello": "Bonjour",
+    "netProfit": "Bénéfice net",
+    "revenue": "Revenus",
+    "totalCosts": "Coûts totaux",
+    "margin": "Marge bénéficiaire",
+    "projectsCount": "Projets",
+    "calcsCount": "Calculs",
+    "acrossProjects": "sur tous les projets",
+    "avgAll": "moyenne, tous projets",
+    "performance": "Performance",
+    "performanceSub": "Évolution des revenus et du bénéfice net",
+    "costBreakdown": "Répartition des coûts",
+    "costBreakdownSub": "Où part votre argent",
+    "insights": "Signaux utiles",
+    "recentProjects": "Vos projets",
+    "allProjects": "tous les projets",
+    "addProject": "Nouveau projet",
+    "newProject": "Nouveau projet",
+    "newProjectSub": "Créez un projet pour commencer à calculer.",
+    "projectName": "Nom du projet",
+    "businessType": "Type d'activité",
+    "currency": "Devise",
+    "createProject": "Créer le projet",
+    "open": "Ouvrir",
+    "noProjects": "Aucun projet pour le moment",
+    "noProjectsDesc": "Créez votre premier projet pour mesurer votre bénéfice réel.",
+    "createFirst": "Créer mon premier projet",
+    "noCalcYet": "Aucun calcul",
+    "calcBtn": "Ouvrir le calculateur",
+    "ca": "Revenus",
+    "charges": "Dépenses totales",
+    "profitNetShort": "Bénéfice net",
+    "back": "Retour",
+    "reportingPeriod": "Période de suivi",
+    "periodEnd": "Date de fin de période",
+    "periodDay": "Jour",
+    "periodWeek": "Semaine",
+    "periodMonth": "Mois",
+    "periodProject": "Projet client / campagne",
+    "save": "Enregistrer le calcul",
+    "saving": "Enregistrement...",
+    "saved": "Calcul enregistré",
+    "loaded": "Calcul chargé",
+    "loadCalc": "Charger ce calcul",
+    "invalidNumber": "Saisissez 0 ou plus pour les revenus et coûts, et de 0 à 100 pour les pourcentages.",
+    "history": "Historique des calculs",
+    "noHistory": "Aucun calcul enregistré pour ce projet.",
+    "healthGood": "Excellente marge — votre activité conserve une part solide.",
+    "healthOk": "Marge correcte — continuez à optimiser.",
+    "healthWarn": "Marge serrée — surveillez les coûts et le prix.",
+    "healthBad": "L'activité perd de l'argent — revoyez les coûts.",
+    "biggestExpense": "Dépense principale",
+    "ofCosts": "des coûts totaux",
+    "analyticsTitle": "Analyses",
+    "profitOverTime": "Bénéfice net dans le temps",
+    "revVsExp": "Revenus contre dépenses",
+    "marginTrend": "Évolution de la marge",
+    "projectCompare": "Bénéfice net par projet",
+    "dailyTitle": "Suivi quotidien",
+    "dailySub": "Chaque calcul enregistré, jour après jour.",
+    "dailyChart": "Bénéfice net par entrée",
+    "entries": "Toutes les entrées",
+    "noEntries": "Aucune entrée. Enregistrez un calcul pour le voir ici.",
+    "date": "Date",
+    "project": "Projet",
+    "typeEcom": "E-commerce / COD",
+    "typeCreator": "Créateur de contenu",
+    "typeFreelancer": "Freelance",
+    "currencyMad": "MAD — Dirham marocain",
+    "currencyUsd": "USD — Dollar américain",
+    "currencyEur": "EUR — Euro",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "confirmTitle": "Confirmer l'action",
+    "upgrade": "Mettre à niveau",
+    "goPremium": "Passer à Premium",
+    "perMonth": "/ mois",
+    "trialActive": "Essai Premium",
+    "trialExpired": "Essai terminé",
+    "premiumActive": "Premium actif",
+    "fullAccessBeta": "Accès complet",
+    "mixedPeriodWarning": "Ces projets utilisent des périodes différentes. Comparez jour avec jour, semaine avec semaine ou mois avec mois avant d'utiliser le total combiné comme référence.",
+    "trialDaysLeft": "{n} jours restants",
+    "accessKicker": "Votre offre",
+    "accessTitleTrial": "La visibilité complète est ouverte",
+    "accessSubTrial": "Il vous reste {n} jours de visibilité complète. Premium débloque les projets et analyses illimités pour 10 $/mois.",
+    "accessTitleExpired": "Vos 7 jours de visibilité sont terminés",
+    "accessSubExpired": "Passez à Premium pour continuer avec les analyses, le suivi quotidien et les projets illimités.",
+    "accessTitlePremium": "Premium est actif",
+    "accessSubPremium": "Projets illimités, analyses complètes et suivi quotidien sont débloqués.",
+    "upgradeTitle": "Débloquez toute la visibilité",
+    "upgradeSub": "Premium donne accès aux projets illimités, aux analyses complètes et au suivi quotidien.",
+    "freePlan": "Offre gratuite",
+    "freeProjectLimit": "1 seul projet",
+    "trialVisibility": "Visibilité complète pendant 7 jours",
+    "limitedAfterTrial": "La visibilité avancée se verrouille après l'essai",
+    "unlimitedProjects": "Projets illimités",
+    "fullInsights": "Visibilité et analyses complètes",
+    "dailyHistory": "Suivi quotidien et historique complet",
+    "premiumLockedTitle": "Passez à Premium pour accéder à cette fonctionnalité",
+    "premiumLockedSub": "Premium débloque la visibilité complète, les analyses et le suivi quotidien.",
+    "projectLimitTitle": "L'offre gratuite inclut 1 projet",
+    "projectLimitSub": "Passez à Premium pour créer des projets illimités et garder toute la visibilité.",
+    "checkoutNote": "Le paiement sécurisé sera connecté à votre fournisseur de paiement.",
+    "checkoutMissing": "Le checkout de paiement doit encore être connecté.",
+    "confirmDelProjectT": "Supprimer ce projet ?",
+    "confirmDelProjectM": "Cette action supprime \"{n}\" et ses calculs du tableau de bord. Elle est irréversible.",
+    "confirmDelCalcT": "Supprimer cette entrée ?",
+    "confirmDelCalcM": "Ce calcul sera supprimé définitivement.",
+    "projectCreated": "Projet créé",
+    "projectDeleted": "Projet supprimé",
+    "calcDeleted": "Entrée supprimée",
+    "noData": "Aucune donnée",
+    "noDataSub": "Enregistrez un calcul pour afficher les données.",
+    "bProduct": "Produit / stock",
+    "bShipping": "Livraison et logistique",
+    "bMarketing": "Marketing et publicité",
+    "bFees": "Plateformes et frais",
+    "bTools": "Outils et logiciels",
+    "bProduction": "Production",
+    "bTeam": "Équipe",
+    "bOther": "Autres",
+    "insLoss": "L'activité perd de l'argent au global — les dépenses dépassent les revenus. Examinez d'abord les coûts les plus lourds.",
+    "insTight": "Votre marge globale est de <b>{m}%</b> — elle est serrée. Visez plus de 15 % en réduisant les coûts ou en ajustant les prix.",
+    "insGood": "Votre marge globale de <b>{m}%</b> est solide. Vous conservez une part saine de vos revenus.",
+    "insBigCost": "<b>{c}</b> représente votre premier poste de coût avec <b>{p}%</b> des dépenses.",
+    "insBest": "Votre projet le plus rentable est <b>{n}</b>, avec <b>{v}</b> de bénéfice net.",
+    "insWorst": "<b>{n}</b> perd de l'argent — ses dépenses dépassent ses revenus.",
+    "insStart": "Ajoutez un calcul à un projet pour débloquer les analyses et graphiques.",
+    "insMore": "Enregistrez vos calculs régulièrement — le suivi quotidien révèle les tendances.",
+    "secRevenu": "Revenus",
+    "secProduit": "Coût du produit et du stock",
+    "secLivraison": "Livraison et logistique",
+    "secMarketing": "Marketing et publicité",
+    "secPlateforme": "Plateformes et paiements",
+    "secProduction": "Production",
+    "secPromotion": "Promotion",
+    "secPlatFreelance": "Frais de plateforme",
+    "secSousTraitance": "Équipe et sous-traitants",
+    "secOperationnel": "Charges opérationnelles",
+    "unitModelNote": "Saisissez le prix unitaire et la quantité. SellSense fait la multiplication automatiquement; les taxes ne sont pas incluses.",
+    "modelNoteEcom": "Séparez les commandes COD livrées et échouées. Les coûts produit, livraison, retour et emballage utilisent le bon volume. Taxes non incluses.",
+    "modelNoteCreator": "Saisissez chaque source de revenu de la période. Le nombre de contenus sert uniquement aux moyennes; chaque vidéo ou publication peut rapporter différemment. Taxes non incluses.",
+    "modelNoteFreelancer": "Séparez les revenus clients directs, plateformes et récurrents. La commission de plateforme s'applique uniquement aux revenus de plateforme. Taxes non incluses.",
+    "qtySuffix": "unités",
+    "hoursSuffix": "heures",
+    "clientsSuffix": "clients",
+    "contentSuffix": "contenus",
+    "fOrderPrice": "Prix de vente par commande livrée",
+    "fDeliveredOrders": "Commandes livrées",
+    "fFailedOrders": "Commandes retournées / non livrées",
+    "fProductCostDelivered": "Coût produit par commande livrée",
+    "fProductLossFailed": "Perte produit par commande échouée",
+    "fDeliveryCostDelivered": "Livraison par commande livrée",
+    "fDeliveryCostFailed": "Livraison / retour par commande échouée",
+    "fPackagingCostShipped": "Emballage par commande expédiée",
+    "fCreatorPieces": "Contenus publiés",
+    "fAffiliateRev": "Revenus d'affiliation",
+    "fCreatorTeam": "Monteurs / freelances de production",
+    "fCreatorOtherCost": "Autres coûts de création",
+    "fDirectRevenue": "Revenus encaissés des clients directs",
+    "fPlatformRevenue": "Revenus encaissés via plateformes",
+    "fRetainerRevenue": "Retainers / revenus récurrents",
+    "fOtherServiceRevenue": "Autres revenus de services",
+    "fBillableHours": "Heures facturables travaillées",
+    "fActiveClients": "Clients actifs payants",
+    "metricDeliveryRate": "Taux de livraison",
+    "metricProfitOrder": "Bénéfice par commande livrée",
+    "metricShippedOrders": "Commandes expédiées",
+    "metricRevenueContent": "Revenu par contenu",
+    "metricProfitContent": "Bénéfice par contenu",
+    "metricSponsorShare": "Part du sponsoring",
+    "metricNetHourly": "Taux horaire net effectif",
+    "metricRevenueClient": "Revenu par client actif",
+    "metricPlatformFees": "Commission de plateforme",
+    "fUnitPrice": "Prix de vente par unité",
+    "fUnitsSold": "Unités vendues / livrées",
+    "fUnitCogs": "Coût du produit par unité",
+    "fShippingUnit": "Livraison par commande livrée",
+    "fReturnsCount": "Commandes retournées / non livrées",
+    "fReturnCostUnit": "Coût par retour",
+    "fPackagingUnit": "Emballage par commande",
+    "fCreatorUnitRate": "Revenu par contenu",
+    "fCreatorUnits": "Contenus payés / monétisés",
+    "fFreelanceUnitRate": "Prix par service / livrable",
+    "fFreelanceUnits": "Services / livrables livrés",
+    "fCa": "Ventes réellement encaissées",
+    "fCogs": "Coût du produit / stock",
+    "fLivraison": "Frais de livraison",
+    "fRetours": "Retours et commandes non livrées",
+    "fPackaging": "Emballage et fournitures",
+    "fFbAds": "Publicités Facebook / Meta",
+    "fTikAds": "Publicités TikTok",
+    "fAutresAds": "Autres publicités",
+    "fShopify": "Shopify / plateforme",
+    "fCmi": "Frais de paiement CMI/PayPal (%)",
+    "fAutresFrais": "Autres frais",
+    "fAdsense": "Revenus AdSense / YouTube",
+    "fTiktokRev": "Revenus TikTok",
+    "fSponsors": "Sponsoring et partenariats",
+    "fMerch": "Merchandising / produits numériques",
+    "fAutresRev": "Autres revenus",
+    "fEquipement": "Équipement et matériel",
+    "fLogiciels": "Logiciels (Adobe, CapCut...)",
+    "fMontage": "Montage et production",
+    "fPromotion": "Promotion payante",
+    "fCommissionAgence": "Commission agence / manager (%)",
+    "fFacture": "Montant facturé et encaissé",
+    "fPlatformeCut": "Commission de plateforme (%)",
+    "fPlatformeInfo": "Upwork 20 % / Fiverr 20 % / Malt 10 %",
+    "fVirement": "Frais de transfert et de change",
+    "fSousTraitants": "Sous-traitants et collaborateurs",
+    "fLogicielsF": "Logiciels et outils",
+    "fCoworking": "Bureau / coworking",
+    "fFormation": "Formation et développement",
+    "fAutresF": "Autres dépenses"
+  },
+  "ar": {
+    "pageTitle": "SellSense — لوحة التحكم",
+    "dashboard": "لوحة التحكم",
+    "overview": "نظرة على الخدمة",
+    "projects": "المشاريع",
+    "analytics": "تحليل الخدمة",
+    "daily": "التتبع اليومي",
+    "home": "الموقع",
+    "logout": "خروج",
+    "main": "الرئيسية",
+    "hello": "سلام",
+    "netProfit": "صافي الربح",
+    "revenue": "المداخيل",
+    "totalCosts": "إجمالي التكاليف",
+    "margin": "هامش الربح",
+    "projectsCount": "المشاريع",
+    "calcsCount": "الحسابات",
+    "acrossProjects": "على كل المشاريع",
+    "avgAll": "المعدل، كل المشاريع",
+    "performance": "الأداء",
+    "performanceSub": "كيفاش كيتطور الربح والمداخيل",
+    "costBreakdown": "توزيع التكاليف",
+    "costBreakdownSub": "فين كتمشي الفلوس",
+    "insights": "إشارات للقرار",
+    "recentProjects": "الخدمات والمشاريع ديالك",
+    "allProjects": "كل المشاريع",
+    "insStart": "زيد حساب باش تبان ليك الإشارات والرسوم.",
+    "addProject": "مشروع جديد",
+    "newProject": "مشروع جديد",
+    "newProjectSub": "زيد نشاط ولا مصدر دخل باش تبدا التتبع.",
+    "projectName": "اسم المشروع",
+    "businessType": "نوع النشاط",
+    "currency": "العملة",
+    "createProject": "إنشاء المشروع",
+    "open": "فتح",
+    "noProjects": "ما كاين حتى مشروع دابا",
+    "noProjectsDesc": "صايب أول نشاط باش تعرف شحال كيربح بصح.",
+    "createFirst": "صايب أول مشروع",
+    "noCalcYet": "ما كاين حتى حساب",
+    "calcBtn": "فتح الحاسبة",
+    "ca": "المداخيل",
+    "charges": "إجمالي المصاريف",
+    "profitNetShort": "صافي الربح",
+    "back": "رجوع",
+    "reportingPeriod": "فترة الحساب",
+    "periodEnd": "تاريخ نهاية الفترة",
+    "periodDay": "نهار",
+    "periodWeek": "أسبوع",
+    "periodMonth": "شهر",
+    "periodProject": "مشروع زبون / حملة",
+    "save": "حفظ الحساب",
+    "saving": "كيحفظ...",
+    "saved": "تحفظ الحساب",
+    "loaded": "تحل هاد الحساب",
+    "loadCalc": "حل هاد الحساب",
+    "invalidNumber": "دخل 0 أو أكثر فالمداخيل والمصاريف، ومن 0 حتى 100 فالنسب.",
+    "history": "سجل الحسابات",
+    "noHistory": "ما كاين حتى حساب محفوظ لهاد المشروع.",
+    "healthGood": "الهامش قوي — خدمتك كاتخلي حصة مزيانة.",
+    "healthOk": "بداية مزيانة — بقا حسن الأرقام.",
+    "healthWarn": "الهامش ضيق — راجع المصاريف والتسعيرة.",
+    "healthBad": "الخدمة كتخسر — بدا بأكبر المصاريف.",
+    "biggestExpense": "أكبر مصروف",
+    "ofCosts": "من إجمالي التكاليف",
+    "analyticsTitle": "التحليلات",
+    "profitOverTime": "صافي الربح عبر الوقت",
+    "revVsExp": "المداخيل مقابل المصاريف",
+    "marginTrend": "تطور هامش الربح",
+    "projectCompare": "صافي الربح حسب المشروع",
+    "dailyTitle": "التتبع اليومي",
+    "dailySub": "كل حساب كتحفظو كيبقى مرتب نهار بنهار.",
+    "dailyChart": "صافي الربح لكل إدخال",
+    "entries": "كل الإدخالات",
+    "noEntries": "ما كاين حتى إدخال. حفظ حساب باش يبان هنا.",
+    "date": "التاريخ",
+    "project": "المشروع",
+    "typeEcom": "تجارة إلكترونية / COD",
+    "typeCreator": "صانع محتوى",
+    "typeFreelancer": "فريلانسر",
+    "currencyMad": "MAD — الدرهم المغربي",
+    "currencyUsd": "USD — الدولار الأمريكي",
+    "currencyEur": "EUR — الأورو",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "confirmTitle": "أكد العملية",
+    "upgrade": "ترقى",
+    "goPremium": "ترقى لـ Premium",
+    "perMonth": "/ الشهر",
+    "trialActive": "تجربة Premium",
+    "trialExpired": "التجربة سالات",
+    "premiumActive": "Premium خدام",
+    "fullAccessBeta": "الولوج كامل",
+    "mixedPeriodWarning": "هاد المشاريع ما مستعملينش نفس فترة الحساب. قارن النهار مع النهار، الأسبوع مع الأسبوع، ولا الشهر مع الشهر قبل ما تعتمد على المجموع كمؤشر.",
+    "trialDaysLeft": "{n} أيام باقيين",
+    "accessKicker": "الخطة ديالك",
+    "accessTitleTrial": "الرؤية كاملة محلولة دابا",
+    "accessSubTrial": "باقي {n} أيام فالرؤية الكاملة. Premium بـ 10$ فالشهر كيعطيك مشاريع وتحليلات بلا حدود.",
+    "accessTitleExpired": "7 أيام ديال الرؤية سالات",
+    "accessSubExpired": "ترقى باش تكمل بالتحليلات، التتبع اليومي، والمشاريع بلا حدود.",
+    "accessTitlePremium": "Premium خدام",
+    "accessSubPremium": "المشاريع بلا حدود، التحليلات كاملة، والتتبع اليومي محلولين.",
+    "upgradeTitle": "حل الصورة كاملة",
+    "upgradeSub": "Premium كيعطيك مشاريع بلا حدود، تحليلات كاملة، وتتبع يومي.",
+    "freePlan": "الخطة المجانية",
+    "freeProjectLimit": "مشروع واحد فقط",
+    "trialVisibility": "الرؤية كاملة لمدة 7 أيام",
+    "limitedAfterTrial": "الرؤية المتقدمة كتسد من بعد التجربة",
+    "unlimitedProjects": "مشاريع بلا حدود",
+    "fullInsights": "الرؤية والتحليلات كاملة",
+    "dailyHistory": "التتبع اليومي وسجل الحسابات كامل",
+    "premiumLockedTitle": "ترقى باش تفتح هاد الميزة",
+    "premiumLockedSub": "Premium كيعطيك الرؤية كاملة، التحليلات، والتتبع اليومي.",
+    "projectLimitTitle": "الخطة المجانية فيها مشروع واحد",
+    "projectLimitSub": "ترقى لـ Premium باش تصايب مشاريع بلا حدود وتبقى عندك الرؤية كاملة.",
+    "checkoutNote": "الأداء الآمن خاصو يتربط بمزود الدفع ديالك.",
+    "checkoutMissing": "Checkout ديال الدفع خاصو باقي يتربط.",
+    "confirmDelProjectT": "نحيدو المشروع؟",
+    "confirmDelProjectM": "غادي نحيدو \"{n}\" والحسابات ديالو من اللوحة. مايمكنش ترجعها من بعد.",
+    "confirmDelCalcT": "نحيدو هاد الإدخال؟",
+    "confirmDelCalcM": "هاد الحساب غادي يتحذف نهائياً.",
+    "projectCreated": "تصايب المشروع",
+    "projectDeleted": "تحيد المشروع",
+    "calcDeleted": "تحيد الإدخال",
+    "noData": "ما كايناش بيانات دابا",
+    "noDataSub": "حفظ حساب باش تشوفو هنا.",
+    "bProduct": "السلعة / COGS",
+    "bShipping": "الشحن واللوجستيك",
+    "bMarketing": "التسويق والإشهارات",
+    "bFees": "المنصة والرسوم",
+    "bTools": "الأدوات والبرامج",
+    "bProduction": "الإنتاج",
+    "bTeam": "الفريق",
+    "bOther": "أخرى",
+    "insLoss": "كتخسر الفلوس فالمجموع — المصاريف طالعة على المداخيل. قلب على أكبر تكلفة وبدّل الخطة.",
+    "insTight": "الهامش ديالك <b>{m}%</b> — ضيق. حاول تطلع فوق 15% بنقصان المصاريف ولا برفع الثمن.",
+    "insGood": "الهامش الإجمالي <b>{m}%</b> مزيان. راك كتحافظ على حصة مزيانة من المداخيل ديالك.",
+    "insBigCost": "أكبر خانة كتاكل الميزانية هي <b>{c}</b> بنسبة <b>{p}%</b> من التكاليف.",
+    "insBest": "أحسن مشروع دابا هو <b>{n}</b> بصافي ربح <b>{v}</b>.",
+    "insWorst": "المشروع <b>{n}</b> خاسر فآخر حساب. راجع الثمن والمصاريف ديالو.",
+    "insMore": "تبع الحسابات بانتظام — التوجه أهم من نهار واحد.",
+    "secRevenu": "المداخيل",
+    "secProduit": "تكلفة السلعة",
+    "secLivraison": "الشحن واللوجستيك",
+    "secMarketing": "التسويق والإشهارات",
+    "secPlateforme": "رسوم المنصة والدفع",
+    "secProduction": "الإنتاج والمعدات",
+    "secPromotion": "الترويج والعمولات",
+    "secPlatFreelance": "رسوم المنصة والتحويل",
+    "secSousTraitance": "المتعاونين",
+    "secOperationnel": "المصاريف التشغيلية",
+    "unitModelNote": "دخل ثمن الوحدة والعدد، وSellSense غادي يحسبهم أوتوماتيكياً. الضرائب ما داخلاش فالحساب.",
+    "modelNoteEcom": "فرق بين طلبيات COD اللي تسلمات واللي رجعات. ثمن السلعة، التوصيل، الروتور والتغليف كيتحسبو بالعدد المناسب. الضرائب ما داخلاش.",
+    "modelNoteCreator": "دخل كل مصدر ديال المداخيل ديال هاد الفترة بوحدو. عدد المحتويات كيتستعمل غير فالمعدل، حيث كل فيديو ولا بوست كيقدر يدخل مبلغ مختلف. الضرائب ما داخلاش.",
+    "modelNoteFreelancer": "فرق بين مداخيل الزبناء المباشرين، المنصات، والخدمات الشهرية. عمولة المنصة كتتحسب غير على مداخيل المنصة. الضرائب ما داخلاش.",
+    "qtySuffix": "وحدات",
+    "hoursSuffix": "ساعات",
+    "clientsSuffix": "زبناء",
+    "contentSuffix": "محتويات",
+    "fOrderPrice": "ثمن البيع لكل طلبية تسلمات",
+    "fDeliveredOrders": "الطلبيات اللي تسلمات",
+    "fFailedOrders": "الطلبيات اللي رجعات ولا ما تسلماتش",
+    "fProductCostDelivered": "ثمن السلعة لكل طلبية تسلمات",
+    "fProductLossFailed": "خسارة السلعة فكل طلبية فاشلة",
+    "fDeliveryCostDelivered": "التوصيل لكل طلبية تسلمات",
+    "fDeliveryCostFailed": "تكلفة التوصيل والروتور لكل طلبية فاشلة",
+    "fPackagingCostShipped": "التغليف لكل طلبية تصيفطات",
+    "fCreatorPieces": "عدد المحتويات اللي تنشرو",
+    "fAffiliateRev": "مداخيل الأفلييت",
+    "fCreatorTeam": "المونتاج والمتعاونين فالإنتاج",
+    "fCreatorOtherCost": "مصاريف أخرى ديال المحتوى",
+    "fDirectRevenue": "المداخيل اللي تخلصات من الزبناء المباشرين",
+    "fPlatformRevenue": "المداخيل اللي تخلصات عبر المنصات",
+    "fRetainerRevenue": "عقود شهرية ومداخيل متكررة",
+    "fOtherServiceRevenue": "مداخيل خدمات أخرى",
+    "fBillableHours": "ساعات الخدمة القابلة للفوترة",
+    "fActiveClients": "الزبناء اللي خلصو فهاد الفترة",
+    "metricDeliveryRate": "نسبة التسليم",
+    "metricProfitOrder": "الربح لكل طلبية تسلمات",
+    "metricShippedOrders": "الطلبيات اللي تصيفطات",
+    "metricRevenueContent": "المدخول لكل محتوى",
+    "metricProfitContent": "الربح لكل محتوى",
+    "metricSponsorShare": "حصة السبونسورينغ",
+    "metricNetHourly": "الربح الصافي فالساعة",
+    "metricRevenueClient": "المدخول لكل زبون",
+    "metricPlatformFees": "عمولة المنصة",
+    "fUnitPrice": "ثمن البيع للوحدة",
+    "fUnitsSold": "عدد الوحدات اللي تباعات وتسلمات",
+    "fUnitCogs": "ثمن السلعة للوحدة",
+    "fShippingUnit": "التوصيل لكل طلبية تسلمات",
+    "fReturnsCount": "الطلبيات اللي رجعات ولا ما تسلماتش",
+    "fReturnCostUnit": "تكلفة كل روتور",
+    "fPackagingUnit": "التغليف لكل طلبية",
+    "fCreatorUnitRate": "المدخول من كل محتوى",
+    "fCreatorUnits": "عدد المحتويات اللي دخلات الفلوس",
+    "fFreelanceUnitRate": "الثمن لكل خدمة ولا تسليم",
+    "fFreelanceUnits": "عدد الخدمات اللي تسلمات للزبناء",
+    "fCa": "المبيعات اللي تخلصات بصح",
+    "fCogs": "ثمن السلعة",
+    "fLivraison": "رسوم الشحن",
+    "fRetours": "الروتور والطلبيات اللي ما تسلماتش",
+    "fPackaging": "التغليف والمواد",
+    "fFbAds": "إعلانات Facebook",
+    "fTikAds": "إعلانات TikTok",
+    "fAutresAds": "إشهارات أخرى",
+    "fShopify": "Shopify / المنصة",
+    "fCmi": "رسوم الدفع CMI/PayPal",
+    "fAutresFrais": "رسوم أخرى",
+    "fAdsense": "AdSense / YouTube",
+    "fTiktokRev": "مداخيل TikTok",
+    "fSponsors": "سبونسورينغ وبراندات",
+    "fMerch": "ميرش ومنتجات رقمية",
+    "fAutresRev": "مداخيل أخرى",
+    "fEquipement": "معدات وكاميرا",
+    "fLogiciels": "برامج وأدوات",
+    "fMontage": "مونتاج وإنتاج",
+    "fPromotion": "ترويج مدفوع",
+    "fCommissionAgence": "عمولة وكالة / ماناجر",
+    "fFacture": "الفلوس اللي تخلصتي من الزبناء",
+    "fPlatformeCut": "عمولة Upwork/Fiverr",
+    "fPlatformeInfo": "نسبة مئوية",
+    "fVirement": "رسوم التحويل والصرف",
+    "fSousTraitants": "متعاونين / سوبكونتراكتورز",
+    "fLogicielsF": "برامج وأدوات",
+    "fCoworking": "كوركينغ / مكتب",
+    "fFormation": "تكوين وكورسات",
+    "fAutresF": "مصاريف أخرى"
+  }
+};
+
+/* ════════ COST FIELD CONFIG ════════ */
+const LEGACY_COST_FIELDS={
+  ecom:[['cogs',0],['livraison',0],['retours',0],['packaging',0],['fb_ads',0],['tik_ads',0],['autres_ads',0],['shopify',0],['cmi',1],['autres_frais',0]],
+  creator:[['equipement',0],['logiciels',0],['montage',0],['promotion',0],['commission',1]],
+  freelancer:[['platform_cut',1],['virement',0],['sous_traitants',0],['logiciels_f',0],['coworking',0],['formation',0],['autres_f',0]]
+};
+const UNIT_V1_COST_FIELDS={
+  ecom:[['unit_cogs','unit','units_sold'],['shipping_unit','unit','units_sold'],['return_cost_unit','unit','returns_count'],['packaging_unit','unit','units_sold'],['fb_ads','fixed'],['tik_ads','fixed'],['autres_ads','fixed'],['shopify','fixed'],['cmi','pct'],['autres_frais','fixed']],
+  creator:[['equipement','fixed'],['logiciels','fixed'],['montage','fixed'],['promotion','fixed'],['commission','pct']],
+  freelancer:[['platform_cut','pct'],['virement','fixed'],['sous_traitants','fixed'],['logiciels_f','fixed'],['coworking','fixed'],['formation','fixed'],['autres_f','fixed']]
+};
+const COST_FIELDS={
+  ecom:[['product_cost_delivered','unit','delivered_orders'],['product_loss_failed','unit','failed_orders'],['delivery_cost_delivered','unit','delivered_orders'],['delivery_cost_failed','unit','failed_orders'],['packaging_cost_shipped','unit','shipped_orders'],['fb_ads','fixed'],['tik_ads','fixed'],['autres_ads','fixed'],['shopify','fixed'],['cmi','pct'],['autres_frais','fixed']],
+  creator:[['equipement','fixed'],['logiciels','fixed'],['montage','fixed'],['creator_team','fixed'],['promotion','fixed'],['commission','pctfield','sponsors'],['autres_creator_cost','fixed']],
+  freelancer:[['platform_cut','pctfield','platform_revenue'],['virement','fixed'],['sous_traitants','fixed'],['logiciels_f','fixed'],['coworking','fixed'],['formation','fixed'],['autres_f','fixed']]
+};
+const BUCKET={cogs:'product',unit_cogs:'product',product_cost_delivered:'product',product_loss_failed:'product',livraison:'shipping',shipping_unit:'shipping',delivery_cost_delivered:'shipping',delivery_cost_failed:'shipping',retours:'shipping',return_cost_unit:'shipping',packaging:'shipping',packaging_unit:'shipping',packaging_cost_shipped:'shipping',fb_ads:'marketing',tik_ads:'marketing',autres_ads:'marketing',promotion:'marketing',shopify:'fees',cmi:'fees',commission:'fees',platform_cut:'fees',virement:'fees',equipement:'tools',logiciels:'tools',logiciels_f:'tools',montage:'production',creator_team:'team',sous_traitants:'team',autres_frais:'other',autres_creator_cost:'other',coworking:'other',formation:'other',autres_f:'other'};
+const BUCKET_COLOR={product:'#9B2C4D',shipping:'#F4CA5B',marketing:'#65152F',fees:'#C99A31',tools:'#078A4B',production:'#491023',team:'#18A760',other:'#A78490'};
+const BUCKET_KEY={product:'bProduct',shipping:'bShipping',marketing:'bMarketing',fees:'bFees',tools:'bTools',production:'bProduction',team:'bTeam',other:'bOther'};
+
+/* ════════ STATE ════════ */
+let lang=['en','fr','ar'].includes(localStorage.getItem('sellsense-lang'))?localStorage.getItem('sellsense-lang'):'en',user=null,profile=null,projects=[],curProj=null,curDevise='MAD',overviewCur='MAD',newType=null,curView='overview',confirmCb=null;
+const charts={};
+const TRIAL_DAYS=7;
+const PREMIUM_CHECKOUT_URL='';
+
+/* ════════ BOOT ════════ */
+async function boot(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){location.href='sellsense-auth.html';return;}
+  user=session.user;
+  await loadProfile();
+  await loadProjects();
+  buildSidebar();
+  renderAll();
+  showView('overview');
+  document.getElementById('ls').style.display='none';
+  document.getElementById('app').style.display='flex';
+}
+
+async function loadProfile(){
+  const {data}=await sb.from('profiles').select('*').eq('id',user.id).single();
+  if(data){profile=data;}
+  else{
+    const n=user.user_metadata?.full_name||user.email.split('@')[0];
+    await sb.from('profiles').upsert({id:user.id,full_name:n,email:user.email,currency:'MAD'});
+    profile={full_name:n,currency:'MAD',created_at:new Date().toISOString()};
+  }
+}
+
+async function loadProjects(){
+  const {data}=await sb.from('projects')
+    .select('*, calculations(id,revenue,expenses,net_profit,margin_percent,details,calc_date,created_at)')
+    .eq('user_id',user.id).eq('is_archived',false)
+    .order('created_at',{ascending:false});
+  projects=data||[];
+}
+
+/* ════════ DATA HELPERS ════════ */
+function calcCurrency(p,c){
+  return c&&c.details&&c.details._currency?c.details._currency:(p.currency||'MAD');
+}
+function allCalcs(currency){
+  const out=[];
+  projects.forEach(p=>(p.calculations||[]).forEach(c=>out.push(Object.assign({},c,{
+    _proj:p.name,_type:p.business_type,_cur:calcCurrency(p,c)
+  }))));
+  out.sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+  return currency?out.filter(c=>c._cur===currency):out;
+}
+function latestCalc(p){
+  if(!p.calculations||!p.calculations.length)return null;
+  return [...p.calculations].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))[0];
+}
+function getLatest(p,f){const c=latestCalc(p);return c?(c[f]||0):0;}
+
+function isPremium(){
+  const state=String(profile?.subscription_status||profile?.plan||'').toLowerCase();
+  return profile?.is_premium===true||['premium','active','paid','pro'].includes(state);
+}
+function trialStart(){
+  const key='sellsense-trial-start-'+(user?.id||'guest');
+  let value=profile?.created_at||user?.created_at||localStorage.getItem(key);
+  if(!value){value=new Date().toISOString();localStorage.setItem(key,value);}
+  return new Date(value);
+}
+function trialDaysLeft(){
+  if(isPremium())return TRIAL_DAYS;
+  const end=trialStart().getTime()+(TRIAL_DAYS*86400000);
+  return Math.max(0,Math.ceil((end-Date.now())/86400000));
+}
+function hasFullVisibility(){return true;}
+function canCreateProject(){return true;}
+function premiumLock(content,title,sub){
+  return content;
+}
+function accessBanner(){return '';}
+function renderAccessStatus(){
+  const el=document.getElementById('plan-status');if(!el)return;
+  el.innerHTML='<span>'+T[lang].fullAccessBeta+'</span>';
+}
+
+function availableCurrencies(){
+  const calcs=allCalcs(),found=new Set(calcs.map(c=>c._cur));
+  if(!calcs.length)projects.forEach(p=>found.add(p.currency||'MAD'));
+  return ['MAD','USD','EUR'].filter(c=>found.has(c));
+}
+function preferredCurrency(){
+  const currencies=availableCurrencies();
+  if(currencies.includes(overviewCur))return overviewCur;
+  if(currencies.includes('MAD'))return 'MAD';
+  if(profile&&currencies.includes(profile.currency))return profile.currency;
+  return currencies[0]||(profile&&profile.currency)||'MAD';
+}
+function currencySwitch(){
+  const currencies=availableCurrencies(),active=preferredCurrency();
+  if(currencies.length<2)return '';
+  return '<div class="overview-currency" aria-label="Overview currency">'+currencies.map(c=>
+    '<button class="overview-cur-btn'+(c===active?' active':'')+'" onclick="setOverviewCurrency(\''+c+'\')">'+c+'</button>'
+  ).join('')+'</div>';
+}
+function mixedPeriodWarning(currency){
+  const periods=new Set();
+  projects.forEach(p=>{
+    const c=latestCalc(p);
+    if(c&&calcCurrency(p,c)===currency)periods.add(c.details?._period_type||(p.business_type==='ecom'?'day':'month'));
+  });
+  return periods.size>1?'<div class="unit-model-note">'+T[lang].mixedPeriodWarning+'</div>':'';
+}
+function setOverviewCurrency(currency){
+  overviewCur=currency;
+  renderOverview();
+  renderAnalytics();
+  drawCharts(curView);
+}
+function totals(currency){
+  let rev=0,prof=0,cost=0;
+  projects.forEach(p=>{
+    const c=latestCalc(p);
+    if(!c||calcCurrency(p,c)!==currency)return;
+    rev+=c.revenue||0;prof+=c.net_profit||0;cost+=c.expenses||0;
+  });
+  return {rev,prof,cost,margin:rev>0?(prof/rev*100):0};
+}
+
+function calcCostValue(details,key,mode,qtyKey,revenue){
+  const raw=Math.max(0,parseFloat(details?.[key])||0);
+  if(mode==='pct'||mode===1)return revenue*(raw/100);
+  if(mode==='pctfield')return Math.max(0,parseFloat(details?.[qtyKey])||0)*(raw/100);
+  if(mode==='unit')return raw*Math.max(0,parseFloat(details?.[qtyKey])||0);
+  return raw;
+}
+
+function expenseBuckets(currency){
+  // aggregate latest calc of each project into buckets
+  const agg={};
+  projects.forEach(p=>{
+    const c=latestCalc(p);if(!c||!c.details)return;
+    if(calcCurrency(p,c)!==currency)return;
+    const rev=c.revenue||0;
+    const details=c.details;
+    if(details._buckets){
+      Object.entries(details._buckets).forEach(([bucket,amount])=>{agg[bucket]=(agg[bucket]||0)+(parseFloat(amount)||0);});
+      return;
+    }
+    const fields=details._model_version>=2?COST_FIELDS[p.business_type]:(details._unit_model?UNIT_V1_COST_FIELDS[p.business_type]:LEGACY_COST_FIELDS[p.business_type]);
+    (fields||[]).forEach(([k,mode,qtyKey])=>{
+      const amt=calcCostValue(details,k,mode,qtyKey,rev);
+      if(amt<=0)return;
+      const b=BUCKET[k]||'other';
+      agg[b]=(agg[b]||0)+amt;
+    });
+  });
+  return agg;
+}
+
+/* ════════ SIDEBAR ════════ */
+function buildSidebar(){
+  const t=T[lang];
+  const items=[
+    ['overview','grid'],['projects','folder'],['analytics','bars'],['daily','calendar']
+  ];
+  let h='<span class="nl">'+t.main+'</span>';
+  items.forEach(([v,i])=>{
+    const pro=!hasFullVisibility()&&['analytics','daily'].includes(v)?'<span class="nav-pro">PRO</span>':'';
+    h+='<button class="ni" id="nav-'+v+'" onclick="showView(\''+v+'\')">'+ic(i)+'<span>'+t[v]+'</span>'+pro+'</button>';
+  });
+  h+='<span class="nl">'+t.dashboard+'</span>';
+  h+='<a class="ni" href="/">'+ic('home')+'<span>'+t.home+'</span></a>';
+  document.getElementById('navmenu').innerHTML=h;
+  document.getElementById('logout-ic').innerHTML=ic('logout');
+  document.getElementById('hamb').innerHTML=ic('menu');
+  document.getElementById('addx').innerHTML=ic('x');
+  document.getElementById('upgradex').innerHTML=ic('x');
+}
+
+/* ════════ RENDER ════════ */
+function renderAll(){
+  applyStatic();
+  renderAccessStatus();
+  renderUser();
+  renderOverview();
+  renderProjects();
+  renderAnalytics();
+  renderDaily();
+  drawCharts(curView);
+}
+
+function applyStatic(){
+  const t=T[lang];
+  if(t.pageTitle)document.title=t.pageTitle;
+  document.querySelectorAll('[data-t]').forEach(el=>{const k=el.getAttribute('data-t');if(t[k]!==undefined)el.textContent=t[k];});
+  document.documentElement.lang=lang;
+  document.documentElement.dir=(lang==='ar')?'rtl':'ltr';
+  document.body.dir=(lang==='ar')?'rtl':'ltr';
+  document.querySelectorAll('.lang-btn[data-lang]').forEach(b=>{
+    const active=b.dataset.lang===lang;
+    b.classList.toggle('active',active);
+    b.setAttribute('aria-pressed',String(active));
+  });
+  document.getElementById('topbar-date').textContent=new Date().toLocaleDateString(lang==='ar'?'ar-MA':lang==='fr'?'fr-FR':'en-GB',{day:'numeric',month:'long',year:'numeric'});
+  // type cards in add modal
+  const tc=[['ecom','box'],['creator','video'],['freelancer','laptop']];
+  document.getElementById('type-cards').innerHTML=tc.map(([k,i])=>
+    '<div class="tc" id="tc-'+k+'" onclick="selType(\''+k+'\')">'+ic(i)+'<div class="tc-name">'+t['type'+k.charAt(0).toUpperCase()+k.slice(1)]+'</div></div>'
+  ).join('');
+}
+
+function renderUser(){
+  const name=profile.full_name||user.email.split('@')[0];
+  document.getElementById('uav').textContent=name.charAt(0).toUpperCase();
+  document.getElementById('uname').textContent=name;
+  document.getElementById('umail').textContent=user.email;
+}
+
+function kpiCard(icon,color,label,val,cls,foot){
+  return '<div class="kpi"><div class="kpi-top"><div class="kpi-ic" style="background:'+color+'22;color:'+color+'">'+ic(icon)+'</div>'+
+    '<div class="kpi-lbl">'+label+'</div></div><div class="kpi-val '+(cls||'')+'">'+val+'</div>'+
+    (foot?'<div class="kpi-foot">'+foot+'</div>':'')+'</div>';
+}
+
+function sparkline(vals,color){
+  if(!vals.length)return '';
+  if(vals.length===1)vals=[vals[0],vals[0]];
+  const mn=Math.min(...vals),mx=Math.max(...vals),rng=(mx-mn)||1;
+  const w=200,h=74,pad=6;
+  const pts=vals.map((v,i)=>{
+    const x=pad+i*((w-2*pad)/(vals.length-1));
+    const y=h-pad-((v-mn)/rng)*(h-2*pad);
+    return x.toFixed(1)+','+y.toFixed(1);
+  });
+  return '<svg class="hero-spark" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none">'+
+    '<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+color+'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'+
+    '<circle cx="'+pts[pts.length-1].split(',')[0]+'" cy="'+pts[pts.length-1].split(',')[1]+'" r="3.5" fill="'+color+'"/></svg>';
+}
+
+function renderOverview(){
+  const t=T[lang],cur=preferredCurrency(),tt=totals(cur),calcs=allCalcs(cur);
+  overviewCur=cur;
+  let h='';
+  if(!projects.length){
+    h='<div class="sh"><div><div class="sh-title">'+t.overview+'</div></div></div>'+accessBanner()+emptyProjects();
+    document.getElementById('view-overview').innerHTML=h;return;
+  }
+  h+=accessBanner()+currencySwitch()+mixedPeriodWarning(cur);
+  // hero
+  const sparkVals=calcs.map(c=>c.net_profit||0);
+  h+='<div class="hero"><div class="hero-main">'+
+     '<div class="hero-label">'+t.netProfit+' &middot; '+t.allProjects+' &middot; '+cur+'</div>'+
+     '<div class="hero-val '+(tt.prof>=0?'pos':'neg')+'">'+fmt(tt.prof)+' <span class="hero-cur">'+cur+'</span></div>'+
+     '<div class="hero-sub">'+
+       '<div>'+t.revenue+'<b>'+fmt(tt.rev)+' '+cur+'</b></div>'+
+       '<div>'+t.totalCosts+'<b>'+fmt(tt.cost)+' '+cur+'</b></div>'+
+       '<div>'+t.margin+'<b>'+tt.margin.toFixed(1)+'%</b></div>'+
+     '</div></div>'+
+     (sparkVals.length?sparkline(sparkVals,tt.prof>=0?'#007A3D':'#FF6B6B'):'')+
+     '</div>';
+  // kpis
+  h+='<div class="kpis">'+
+    kpiCard('dollar','#C3272F',t.revenue,fmt(tt.rev),'pos',cur)+
+    kpiCard('trendUp','#007A3D',t.netProfit,fmt(tt.prof),tt.prof>=0?'pos':'neg',cur)+
+    kpiCard('trendDown','#8E1B22',t.totalCosts,fmt(tt.cost),'',cur)+
+    kpiCard('percent','#F6C34A',t.margin,tt.margin.toFixed(1)+'%',tt.margin>=0?'pos':'neg',t.avgAll)+
+    '</div>';
+  // charts row
+  const chartsRow='<div class="grid2">'+
+    '<div class="panel"><div class="panel-hd"><div class="panel-title">'+t.performance+'</div></div>'+
+      '<div class="panel-sub">'+t.performanceSub+'</div>'+
+      '<div class="chart-wrap" id="wrap-perf"><canvas id="ch-perf"></canvas></div></div>'+
+    '<div class="panel"><div class="panel-hd"><div class="panel-title">'+t.costBreakdown+'</div></div>'+
+      '<div class="panel-sub">'+t.costBreakdownSub+'</div>'+
+      '<div class="chart-wrap sm" id="wrap-cost"><canvas id="ch-cost"></canvas></div></div>'+
+    '</div>';
+  h+=premiumLock(chartsRow);
+  // insights
+  const ins=buildInsights(cur);
+  const insightsPanel='<div class="panel" style="margin-bottom:18px;"><div class="panel-hd"><div class="panel-title">'+t.insights+'</div></div>'+
+     '<div class="panel-sub">'+t.costBreakdownSub.replace(t.costBreakdownSub,'')+'</div>'+
+     '<div class="insights">'+ins.map(i=>
+       '<div class="insight '+i.tone+'"><div class="insight-ic">'+ic(i.icon)+'</div><div class="insight-tx">'+i.text+'</div></div>'
+     ).join('')+'</div></div>';
+  h+=premiumLock(insightsPanel);
+  // projects
+  h+='<div class="sh"><div class="sh-title">'+t.recentProjects+'</div>'+
+     '<button class="btn-pri" onclick="openAdd()">'+ic('plus')+t.addProject+'</button></div>'+
+     '<div class="proj-grid">'+projects.map(projCard).join('')+'</div>';
+  document.getElementById('view-overview').innerHTML=h;
+}
+
+function projCard(p){
+  const t=T[lang],c=latestCalc(p);
+  const icons={ecom:'box',creator:'video',freelancer:'laptop'};
+  const tkey={ecom:'typeEcom',creator:'typeCreator',freelancer:'typeFreelancer'};
+  let body;
+  if(c){
+    const cur=calcCurrency(p,c);
+    const margin=(c.revenue>0?(c.net_profit/c.revenue*100):0).toFixed(1);
+    body='<div class="proj-stats">'+
+      '<div class="pstat"><div class="pstat-val">'+fmt(c.revenue)+' <span class="pstat-cur">'+cur+'</span></div><div class="pstat-lbl">'+t.ca+'</div></div>'+
+      '<div class="pstat"><div class="pstat-val '+(c.net_profit>=0?'pos':'neg')+'">'+fmt(c.net_profit)+' <span class="pstat-cur">'+cur+'</span></div><div class="pstat-lbl">'+t.profitNetShort+'</div></div>'+
+      '<div class="pstat"><div class="pstat-val">'+margin+'%</div><div class="pstat-lbl">'+t.margin+'</div></div>'+
+      '</div>';
+  }else{body='<div class="proj-nocalc">'+t.noCalcYet+'</div>';}
+  return '<div class="proj-card '+p.business_type+'">'+
+    '<div class="proj-top"><div class="proj-icon">'+ic(icons[p.business_type]||'box')+'</div>'+
+    '<div class="proj-badge '+p.business_type+'">'+t[tkey[p.business_type]]+'</div></div>'+
+    '<div class="proj-name">'+esc(p.name)+'</div>'+body+
+    '<div class="proj-foot">'+
+      '<button class="proj-open" onclick="openCalc(\''+p.id+'\')">'+ic('arrowR')+t.open+'</button>'+
+      '<button class="icon-btn" title="'+t.delete+'" onclick="askDeleteProject(\''+p.id+'\')">'+ic('trash')+'</button>'+
+    '</div></div>';
+}
+
+function emptyProjects(){
+  const t=T[lang];
+  return '<div class="empty"><div class="empty-ic">'+ic('folder')+'</div>'+
+    '<div class="empty-title">'+t.noProjects+'</div>'+
+    '<div class="empty-sub">'+t.noProjectsDesc+'</div>'+
+    '<button class="btn-pri" onclick="openAdd()">'+ic('plus')+t.createFirst+'</button></div>';
+}
+
+function renderProjects(){
+  const t=T[lang];
+  let h='<div class="sh"><div><div class="sh-title">'+t.projects+'</div></div>';
+  if(projects.length)h+='<button class="btn-pri" onclick="openAdd()">'+ic('plus')+t.addProject+'</button>';
+  h+='</div>';
+  h+=projects.length?('<div class="proj-grid">'+projects.map(projCard).join('')+'</div>'):emptyProjects();
+  document.getElementById('view-projects').innerHTML=h;
+}
+
+/* ════════ INSIGHTS (rule-based) ════════ */
+function buildInsights(currency){
+  const t=T[lang],tt=totals(currency),calcs=allCalcs(currency),out=[];
+  if(!calcs.length){
+    out.push({tone:'info',icon:'bulb',text:t.insStart});
+    return out;
+  }
+  // margin
+  if(tt.prof<0)out.push({tone:'bad',icon:'alert',text:t.insLoss});
+  else if(tt.margin<15)out.push({tone:'warn',icon:'alert',text:tpl(t.insTight,{m:tt.margin.toFixed(1)})});
+  else if(tt.margin>=30)out.push({tone:'good',icon:'check',text:tpl(t.insGood,{m:tt.margin.toFixed(1)})});
+  // biggest bucket
+  const buckets=expenseBuckets(currency);
+  const totCost=Object.values(buckets).reduce((s,v)=>s+v,0);
+  if(totCost>0){
+    const top=Object.entries(buckets).sort((a,b)=>b[1]-a[1])[0];
+    out.push({tone:'info',icon:'pie',text:tpl(t.insBigCost,{c:t[BUCKET_KEY[top[0]]],p:(top[1]/totCost*100).toFixed(0)})});
+  }
+  // best / worst project
+  const withCalc=projects.filter(p=>{const c=latestCalc(p);return c&&calcCurrency(p,c)===currency;});
+  if(withCalc.length>1){
+    const sorted=[...withCalc].sort((a,b)=>getLatest(b,'net_profit')-getLatest(a,'net_profit'));
+    const best=sorted[0],worst=sorted[sorted.length-1];
+    out.push({tone:'good',icon:'trendUp',text:tpl(t.insBest,{n:esc(best.name),v:fmt(getLatest(best,'net_profit'))+' '+currency})});
+    if(getLatest(worst,'net_profit')<0)out.push({tone:'bad',icon:'trendDown',text:tpl(t.insWorst,{n:esc(worst.name)})});
+  }
+  if(calcs.length<3)out.push({tone:'info',icon:'calendar',text:t.insMore});
+  return out.slice(0,5);
+}
+function tpl(s,o){return s.replace(/\{(\w+)\}/g,(m,k)=>o[k]!==undefined?o[k]:m);}
+
+/* ════════ CHARTS ════════ */
+function chartReady(){return typeof Chart!=='undefined';}
+function emptyChart(wrapId){
+  const w=document.getElementById(wrapId);if(!w)return;
+  w.innerHTML='<div class="empty-chart">'+ic('bars')+'<div>'+T[lang].noData+'</div></div>';
+}
+function mkChart(canvasId,cfg){
+  if(!chartReady())return;
+  const cv=document.getElementById(canvasId);if(!cv)return;
+  if(charts[canvasId]){charts[canvasId].destroy();}
+  charts[canvasId]=new Chart(cv,cfg);
+}
+const GRID='rgba(255,235,220,0.08)';
+function baseScales(){
+  return {
+    x:{grid:{color:GRID},ticks:{color:'#7C8499',font:{size:11}}},
+    y:{grid:{color:GRID},ticks:{color:'#7C8499',font:{size:11}}}
+  };
+}
+function dateLabel(c){
+  const d=new Date(c.calc_date||c.created_at);
+  return d.toLocaleDateString(lang==='ar'?'ar-MA':lang==='fr'?'fr-FR':'en-GB',{day:'2-digit',month:'short'});
+}
+
+function drawCharts(v){
+  if(!chartReady())return;
+  if(v==='overview')drawOverviewCharts();
+  else if(v==='analytics')drawAnalyticsCharts();
+  else if(v==='daily')drawDailyCharts();
+}
+
+function drawOverviewCharts(){
+  const t=T[lang],currency=preferredCurrency(),calcs=allCalcs(currency);
+  if(calcs.length){
+    mkChart('ch-perf',{
+      type:'line',
+      data:{labels:calcs.map(dateLabel),datasets:[
+        {label:t.netProfit,data:calcs.map(c=>c.net_profit||0),borderColor:'#18A760',backgroundColor:'rgba(24,167,96,0.14)',fill:true,tension:.35,borderWidth:2.5,pointRadius:3,pointBackgroundColor:'#18A760'},
+        {label:t.revenue,data:calcs.map(c=>c.revenue||0),borderColor:'#F4CA5B',backgroundColor:'transparent',fill:false,tension:.35,borderWidth:2,pointRadius:2,pointBackgroundColor:'#F4CA5B'}
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,interaction:{intersect:false,mode:'index'},
+        plugins:{legend:{labels:{color:'#B8BFD0',usePointStyle:true,boxWidth:7,font:{size:12}}}},
+        scales:baseScales()}
+    });
+  }else emptyChart('wrap-perf');
+  const buckets=expenseBuckets(currency);
+  const entries=Object.entries(buckets).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]);
+  if(entries.length){
+    mkChart('ch-cost',{
+      type:'doughnut',
+      data:{labels:entries.map(e=>t[BUCKET_KEY[e[0]]]),datasets:[{
+        data:entries.map(e=>e[1]),
+        backgroundColor:entries.map(e=>BUCKET_COLOR[e[0]]),borderColor:'#260B16',borderWidth:3
+      }]},
+      options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
+        plugins:{legend:{position:'bottom',labels:{color:'#B8BFD0',usePointStyle:true,boxWidth:8,padding:12,font:{size:11}}}}}
+    });
+  }else emptyChart('wrap-cost');
+}
+
+/* ════════ ANALYTICS ════════ */
+function renderAnalytics(){
+  const t=T[lang],currency=preferredCurrency();
+  let h='<div class="sh"><div class="sh-title">'+t.analyticsTitle+'</div>'+currencySwitch()+'</div>';
+  let content='';
+  if(!allCalcs(currency).length){
+    content='<div class="empty"><div class="empty-ic">'+ic('bars')+'</div><div class="empty-title">'+t.noData+'</div><div class="empty-sub">'+t.noDataSub+'</div></div>';
+  }else{
+    content='<div class="grid2">'+
+      '<div class="panel"><div class="panel-title">'+t.profitOverTime+'</div><div class="panel-sub">&nbsp;</div><div class="chart-wrap" id="wrap-aProfit"><canvas id="ch-aProfit"></canvas></div></div>'+
+      '<div class="panel"><div class="panel-title">'+t.marginTrend+'</div><div class="panel-sub">&nbsp;</div><div class="chart-wrap" id="wrap-aMargin"><canvas id="ch-aMargin"></canvas></div></div>'+
+      '</div>'+
+      '<div class="grid2">'+
+      '<div class="panel"><div class="panel-title">'+t.revVsExp+'</div><div class="panel-sub">&nbsp;</div><div class="chart-wrap" id="wrap-aRE"><canvas id="ch-aRE"></canvas></div></div>'+
+      '<div class="panel"><div class="panel-title">'+t.projectCompare+'</div><div class="panel-sub">&nbsp;</div><div class="chart-wrap" id="wrap-aComp"><canvas id="ch-aComp"></canvas></div></div>'+
+      '</div>';
+  }
+  h+=premiumLock(content);
+  document.getElementById('view-analytics').innerHTML=h;
+}
+
+function drawAnalyticsCharts(){
+  const t=T[lang],currency=preferredCurrency(),calcs=allCalcs(currency);
+  if(!calcs.length)return;
+  mkChart('ch-aProfit',{type:'line',
+    data:{labels:calcs.map(dateLabel),datasets:[{label:t.netProfit,data:calcs.map(c=>c.net_profit||0),borderColor:'#18A760',backgroundColor:'rgba(24,167,96,0.14)',fill:true,tension:.35,borderWidth:2.5,pointRadius:3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:baseScales()}});
+  mkChart('ch-aMargin',{type:'line',
+    data:{labels:calcs.map(dateLabel),datasets:[{label:t.margin,data:calcs.map(c=>c.margin_percent||0),borderColor:'#F4CA5B',backgroundColor:'rgba(244,202,91,0.13)',fill:true,tension:.35,borderWidth:2.5,pointRadius:3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:baseScales()}});
+  mkChart('ch-aRE',{type:'bar',
+    data:{labels:calcs.map(dateLabel),datasets:[
+      {label:t.revenue,data:calcs.map(c=>c.revenue||0),backgroundColor:'#F4CA5B',borderRadius:5},
+      {label:t.charges,data:calcs.map(c=>c.expenses||0),backgroundColor:'#65152F',borderRadius:5}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#B8BFD0',usePointStyle:true,boxWidth:7,font:{size:12}}}},scales:baseScales()}});
+  const withCalc=projects.filter(p=>{const c=latestCalc(p);return c&&calcCurrency(p,c)===currency;});
+  if(withCalc.length){
+    mkChart('ch-aComp',{type:'bar',
+      data:{labels:withCalc.map(p=>p.name),datasets:[{label:t.netProfit,data:withCalc.map(p=>getLatest(p,'net_profit')),
+        backgroundColor:withCalc.map(p=>getLatest(p,'net_profit')>=0?'#18A760':'#FF727C'),borderRadius:5}]},
+      options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:baseScales()}});
+  }else emptyChart('wrap-aComp');
+}
+
+/* ════════ DAILY TRACKING ════════ */
+function renderDaily(){
+  const t=T[lang],calcs=[...allCalcs()].reverse();
+  let h='<div class="sh"><div><div class="sh-title">'+t.dailyTitle+'</div><div class="sh-sub">'+t.dailySub+'</div></div>'+
+    (projects.length?'<button class="btn-pri" onclick="showView(\'projects\')">'+ic('plus')+t.addProject+'</button>':'')+'</div>';
+  let content='';
+  if(!calcs.length){
+    content='<div class="empty"><div class="empty-ic">'+ic('calendar')+'</div><div class="empty-title">'+t.noEntries+'</div>'+
+       '<div class="empty-sub">'+t.noDataSub+'</div></div>';
+  }else{
+    content='<div class="panel" style="margin-bottom:18px;"><div class="panel-title">'+t.dailyChart+'</div><div class="panel-sub">&nbsp;</div>'+
+     '<div class="chart-wrap sm" id="wrap-daily"><canvas id="ch-daily"></canvas></div></div>'+
+     '<div class="sh"><div class="sh-title">'+t.entries+'</div></div>'+
+     '<div class="dtable"><div class="dt-row head"><div>'+t.project+'</div><div>'+t.ca+'</div>'+
+     '<div class="dt-hide">'+t.charges+'</div><div>'+t.profitNetShort+'</div><div></div></div>';
+    content+=calcs.map(c=>{
+      const d=new Date(c.calc_date||c.created_at).toLocaleDateString(lang==='ar'?'ar-MA':lang==='fr'?'fr-FR':'en-GB',{day:'2-digit',month:'short',year:'numeric'});
+      return '<div class="dt-row">'+
+        '<div class="dt-proj"><span class="dt-dot '+c._type+'"></span><div><div>'+esc(c._proj)+'</div><div class="dt-sub">'+d+'</div></div></div>'+
+        '<div class="dt-num">'+fmt(c.revenue)+' <span class="dt-sub">'+c._cur+'</span></div>'+
+        '<div class="dt-num dt-hide">'+fmt(c.expenses)+'</div>'+
+        '<div class="dt-num '+(c.net_profit>=0?'pos':'neg')+'">'+fmt(c.net_profit)+'</div>'+
+        '<button class="icon-btn" onclick="askDeleteCalc(\''+c.id+'\')" title="'+t.delete+'">'+ic('trash')+'</button>'+
+        '</div>';
+    }).join('');
+    content+='</div>';
+  }
+  h+=premiumLock(content);
+  document.getElementById('view-daily').innerHTML=h;
+}
+
+function drawDailyCharts(){
+  const t=T[lang],calcs=allCalcs(preferredCurrency());
+  if(!calcs.length)return;
+  mkChart('ch-daily',{type:'bar',
+    data:{labels:calcs.map(dateLabel),datasets:[{label:t.netProfit,data:calcs.map(c=>c.net_profit||0),
+      backgroundColor:calcs.map(c=>(c.net_profit||0)>=0?'#18A760':'#FF727C'),borderRadius:5}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:baseScales()}});
+}
+
+/* ════════ CALCULATOR ════════ */
+function calcDraftKey(p,cur){
+  return 'sellsense-calc-draft-'+(user?.id||'guest')+'-'+p.id+'-'+cur;
+}
+function latestCalcForCurrency(p,cur){
+  return [...(p.calculations||[])].filter(c=>calcCurrency(p,c)===cur).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))[0]||null;
+}
+function normalizeDetails(type,details){
+  const d=Object.assign({},details||{});
+  if(!Object.keys(d).length){
+    d._model_version=2;
+    if(type==='ecom')d.shipped_orders=0;
+    return d;
+  }
+  if(d._model_version>=2){
+    if(type==='ecom')d.shipped_orders=(parseFloat(d.delivered_orders)||0)+(parseFloat(d.failed_orders)||0);
+    return d;
+  }
+  if(type==='ecom'){
+    if(d._unit_model){
+      d.order_price=d.order_price??d.unit_price??0;
+      d.delivered_orders=d.delivered_orders??d.units_sold??0;
+      d.failed_orders=d.failed_orders??d.returns_count??0;
+      d.product_cost_delivered=d.product_cost_delivered??d.unit_cogs??0;
+      d.product_loss_failed=d.product_loss_failed??0;
+      d.delivery_cost_delivered=d.delivery_cost_delivered??d.shipping_unit??0;
+      d.delivery_cost_failed=d.delivery_cost_failed??d.return_cost_unit??0;
+      d.packaging_cost_shipped=d.packaging_cost_shipped??d.packaging_unit??0;
+    }else{
+      d.delivered_orders=1;
+      d.failed_orders=(parseFloat(d.retours)||0)>0?1:0;
+      d.order_price=parseFloat(d.ca)||0;
+      d.product_cost_delivered=parseFloat(d.cogs)||0;
+      d.product_loss_failed=0;
+      d.delivery_cost_delivered=parseFloat(d.livraison)||0;
+      d.delivery_cost_failed=parseFloat(d.retours)||0;
+      d.packaging_cost_shipped=(parseFloat(d.packaging)||0)/(d.delivered_orders+d.failed_orders);
+    }
+    d.shipped_orders=(parseFloat(d.delivered_orders)||0)+(parseFloat(d.failed_orders)||0);
+  }else if(type==='creator'){
+    d.creator_pieces=d.creator_pieces??d.creator_units??0;
+    if(d.creator_unit_rate!==undefined&&!['adsense','tiktok_rev','sponsors','affiliate_rev','merch','autres_rev'].some(k=>parseFloat(d[k])>0)){
+      const total=(parseFloat(d.creator_unit_rate)||0)*(parseFloat(d.creator_units)||0);
+      if((parseFloat(d.commission)||0)>0)d.sponsors=total;else d.adsense=total;
+    }
+    d.affiliate_rev=d.affiliate_rev??0;
+    d.creator_team=d.creator_team??0;
+    d.autres_creator_cost=d.autres_creator_cost??0;
+  }else{
+    const oldTotal=parseFloat(d.facture)||((parseFloat(d.freelance_unit_rate)||0)*(parseFloat(d.freelance_units)||0));
+    const oldPlatform=(parseFloat(d.platform_cut)||0)>0;
+    d.direct_revenue=d.direct_revenue??(oldPlatform?0:oldTotal);
+    d.platform_revenue=d.platform_revenue??(oldPlatform?oldTotal:0);
+    d.retainer_revenue=d.retainer_revenue??0;
+    d.other_service_revenue=d.other_service_revenue??0;
+    d.billable_hours=d.billable_hours??0;
+    d.active_clients=d.active_clients??0;
+  }
+  d._model_version=2;
+  return d;
+}
+function readCalcDraft(){
+  try{
+    const raw=localStorage.getItem(calcDraftKey(curProj,curDevise));
+    return raw?normalizeDetails(curProj.business_type,JSON.parse(raw)):null;
+  }catch(e){return null;}
+}
+function currentCalcDetails(){
+  const draft=readCalcDraft();
+  if(draft)return draft;
+  const c=latestCalcForCurrency(curProj,curDevise);
+  const details=normalizeDetails(curProj.business_type,c?.details||{});
+  details._calc_date=c?.calc_date||new Date().toISOString().split('T')[0];
+  details._period_type=details._period_type||(curProj.business_type==='ecom'?'day':'month');
+  return details;
+}
+function collectCalcDetails(){
+  const details={};
+  document.querySelectorAll('.cinput').forEach(i=>details[i.id.replace('cf-','')]=parseFloat(i.value)||0);
+  if(curProj?.business_type==='ecom')details.shipped_orders=(details.delivered_orders||0)+(details.failed_orders||0);
+  details._currency=curDevise;
+  details._model_version=2;
+  details._period_type=document.getElementById('calc-period')?.value||(curProj?.business_type==='ecom'?'day':'month');
+  details._calc_date=document.getElementById('calc-date')?.value||new Date().toISOString().split('T')[0];
+  return details;
+}
+function saveCalcDraft(){
+  if(!curProj||!document.querySelector('#view-calc .cinput'))return;
+  localStorage.setItem(calcDraftKey(curProj,curDevise),JSON.stringify(collectCalcDetails()));
+}
+function restoreCalcInputs(){
+  const details=currentCalcDetails();
+  document.querySelectorAll('.cinput').forEach(input=>{
+    const key=input.id.replace('cf-','');
+    input.value=String(Math.max(0,parseFloat(details[key])||0));
+  });
+  const period=document.getElementById('calc-period'),date=document.getElementById('calc-date');
+  if(period)period.value=details._period_type||(curProj.business_type==='ecom'?'day':'month');
+  if(date)date.value=details._calc_date||new Date().toISOString().split('T')[0];
+}
+function handleCalcInput(input){
+  sanitizeCalcInput(input);
+  saveCalcDraft();
+  recalc();
+}
+
+function openCalc(pid){
+  curProj=projects.find(p=>p.id===pid);
+  if(!curProj)return;
+  curDevise=calcCurrency(curProj,latestCalc(curProj));
+  renderCalc();
+  showView('calc');
+}
+
+function renderCalc(){
+  const t=T[lang],p=curProj;
+  const tkey={ecom:'typeEcom',creator:'typeCreator',freelancer:'typeFreelancer'};
+  let h='<div class="calc-head">'+
+    '<button class="btn-ghost" onclick="showView(\'projects\')">'+ic('arrowL')+t.back+'</button>'+
+    '<div><div class="calc-name">'+esc(p.name)+'</div><div class="calc-type">'+t[tkey[p.business_type]]+'</div></div></div>';
+  h+='<div class="devise-row">'+['MAD','USD','EUR'].map(d=>
+    '<button class="devise-btn'+(d===curDevise?' active':'')+'" onclick="setDevise(\''+d+'\')">'+d+'</button>').join('')+'</div>';
+  h+='<div class="calc-context"><label>'+t.reportingPeriod+'<select id="calc-period" onchange="saveCalcDraft()">'+
+    '<option value="day">'+t.periodDay+'</option><option value="week">'+t.periodWeek+'</option><option value="month">'+t.periodMonth+'</option><option value="project">'+t.periodProject+'</option></select></label>'+
+    '<label>'+t.periodEnd+'<input type="date" id="calc-date" onchange="saveCalcDraft()"/></label></div>';
+  h+='<div class="unit-model-note">'+t['modelNote'+(p.business_type==='ecom'?'Ecom':p.business_type==='creator'?'Creator':'Freelancer')]+'</div>';
+  h+='<div class="calc-layout"><div id="calc-fields"></div><div><div class="result">'+
+    '<div class="rp-lbl">'+t.netProfit+'</div>'+
+    '<div class="rp-amount pos" id="rp-amount">0</div>'+
+    '<div class="rp-cur" id="rp-cur">'+curDevise+'</div>'+
+    '<div class="rp-bar" id="rp-bar"></div>'+
+    '<div class="rp-legend"><span id="rp-lg-rev">'+t.ca+'</span><span id="rp-lg-cost">'+t.charges+'</span></div>'+
+    '<div class="rp-divider"></div>'+
+    '<div class="rp-row"><span class="rl">'+t.ca+'</span><span class="rv inc" id="rr-ca">+0</span></div>'+
+    '<div class="rp-row"><span class="rl">'+t.charges+'</span><span class="rv exp" id="rr-cost">-0</span></div>'+
+    '<div class="rp-divider"></div>'+
+    '<div class="rp-row" style="font-weight:700;"><span class="rl" style="color:var(--text);">'+t.netProfit+'</span><span class="rv tot" id="rr-profit">0</span></div>'+
+    '<div class="result-metrics" id="rp-metrics"></div>'+
+    '<div class="health" id="rp-health" style="display:none;"></div>'+
+    '<div class="rp-insight" id="rp-insight"></div>'+
+    '<button class="btn-save" id="btn-save" onclick="saveCalc()">'+ic('save')+'<span class="bt">'+t.save+'</span><span class="sp"></span></button>'+
+    '</div></div></div>';
+  h+='<div class="hist" id="calc-hist"></div>';
+  document.getElementById('view-calc').innerHTML=h;
+  buildFields();
+  renderHistory();
+}
+
+function buildFields(){
+  const t=T[lang],type=curProj.business_type;
+  const cfg={
+    ecom:[
+      [t.secRevenu,[['order_price',t.fOrderPrice],['delivered_orders',t.fDeliveredOrders,t.qtySuffix],['failed_orders',t.fFailedOrders,t.qtySuffix]]],
+      [t.secProduit,[['product_cost_delivered',t.fProductCostDelivered],['product_loss_failed',t.fProductLossFailed]]],
+      [t.secLivraison,[['delivery_cost_delivered',t.fDeliveryCostDelivered],['delivery_cost_failed',t.fDeliveryCostFailed],['packaging_cost_shipped',t.fPackagingCostShipped]]],
+      [t.secMarketing,[['fb_ads',t.fFbAds],['tik_ads',t.fTikAds],['autres_ads',t.fAutresAds]]],
+      [t.secPlateforme,[['shopify',t.fShopify],['cmi',t.fCmi,'%'],['autres_frais',t.fAutresFrais]]]
+    ],
+    creator:[
+      [t.secRevenu,[['creator_pieces',t.fCreatorPieces,t.contentSuffix],['adsense',t.fAdsense],['tiktok_rev',t.fTiktokRev],['sponsors',t.fSponsors],['affiliate_rev',t.fAffiliateRev],['merch',t.fMerch],['autres_rev',t.fAutresRev]]],
+      [t.secProduction,[['equipement',t.fEquipement],['logiciels',t.fLogiciels],['montage',t.fMontage],['creator_team',t.fCreatorTeam]]],
+      [t.secPromotion,[['promotion',t.fPromotion],['commission',t.fCommissionAgence,'%',t.fSponsors],['autres_creator_cost',t.fCreatorOtherCost]]]
+    ],
+    freelancer:[
+      [t.secRevenu,[['direct_revenue',t.fDirectRevenue],['platform_revenue',t.fPlatformRevenue],['retainer_revenue',t.fRetainerRevenue],['other_service_revenue',t.fOtherServiceRevenue],['billable_hours',t.fBillableHours,t.hoursSuffix],['active_clients',t.fActiveClients,t.clientsSuffix]]],
+      [t.secPlatFreelance,[['platform_cut',t.fPlatformeCut,'%',t.fPlatformeInfo],['virement',t.fVirement]]],
+      [t.secSousTraitance,[['sous_traitants',t.fSousTraitants]]],
+      [t.secOperationnel,[['logiciels_f',t.fLogicielsF],['coworking',t.fCoworking],['formation',t.fFormation],['autres_f',t.fAutresF]]]
+    ]
+  };
+  const secs=cfg[type]||cfg.ecom;
+  document.getElementById('calc-fields').innerHTML=secs.map(function(sec){
+    var title=sec[0],fields=sec[1];
+    return '<div class="calc-section"><div class="calc-sec-hd">'+title+'</div><div class="calc-fields">'+
+    fields.map(function(f){
+      var id=f[0],label=f[1],suf=f[2],tip=f[3];
+      var max=suf==='%'?' max="100"':'';
+      return '<div class="cf"><label for="cf-'+id+'">'+label+(tip?' <small>('+tip+')</small>':'')+'</label>'+
+        '<div class="inp-wrap"><input class="cinput" type="number" id="cf-'+id+'" value="0" placeholder="0" min="0"'+max+' step="any" onfocus="this.select()" oninput="handleCalcInput(this)"/>'+
+        '<span class="inp-suf" data-fixed="'+(suf?'1':'0')+'">'+(suf||curDevise)+'</span></div></div>';
+    }).join('')+'</div></div>';
+  }).join('');
+  restoreCalcInputs();
+  recalc();
+}
+
+function setDevise(d){
+  saveCalcDraft();
+  curDevise=d;
+  overviewCur=d;
+  curProj.currency=d;
+  document.querySelectorAll('.devise-btn').forEach(b=>b.classList.toggle('active',b.textContent.trim()===d));
+  document.getElementById('rp-cur').textContent=d;
+  buildFields();
+}
+
+function sanitizeCalcInput(input){
+  if(input.value==='')return;
+  const raw=Number(input.value);
+  if(!Number.isFinite(raw)){input.value='';return;}
+  const max=input.max===''?Infinity:Number(input.max);
+  input.value=String(Math.min(max,Math.max(0,raw)));
+}
+
+function recalc(){
+  const t=T[lang],type=curProj.business_type;
+  const v=id=>{
+    const input=document.getElementById('cf-'+id);
+    const raw=Number(input?.value);
+    if(!Number.isFinite(raw))return 0;
+    const max=input?.max===''?Infinity:Number(input.max);
+    return Math.min(max,Math.max(0,raw));
+  };
+  const derived={shipped_orders:v('delivered_orders')+v('failed_orders')};
+  let rev=0;
+  if(type==='ecom')rev=v('order_price')*v('delivered_orders');
+  else if(type==='creator')rev=['adsense','tiktok_rev','sponsors','affiliate_rev','merch','autres_rev'].reduce((sum,k)=>sum+v(k),0);
+  else rev=['direct_revenue','platform_revenue','retainer_revenue','other_service_revenue'].reduce((sum,k)=>sum+v(k),0);
+  let cost=0,breakdown=[];
+  (COST_FIELDS[type]||[]).forEach(function(cf){
+    var k=cf[0],mode=cf[1],qtyKey=cf[2];
+    var raw=v(k),base=derived[qtyKey]===undefined?v(qtyKey):derived[qtyKey];
+    var amt=mode==='pct'?rev*(raw/100):(mode==='pctfield'?base*(raw/100):(mode==='unit'?raw*base:raw));
+    cost+=amt;
+    if(amt>0)breakdown.push({k:k,amt:amt});
+  });
+  const profit=rev-cost;
+  const margin=rev>0?(profit/rev*100):0;
+  document.getElementById('rp-amount').textContent=fmt(Math.abs(profit));
+  document.getElementById('rp-amount').className='rp-amount '+(profit>=0?'pos':'neg');
+  document.getElementById('rr-ca').textContent='+'+fmt(rev)+' '+curDevise;
+  document.getElementById('rr-cost').textContent='-'+fmt(cost)+' '+curDevise;
+  const rrp=document.getElementById('rr-profit');
+  rrp.textContent=(profit>=0?'+':'')+fmt(profit)+' '+curDevise;
+  rrp.style.color=profit>=0?'var(--blue-2)':'var(--red)';
+  const tot=rev>0?rev:1;
+  const cPct=Math.min(100,cost/tot*100),pPct=Math.max(0,100-cPct);
+  document.getElementById('rp-bar').innerHTML=
+    '<i style="width:'+pPct+'%;background:var(--teal)"></i><i style="width:'+cPct+'%;background:var(--terra)"></i>';
+  const hb=document.getElementById('rp-health');
+  if(rev>0){
+    hb.style.display='block';
+    if(profit<0){hb.className='health h-bad';hb.textContent=t.healthBad;}
+    else if(margin<15){hb.className='health h-warn';hb.textContent=t.healthWarn;}
+    else if(margin<30){hb.className='health h-ok';hb.textContent=t.healthOk;}
+    else{hb.className='health h-good';hb.textContent=t.healthGood;}
+  }else hb.style.display='none';
+  const ib=document.getElementById('rp-insight');
+  if(cost>0&&breakdown.length){
+    const top=breakdown.sort((a,b)=>b.amt-a.amt)[0];
+    ib.style.display='block';
+    ib.innerHTML='<b>'+t.biggestExpense+':</b> '+fieldLabel(top.k)+' &middot; '+fmt(top.amt)+' '+curDevise+
+      ' ('+(top.amt/cost*100).toFixed(0)+'% '+t.ofCosts+')';
+  }else ib.style.display='none';
+  const metricRows=[];
+  if(type==='ecom'){
+    const shipped=derived.shipped_orders,delivered=v('delivered_orders');
+    metricRows.push([shipped>0?(delivered/shipped*100).toFixed(1)+'%':'0%',t.metricDeliveryRate]);
+    metricRows.push([delivered>0?fmt(profit/delivered)+' '+curDevise:'0 '+curDevise,t.metricProfitOrder]);
+    metricRows.push([fmt(shipped),t.metricShippedOrders]);
+  }else if(type==='creator'){
+    const pieces=v('creator_pieces');
+    metricRows.push([pieces>0?fmt(rev/pieces)+' '+curDevise:'0 '+curDevise,t.metricRevenueContent]);
+    metricRows.push([pieces>0?fmt(profit/pieces)+' '+curDevise:'0 '+curDevise,t.metricProfitContent]);
+    metricRows.push([rev>0?(v('sponsors')/rev*100).toFixed(1)+'%':'0%',t.metricSponsorShare]);
+  }else{
+    const hours=v('billable_hours'),clients=v('active_clients');
+    metricRows.push([hours>0?fmt(profit/hours)+' '+curDevise:'0 '+curDevise,t.metricNetHourly]);
+    metricRows.push([clients>0?fmt(rev/clients)+' '+curDevise:'0 '+curDevise,t.metricRevenueClient]);
+    metricRows.push([fmt(v('platform_revenue')*(v('platform_cut')/100))+' '+curDevise,t.metricPlatformFees]);
+  }
+  document.getElementById('rp-metrics').innerHTML=metricRows.map(m=>'<div class="result-metric"><b>'+m[0]+'</b><span>'+m[1]+'</span></div>').join('');
+  const buckets={};
+  breakdown.forEach(item=>{const bucket=BUCKET[item.k]||'other';buckets[bucket]=(buckets[bucket]||0)+item.amt;});
+  window._calc={rev:rev,cost:cost,profit:profit,margin:parseFloat(margin.toFixed(1)),buckets:buckets,metrics:metricRows};
+}
+
+function fieldLabel(k){
+  const t=T[lang];
+  const map={cogs:'fCogs',unit_cogs:'fUnitCogs',product_cost_delivered:'fProductCostDelivered',product_loss_failed:'fProductLossFailed',livraison:'fLivraison',shipping_unit:'fShippingUnit',delivery_cost_delivered:'fDeliveryCostDelivered',delivery_cost_failed:'fDeliveryCostFailed',retours:'fRetours',return_cost_unit:'fReturnCostUnit',packaging:'fPackaging',packaging_unit:'fPackagingUnit',packaging_cost_shipped:'fPackagingCostShipped',fb_ads:'fFbAds',tik_ads:'fTikAds',autres_ads:'fAutresAds',shopify:'fShopify',cmi:'fCmi',autres_frais:'fAutresFrais',equipement:'fEquipement',logiciels:'fLogiciels',montage:'fMontage',creator_team:'fCreatorTeam',promotion:'fPromotion',commission:'fCommissionAgence',autres_creator_cost:'fCreatorOtherCost',platform_cut:'fPlatformeCut',virement:'fVirement',sous_traitants:'fSousTraitants',logiciels_f:'fLogicielsF',coworking:'fCoworking',formation:'fFormation',autres_f:'fAutresF'};
+  return t[map[k]]||k;
+}
+
+async function saveCalc(){
+  if(!curProj||!window._calc)return;
+  const c=window._calc;
+  const invalid=[...document.querySelectorAll('.cinput')].find(i=>{
+    const raw=Number(i.value);
+    const max=i.max===''?Infinity:Number(i.max);
+    return i.value!==''&&(!Number.isFinite(raw)||raw<0||raw>max);
+  });
+  if(invalid){invalid.focus();toast(T[lang].invalidNumber,true);return;}
+  const btn=document.getElementById('btn-save');
+  btn.classList.add('ld');btn.disabled=true;
+  const details=collectCalcDetails();
+  details._buckets=c.buckets;
+  curProj.currency=curDevise;
+  await sb.from('projects').update({currency:curDevise}).eq('id',curProj.id).eq('user_id',user.id);
+  const ins=await sb.from('calculations').insert({
+    project_id:curProj.id,user_id:user.id,
+    revenue:c.rev,expenses:c.cost,net_profit:c.profit,margin_percent:c.margin,
+    details:details,calc_date:details._calc_date
+  }).select().single();
+  btn.classList.remove('ld');btn.disabled=false;
+  if(ins.error){toast(ins.error.message,true);return;}
+  const p=projects.find(x=>x.id===curProj.id);
+  if(p){if(!p.calculations)p.calculations=[];p.calculations.push(ins.data);}
+  localStorage.setItem(calcDraftKey(curProj,curDevise),JSON.stringify(details));
+  toast(T[lang].saved);
+  renderHistory();
+  renderAll();
+}
+
+function renderHistory(){
+  const el=document.getElementById('calc-hist');if(!el)return;
+  const t=T[lang];
+  const calcs=[...(curProj.calculations||[])].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  let h='<div class="sh"><div class="sh-title">'+t.history+'</div></div>';
+  if(!calcs.length)h+='<div class="proj-nocalc">'+t.noHistory+'</div>';
+  else h+=calcs.map(c=>{
+      const d=new Date(c.calc_date||c.created_at).toLocaleDateString(lang==='ar'?'ar-MA':lang==='fr'?'fr-FR':'en-GB',{day:'2-digit',month:'short',year:'numeric'});
+      const periodKey='period'+String(c.details?._period_type||'').replace(/^./,x=>x.toUpperCase());
+      const period=t[periodKey]?t[periodKey]+' · ':'';
+      return '<div class="hist-row"><div class="hist-date">'+d+'</div>'+
+        '<div class="hist-mid"><div class="hist-profit '+(c.net_profit>=0?'pos':'neg')+'">'+fmt(c.net_profit)+' '+calcCurrency(curProj,c)+'</div>'+
+        '<div class="hist-meta">'+period+t.ca+' '+fmt(c.revenue)+' &middot; '+t.margin+' '+(c.margin_percent||0)+'%</div></div>'+
+        '<div class="hist-actions"><button class="icon-btn" onclick="loadCalc(\''+c.id+'\')" title="'+t.loadCalc+'">'+ic('edit')+'</button>'+
+        '<button class="icon-btn" onclick="askDeleteCalc(\''+c.id+'\')" title="'+t.delete+'">'+ic('trash')+'</button></div></div>';
+    }).join('');
+  el.innerHTML=premiumLock(h);
+}
+
+function loadCalc(cid){
+  const c=(curProj.calculations||[]).find(x=>x.id===cid);if(!c)return;
+  curDevise=calcCurrency(curProj,c);
+  const details=normalizeDetails(curProj.business_type,c.details||{});
+  details._currency=curDevise;
+  details._calc_date=c.calc_date||new Date().toISOString().split('T')[0];
+  details._period_type=details._period_type||(curProj.business_type==='ecom'?'day':'month');
+  localStorage.setItem(calcDraftKey(curProj,curDevise),JSON.stringify(details));
+  renderCalc();
+  showView('calc');
+  toast(T[lang].loaded);
+}
+
+/* ════════ ADD / DELETE PROJECT ════════ */
+function openAdd(){
+  if(!canCreateProject()){openUpgrade('project');return;}
+  newType=null;
+  document.getElementById('pname').value='';
+  document.getElementById('pdevise').value='MAD';
+  document.getElementById('add-err').classList.remove('show');
+  document.querySelectorAll('.tc').forEach(c=>c.classList.remove('sel'));
+  openM('add-modal');
+}
+function selType(tp){
+  newType=tp;
+  document.querySelectorAll('.tc').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('tc-'+tp).classList.add('sel');
+}
+async function createProject(){
+  const t=T[lang];
+  if(!canCreateProject()){closeM('add-modal');openUpgrade('project');return;}
+  const name=document.getElementById('pname').value.trim();
+  const devise=document.getElementById('pdevise').value;
+  const err=document.getElementById('add-err');
+  err.classList.remove('show');
+  if(!newType){err.textContent=t.businessType+' ?';err.classList.add('show');return;}
+  if(!name){err.textContent=t.projectName+' ?';err.classList.add('show');return;}
+  const res=await sb.from('projects').insert({user_id:user.id,name:name,business_type:newType,currency:devise}).select().single();
+  if(res.error){err.textContent=res.error.message;err.classList.add('show');return;}
+  res.data.calculations=[];
+  projects.unshift(res.data);
+  closeM('add-modal');
+  renderAll();
+  toast(t.projectCreated);
+  setTimeout(()=>openCalc(res.data.id),500);
+}
+function askDeleteProject(pid){
+  const p=projects.find(x=>x.id===pid);if(!p)return;
+  const t=T[lang];
+  confirmDialog(t.confirmDelProjectT,tpl(t.confirmDelProjectM,{n:esc(p.name)}),async function(){
+    const res=await sb.from('projects').update({is_archived:true}).eq('id',pid);
+    if(res.error){toast(res.error.message,true);return;}
+    projects=projects.filter(x=>x.id!==pid);
+    if(curProj&&curProj.id===pid)curProj=null;
+    renderAll();
+    if(curView==='calc')showView('projects');
+    toast(t.projectDeleted);
+  });
+}
+function askDeleteCalc(cid){
+  const t=T[lang];
+  confirmDialog(t.confirmDelCalcT,t.confirmDelCalcM,async function(){
+    const res=await sb.from('calculations').delete().eq('id',cid);
+    if(res.error){toast(res.error.message,true);return;}
+    projects.forEach(p=>{if(p.calculations)p.calculations=p.calculations.filter(c=>c.id!==cid);});
+    if(curProj)renderHistory();
+    renderAll();
+    drawCharts(curView);
+    toast(t.calcDeleted);
+  });
+}
+
+/* ════════ CONFIRM DIALOG ════════ */
+function confirmDialog(title,msg,cb){
+  document.getElementById('cf-title').textContent=title;
+  document.getElementById('cf-msg').innerHTML=msg;
+  confirmCb=cb;
+  openM('confirm-modal');
+}
+document.getElementById('cf-yes').addEventListener('click',function(){
+  closeM('confirm-modal');
+  if(confirmCb){const c=confirmCb;confirmCb=null;c();}
+});
+
+function openUpgrade(reason){
+  toast(T[lang].fullAccessBeta);
+}
+function beginCheckout(){
+  toast(T[lang].fullAccessBeta);
+}
+
+/* ════════ VIEWS / UI ════════ */
+function showView(v){
+  curView=v;
+  ['overview','projects','calc','analytics','daily'].forEach(x=>{
+    document.getElementById('view-'+x).classList.toggle('active',x===v);
+  });
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  const nav=document.getElementById('nav-'+v);
+  if(nav)nav.classList.add('active');
+  const t=T[lang];
+  const titles={overview:t.overview,projects:t.projects,calc:curProj?curProj.name:t.projects,analytics:t.analyticsTitle,daily:t.dailyTitle};
+  document.getElementById('topbar-title').textContent=titles[v]||'';
+  drawCharts(v);
+  if(window.innerWidth<=760)document.getElementById('sidebar').classList.remove('open');
+}
+function toggleSB(){document.getElementById('sidebar').classList.toggle('open');}
+function openM(id){document.getElementById(id).classList.add('open');}
+function closeM(id){document.getElementById(id).classList.remove('open');}
+function covr(e,id){if(e.target===document.getElementById(id))closeM(id);}
+
+function toast(msg,isErr){
+  const el=document.getElementById('toast');
+  document.getElementById('toast-ic').innerHTML=ic(isErr?'alert':'check');
+  document.getElementById('toast-msg').textContent=msg;
+  el.className='toast'+(isErr?' err':'')+' show';
+  clearTimeout(window._tt);
+  window._tt=setTimeout(()=>el.classList.remove('show'),3400);
+}
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function fmt(n){return Number(n||0).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:2});}
+
+async function doLogout(){await sb.auth.signOut();location.href='sellsense-auth.html';}
+
+/* ════════ LANGUAGE ════════ */
+function setLang(l){
+  lang=l;
+  localStorage.setItem('sellsense-lang',l);
+  buildSidebar();
+  renderAll();
+  if(curView==='calc'&&curProj)renderCalc();
+  showView(curView);
+}
+
+/* ════════ START ════════ */
+boot();
+</script>
+</body>
+</html>
