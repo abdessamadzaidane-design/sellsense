@@ -323,8 +323,8 @@ svg{display:block;}
 .access-sub{font-size:12px;color:var(--muted);margin-top:2px;}
 .access-btn{position:relative;z-index:1;border:1px solid var(--gold-soft);border-radius:10px;background:var(--grad);color:#260711;font-family:var(--fd);font-weight:800;font-size:12px;padding:10px 14px;white-space:nowrap;}
 .premium-lock{position:relative;border-radius:var(--r2);margin-bottom:18px;overflow:hidden;}
-.premium-lock-content{filter:blur(2.5px);opacity:.58;pointer-events:none;user-select:none;}
-.premium-lock::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(37,7,18,.08),rgba(37,7,18,.54));pointer-events:none;}
+.premium-lock-content{filter:blur(.8px);opacity:.72;pointer-events:none;user-select:none;}
+.premium-lock::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(37,7,18,.02),rgba(37,7,18,.42));pointer-events:none;}
 .premium-lock-overlay{position:absolute;z-index:2;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;}
 .premium-lock-card{max-width:410px;border:1px solid rgba(216,173,61,.46);border-radius:18px;padding:22px;background:rgba(30,5,13,.94);box-shadow:0 18px 46px rgba(0,0,0,.36);}
 .premium-lock-icon{width:40px;height:40px;display:grid;place-items:center;margin:0 auto 10px;border-radius:12px;background:rgba(216,173,61,.12);border:1px solid rgba(216,173,61,.32);color:var(--gold);}
@@ -347,6 +347,11 @@ svg{display:block;}
 .upgrade-list div{display:flex;gap:8px;align-items:flex-start;}
 .upgrade-list b{color:var(--gold);}
 .upgrade-note{text-align:center;font-size:11px;color:var(--muted);margin-top:12px;}
+.upgrade-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+.upgrade-actions .btn-modal{width:100%;}
+.upgrade-actions .annual{background:linear-gradient(135deg,#0D754A,#075A39);border:1px solid rgba(248,222,139,.42);color:#fff;}
+.history-limit{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:12px;padding:13px 15px;border:1px solid rgba(216,173,61,.25);border-radius:12px;background:rgba(216,173,61,.07);font-size:12px;color:var(--text-2);}
+.history-limit button{border:0;border-radius:8px;background:var(--gold);color:#260711;font-family:var(--fd);font-weight:800;padding:7px 10px;}
 
 /* TOAST */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--bg-4);border:1px solid var(--blue);border-radius:12px;padding:13px 18px;font-size:14px;display:flex;align-items:center;gap:9px;transform:translateY(80px);opacity:0;transition:all .3s;z-index:500;box-shadow:var(--shadow);font-weight:500;}
@@ -358,7 +363,7 @@ svg{display:block;}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media(max-width:1040px){.kpis{grid-template-columns:repeat(2,1fr);}.grid2{grid-template-columns:1fr;}.calc-layout{grid-template-columns:1fr;}.result{position:static;}}
 @media(max-width:900px){.sidebar{transform:translateX(-100%);visibility:hidden;pointer-events:none;}[dir="rtl"] .sidebar{transform:translateX(100%);}.sidebar.open{transform:translateX(0)!important;visibility:visible;pointer-events:auto;}.main{margin-left:0!important;margin-right:0!important;}.hambtn{display:flex;}.top-lang-sw{display:flex;}.view{padding:18px;}.topbar{padding:12px 18px;}.calc-fields{grid-template-columns:1fr;}.hero{gap:18px;}}
-@media(max-width:560px){.view{padding:16px;}.topbar{padding:10px 14px;}.topbar-date{display:none;}.plan-status{padding:6px 8px;}.topbar-tools{gap:8px;}.topbar-title{font-size:16px;}.top-lang-sw .lang-btn{min-width:34px;padding:5px 7px;}.kpis{gap:10px;}.hero{padding:20px;}.proj-grid{grid-template-columns:minmax(0,1fr);}.modal{padding:28px 20px;}.type-cards,.upgrade-grid{grid-template-columns:1fr;}.access-banner{align-items:flex-start;flex-direction:column;}.access-btn{width:100%;}.premium-lock-overlay{padding:12px;}.premium-lock-card{padding:18px;}.result-metrics,.calc-context{grid-template-columns:1fr;}.hist-date{min-width:72px;}.hist-row{gap:8px;padding:12px;}}
+@media(max-width:560px){.view{padding:16px;}.topbar{padding:10px 14px;}.topbar-date{display:none;}.plan-status{padding:6px 8px;}.topbar-tools{gap:8px;}.topbar-title{font-size:16px;}.top-lang-sw .lang-btn{min-width:34px;padding:5px 7px;}.kpis{gap:10px;}.hero{padding:20px;}.proj-grid{grid-template-columns:minmax(0,1fr);}.modal{padding:28px 20px;}.type-cards,.upgrade-grid,.upgrade-actions{grid-template-columns:1fr;}.access-banner{align-items:flex-start;flex-direction:column;}.access-btn{width:100%;}.premium-lock-overlay{padding:12px;}.premium-lock-card{padding:18px;}.result-metrics,.calc-context{grid-template-columns:1fr;}.hist-date{min-width:72px;}.hist-row{gap:8px;padding:12px;}.history-limit{align-items:flex-start;flex-direction:column;}}
 
 .brand-mark{position:relative;overflow:hidden;background:var(--royal-red)!important;border:1.5px solid rgba(246,195,74,.72);box-shadow:0 8px 24px rgba(195,39,47,.34),inset 0 0 0 1px rgba(255,255,255,.08)!important;}
 .brand-mark img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.12) contrast(1.06);}
@@ -532,14 +537,14 @@ svg{display:block;}
       <div class="upgrade-star"><span class="brand-star"></span></div>
       <div class="modal-title" data-t="upgradeTitle">Unlock the full picture</div>
       <div class="modal-sub" data-t="upgradeSub">Go Premium for unlimited projects, complete insights and daily tracking.</div>
-      <div class="upgrade-price">$10 <span data-t="perMonth">/ month</span></div>
+      <div class="upgrade-price">$9.99 <span data-t="perMonth">/ month</span></div>
     </div>
     <div class="upgrade-grid">
       <div class="upgrade-card">
         <h4 data-t="freePlan">Free plan</h4>
         <div class="upgrade-list">
           <div><b>1</b><span data-t="freeProjectLimit">1 project only</span></div>
-          <div><b>7</b><span data-t="trialVisibility">Full visibility for 7 days</span></div>
+          <div><b>14</b><span data-t="trialVisibility">14 days of visible history</span></div>
           <div><b>—</b><span data-t="limitedAfterTrial">Advanced visibility locks after the trial</span></div>
         </div>
       </div>
@@ -552,8 +557,11 @@ svg{display:block;}
         </div>
       </div>
     </div>
-    <button class="btn-modal pri" style="width:100%;" onclick="beginCheckout()" data-t="goPremium">Go Premium</button>
-    <div class="upgrade-note" data-t="checkoutNote">Secure checkout will be connected to your payment provider.</div>
+    <div class="upgrade-actions">
+      <button class="btn-modal pri" onclick="beginCheckout('monthly')" data-t="chooseMonthly">Choose $9.99 monthly</button>
+      <button class="btn-modal annual" onclick="beginCheckout('annual')" data-t="chooseAnnual">Choose $99.99 yearly</button>
+    </div>
+    <div class="upgrade-note" data-t="checkoutNote">Secure checkout by Stripe. Cancel anytime.</div>
   </div>
 </div>
 
@@ -1301,10 +1309,10 @@ const BUCKET_COLOR={product:'#9B2C4D',shipping:'#F4CA5B',marketing:'#65152F',fee
 const BUCKET_KEY={product:'bProduct',shipping:'bShipping',marketing:'bMarketing',fees:'bFees',tools:'bTools',production:'bProduction',team:'bTeam',other:'bOther'};
 
 /* ════════ STATE ════════ */
-let lang=['en','fr','ar'].includes(localStorage.getItem('sellsense-lang'))?localStorage.getItem('sellsense-lang'):'en',user=null,profile=null,projects=[],curProj=null,curDevise='MAD',overviewCur='MAD',newType=null,curView='overview',confirmCb=null;
+let lang=['en','fr','ar'].includes(localStorage.getItem('sellsense-lang'))?localStorage.getItem('sellsense-lang'):'en',user=null,profile=null,billing=null,billingReady=false,projects=[],curProj=null,curDevise='MAD',overviewCur='MAD',newType=null,curView='overview',confirmCb=null;
 const charts={};
-const TRIAL_DAYS=7;
-const PREMIUM_CHECKOUT_URL='';
+const TRIAL_DAYS=14;
+const FREE_HISTORY_DAYS=14;
 
 /* ════════ BOOT ════════ */
 async function boot(){
@@ -1312,12 +1320,18 @@ async function boot(){
   if(!session){location.href='sellsense-auth.html';return;}
   user=session.user;
   await loadProfile();
+  await loadBilling();
   await loadProjects();
   buildSidebar();
   renderAll();
   showView('overview');
   document.getElementById('ls').style.display='none';
   document.getElementById('app').style.display='flex';
+  const checkout=new URLSearchParams(location.search).get('checkout');
+  if(checkout==='success'){
+    toast(T[lang].checkoutSuccess);
+    history.replaceState({},'',location.pathname);
+  }
 }
 
 async function loadProfile(){
@@ -1328,6 +1342,17 @@ async function loadProfile(){
     await sb.from('profiles').upsert({id:user.id,full_name:n,email:user.email,currency:'MAD'});
     profile={full_name:n,currency:'MAD',created_at:new Date().toISOString()};
   }
+}
+
+async function loadBilling(){
+  const res=await sb.from('billing_subscriptions').select('*').eq('user_id',user.id).single();
+  if(res.error||!res.data||!res.data.user_id){
+    billingReady=false;
+    billing=null;
+    return;
+  }
+  billingReady=true;
+  billing=res.data;
 }
 
 async function loadProjects(){
@@ -1344,21 +1369,25 @@ function calcCurrency(p,c){
 }
 function allCalcs(currency){
   const out=[];
-  projects.forEach(p=>(p.calculations||[]).forEach(c=>out.push(Object.assign({},c,{
+  projects.forEach(p=>visibleCalcs(p).forEach(c=>out.push(Object.assign({},c,{
     _proj:p.name,_type:p.business_type,_cur:calcCurrency(p,c)
   }))));
   out.sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
   return currency?out.filter(c=>c._cur===currency):out;
 }
 function latestCalc(p){
-  if(!p.calculations||!p.calculations.length)return null;
-  return [...p.calculations].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))[0];
+  const calcs=visibleCalcs(p);
+  if(!calcs.length)return null;
+  return [...calcs].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))[0];
 }
 function getLatest(p,f){const c=latestCalc(p);return c?(c[f]||0):0;}
 
 function isPremium(){
-  const state=String(profile?.subscription_status||profile?.plan||'').toLowerCase();
-  return profile?.is_premium===true||['premium','active','paid','pro'].includes(state);
+  const state=String(billing?.status||profile?.subscription_status||profile?.plan||'').toLowerCase();
+  const paidPlan=String(billing?.plan_key||profile?.plan||'').toLowerCase();
+  const currentEnd=billing?.current_period_end?new Date(billing.current_period_end).getTime():Infinity;
+  return (['active','trialing'].includes(state)&&paidPlan==='founding_pro'&&currentEnd>Date.now())||
+    profile?.is_premium===true||['premium','paid','pro'].includes(state);
 }
 function trialStart(){
   const key='sellsense-trial-start-'+(user?.id||'guest');
@@ -1367,19 +1396,44 @@ function trialStart(){
   return new Date(value);
 }
 function trialDaysLeft(){
-  if(isPremium())return TRIAL_DAYS;
-  const end=trialStart().getTime()+(TRIAL_DAYS*86400000);
+  if(isPremium())return 0;
+  const end=billing?.trial_ends_at?new Date(billing.trial_ends_at).getTime():trialStart().getTime()+(TRIAL_DAYS*86400000);
   return Math.max(0,Math.ceil((end-Date.now())/86400000));
 }
-function hasFullVisibility(){return true;}
-function canCreateProject(){return true;}
-function premiumLock(content,title,sub){
-  return content;
+function hasFullVisibility(){return !billingReady||isPremium()||trialDaysLeft()>0;}
+function canCreateProject(){return hasFullVisibility()||projects.length<1;}
+function calcIsVisible(c){
+  if(hasFullVisibility())return true;
+  const stamp=new Date(c.created_at).getTime();
+  return Number.isFinite(stamp)&&stamp>=Date.now()-(FREE_HISTORY_DAYS*86400000);
 }
-function accessBanner(){return '';}
+function visibleCalcs(p){return (p.calculations||[]).filter(calcIsVisible);}
+function premiumLock(content,title,sub){
+  if(hasFullVisibility())return content;
+  const t=T[lang];
+  return '<div class="premium-lock"><div class="premium-lock-content">'+content+'</div>'+
+    '<div class="premium-lock-overlay"><div class="premium-lock-card"><div class="premium-lock-icon">'+ic('lock')+'</div>'+
+    '<div class="premium-lock-title">'+esc(title||t.premiumLockedTitle)+'</div>'+
+    '<div class="premium-lock-sub">'+esc(sub||t.premiumLockedSub)+'</div>'+
+    '<button class="premium-lock-btn" onclick="openUpgrade()">'+esc(t.upgrade)+'</button></div></div></div>';
+}
+function accessBanner(){
+  const t=T[lang];
+  if(isPremium()||!billingReady)return '';
+  const days=trialDaysLeft();
+  const trial=days>0;
+  return '<div class="access-banner"><div class="access-copy"><div class="access-kicker">'+t.accessKicker+'</div>'+
+    '<div class="access-title">'+(trial?t.accessTitleTrial:t.accessTitleExpired)+'</div>'+
+    '<div class="access-sub">'+tpl(trial?t.accessSubTrial:t.accessSubExpired,{n:days})+'</div></div>'+
+    '<button class="access-btn" onclick="openUpgrade()">'+t.upgrade+'</button></div>';
+}
 function renderAccessStatus(){
   const el=document.getElementById('plan-status');if(!el)return;
-  el.innerHTML='<span>'+T[lang].fullAccessBeta+'</span>';
+  const t=T[lang];
+  if(!billingReady){el.innerHTML='<span>'+t.fullAccessBeta+'</span>';return;}
+  if(isPremium()){el.innerHTML='<span>'+t.premiumActive+'</span><button onclick="openBillingPortal()">'+t.managePlan+'</button>';return;}
+  const days=trialDaysLeft();
+  el.innerHTML='<span>'+(days>0?tpl(t.trialDaysLeft,{n:days}):t.freePlan)+'</span><button onclick="openUpgrade()">'+t.upgrade+'</button>';
 }
 
 function availableCurrencies(){
@@ -1811,7 +1865,7 @@ function calcDraftKey(p,cur){
   return 'sellsense-calc-draft-'+(user?.id||'guest')+'-'+p.id+'-'+cur;
 }
 function latestCalcForCurrency(p,cur){
-  return [...(p.calculations||[])].filter(c=>calcCurrency(p,c)===cur).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))[0]||null;
+  return [...visibleCalcs(p)].filter(c=>calcCurrency(p,c)===cur).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))[0]||null;
 }
 function normalizeDetails(type,details){
   const d=Object.assign({},details||{});
@@ -2122,7 +2176,8 @@ async function saveCalc(){
 function renderHistory(){
   const el=document.getElementById('calc-hist');if(!el)return;
   const t=T[lang];
-  const calcs=[...(curProj.calculations||[])].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  const all=[...(curProj.calculations||[])].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  const calcs=all.filter(calcIsVisible),hidden=Math.max(0,all.length-calcs.length);
   let h='<div class="sh"><div class="sh-title">'+t.history+'</div></div>';
   if(!calcs.length)h+='<div class="proj-nocalc">'+t.noHistory+'</div>';
   else h+=calcs.map(c=>{
@@ -2135,7 +2190,8 @@ function renderHistory(){
         '<div class="hist-actions"><button class="icon-btn" onclick="loadCalc(\''+c.id+'\')" title="'+t.loadCalc+'">'+ic('edit')+'</button>'+
         '<button class="icon-btn" onclick="askDeleteCalc(\''+c.id+'\')" title="'+t.delete+'">'+ic('trash')+'</button></div></div>';
     }).join('');
-  el.innerHTML=premiumLock(h);
+  if(hidden)h+='<div class="history-limit"><span>'+tpl(t.historyLimitNotice,{n:hidden})+'</span><button onclick="openUpgrade()">'+t.upgrade+'</button></div>';
+  el.innerHTML=h;
 }
 
 function loadCalc(cid){
@@ -2223,10 +2279,27 @@ document.getElementById('cf-yes').addEventListener('click',function(){
 });
 
 function openUpgrade(reason){
-  toast(T[lang].fullAccessBeta);
+  openM('upgrade-modal');
 }
-function beginCheckout(){
-  toast(T[lang].fullAccessBeta);
+async function billingRequest(path,body){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session)throw new Error(T[lang].checkoutMissing);
+  const res=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},body:JSON.stringify(body||{})});
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok)throw new Error(data.error||T[lang].checkoutMissing);
+  return data;
+}
+async function beginCheckout(interval){
+  try{
+    const data=await billingRequest('/api/create-checkout-session',{interval:interval||'monthly'});
+    if(data.url)location.href=data.url;
+  }catch(e){toast(e.message||T[lang].checkoutMissing,true);}
+}
+async function openBillingPortal(){
+  try{
+    const data=await billingRequest('/api/create-portal-session');
+    if(data.url)location.href=data.url;
+  }catch(e){toast(e.message||T[lang].checkoutMissing,true);}
 }
 
 /* ════════ VIEWS / UI ════════ */
@@ -2274,6 +2347,73 @@ function setLang(l){
 }
 
 /* ════════ START ════════ */
+Object.assign(T.en,{
+  fullAccessBeta:"Billing setup pending - full access",
+  accessTitleTrial:"Your Pro trial is active",
+  accessSubTrial:"You have {n} days of Pro left. Keep unlimited projects, complete history and insights with Founding Pro.",
+  accessTitleExpired:"You are using the Free plan",
+  accessSubExpired:"Your latest 14 days stay visible. Upgrade for unlimited projects, complete history and advanced insights.",
+  upgradeTitle:"Keep the complete picture",
+  upgradeSub:"Founding Pro keeps unlimited projects, complete history and advanced insights.",
+  trialVisibility:"14 days of visible history",
+  limitedAfterTrial:"Analytics, comparisons and older history become Pro",
+  premiumLockedTitle:"Unlock the complete picture",
+  premiumLockedSub:"Founding Pro unlocks analytics, comparisons and complete history.",
+  projectLimitTitle:"Free includes 1 active project",
+  projectLimitSub:"Upgrade to Founding Pro for unlimited active projects.",
+  checkoutNote:"Secure checkout by Stripe. Cancel anytime.",
+  checkoutMissing:"Stripe test checkout is not connected yet.",
+  chooseMonthly:"Choose $9.99 monthly",
+  chooseAnnual:"Choose $99.99 yearly",
+  managePlan:"Manage",
+  historyLimitNotice:"{n} older entries are outside the Free plan's 14-day history.",
+  checkoutSuccess:"Payment received. Pro access will update shortly."
+});
+Object.assign(T.fr,{
+  fullAccessBeta:"Configuration du paiement en cours - acces complet",
+  accessTitleTrial:"Votre essai Pro est actif",
+  accessSubTrial:"Il vous reste {n} jours de Pro. Gardez les projets illimites, l'historique complet et les analyses avec Founding Pro.",
+  accessTitleExpired:"Vous utilisez l'offre gratuite",
+  accessSubExpired:"Vos 14 derniers jours restent visibles. Passez a Pro pour les projets illimites, l'historique complet et les analyses avancees.",
+  upgradeTitle:"Gardez une vision complete",
+  upgradeSub:"Founding Pro conserve les projets illimites, l'historique complet et les analyses avancees.",
+  trialVisibility:"14 jours d'historique visible",
+  limitedAfterTrial:"Les analyses, comparaisons et l'ancien historique deviennent Pro",
+  premiumLockedTitle:"Debloquez la vision complete",
+  premiumLockedSub:"Founding Pro debloque les analyses, comparaisons et l'historique complet.",
+  projectLimitTitle:"L'offre gratuite inclut 1 projet actif",
+  projectLimitSub:"Passez a Founding Pro pour des projets actifs illimites.",
+  checkoutNote:"Paiement securise par Stripe. Resiliez a tout moment.",
+  checkoutMissing:"Le checkout Stripe de test n'est pas encore connecte.",
+  chooseMonthly:"Choisir 9,99 $ par mois",
+  chooseAnnual:"Choisir 99,99 $ par an",
+  managePlan:"Gerer",
+  historyLimitNotice:"{n} anciennes entrees depassent les 14 jours visibles de l'offre gratuite.",
+  checkoutSuccess:"Paiement recu. Votre acces Pro sera actualise sous peu."
+});
+Object.assign(T.ar,{
+  fullAccessBeta:"إعداد الأداء باقي خدام - الولوج كامل",
+  accessTitleTrial:"تجربة Pro ديالك خدامة",
+  accessSubTrial:"باقي ليك {n} أيام فـ Pro. خليك بالمشاريع بلا حدود، السجل كامل، والتحليلات مع Founding Pro.",
+  accessTitleExpired:"راك فالخطة المجانية",
+  accessSubExpired:"آخر 14 يوم باقين باينين. ترقى لـ Pro باش تفتح المشاريع بلا حدود، السجل كامل، والتحليلات المتقدمة.",
+  upgradeTitle:"خلي الصورة كاملة عندك",
+  upgradeSub:"Founding Pro كيبقي ليك المشاريع بلا حدود، السجل كامل، والتحليلات المتقدمة.",
+  trialVisibility:"14 يوم ديال السجل باينين",
+  limitedAfterTrial:"التحليلات، المقارنات، والسجل القديم كيدخلو فـ Pro",
+  premiumLockedTitle:"حل الصورة كاملة",
+  premiumLockedSub:"Founding Pro كيفتح التحليلات، المقارنات، والسجل كامل.",
+  projectLimitTitle:"الخطة المجانية فيها مشروع واحد خدام",
+  projectLimitSub:"ترقى لـ Founding Pro باش تخدم بمشاريع بلا حدود.",
+  checkoutNote:"الأداء آمن عبر Stripe. تقدر تلغي وقت ما بغيتي.",
+  checkoutMissing:"Checkout ديال Stripe فالتجربة باقي ما تربطش.",
+  chooseMonthly:"اختار 9.99$ فالشهر",
+  chooseAnnual:"اختار 99.99$ فالعام",
+  managePlan:"دبر الاشتراك",
+  historyLimitNotice:"كاينين {n} إدخالات قدام من 14 يوم. ترقى باش تشوف السجل كامل.",
+  checkoutSuccess:"توصلنا بالأداء. الولوج Pro غادي يتحدث دابا."
+});
+
 boot();
 </script>
 </body>

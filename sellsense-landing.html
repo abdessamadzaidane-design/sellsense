@@ -262,7 +262,6 @@ h1 .hl,.ftitle em{background:linear-gradient(90deg,var(--gold),#FFF1BE 48%,var(-
 @media(prefers-reduced-motion:reduce){.brand-star{animation:none!important}}
 .btn-main,.nav-cta,.mob-cta,.btn-p{position:relative;overflow:hidden}.btn-main::after,.nav-cta::after,.mob-cta::after,.btn-p::after{content:"";position:absolute;inset:-60% auto -60% -45%;width:28%;transform:rotate(18deg);background:rgba(255,255,255,.24);transition:left .45s ease}.btn-main:hover::after,.nav-cta:hover::after,.mob-cta:hover::after,.btn-p:hover::after{left:120%}
 .lang-sw{gap:3px}.lbtn{min-width:34px;padding-left:8px;padding-right:8px}
-.pricing-s,.nav-link[href="#pricing"],.mob-link[href="#pricing"],.flc a[href="#pricing"]{display:none!important;}
 
 </style>
 </head>
@@ -398,7 +397,7 @@ h1 .hl,.ftitle em{background:linear-gradient(90deg,var(--gold),#FFF1BE 48%,var(-
   <div class="pricing-head">
     <span class="stag" data-t="pricingTag">Simple pricing</span>
     <h2 class="stitle" data-t="pricingTitle">Start with one project. Grow without limits.</h2>
-    <p class="ssub" data-t="pricingSub">Get full visibility for 7 days. Then keep advanced insights and unlimited projects with Premium.</p>
+    <p class="ssub" data-t="pricingSub">Start with full Pro for 14 days. Then keep a useful Free plan or upgrade for the complete picture.</p>
   </div>
   <div class="pricing-grid">
     <article class="plan free rev">
@@ -407,24 +406,25 @@ h1 .hl,.ftitle em{background:linear-gradient(90deg,var(--gold),#FFF1BE 48%,var(-
       <div class="plan-price"><strong>$0</strong><span data-t="freeForever">to start</span></div>
       <p class="plan-desc" data-t="freeDesc">One project to calculate and understand your real net profit.</p>
       <div class="plan-list">
-        <div class="plan-feature"><span class="plan-check">1</span><span data-t="freeFeat1">1 project only</span></div>
-        <div class="plan-feature"><span class="plan-check">7</span><span data-t="freeFeat2">Full visibility for 7 days</span></div>
+        <div class="plan-feature"><span class="plan-check">1</span><span data-t="freeFeat1">1 active project</span></div>
+        <div class="plan-feature"><span class="plan-check">14</span><span data-t="freeFeat2">Last 14 days of saved history</span></div>
         <div class="plan-feature"><span class="plan-check">✓</span><span data-t="freeFeat3">Real net profit calculator</span></div>
       </div>
       <a href="sellsense-auth.html" class="plan-cta" data-t="freeCta">Start free</a>
     </article>
     <article class="plan premium rev">
-      <span class="plan-popular" data-t="popular">Most popular</span>
-      <div class="plan-kicker" data-t="premiumKicker">Premium</div>
-      <h3 class="plan-name">SellSense Premium</h3>
-      <div class="plan-price"><strong>$10</strong><span data-t="perMonth">/ month</span></div>
+      <span class="plan-popular" data-t="popular">Founding price</span>
+      <div class="plan-kicker" data-t="premiumKicker">Founding Pro</div>
+      <h3 class="plan-name">SellSense Pro</h3>
+      <div class="plan-price"><strong>$9.99</strong><span data-t="perMonth">/ month</span></div>
       <p class="plan-desc" data-t="premiumDesc">Full control for people building a serious digital business.</p>
       <div class="plan-list">
         <div class="plan-feature"><span class="plan-check">✓</span><span data-t="premiumFeat1">Unlimited projects</span></div>
         <div class="plan-feature"><span class="plan-check">✓</span><span data-t="premiumFeat2">Full visibility and insights</span></div>
         <div class="plan-feature"><span class="plan-check">✓</span><span data-t="premiumFeat3">Daily tracking and complete history</span></div>
+        <div class="plan-feature"><span class="plan-check">✓</span><span data-t="annualPrice">$99.99 yearly - save 16%</span></div>
       </div>
-      <a href="sellsense-auth.html?plan=premium" class="plan-cta" data-t="premiumCta">Go Premium</a>
+      <a href="sellsense-auth.html?plan=premium" class="plan-cta" data-t="premiumCta">Start 14-day Pro trial</a>
     </article>
   </div>
   <p class="pricing-note" data-t="pricingNote">No long-term commitment. Cancel anytime.</p>
@@ -841,6 +841,51 @@ function buildStars(){
 const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('vis');});},{threshold:0.08});
 document.querySelectorAll('.rev').forEach(el=>obs.observe(el));
 buildStars();
+Object.assign(TX.en,{
+  heroNote:"14-day Pro trial - no credit card required",
+  stat1n:"14 days",
+  stat1:"Full Pro trial",
+  pricingTitle:"Start free. Keep the complete picture with Pro.",
+  pricingSub:"Experience full Pro for 14 days. Then keep a useful Free plan or upgrade for unlimited projects and complete history.",
+  freeFeat1:"1 active project",
+  freeFeat2:"Last 14 days of saved history",
+  popular:"Founding price",
+  premiumKicker:"Founding Pro",
+  premiumDesc:"Complete business memory for people building a serious digital business.",
+  premiumCta:"Start 14-day Pro trial",
+  annualPrice:"$99.99 yearly - save 16%",
+  pricingNote:"No credit card required for the trial. Cancel Pro anytime."
+});
+Object.assign(TX.fr,{
+  heroNote:"Essai Pro de 14 jours - sans carte bancaire",
+  stat1n:"14 jours",
+  stat1:"Essai Pro complet",
+  pricingTitle:"Commencez gratuitement. Gardez la vision complete avec Pro.",
+  pricingSub:"Profitez de Pro pendant 14 jours. Gardez ensuite une offre gratuite utile ou passez a Pro pour les projets illimites et l'historique complet.",
+  freeFeat1:"1 projet actif",
+  freeFeat2:"Les 14 derniers jours d'historique",
+  popular:"Prix fondateur",
+  premiumKicker:"Founding Pro",
+  premiumDesc:"La memoire complete de votre activite pour avancer avec des chiffres clairs.",
+  premiumCta:"Demarrer l'essai Pro de 14 jours",
+  annualPrice:"99,99 $ par an - economisez 16 %",
+  pricingNote:"Aucune carte requise pour l'essai. Resiliez Pro a tout moment."
+});
+Object.assign(TX.ar,{
+  heroNote:"جرب Pro لمدة 14 يوم - بلا كارت بنكية",
+  stat1n:"14 يوم",
+  stat1:"تجربة Pro كاملة",
+  pricingTitle:"بدا بالمجان. وخلي الصورة كاملة مع Pro.",
+  pricingSub:"جرب Pro كامل 14 يوم. من بعد، كمل بالخطة المجانية ولا ترقى للمشاريع بلا حدود والسجل كامل.",
+  freeFeat1:"مشروع واحد خدام",
+  freeFeat2:"آخر 14 يوم من السجل",
+  popular:"ثمن المؤسسين",
+  premiumKicker:"Founding Pro",
+  premiumDesc:"السجل الكامل ديال خدمتك باش تكبر بأرقام واضحة.",
+  premiumCta:"بدا تجربة Pro ديال 14 يوم",
+  annualPrice:"99.99$ فالعام - وفر 16%",
+  pricingNote:"بلا كارت بنكية فالتجربة. تقدر تلغي Pro وقت ما بغيتي."
+});
 setLang(lang);
 </script>
 </body>

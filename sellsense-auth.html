@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>SellSense — Sign in</title>
-<meta name="description" content="Sign in to SellSense and use the open beta with full access and unlimited projects."/>
+<meta name="description" content="Sign in to SellSense and start a 14-day Pro trial with no credit card required."/>
 <meta name="theme-color" content="#4B1023"/>
 <link rel="icon" href="sellsense-star.svg"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -513,6 +513,24 @@ async function doReset(){
   okMsg(t.okReset);
 }
 
+Object.assign(TX.en,{
+  signupSub:"Start with full Pro access for 14 days. No credit card required.",
+  btnSignup:"Start my 14-day Pro trial",
+  badgeMain:"14-day Pro trial",
+  badgeNote:"No credit card required - Free plan remains available after the trial"
+});
+Object.assign(TX.fr,{
+  signupSub:"Commencez avec Pro pendant 14 jours. Aucune carte bancaire requise.",
+  btnSignup:"Demarrer mon essai Pro de 14 jours",
+  badgeMain:"Essai Pro de 14 jours",
+  badgeNote:"Sans carte bancaire - l'offre gratuite reste disponible apres l'essai"
+});
+Object.assign(TX.ar,{
+  signupSub:"بدا بـ Pro كامل لمدة 14 يوم. بلا كارت بنكية.",
+  btnSignup:"نبدا تجربة Pro ديال 14 يوم",
+  badgeMain:"تجربة Pro لمدة 14 يوم",
+  badgeNote:"بلا كارت بنكية - الخطة المجانية كتبقى من بعد التجربة"
+});
 setL(lang);
 if(new URLSearchParams(location.search).get('plan')==='premium')sw('signup');
 
