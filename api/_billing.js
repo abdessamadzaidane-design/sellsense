@@ -93,7 +93,7 @@ async function syncSubscription(admin, subscription) {
     billing_interval: price && price.recurring ? price.recurring.interval : null,
     plan_key: ["active", "trialing", "past_due"].includes(subscription.status) ? "founding_pro" : "free",
     status: subscription.status,
-    current_period_end: toIso(subscription.current_period_end),
+    current_period_end: toIso(subscription.current_period_end || (item && item.current_period_end)),
     cancel_at_period_end: Boolean(subscription.cancel_at_period_end),
     updated_at: new Date().toISOString(),
   };
