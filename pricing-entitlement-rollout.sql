@@ -23,3 +23,38 @@ on conflict (user_id) do update set
   status = 'active',
   trial_ends_at = null,
   updated_at = now();
+
+-- Ensure the testing email receives unlimited access whenever its profile is created.
+create or replace function public.create_billing_trial_for_profile()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  insert into public.billing_subscriptions (
+    user_id, plan_key, status, trial_ends_at, founding_price_eligible
+  ) values (
+    new.id,
+    case when lower(coalesce(new.email, '')) = 'jouteya1@gmail.com' then 'admin' else 'free' end,
+    case when lower(coalesce(new.email, '')) = 'jouteya1@gmail.com' then 'active' else 'trialing' end,
+    case when lower(coalesce(new.email, '')) = 'jouteya1@gmail.com' then null else now() + interval '14 days' end,
+    true
+  )
+  on conflict (user_id) do update set
+    plan_key = case
+      when lower(coalesce(new.email, '')) = 'jouteya1@gmail.com' then 'admin'
+      else public.billing_subscriptions.plan_key
+    end,
+    status = case
+      when lower(coalesce(new.email, '')) = 'jouteya1@gmail.com' then 'active'
+      else public.billing_subscriptions.status
+    end,
+    trial_ends_at = case
+      when lower(coalesce(new.email, '')) = 'jouteya1@gmail.com' then null
+      else public.billing_subscriptions.trial_ends_at
+    end,
+    updated_at = now();
+  return new;
+end;
+$$;
