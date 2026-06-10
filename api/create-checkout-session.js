@@ -22,6 +22,9 @@ module.exports = async function handler(req, res) {
       .select("*")
       .eq("user_id", user.id)
       .single();
+    if (existing && existing.plan_key === "admin") {
+      return sendJson(res, 409, { error: "This testing account already has unlimited product access." });
+    }
     if (existing && ["active", "trialing"].includes(existing.status) && existing.plan_key === "founding_pro") {
       return sendJson(res, 409, { error: "Pro is already active. Manage it from your billing portal." });
     }

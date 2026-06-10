@@ -80,6 +80,12 @@ async function findUserId(admin, subscription) {
 async function syncSubscription(admin, subscription) {
   const userId = await findUserId(admin, subscription);
   if (!userId) throw new Error("Stripe subscription is missing a SellSense user id");
+  const { data: entitlement } = await admin
+    .from("billing_subscriptions")
+    .select("plan_key")
+    .eq("user_id", userId)
+    .single();
+  if (entitlement && entitlement.plan_key === "admin") return entitlement;
   const item = subscription.items && subscription.items.data && subscription.items.data[0];
   const price = item && item.price;
   const customerId = typeof subscription.customer === "string"

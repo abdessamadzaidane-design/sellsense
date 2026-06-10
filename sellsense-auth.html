@@ -241,7 +241,7 @@ nav{background:rgba(24,5,12,.93);border-bottom-color:rgba(216,173,61,.18);}
       <div class="sicon"><svg class="icn" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
       <div class="ttl" id="sttl">Logged in</div>
       <div class="tsub" id="ssub">Redirecting to your dashboard...</div>
-      <button class="btn-p" onclick="location.href='sellsense-dashboard.html'"><span class="bt" id="go-dash-txt">Go to my dashboard</span><div class="sp"></div></button>
+      <button class="btn-p" onclick="location.href=dashboardUrl()"><span class="bt" id="go-dash-txt">Go to my dashboard</span><div class="sp"></div></button>
     </div>
   </div>
 </main>
@@ -251,6 +251,12 @@ nav{background:rgba(24,5,12,.93);border-bottom-color:rgba(216,173,61,.18);}
 const {createClient}=supabase;
 const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 let lang=['en','fr','ar'].includes(localStorage.getItem('sellsense-lang'))?localStorage.getItem('sellsense-lang'):'en',selType=null;
+const requestedPlan=new URLSearchParams(location.search).get('plan');
+if(['monthly','annual'].includes(requestedPlan))localStorage.setItem('sellsense-upgrade-intent',requestedPlan);
+function dashboardUrl(){
+  const plan=localStorage.getItem('sellsense-upgrade-intent');
+  return 'sellsense-dashboard.html'+(['monthly','annual'].includes(plan)?'?upgrade='+plan:'');
+}
 
 const TX={
   "en": {
@@ -437,8 +443,8 @@ function applyTX(){
   document.getElementById('tc-fl-n').textContent=t.typeFreelancer;
 }
 
-sb.auth.getSession().then(({data:{session}})=>{if(session)location.href='sellsense-dashboard.html';});
-sb.auth.onAuthStateChange((ev,session)=>{if(ev==='SIGNED_IN'&&session){ok();setTimeout(()=>location.href='sellsense-dashboard.html',1400);}});
+sb.auth.getSession().then(({data:{session}})=>{if(session)location.href=dashboardUrl();});
+sb.auth.onAuthStateChange((ev,session)=>{if(ev==='SIGNED_IN'&&session){ok();setTimeout(()=>location.href=dashboardUrl(),1400);}});
 
 function sw(tab){
   const isLogin=tab==='login';
@@ -468,7 +474,7 @@ async function doLogin(){
   const {error}=await sb.auth.signInWithPassword({email,password:pass});
   ld('bl',false);
   if(error){err(error.message.includes('Invalid')?t.errLogin:error.message);return;}
-  ok();setTimeout(()=>location.href='sellsense-dashboard.html',1400);
+  ok();setTimeout(()=>location.href=dashboardUrl(),1400);
 }
 
 async function doSignup(){
@@ -489,7 +495,7 @@ async function doSignup(){
     await sb.from('profiles').upsert({id:data.user.id,full_name:name,email,business_type:selType,currency:'MAD'});
   }
   if(data.session){
-    ok();setTimeout(()=>location.href='sellsense-dashboard.html',1400);
+    ok();setTimeout(()=>location.href=dashboardUrl(),1400);
   }else{
     okMsg(t.okSignup);
   }
@@ -497,7 +503,7 @@ async function doSignup(){
 
 async function gLogin(){
   clr();
-  const {error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/sellsense-dashboard.html'}});
+  const {error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/'+dashboardUrl()}});
   if(error)err('Google: '+error.message);
 }
 
@@ -532,7 +538,7 @@ Object.assign(TX.ar,{
   badgeNote:"بلا كارت بنكية - الخطة المجانية كتبقى من بعد التجربة"
 });
 setL(lang);
-if(new URLSearchParams(location.search).get('plan')==='premium')sw('signup');
+if(['premium','monthly','annual'].includes(new URLSearchParams(location.search).get('plan')))sw('signup');
 
 document.addEventListener('keydown',e=>{
   if(e.key==='Enter'){

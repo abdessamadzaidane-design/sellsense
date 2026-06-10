@@ -700,7 +700,7 @@ const T={
     "accessKicker": "Your plan",
     "accessTitleTrial": "Full visibility is open",
     "accessSubTrial": "You have {n} days of full visibility left. Premium unlocks unlimited projects and insights for $10/month.",
-    "accessTitleExpired": "Your 7-day visibility window ended",
+    "accessTitleExpired": "Your Pro trial ended",
     "accessSubExpired": "Upgrade to continue with full insights, daily tracking and unlimited projects.",
     "accessTitlePremium": "Premium is active",
     "accessSubPremium": "Unlimited projects, complete insights and daily tracking are unlocked.",
@@ -708,7 +708,7 @@ const T={
     "upgradeSub": "Go Premium for unlimited projects, complete insights and daily tracking.",
     "freePlan": "Free plan",
     "freeProjectLimit": "1 project only",
-    "trialVisibility": "Full visibility for 7 days",
+    "trialVisibility": "14 days of visible history",
     "limitedAfterTrial": "Advanced visibility locks after the trial",
     "unlimitedProjects": "Unlimited projects",
     "fullInsights": "Full visibility and insights",
@@ -927,7 +927,7 @@ const T={
     "accessKicker": "Votre offre",
     "accessTitleTrial": "La visibilité complète est ouverte",
     "accessSubTrial": "Il vous reste {n} jours de visibilité complète. Premium débloque les projets et analyses illimités pour 10 $/mois.",
-    "accessTitleExpired": "Vos 7 jours de visibilité sont terminés",
+    "accessTitleExpired": "Votre essai Pro est termine",
     "accessSubExpired": "Passez à Premium pour continuer avec les analyses, le suivi quotidien et les projets illimités.",
     "accessTitlePremium": "Premium est actif",
     "accessSubPremium": "Projets illimités, analyses complètes et suivi quotidien sont débloqués.",
@@ -935,7 +935,7 @@ const T={
     "upgradeSub": "Premium donne accès aux projets illimités, aux analyses complètes et au suivi quotidien.",
     "freePlan": "Offre gratuite",
     "freeProjectLimit": "1 seul projet",
-    "trialVisibility": "Visibilité complète pendant 7 jours",
+    "trialVisibility": "14 jours d'historique visible",
     "limitedAfterTrial": "La visibilité avancée se verrouille après l'essai",
     "unlimitedProjects": "Projets illimités",
     "fullInsights": "Visibilité et analyses complètes",
@@ -1331,6 +1331,12 @@ async function boot(){
     toast(T[lang].checkoutSuccess);
     history.replaceState({},'',location.pathname);
   }
+  const upgrade=new URLSearchParams(location.search).get('upgrade')||localStorage.getItem('sellsense-upgrade-intent');
+  if(['monthly','annual'].includes(upgrade)&&!isPremium()){
+    localStorage.removeItem('sellsense-upgrade-intent');
+    history.replaceState({},'',location.pathname);
+    openUpgrade(upgrade);
+  }
 }
 
 async function loadProfile(){
@@ -1385,9 +1391,10 @@ function isPremium(){
   const state=String(billing?.status||profile?.subscription_status||profile?.plan||'').toLowerCase();
   const paidPlan=String(billing?.plan_key||profile?.plan||'').toLowerCase();
   const currentEnd=billing?.current_period_end?new Date(billing.current_period_end).getTime():Infinity;
-  return (['active','trialing'].includes(state)&&paidPlan==='founding_pro'&&currentEnd>Date.now())||
+  return paidPlan==='admin'||(['active','trialing'].includes(state)&&paidPlan==='founding_pro'&&currentEnd>Date.now())||
     profile?.is_premium===true||['premium','paid','pro'].includes(state);
 }
+function isTesterAccess(){return String(billing?.plan_key||'').toLowerCase()==='admin';}
 function trialStart(){
   const key='sellsense-trial-start-'+(user?.id||'guest');
   let value=profile?.created_at||user?.created_at||localStorage.getItem(key);
@@ -1430,6 +1437,7 @@ function renderAccessStatus(){
   const el=document.getElementById('plan-status');if(!el)return;
   const t=T[lang];
   if(!billingReady){el.innerHTML='<span>'+t.fullAccessBeta+'</span>';return;}
+  if(isTesterAccess()){el.innerHTML='<span>'+t.testerAccess+'</span>';return;}
   if(isPremium()){el.innerHTML='<span>'+t.premiumActive+'</span><button onclick="openBillingPortal()">'+t.managePlan+'</button>';return;}
   const days=trialDaysLeft();
   el.innerHTML='<span>'+(days>0?tpl(t.trialDaysLeft,{n:days}):t.freePlan)+'</span><button onclick="openUpgrade()">'+t.upgrade+'</button>';
@@ -2366,7 +2374,8 @@ Object.assign(T.en,{
   chooseAnnual:"Choose $99.99 yearly",
   managePlan:"Manage",
   historyLimitNotice:"{n} older entries are outside the Free plan's 14-day history.",
-  checkoutSuccess:"Payment received. Pro access will update shortly."
+  checkoutSuccess:"Payment received. Pro access will update shortly.",
+  testerAccess:"Product testing access - unlimited"
 });
 Object.assign(T.fr,{
   fullAccessBeta:"Configuration du paiement en cours - acces complet",
@@ -2388,7 +2397,8 @@ Object.assign(T.fr,{
   chooseAnnual:"Choisir 99,99 $ par an",
   managePlan:"Gerer",
   historyLimitNotice:"{n} anciennes entrees depassent les 14 jours visibles de l'offre gratuite.",
-  checkoutSuccess:"Paiement recu. Votre acces Pro sera actualise sous peu."
+  checkoutSuccess:"Paiement recu. Votre acces Pro sera actualise sous peu.",
+  testerAccess:"Acces test produit - illimite"
 });
 Object.assign(T.ar,{
   fullAccessBeta:"إعداد الأداء باقي خدام - الولوج كامل",
@@ -2410,7 +2420,8 @@ Object.assign(T.ar,{
   chooseAnnual:"اختار 99.99$ فالعام",
   managePlan:"دبر الاشتراك",
   historyLimitNotice:"كاينين {n} إدخالات قدام من 14 يوم. ترقى باش تشوف السجل كامل.",
-  checkoutSuccess:"توصلنا بالأداء. الولوج Pro غادي يتحدث دابا."
+  checkoutSuccess:"توصلنا بالأداء. الولوج Pro غادي يتحدث دابا.",
+  testerAccess:"ولوج خاص بالتجربة - بلا حدود"
 });
 
 boot();
