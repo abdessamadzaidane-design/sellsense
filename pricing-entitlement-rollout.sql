@@ -58,3 +58,28 @@ begin
   return new;
 end;
 $$;
+
+-- Replace the legacy three-project trigger with the current entitlement rules.
+create or replace function public.check_project_limit()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  project_count integer;
+begin
+  if public.has_sellsense_full_access(new.user_id) then
+    return new;
+  end if;
+
+  select count(*) into project_count
+  from public.projects
+  where user_id = new.user_id and coalesce(is_archived, false) = false;
+
+  if project_count >= 1 then
+    raise exception 'The Free plan includes one active project. Upgrade to Pro for unlimited projects.';
+  end if;
+  return new;
+end;
+$$;
