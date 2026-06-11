@@ -257,6 +257,11 @@ function dashboardUrl(){
   const plan=localStorage.getItem('sellsense-upgrade-intent');
   return 'sellsense-dashboard.html'+(['monthly','annual'].includes(plan)?'?upgrade='+plan:'');
 }
+function authOrigin(){
+  return ['www.sellsenseapp.com','sellsenseapp.com'].includes(location.hostname)
+    ? 'https://www.sellsenseapp.com'
+    : location.origin;
+}
 
 const TX={
   "en": {
@@ -503,7 +508,7 @@ async function doSignup(){
 
 async function gLogin(){
   clr();
-  const {error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/'+dashboardUrl()}});
+  const {error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:authOrigin()+'/'+dashboardUrl()}});
   if(error)err('Google: '+error.message);
 }
 
@@ -513,7 +518,7 @@ async function doReset(){
   const email=document.getElementById('re').value.trim();
   if(!email){err(t.errEmail);return;}
   ld('br',true);
-  const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/sellsense-auth.html'});
+  const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:authOrigin()+'/sellsense-auth.html'});
   ld('br',false);
   if(error){err(error.message);return;}
   okMsg(t.okReset);
