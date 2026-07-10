@@ -2006,10 +2006,15 @@ function openCalc(pid){
 }
 
 function handleProjectOpen(pid){
-  const p=projects.find(x=>x.id===pid);
-  if(!p)return;
-  if(!projectIsAccessible(p)){openUpgrade('project');return;}
-  openCalc(pid);
+  try{
+    const p=projects.find(x=>x.id===pid);
+    if(!p){toast('Project not found. Refresh the page and try again.',true);return;}
+    if(!projectIsAccessible(p)){openUpgrade('project');return;}
+    openCalc(pid);
+  }catch(err){
+    console.error('Project open failed',err);
+    toast('Could not open this project. Please refresh and try again.',true);
+  }
 }
 
 document.getElementById('view-projects').addEventListener('click',function(e){
