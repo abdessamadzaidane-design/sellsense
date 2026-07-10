@@ -283,7 +283,6 @@ h1 .hl,.ftitle em{background:linear-gradient(90deg,var(--gold),#FFF1BE 48%,var(-
       <div class="lang-sw">
         <button class="lbtn active" data-lang="en" onclick="setLang('en')" aria-pressed="true">EN</button>
         <button class="lbtn" data-lang="fr" onclick="setLang('fr')" aria-pressed="false">FR</button>
-        <button class="lbtn" data-lang="ar" onclick="setLang('ar')" aria-pressed="false">AR</button>
       </div>
       <a href="sellsense-auth.html" class="nav-cta2" data-t="navLogin">Log in</a>
       <a href="sellsense-auth.html" class="nav-cta" data-t="navStart">Start free</a>
@@ -297,11 +296,10 @@ h1 .hl,.ftitle em{background:linear-gradient(90deg,var(--gold),#FFF1BE 48%,var(-
     <a href="#how" class="mob-link" data-t="navHow" onclick="closeMob()">How it works</a>
     <a href="#pricing" class="mob-link" data-t="navPricing" onclick="closeMob()">Pricing</a>
     <div class="mob-lang">
-      <span class="mob-lang-label">EN / FR / AR</span>
+      <span class="mob-lang-label">EN / FR</span>
       <div class="lang-sw">
         <button class="lbtn active" data-lang="en" onclick="setLang('en')" aria-pressed="true">EN</button>
         <button class="lbtn" data-lang="fr" onclick="setLang('fr')" aria-pressed="false">FR</button>
-        <button class="lbtn" data-lang="ar" onclick="setLang('ar')" aria-pressed="false">AR</button>
       </div>
     </div>
     <a href="sellsense-auth.html" class="mob-link" data-t="navLogin">Log in</a>
@@ -505,7 +503,7 @@ h1 .hl,.ftitle em{background:linear-gradient(90deg,var(--gold),#FFF1BE 48%,var(-
     </div>
     <div class="footer-bottom">
       <span class="fnote" data-t="footCopy">© 2026 SellSense · sellsenseapp.com</span>
-      <span class="fnote">MAD · USD · EUR · EN / FR / AR</span>
+      <span class="fnote">MAD · USD · EUR · EN / FR</span>
     </div>
   </div>
 </footer>
@@ -816,8 +814,9 @@ const TX={
     ]
   }
 };
-let lang=['en','fr','ar'].includes(localStorage.getItem('sellsense-lang'))?localStorage.getItem('sellsense-lang'):'en';
+let lang=['en','fr'].includes(localStorage.getItem('sellsense-lang'))?localStorage.getItem('sellsense-lang'):'en';
 function setLang(l){
+  if(!['en','fr'].includes(l))l='en';
   lang=l;
   localStorage.setItem('sellsense-lang',l);
   document.querySelectorAll('.lbtn').forEach(b=>{
@@ -826,7 +825,7 @@ function setLang(l){
     b.setAttribute('aria-pressed',String(active));
   });
   document.documentElement.lang=l;
-  document.documentElement.dir=(l==='ar')?'rtl':'ltr';
+  document.documentElement.dir='ltr';
   applyLang();
 }
 function applyLang(){
