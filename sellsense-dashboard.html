@@ -464,7 +464,6 @@ svg{display:block;}
     <div class="lang-sw">
       <button class="lang-btn active" id="lng-en" data-lang="en" onclick="setLang('en')" aria-pressed="true">EN</button>
       <button class="lang-btn" id="lng-fr" data-lang="fr" onclick="setLang('fr')" aria-pressed="false">FR</button>
-      <button class="lang-btn" id="lng-ar" data-lang="ar" onclick="setLang('ar')" aria-pressed="false">AR العربية</button>
     </div>
     <div class="sb-bottom">
       <div class="user-row">
@@ -489,7 +488,6 @@ svg{display:block;}
         <div class="top-lang-sw" aria-label="Language">
           <button class="lang-btn active" data-lang="en" onclick="setLang('en')" aria-pressed="true">EN</button>
           <button class="lang-btn" data-lang="fr" onclick="setLang('fr')" aria-pressed="false">FR</button>
-          <button class="lang-btn" data-lang="ar" onclick="setLang('ar')" aria-pressed="false">AR</button>
         </div>
         <div class="topbar-date" id="topbar-date"></div>
       </div>
@@ -1328,7 +1326,7 @@ const BUCKET_COLOR={product:'#9B2C4D',shipping:'#F4CA5B',marketing:'#65152F',fee
 const BUCKET_KEY={product:'bProduct',shipping:'bShipping',marketing:'bMarketing',fees:'bFees',tools:'bTools',production:'bProduction',team:'bTeam',other:'bOther'};
 
 /* ════════ STATE ════════ */
-let lang=['en','fr','ar'].includes(localStorage.getItem('sellsense-lang'))?localStorage.getItem('sellsense-lang'):'en',user=null,profile=null,billing=null,billingReady=false,projects=[],curProj=null,curDevise='MAD',overviewCur='MAD',newType=null,curView='overview',confirmCb=null,calcWorkingDetails=null;
+let lang=['en','fr'].includes(localStorage.getItem('sellsense-lang'))?localStorage.getItem('sellsense-lang'):'en',user=null,profile=null,billing=null,billingReady=false,projects=[],curProj=null,curDevise='MAD',overviewCur='MAD',newType=null,curView='overview',confirmCb=null,calcWorkingDetails=null;
 const charts={};
 const TRIAL_DAYS=14;
 const FREE_PROJECT_LIMIT=1;
@@ -1579,14 +1577,14 @@ function applyStatic(){
   if(t.pageTitle)document.title=t.pageTitle;
   document.querySelectorAll('[data-t]').forEach(el=>{const k=el.getAttribute('data-t');if(t[k]!==undefined)el.textContent=t[k];});
   document.documentElement.lang=lang;
-  document.documentElement.dir=(lang==='ar')?'rtl':'ltr';
-  document.body.dir=(lang==='ar')?'rtl':'ltr';
+  document.documentElement.dir='ltr';
+  document.body.dir='ltr';
   document.querySelectorAll('.lang-btn[data-lang]').forEach(b=>{
     const active=b.dataset.lang===lang;
     b.classList.toggle('active',active);
     b.setAttribute('aria-pressed',String(active));
   });
-  document.getElementById('topbar-date').textContent=new Date().toLocaleDateString(lang==='ar'?'ar-MA':lang==='fr'?'fr-FR':'en-GB',{day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('topbar-date').textContent=new Date().toLocaleDateString(lang==='fr'?'fr-FR':'en-GB',{day:'numeric',month:'long',year:'numeric'});
   // type cards in add modal
   const tc=[['ecom','box'],['creator','video'],['freelancer','laptop']];
   document.getElementById('type-cards').innerHTML=tc.map(([k,i])=>
@@ -1697,7 +1695,7 @@ function projCard(p){
     '<div class="proj-badge '+p.business_type+'">'+t[tkey[p.business_type]]+'</div></div>'+
     '<div class="proj-name">'+esc(p.name)+'</div>'+body+
     '<div class="proj-foot">'+
-      '<button class="proj-open" onclick="'+(locked?'openUpgrade(\'project\')':'openCalc(\''+p.id+'\')')+'">'+ic(locked?'lock':'arrowR')+(locked?t.upgrade:t.open)+'</button>'+
+      '<button class="proj-open" onclick="handleProjectOpen(\''+p.id+'\')">'+ic(locked?'lock':'arrowR')+(locked?t.upgrade:t.open)+'</button>'+
       '<button class="icon-btn" title="'+t.delete+'" onclick="askDeleteProject(\''+p.id+'\')">'+ic('trash')+'</button>'+
     '</div></div>';
 }
@@ -1771,7 +1769,7 @@ function baseScales(){
 }
 function dateLabel(c){
   const d=new Date(c.calc_date||c.created_at);
-  return d.toLocaleDateString(lang==='ar'?'ar-MA':lang==='fr'?'fr-FR':'en-GB',{day:'2-digit',month:'short'});
+  return d.toLocaleDateString(lang==='fr'?'fr-FR':'en-GB',{day:'2-digit',month:'short'});
 }
 
 function drawCharts(v){
@@ -1871,7 +1869,7 @@ function renderDaily(){
      '<div class="dtable"><div class="dt-row head"><div>'+t.project+'</div><div>'+t.ca+'</div>'+
      '<div class="dt-hide">'+t.charges+'</div><div>'+t.profitNetShort+'</div><div></div></div>';
     content+=calcs.map(c=>{
-      const d=new Date(c.calc_date||c.created_at).toLocaleDateString(lang==='ar'?'ar-MA':lang==='fr'?'fr-FR':'en-GB',{day:'2-digit',month:'short',year:'numeric'});
+      const d=new Date(c.calc_date||c.created_at).toLocaleDateString(lang==='fr'?'fr-FR':'en-GB',{day:'2-digit',month:'short',year:'numeric'});
       return '<div class="dt-row">'+
         '<div class="dt-proj"><span class="dt-dot '+c._type+'"></span><div><div>'+esc(c._proj)+'</div><div class="dt-sub">'+d+'</div></div></div>'+
         '<div class="dt-num">'+fmt(c.revenue)+' <span class="dt-sub">'+c._cur+'</span></div>'+
@@ -2004,6 +2002,13 @@ function openCalc(pid){
   curDevise=calcCurrency(curProj,latestCalc(curProj));
   renderCalc();
   showView('calc');
+}
+
+function handleProjectOpen(pid){
+  const p=projects.find(x=>x.id===pid);
+  if(!p)return;
+  if(!projectIsAccessible(p)){openUpgrade('project');return;}
+  openCalc(pid);
 }
 
 function renderCalc(){
@@ -2321,7 +2326,7 @@ function renderHistory(){
   let h='<div class="sh"><div class="sh-title">'+t.history+'</div></div>';
   if(!calcs.length)h+='<div class="proj-nocalc">'+t.noHistory+'</div>';
   else h+=calcs.map(c=>{
-      const d=new Date(c.calc_date||c.created_at).toLocaleDateString(lang==='ar'?'ar-MA':lang==='fr'?'fr-FR':'en-GB',{day:'2-digit',month:'short',year:'numeric'});
+      const d=new Date(c.calc_date||c.created_at).toLocaleDateString(lang==='fr'?'fr-FR':'en-GB',{day:'2-digit',month:'short',year:'numeric'});
       const periodKey='period'+String(c.details?._period_type||'').replace(/^./,x=>x.toUpperCase());
       const period=t[periodKey]?t[periodKey]+' · ':'';
       return '<div class="hist-card"><div class="hist-row"><div class="hist-date">'+d+'</div>'+
@@ -2477,6 +2482,7 @@ async function doLogout(){await sb.auth.signOut();location.href='sellsense-auth.
 
 /* ════════ LANGUAGE ════════ */
 function setLang(l){
+  if(!['en','fr'].includes(l))l='en';
   lang=l;
   localStorage.setItem('sellsense-lang',l);
   buildSidebar();
