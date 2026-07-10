@@ -1328,7 +1328,7 @@ const BUCKET_COLOR={product:'#9B2C4D',shipping:'#F4CA5B',marketing:'#65152F',fee
 const BUCKET_KEY={product:'bProduct',shipping:'bShipping',marketing:'bMarketing',fees:'bFees',tools:'bTools',production:'bProduction',team:'bTeam',other:'bOther'};
 
 /* ════════ STATE ════════ */
-let lang=['en','fr','ar'].includes(localStorage.getItem('sellsense-lang'))?localStorage.getItem('sellsense-lang'):'en',user=null,profile=null,billing=null,billingReady=false,projects=[],curProj=null,curDevise='MAD',overviewCur='MAD',newType=null,curView='overview',confirmCb=null;
+let lang=['en','fr','ar'].includes(localStorage.getItem('sellsense-lang'))?localStorage.getItem('sellsense-lang'):'en',user=null,profile=null,billing=null,billingReady=false,projects=[],curProj=null,curDevise='MAD',overviewCur='MAD',newType=null,curView='overview',confirmCb=null,calcWorkingDetails=null;
 const charts={};
 const TRIAL_DAYS=14;
 const FREE_HISTORY_DAYS=14;
@@ -1956,8 +1956,7 @@ function readCalcDraft(){
   }catch(e){return null;}
 }
 function currentCalcDetails(){
-  const draft=readCalcDraft();
-  if(draft)return draft;
+  if(calcWorkingDetails)return normalizeDetails(curProj.business_type,calcWorkingDetails);
   const c=latestCalcForCurrency(curProj,curDevise);
   const details=normalizeDetails(curProj.business_type,c?.details||{});
   details._calc_date=c?.calc_date||new Date().toISOString().split('T')[0];
@@ -1975,8 +1974,7 @@ function collectCalcDetails(){
   return details;
 }
 function saveCalcDraft(){
-  if(!curProj||!document.querySelector('#view-calc .cinput'))return;
-  localStorage.setItem(calcDraftKey(curProj,curDevise),JSON.stringify(collectCalcDetails()));
+  return;
 }
 function restoreCalcInputs(){
   const details=currentCalcDetails();
@@ -1990,13 +1988,13 @@ function restoreCalcInputs(){
 }
 function handleCalcInput(input){
   sanitizeCalcInput(input);
-  saveCalcDraft();
   recalc();
 }
 
 function openCalc(pid){
   curProj=projects.find(p=>p.id===pid);
   if(!curProj)return;
+  calcWorkingDetails=null;
   curDevise=calcCurrency(curProj,latestCalc(curProj));
   renderCalc();
   showView('calc');
@@ -2010,9 +2008,9 @@ function renderCalc(){
     '<div><div class="calc-name">'+esc(p.name)+'</div><div class="calc-type">'+t[tkey[p.business_type]]+'</div></div></div>';
   h+='<div class="devise-row">'+['MAD','USD','EUR'].map(d=>
     '<button class="devise-btn'+(d===curDevise?' active':'')+'" onclick="setDevise(\''+d+'\')">'+d+'</button>').join('')+'</div>';
-  h+='<div class="calc-context"><label>'+t.reportingPeriod+'<select id="calc-period" onchange="saveCalcDraft()">'+
+  h+='<div class="calc-context"><label>'+t.reportingPeriod+'<select id="calc-period" onchange="recalc()">'+
     '<option value="day">'+t.periodDay+'</option><option value="week">'+t.periodWeek+'</option><option value="month">'+t.periodMonth+'</option><option value="project">'+t.periodProject+'</option></select></label>'+
-    '<label>'+t.periodEnd+'<input type="date" id="calc-date" onchange="saveCalcDraft()"/></label></div>';
+    '<label>'+t.periodEnd+'<input type="date" id="calc-date" onchange="recalc()"/></label></div>';
   h+='<div class="unit-model-note">'+t['modelNote'+(p.business_type==='ecom'?'Ecom':p.business_type==='creator'?'Creator':'Freelancer')]+'</div>';
   h+='<div class="calc-layout"><div id="calc-fields"></div><div><div class="result">'+
     '<div class="rp-lbl">'+t.netProfit+'</div>'+
@@ -2075,8 +2073,8 @@ function buildFields(){
 }
 
 function setDevise(d){
-  saveCalcDraft();
   curDevise=d;
+  calcWorkingDetails=null;
   overviewCur=d;
   curProj.currency=d;
   document.querySelectorAll('.devise-btn').forEach(b=>b.classList.toggle('active',b.textContent.trim()===d));
@@ -2230,7 +2228,7 @@ async function saveCalc(){
   if(ins.error){toast(ins.error.message,true);return;}
   const p=projects.find(x=>x.id===curProj.id);
   if(p){if(!p.calculations)p.calculations=[];p.calculations.push(ins.data);}
-  localStorage.setItem(calcDraftKey(curProj,curDevise),JSON.stringify(details));
+  calcWorkingDetails=details;
   toast(T[lang].saved);
   renderHistory();
   renderAll();
@@ -2265,7 +2263,7 @@ function loadCalc(cid){
   details._currency=curDevise;
   details._calc_date=c.calc_date||new Date().toISOString().split('T')[0];
   details._period_type=details._period_type||(curProj.business_type==='ecom'?'day':'month');
-  localStorage.setItem(calcDraftKey(curProj,curDevise),JSON.stringify(details));
+  calcWorkingDetails=details;
   renderCalc();
   showView('calc');
   toast(T[lang].loaded);
