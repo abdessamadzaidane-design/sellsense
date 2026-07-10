@@ -554,7 +554,7 @@ svg{display:block;}
         <h4 data-t="freePlan">Free plan</h4>
         <div class="upgrade-list">
           <div><b>1</b><span data-t="freeProjectLimit">1 project only</span></div>
-          <div><b>14</b><span data-t="trialVisibility">14 days of visible history</span></div>
+          <div><b>3</b><span data-t="trialVisibility">3 saved periods</span></div>
           <div><b>—</b><span data-t="limitedAfterTrial">Advanced visibility locks after the trial</span></div>
         </div>
       </div>
@@ -715,15 +715,15 @@ const T={
     "accessTitleTrial": "Full visibility is open",
     "accessSubTrial": "You have {n} days of full visibility left. Premium unlocks unlimited projects and insights for $10/month.",
     "accessTitleExpired": "Your Pro trial ended",
-    "accessSubExpired": "Upgrade to continue with full insights, daily tracking and unlimited projects.",
+    "accessSubExpired": "Free keeps 1 active project and the latest 3 saved periods. Upgrade for complete history.",
     "accessTitlePremium": "Premium is active",
     "accessSubPremium": "Unlimited projects, complete insights and daily tracking are unlocked.",
     "upgradeTitle": "Unlock the full picture",
     "upgradeSub": "Go Premium for unlimited projects, complete insights and daily tracking.",
     "freePlan": "Free plan",
     "freeProjectLimit": "1 project only",
-    "trialVisibility": "14 days of visible history",
-    "limitedAfterTrial": "Advanced visibility locks after the trial",
+    "trialVisibility": "3 saved periods",
+    "limitedAfterTrial": "Analytics, daily tracking and extra history become Pro",
     "unlimitedProjects": "Unlimited projects",
     "fullInsights": "Full visibility and insights",
     "dailyHistory": "Daily tracking and complete history",
@@ -945,15 +945,15 @@ const T={
     "accessTitleTrial": "La visibilité complète est ouverte",
     "accessSubTrial": "Il vous reste {n} jours de visibilité complète. Premium débloque les projets et analyses illimités pour 10 $/mois.",
     "accessTitleExpired": "Votre essai Pro est termine",
-    "accessSubExpired": "Passez à Premium pour continuer avec les analyses, le suivi quotidien et les projets illimités.",
+    "accessSubExpired": "L'offre gratuite garde 1 projet actif et les 3 dernières périodes sauvegardées.",
     "accessTitlePremium": "Premium est actif",
     "accessSubPremium": "Projets illimités, analyses complètes et suivi quotidien sont débloqués.",
     "upgradeTitle": "Débloquez toute la visibilité",
     "upgradeSub": "Premium donne accès aux projets illimités, aux analyses complètes et au suivi quotidien.",
     "freePlan": "Offre gratuite",
     "freeProjectLimit": "1 seul projet",
-    "trialVisibility": "14 jours d'historique visible",
-    "limitedAfterTrial": "La visibilité avancée se verrouille après l'essai",
+    "trialVisibility": "3 périodes sauvegardées",
+    "limitedAfterTrial": "Les analyses, le suivi quotidien et l'historique extra deviennent Pro",
     "unlimitedProjects": "Projets illimités",
     "fullInsights": "Visibilité et analyses complètes",
     "dailyHistory": "Suivi quotidien et historique complet",
@@ -1176,15 +1176,15 @@ const T={
     "accessTitleTrial": "الرؤية كاملة محلولة دابا",
     "accessSubTrial": "باقي {n} أيام فالرؤية الكاملة. Premium بـ 10$ فالشهر كيعطيك مشاريع وتحليلات بلا حدود.",
     "accessTitleExpired": "7 أيام ديال الرؤية سالات",
-    "accessSubExpired": "ترقى باش تكمل بالتحليلات، التتبع اليومي، والمشاريع بلا حدود.",
+    "accessSubExpired": "الخطة المجانية كتخلي مشروع واحد وآخر 3 فترات محفوظة.",
     "accessTitlePremium": "Premium خدام",
     "accessSubPremium": "المشاريع بلا حدود، التحليلات كاملة، والتتبع اليومي محلولين.",
     "upgradeTitle": "حل الصورة كاملة",
     "upgradeSub": "Premium كيعطيك مشاريع بلا حدود، تحليلات كاملة، وتتبع يومي.",
     "freePlan": "الخطة المجانية",
     "freeProjectLimit": "مشروع واحد فقط",
-    "trialVisibility": "الرؤية كاملة لمدة 7 أيام",
-    "limitedAfterTrial": "الرؤية المتقدمة كتسد من بعد التجربة",
+    "trialVisibility": "3 فترات محفوظة",
+    "limitedAfterTrial": "التحليلات، التتبع اليومي، والسجل الزايد كيدخلو فـ Pro",
     "unlimitedProjects": "مشاريع بلا حدود",
     "fullInsights": "الرؤية والتحليلات كاملة",
     "dailyHistory": "التتبع اليومي وسجل الحسابات كامل",
@@ -1331,7 +1331,8 @@ const BUCKET_KEY={product:'bProduct',shipping:'bShipping',marketing:'bMarketing'
 let lang=['en','fr','ar'].includes(localStorage.getItem('sellsense-lang'))?localStorage.getItem('sellsense-lang'):'en',user=null,profile=null,billing=null,billingReady=false,projects=[],curProj=null,curDevise='MAD',overviewCur='MAD',newType=null,curView='overview',confirmCb=null,calcWorkingDetails=null;
 const charts={};
 const TRIAL_DAYS=14;
-const FREE_HISTORY_DAYS=14;
+const FREE_PROJECT_LIMIT=1;
+const FREE_CALC_LIMIT=3;
 
 /* ════════ BOOT ════════ */
 async function boot(){
@@ -1427,13 +1428,17 @@ function trialDaysLeft(){
   return Math.max(0,Math.ceil((end-Date.now())/86400000));
 }
 function hasFullVisibility(){return !billingReady||isPremium()||trialDaysLeft()>0;}
-function canCreateProject(){return hasFullVisibility()||projects.length<1;}
-function calcIsVisible(c){
-  if(hasFullVisibility())return true;
-  const stamp=new Date(c.created_at).getTime();
-  return Number.isFinite(stamp)&&stamp>=Date.now()-(FREE_HISTORY_DAYS*86400000);
+function freeProjectIds(){
+  return new Set([...projects].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,FREE_PROJECT_LIMIT).map(p=>p.id));
 }
-function visibleCalcs(p){return (p.calculations||[]).filter(calcIsVisible);}
+function projectIsAccessible(p){return hasFullVisibility()||freeProjectIds().has(p.id);}
+function canCreateProject(){return hasFullVisibility()||projects.length<FREE_PROJECT_LIMIT;}
+function visibleCalcs(p){
+  const calcs=[...(p.calculations||[])].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  if(hasFullVisibility())return calcs;
+  if(!projectIsAccessible(p))return [];
+  return calcs.slice(0,FREE_CALC_LIMIT);
+}
 function premiumLock(content,title,sub){
   if(hasFullVisibility())return content;
   const t=T[lang];
@@ -1672,10 +1677,13 @@ function renderOverview(){
 
 function projCard(p){
   const t=T[lang],c=latestCalc(p);
+  const locked=!projectIsAccessible(p);
   const icons={ecom:'box',creator:'video',freelancer:'laptop'};
   const tkey={ecom:'typeEcom',creator:'typeCreator',freelancer:'typeFreelancer'};
   let body;
-  if(c){
+  if(locked){
+    body='<div class="proj-nocalc">'+t.lockedProjectCard+'</div>';
+  }else if(c){
     const cur=calcCurrency(p,c);
     const margin=(c.revenue>0?(c.net_profit/c.revenue*100):0).toFixed(1);
     body='<div class="proj-stats">'+
@@ -1684,12 +1692,12 @@ function projCard(p){
       '<div class="pstat"><div class="pstat-val">'+margin+'%</div><div class="pstat-lbl">'+t.margin+'</div></div>'+
       '</div>';
   }else{body='<div class="proj-nocalc">'+t.noCalcYet+'</div>';}
-  return '<div class="proj-card '+p.business_type+'">'+
+  return '<div class="proj-card '+p.business_type+(locked?' locked':'')+'">'+
     '<div class="proj-top"><div class="proj-icon">'+ic(icons[p.business_type]||'box')+'</div>'+
     '<div class="proj-badge '+p.business_type+'">'+t[tkey[p.business_type]]+'</div></div>'+
     '<div class="proj-name">'+esc(p.name)+'</div>'+body+
     '<div class="proj-foot">'+
-      '<button class="proj-open" onclick="openCalc(\''+p.id+'\')">'+ic('arrowR')+t.open+'</button>'+
+      '<button class="proj-open" onclick="'+(locked?'openUpgrade(\'project\')':'openCalc(\''+p.id+'\')')+'">'+ic(locked?'lock':'arrowR')+(locked?t.upgrade:t.open)+'</button>'+
       '<button class="icon-btn" title="'+t.delete+'" onclick="askDeleteProject(\''+p.id+'\')">'+ic('trash')+'</button>'+
     '</div></div>';
 }
@@ -1991,6 +1999,7 @@ function handleCalcInput(input){
 function openCalc(pid){
   curProj=projects.find(p=>p.id===pid);
   if(!curProj)return;
+  if(!projectIsAccessible(curProj)){openUpgrade('project');return;}
   calcWorkingDetails=null;
   curDevise=calcCurrency(curProj,latestCalc(curProj));
   renderCalc();
@@ -2274,6 +2283,8 @@ function loadCalcEntry(cid){
 
 async function saveCalc(){
   if(!curProj||!window._calc)return;
+  if(!projectIsAccessible(curProj)){openUpgrade('project');return;}
+  if(!hasFullVisibility()&&visibleCalcs(curProj).length>=FREE_CALC_LIMIT){openUpgrade('history');toast(T[lang].calcLimitSub,true);return;}
   const c=window._calc;
   const invalid=[...document.querySelectorAll('.cinput')].find(i=>{
     const raw=Number(i.value);
@@ -2326,6 +2337,7 @@ function renderHistory(){
 
 function loadCalc(cid){
   const c=(curProj.calculations||[]).find(x=>x.id===cid);if(!c)return;
+  if(!projectIsAccessible(curProj)||(!hasFullVisibility()&&!visibleCalcs(curProj).some(x=>x.id===cid))){openUpgrade('history');return;}
   curDevise=calcCurrency(curProj,c);
   const details=calcDetailsForForm(curProj,c);
   calcWorkingDetails=details;
@@ -2479,11 +2491,11 @@ Object.assign(T.en,{
   accessTitleTrial:"Your Pro trial is active",
   accessSubTrial:"You have {n} days of Pro left. Keep unlimited projects, complete history and insights with Founding Pro.",
   accessTitleExpired:"You are using the Free plan",
-  accessSubExpired:"Your latest 14 days stay visible. Upgrade for unlimited projects, complete history and advanced insights.",
+  accessSubExpired:"Free keeps 1 active project and the latest 3 saved periods. Upgrade for unlimited projects, complete history and advanced insights.",
   upgradeTitle:"Keep the complete picture",
   upgradeSub:"Founding Pro keeps unlimited projects, complete history and advanced insights.",
-  trialVisibility:"14 days of visible history",
-  limitedAfterTrial:"Analytics, comparisons and older history become Pro",
+  trialVisibility:"3 saved periods",
+  limitedAfterTrial:"Analytics, daily tracking and extra history become Pro",
   premiumLockedTitle:"Unlock the complete picture",
   premiumLockedSub:"Founding Pro unlocks analytics, comparisons and complete history.",
   projectLimitTitle:"Free includes 1 active project",
@@ -2493,7 +2505,9 @@ Object.assign(T.en,{
   chooseMonthly:"Choose $9.99 monthly",
   chooseAnnual:"Choose $99.99 yearly",
   managePlan:"Manage",
-  historyLimitNotice:"{n} older entries are outside the Free plan's 14-day history.",
+  historyLimitNotice:"{n} older entries are outside the Free plan's latest 3 saved periods.",
+  calcLimitSub:"Free includes 3 saved periods per project. Upgrade for complete history.",
+  lockedProjectCard:"Free keeps one active project. Upgrade to open this project again.",
   checkoutSuccess:"Payment received. Pro access will update shortly.",
   testerAccess:"Product testing access - unlimited"
 });
@@ -2502,11 +2516,11 @@ Object.assign(T.fr,{
   accessTitleTrial:"Votre essai Pro est actif",
   accessSubTrial:"Il vous reste {n} jours de Pro. Gardez les projets illimites, l'historique complet et les analyses avec Founding Pro.",
   accessTitleExpired:"Vous utilisez l'offre gratuite",
-  accessSubExpired:"Vos 14 derniers jours restent visibles. Passez a Pro pour les projets illimites, l'historique complet et les analyses avancees.",
+  accessSubExpired:"L'offre gratuite garde 1 projet actif et les 3 dernieres periodes sauvegardees. Passez a Pro pour les projets illimites et l'historique complet.",
   upgradeTitle:"Gardez une vision complete",
   upgradeSub:"Founding Pro conserve les projets illimites, l'historique complet et les analyses avancees.",
-  trialVisibility:"14 jours d'historique visible",
-  limitedAfterTrial:"Les analyses, comparaisons et l'ancien historique deviennent Pro",
+  trialVisibility:"3 periodes sauvegardees",
+  limitedAfterTrial:"Les analyses, le suivi quotidien et l'historique extra deviennent Pro",
   premiumLockedTitle:"Debloquez la vision complete",
   premiumLockedSub:"Founding Pro debloque les analyses, comparaisons et l'historique complet.",
   projectLimitTitle:"L'offre gratuite inclut 1 projet actif",
@@ -2516,7 +2530,9 @@ Object.assign(T.fr,{
   chooseMonthly:"Choisir 9,99 $ par mois",
   chooseAnnual:"Choisir 99,99 $ par an",
   managePlan:"Gerer",
-  historyLimitNotice:"{n} anciennes entrees depassent les 14 jours visibles de l'offre gratuite.",
+  historyLimitNotice:"{n} anciennes entrees depassent les 3 dernieres periodes de l'offre gratuite.",
+  calcLimitSub:"L'offre gratuite inclut 3 periodes sauvegardees par projet. Passez a Pro pour l'historique complet.",
+  lockedProjectCard:"L'offre gratuite garde un seul projet actif. Passez a Pro pour rouvrir ce projet.",
   checkoutSuccess:"Paiement recu. Votre acces Pro sera actualise sous peu.",
   testerAccess:"Acces test produit - illimite"
 });
@@ -2525,11 +2541,11 @@ Object.assign(T.ar,{
   accessTitleTrial:"تجربة Pro ديالك خدامة",
   accessSubTrial:"باقي ليك {n} أيام فـ Pro. خليك بالمشاريع بلا حدود، السجل كامل، والتحليلات مع Founding Pro.",
   accessTitleExpired:"راك فالخطة المجانية",
-  accessSubExpired:"آخر 14 يوم باقين باينين. ترقى لـ Pro باش تفتح المشاريع بلا حدود، السجل كامل، والتحليلات المتقدمة.",
+  accessSubExpired:"الخطة المجانية كتخلي مشروع واحد خدام وآخر 3 فترات محفوظة. ترقى لـ Pro باش تحل المشاريع بلا حدود والسجل كامل.",
   upgradeTitle:"خلي الصورة كاملة عندك",
   upgradeSub:"Founding Pro كيبقي ليك المشاريع بلا حدود، السجل كامل، والتحليلات المتقدمة.",
-  trialVisibility:"14 يوم ديال السجل باينين",
-  limitedAfterTrial:"التحليلات، المقارنات، والسجل القديم كيدخلو فـ Pro",
+  trialVisibility:"3 فترات محفوظة",
+  limitedAfterTrial:"التحليلات، التتبع اليومي، والسجل الزايد كيدخلو فـ Pro",
   premiumLockedTitle:"حل الصورة كاملة",
   premiumLockedSub:"Founding Pro كيفتح التحليلات، المقارنات، والسجل كامل.",
   projectLimitTitle:"الخطة المجانية فيها مشروع واحد خدام",
@@ -2539,7 +2555,9 @@ Object.assign(T.ar,{
   chooseMonthly:"اختار 9.99$ فالشهر",
   chooseAnnual:"اختار 99.99$ فالعام",
   managePlan:"دبر الاشتراك",
-  historyLimitNotice:"كاينين {n} إدخالات قدام من 14 يوم. ترقى باش تشوف السجل كامل.",
+  historyLimitNotice:"كاينين {n} إدخالات خارج آخر 3 فترات فالخطة المجانية.",
+  calcLimitSub:"الخطة المجانية فيها 3 فترات محفوظة لكل مشروع. ترقى باش تخلي السجل كامل.",
+  lockedProjectCard:"الخطة المجانية كتخلي مشروع واحد خدام. ترقى باش تحل هاد المشروع.",
   checkoutSuccess:"توصلنا بالأداء. الولوج Pro غادي يتحدث دابا.",
   testerAccess:"ولوج خاص بالتجربة - بلا حدود"
 });
