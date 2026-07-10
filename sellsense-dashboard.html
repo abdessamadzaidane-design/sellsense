@@ -1696,7 +1696,7 @@ function projCard(p){
     '<div class="proj-badge '+p.business_type+'">'+t[tkey[p.business_type]]+'</div></div>'+
     '<div class="proj-name">'+esc(p.name)+'</div>'+body+
     '<div class="proj-foot">'+
-      '<button class="proj-open" onclick="handleProjectOpen(\''+p.id+'\')">'+ic(locked?'lock':'arrowR')+(locked?t.upgrade:t.open)+'</button>'+
+      '<button class="proj-open" type="button" data-project-open="'+esc(p.id)+'">'+ic(locked?'lock':'arrowR')+(locked?t.upgrade:t.open)+'</button>'+
       '<button class="icon-btn" title="'+t.delete+'" onclick="askDeleteProject(\''+p.id+'\')">'+ic('trash')+'</button>'+
     '</div></div>';
 }
@@ -2011,6 +2011,14 @@ function handleProjectOpen(pid){
   if(!projectIsAccessible(p)){openUpgrade('project');return;}
   openCalc(pid);
 }
+
+document.getElementById('view-projects').addEventListener('click',function(e){
+  const btn=e.target.closest('[data-project-open]');
+  if(!btn)return;
+  e.preventDefault();
+  e.stopPropagation();
+  handleProjectOpen(btn.dataset.projectOpen);
+});
 
 function renderCalc(){
   const t=T[lang],p=curProj;
