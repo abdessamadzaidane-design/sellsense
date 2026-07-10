@@ -546,7 +546,7 @@ svg{display:block;}
       <div class="upgrade-star"><span class="brand-star"></span></div>
       <div class="modal-title" data-t="upgradeTitle">Unlock the full picture</div>
       <div class="modal-sub" data-t="upgradeSub">Go Premium for unlimited projects, complete insights and daily tracking.</div>
-      <div class="upgrade-price">$9.99 <span data-t="perMonth">/ month</span></div>
+      <div class="upgrade-price" id="upgrade-price">$9.99 <span data-t="perMonth">/ month</span></div>
     </div>
     <div class="upgrade-grid">
       <div class="upgrade-card">
@@ -1349,6 +1349,9 @@ async function boot(){
   const checkout=new URLSearchParams(location.search).get('checkout');
   if(checkout==='success'){
     toast(T[lang].checkoutSuccess);
+    history.replaceState({},'',location.pathname);
+  }else if(checkout==='cancelled'){
+    toast(T[lang].checkoutCancelled,true);
     history.replaceState({},'',location.pathname);
   }
   const upgrade=new URLSearchParams(location.search).get('upgrade')||localStorage.getItem('sellsense-upgrade-intent');
@@ -2443,6 +2446,10 @@ document.getElementById('cf-yes').addEventListener('click',function(){
 });
 
 function openUpgrade(reason){
+  const t=T[lang];
+  const annual=reason==='annual';
+  const price=document.getElementById('upgrade-price');
+  if(price)price.innerHTML=annual?'$99.99 <span>'+(t.perYear||'/ year')+'</span>':'$9.99 <span>'+(t.perMonth||'/ month')+'</span>';
   openM('upgrade-modal');
 }
 async function billingRequest(path,body){
@@ -2528,8 +2535,11 @@ Object.assign(T.en,{
   projectLimitSub:"Upgrade to Founding Pro for unlimited active projects.",
   checkoutNote:"Secure checkout by Stripe. Cancel anytime.",
   checkoutMissing:"Stripe test checkout is not connected yet.",
+  checkoutCancelled:"Checkout cancelled. You can upgrade whenever you are ready.",
   chooseMonthly:"Choose $9.99 monthly",
   chooseAnnual:"Choose $99.99 yearly",
+  perMonth:"/ month",
+  perYear:"/ year",
   managePlan:"Manage",
   historyLimitNotice:"{n} older entries are outside the Free plan's latest 3 saved periods.",
   calcLimitSub:"Free includes 3 saved periods per project. Upgrade for complete history.",
@@ -2553,8 +2563,11 @@ Object.assign(T.fr,{
   projectLimitSub:"Passez a Founding Pro pour des projets actifs illimites.",
   checkoutNote:"Paiement securise par Stripe. Resiliez a tout moment.",
   checkoutMissing:"Le checkout Stripe de test n'est pas encore connecte.",
+  checkoutCancelled:"Checkout annule. Vous pouvez passer a Pro quand vous etes pret.",
   chooseMonthly:"Choisir 9,99 $ par mois",
   chooseAnnual:"Choisir 99,99 $ par an",
+  perMonth:"/ mois",
+  perYear:"/ an",
   managePlan:"Gerer",
   historyLimitNotice:"{n} anciennes entrees depassent les 3 dernieres periodes de l'offre gratuite.",
   calcLimitSub:"L'offre gratuite inclut 3 periodes sauvegardees par projet. Passez a Pro pour l'historique complet.",
