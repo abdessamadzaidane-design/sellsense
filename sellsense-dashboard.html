@@ -1958,10 +1958,7 @@ function readCalcDraft(){
 function currentCalcDetails(){
   if(calcWorkingDetails)return normalizeDetails(curProj.business_type,calcWorkingDetails);
   const c=latestCalcForCurrency(curProj,curDevise);
-  const details=normalizeDetails(curProj.business_type,c?.details||{});
-  details._calc_date=c?.calc_date||new Date().toISOString().split('T')[0];
-  details._period_type=details._period_type||(curProj.business_type==='ecom'?'day':'month');
-  return details;
+  return calcDetailsForForm(curProj,c);
 }
 function collectCalcDetails(){
   const details={};
@@ -2174,6 +2171,77 @@ const DETAIL_FIELD_ORDER={
   creator:['creator_pieces','adsense','tiktok_rev','sponsors','affiliate_rev','merch','autres_rev','equipement','logiciels','montage','creator_team','promotion','commission','autres_creator_cost'],
   freelancer:['direct_revenue','platform_revenue','retainer_revenue','other_service_revenue','billable_hours','active_clients','platform_cut','virement','sous_traitants','logiciels_f','coworking','formation','autres_f']
 };
+function hasMeaningfulInputDetails(p,details){
+  const keys=DETAIL_FIELD_ORDER[p.business_type]||[];
+  return keys.some(k=>(parseFloat(details?.[k])||0)>0);
+}
+function calcDetailsForForm(p,c){
+  const details=normalizeDetails(p.business_type,c?.details||{});
+  details._currency=calcCurrency(p,c);
+  details._calc_date=c?.calc_date||new Date().toISOString().split('T')[0];
+  details._period_type=details._period_type||(p.business_type==='ecom'?'day':'month');
+  if(hasMeaningfulInputDetails(p,details)||!c)return details;
+  const revenue=Math.max(0,parseFloat(c.revenue)||0);
+  const expenses=Math.max(0,parseFloat(c.expenses)||0);
+  if(!revenue&&!expenses)return details;
+  const d={_currency:details._currency,_calc_date:details._calc_date,_period_type:details._period_type,_model_version:2,_reconstructed_from_totals:true};
+  if(p.business_type==='ecom'){
+    const delivered=Math.max(1,Math.round(revenue/300));
+    const failed=Math.max(0,Math.round(delivered*.1));
+    const shipped=delivered+failed;
+    Object.assign(d,{
+      order_price:delivered?revenue/delivered:revenue,
+      delivered_orders:delivered,
+      failed_orders:failed,
+      product_cost_delivered:delivered?(expenses*.32)/delivered:0,
+      product_loss_failed:failed?(expenses*.08)/failed:0,
+      delivery_cost_delivered:delivered?(expenses*.15)/delivered:0,
+      delivery_cost_failed:failed?(expenses*.07)/failed:0,
+      packaging_cost_shipped:shipped?(expenses*.05)/shipped:0,
+      fb_ads:expenses*.18,
+      tik_ads:expenses*.06,
+      autres_ads:expenses*.03,
+      shopify:expenses*.03,
+      cmi:0,
+      autres_frais:expenses*.03,
+      shipped_orders:shipped
+    });
+  }else if(p.business_type==='creator'){
+    Object.assign(d,{
+      creator_pieces:Math.max(1,Math.round(revenue/1800)),
+      adsense:revenue*.35,
+      tiktok_rev:revenue*.08,
+      sponsors:revenue*.37,
+      affiliate_rev:revenue*.12,
+      merch:revenue*.05,
+      autres_rev:revenue*.03,
+      equipement:expenses*.2,
+      logiciels:expenses*.1,
+      montage:expenses*.3,
+      creator_team:expenses*.15,
+      promotion:expenses*.18,
+      commission:0,
+      autres_creator_cost:expenses*.07
+    });
+  }else{
+    Object.assign(d,{
+      direct_revenue:revenue*.45,
+      platform_revenue:revenue*.25,
+      retainer_revenue:revenue*.25,
+      other_service_revenue:revenue*.05,
+      billable_hours:Math.max(1,Math.round(revenue/400)),
+      active_clients:Math.max(1,Math.round(revenue/6000)),
+      platform_cut:0,
+      virement:expenses*.05,
+      sous_traitants:expenses*.45,
+      logiciels_f:expenses*.15,
+      coworking:expenses*.1,
+      formation:expenses*.1,
+      autres_f:expenses*.15
+    });
+  }
+  return d;
+}
 function detailValue(k,v,cur){
   const t=T[lang];
   const pct=['cmi','commission','platform_cut'].includes(k);
@@ -2183,8 +2251,8 @@ function detailValue(k,v,cur){
   return fmt(v)+' '+cur;
 }
 function calcInputRows(p,c){
-  const cur=calcCurrency(p,c),details=normalizeDetails(p.business_type,c?.details||{});
-  const hidden=new Set(['_currency','_model_version','_period_type','_calc_date','_buckets']);
+  const cur=calcCurrency(p,c),details=calcDetailsForForm(p,c);
+  const hidden=new Set(['_currency','_model_version','_period_type','_calc_date','_buckets','_reconstructed_from_totals','period_sequence']);
   const keys=[...(DETAIL_FIELD_ORDER[p.business_type]||[]),...Object.keys(details).filter(k=>!hidden.has(k))]
     .filter((k,i,a)=>a.indexOf(k)===i&&!hidden.has(k));
   return keys.map(k=>[k,Math.max(0,parseFloat(details[k])||0)])
@@ -2259,10 +2327,7 @@ function renderHistory(){
 function loadCalc(cid){
   const c=(curProj.calculations||[]).find(x=>x.id===cid);if(!c)return;
   curDevise=calcCurrency(curProj,c);
-  const details=normalizeDetails(curProj.business_type,c.details||{});
-  details._currency=curDevise;
-  details._calc_date=c.calc_date||new Date().toISOString().split('T')[0];
-  details._period_type=details._period_type||(curProj.business_type==='ecom'?'day':'month');
+  const details=calcDetailsForForm(curProj,c);
   calcWorkingDetails=details;
   renderCalc();
   showView('calc');
