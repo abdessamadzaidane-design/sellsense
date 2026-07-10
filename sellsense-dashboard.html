@@ -252,7 +252,9 @@ svg{display:block;}
 
 /* HISTORY LIST */
 .hist{margin-top:16px;}
+.hist-card{background:var(--bg-3);border:1px solid var(--border);border-radius:11px;margin-bottom:10px;overflow:hidden;}
 .hist-row{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg-3);border:1px solid var(--border);border-radius:11px;margin-bottom:8px;}
+.hist-card .hist-row{border:0;border-radius:0;margin-bottom:0;background:transparent;}
 .hist-date{font-size:12px;color:var(--muted);min-width:88px;}
 .hist-mid{flex:1;}
 .hist-profit{font-family:var(--fd);font-weight:700;font-size:15px;}
@@ -260,10 +262,17 @@ svg{display:block;}
 .hist-profit.neg{color:var(--red);}
 .hist-meta{font-size:11px;color:var(--muted);}
 .hist-actions{display:flex;gap:6px;align-items:center;}
+.hist-breakdown{border-top:1px solid var(--border);padding:12px 14px;background:rgba(255,255,255,.018);}
+.hist-break-title{font-size:11px;color:var(--gold);font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
+.hist-detail-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;}
+.hist-detail{padding:8px 9px;border:1px solid rgba(216,173,61,.14);border-radius:9px;background:rgba(255,255,255,.02);min-width:0;}
+.hist-detail span{display:block;font-size:10.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hist-detail b{display:block;margin-top:3px;font-family:var(--fd);font-size:12.5px;color:var(--text);}
+.hist-detail-empty{font-size:12px;color:var(--muted);}
 
 /* TABLES (daily) */
 .dtable{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;}
-.dt-row{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 44px;gap:10px;padding:13px 18px;align-items:center;border-bottom:1px solid var(--border);}
+.dt-row{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 88px;gap:10px;padding:13px 18px;align-items:center;border-bottom:1px solid var(--border);}
 .dt-row:last-child{border-bottom:none;}
 .dt-row.head{background:var(--surface);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;}
 .dt-proj{display:flex;align-items:center;gap:9px;font-weight:600;font-size:13.5px;}
@@ -272,7 +281,9 @@ svg{display:block;}
 .dt-num{font-family:var(--fd);font-size:13.5px;font-weight:700;}
 .dt-num.pos{color:var(--blue-2);}.dt-num.neg{color:var(--red);}
 .dt-sub{font-size:12px;color:var(--muted);}
-@media(max-width:680px){.dt-row{grid-template-columns:1.3fr 1fr 40px;}.dt-hide{display:none;}}
+.dt-actions{display:flex;gap:6px;align-items:center;justify-content:flex-end;}
+.icon-btn.open:hover{background:rgba(216,173,61,.12);border-color:rgba(216,173,61,.35);color:var(--gold);}
+@media(max-width:680px){.dt-row{grid-template-columns:1.3fr 1fr 80px;}.dt-hide{display:none;}.hist-detail-grid{grid-template-columns:1fr;}}
 
 /* MODAL */
 .modal-ov{position:fixed;inset:0;background:rgba(5,8,16,0.72);backdrop-filter:blur(6px);z-index:300;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .25s;}
@@ -658,6 +669,9 @@ const T={
     "saved": "Calculation saved",
     "loaded": "Calculation loaded",
     "loadCalc": "Load this calculation",
+    "openEntry": "Open entry",
+    "inputBreakdown": "Saved input data",
+    "noInputData": "No input breakdown saved for this older entry.",
     "invalidNumber": "Enter 0 or more for costs and revenue, and 0 to 100 for percentages.",
     "history": "Calculation history",
     "noHistory": "No saved calculation for this project yet.",
@@ -885,6 +899,9 @@ const T={
     "saved": "Calcul enregistré",
     "loaded": "Calcul chargé",
     "loadCalc": "Charger ce calcul",
+    "openEntry": "Ouvrir l'entrée",
+    "inputBreakdown": "Données saisies",
+    "noInputData": "Aucun détail de saisie n'a été enregistré pour cette ancienne entrée.",
     "invalidNumber": "Saisissez 0 ou plus pour les revenus et coûts, et de 0 à 100 pour les pourcentages.",
     "history": "Historique des calculs",
     "noHistory": "Aucun calcul enregistré pour ce projet.",
@@ -1113,6 +1130,9 @@ const T={
     "saved": "تحفظ الحساب",
     "loaded": "تحل هاد الحساب",
     "loadCalc": "حل هاد الحساب",
+    "openEntry": "حل الإدخال",
+    "inputBreakdown": "المعطيات اللي تحفظات",
+    "noInputData": "هاد الإدخال قديم وما فيهش تفاصيل الخانات.",
     "invalidNumber": "دخل 0 أو أكثر فالمداخيل والمصاريف، ومن 0 حتى 100 فالنسب.",
     "history": "سجل الحسابات",
     "noHistory": "ما كاين حتى حساب محفوظ لهاد المشروع.",
@@ -1849,7 +1869,8 @@ function renderDaily(){
         '<div class="dt-num">'+fmt(c.revenue)+' <span class="dt-sub">'+c._cur+'</span></div>'+
         '<div class="dt-num dt-hide">'+fmt(c.expenses)+'</div>'+
         '<div class="dt-num '+(c.net_profit>=0?'pos':'neg')+'">'+fmt(c.net_profit)+'</div>'+
-        '<button class="icon-btn" onclick="askDeleteCalc(\''+c.id+'\')" title="'+t.delete+'">'+ic('trash')+'</button>'+
+        '<div class="dt-actions"><button class="icon-btn open" onclick="loadCalcEntry(\''+c.id+'\')" title="'+t.openEntry+'">'+ic('edit')+'</button>'+
+        '<button class="icon-btn" onclick="askDeleteCalc(\''+c.id+'\')" title="'+t.delete+'">'+ic('trash')+'</button></div>'+
         '</div>';
     }).join('');
     content+='</div>';
@@ -2146,8 +2167,43 @@ function recalc(){
 
 function fieldLabel(k){
   const t=T[lang];
-  const map={cogs:'fCogs',unit_cogs:'fUnitCogs',product_cost_delivered:'fProductCostDelivered',product_loss_failed:'fProductLossFailed',livraison:'fLivraison',shipping_unit:'fShippingUnit',delivery_cost_delivered:'fDeliveryCostDelivered',delivery_cost_failed:'fDeliveryCostFailed',retours:'fRetours',return_cost_unit:'fReturnCostUnit',packaging:'fPackaging',packaging_unit:'fPackagingUnit',packaging_cost_shipped:'fPackagingCostShipped',fb_ads:'fFbAds',tik_ads:'fTikAds',autres_ads:'fAutresAds',shopify:'fShopify',cmi:'fCmi',autres_frais:'fAutresFrais',equipement:'fEquipement',logiciels:'fLogiciels',montage:'fMontage',creator_team:'fCreatorTeam',promotion:'fPromotion',commission:'fCommissionAgence',autres_creator_cost:'fCreatorOtherCost',platform_cut:'fPlatformeCut',virement:'fVirement',sous_traitants:'fSousTraitants',logiciels_f:'fLogicielsF',coworking:'fCoworking',formation:'fFormation',autres_f:'fAutresF'};
+  const map={order_price:'fOrderPrice',delivered_orders:'fDeliveredOrders',failed_orders:'fFailedOrders',shipped_orders:'metricShippedOrders',cogs:'fCogs',unit_cogs:'fUnitCogs',product_cost_delivered:'fProductCostDelivered',product_loss_failed:'fProductLossFailed',livraison:'fLivraison',shipping_unit:'fShippingUnit',delivery_cost_delivered:'fDeliveryCostDelivered',delivery_cost_failed:'fDeliveryCostFailed',retours:'fRetours',return_cost_unit:'fReturnCostUnit',packaging:'fPackaging',packaging_unit:'fPackagingUnit',packaging_cost_shipped:'fPackagingCostShipped',fb_ads:'fFbAds',tik_ads:'fTikAds',autres_ads:'fAutresAds',shopify:'fShopify',cmi:'fCmi',autres_frais:'fAutresFrais',creator_pieces:'fCreatorPieces',adsense:'fAdsense',tiktok_rev:'fTiktokRev',sponsors:'fSponsors',affiliate_rev:'fAffiliateRev',merch:'fMerch',autres_rev:'fAutresRev',equipement:'fEquipement',logiciels:'fLogiciels',montage:'fMontage',creator_team:'fCreatorTeam',promotion:'fPromotion',commission:'fCommissionAgence',autres_creator_cost:'fCreatorOtherCost',direct_revenue:'fDirectRevenue',platform_revenue:'fPlatformRevenue',retainer_revenue:'fRetainerRevenue',other_service_revenue:'fOtherServiceRevenue',billable_hours:'fBillableHours',active_clients:'fActiveClients',platform_cut:'fPlatformeCut',virement:'fVirement',sous_traitants:'fSousTraitants',logiciels_f:'fLogicielsF',coworking:'fCoworking',formation:'fFormation',autres_f:'fAutresF'};
   return t[map[k]]||k;
+}
+
+const DETAIL_FIELD_ORDER={
+  ecom:['order_price','delivered_orders','failed_orders','product_cost_delivered','product_loss_failed','delivery_cost_delivered','delivery_cost_failed','packaging_cost_shipped','fb_ads','tik_ads','autres_ads','shopify','cmi','autres_frais'],
+  creator:['creator_pieces','adsense','tiktok_rev','sponsors','affiliate_rev','merch','autres_rev','equipement','logiciels','montage','creator_team','promotion','commission','autres_creator_cost'],
+  freelancer:['direct_revenue','platform_revenue','retainer_revenue','other_service_revenue','billable_hours','active_clients','platform_cut','virement','sous_traitants','logiciels_f','coworking','formation','autres_f']
+};
+function detailValue(k,v,cur){
+  const t=T[lang];
+  const pct=['cmi','commission','platform_cut'].includes(k);
+  const qty={delivered_orders:t.qtySuffix,failed_orders:t.qtySuffix,shipped_orders:t.qtySuffix,creator_pieces:t.contentSuffix,billable_hours:t.hoursSuffix,active_clients:t.clientsSuffix};
+  if(pct)return fmt(v)+'%';
+  if(qty[k])return fmt(v)+' '+qty[k];
+  return fmt(v)+' '+cur;
+}
+function calcInputRows(p,c){
+  const cur=calcCurrency(p,c),details=normalizeDetails(p.business_type,c?.details||{});
+  const hidden=new Set(['_currency','_model_version','_period_type','_calc_date','_buckets']);
+  const keys=[...(DETAIL_FIELD_ORDER[p.business_type]||[]),...Object.keys(details).filter(k=>!hidden.has(k))]
+    .filter((k,i,a)=>a.indexOf(k)===i&&!hidden.has(k));
+  return keys.map(k=>[k,Math.max(0,parseFloat(details[k])||0)])
+    .filter(pair=>pair[1]>0)
+    .map(pair=>'<div class="hist-detail"><span>'+esc(fieldLabel(pair[0]))+'</span><b>'+detailValue(pair[0],pair[1],cur)+'</b></div>')
+    .join('');
+}
+function calcBreakdownHtml(p,c){
+  const t=T[lang],rows=calcInputRows(p,c);
+  return '<div class="hist-breakdown"><div class="hist-break-title">'+t.inputBreakdown+'</div>'+
+    (rows?'<div class="hist-detail-grid">'+rows+'</div>':'<div class="hist-detail-empty">'+t.noInputData+'</div>')+'</div>';
+}
+function loadCalcEntry(cid){
+  const p=projects.find(proj=>(proj.calculations||[]).some(c=>c.id===cid));
+  if(!p)return;
+  curProj=p;
+  loadCalc(cid);
 }
 
 async function saveCalc(){
@@ -2191,11 +2247,12 @@ function renderHistory(){
       const d=new Date(c.calc_date||c.created_at).toLocaleDateString(lang==='ar'?'ar-MA':lang==='fr'?'fr-FR':'en-GB',{day:'2-digit',month:'short',year:'numeric'});
       const periodKey='period'+String(c.details?._period_type||'').replace(/^./,x=>x.toUpperCase());
       const period=t[periodKey]?t[periodKey]+' · ':'';
-      return '<div class="hist-row"><div class="hist-date">'+d+'</div>'+
+      return '<div class="hist-card"><div class="hist-row"><div class="hist-date">'+d+'</div>'+
         '<div class="hist-mid"><div class="hist-profit '+(c.net_profit>=0?'pos':'neg')+'">'+fmt(c.net_profit)+' '+calcCurrency(curProj,c)+'</div>'+
         '<div class="hist-meta">'+period+t.ca+' '+fmt(c.revenue)+' &middot; '+t.margin+' '+(c.margin_percent||0)+'%</div></div>'+
         '<div class="hist-actions"><button class="icon-btn" onclick="loadCalc(\''+c.id+'\')" title="'+t.loadCalc+'">'+ic('edit')+'</button>'+
-        '<button class="icon-btn" onclick="askDeleteCalc(\''+c.id+'\')" title="'+t.delete+'">'+ic('trash')+'</button></div></div>';
+        '<button class="icon-btn" onclick="askDeleteCalc(\''+c.id+'\')" title="'+t.delete+'">'+ic('trash')+'</button></div></div>'+
+        calcBreakdownHtml(curProj,c)+'</div>';
     }).join('');
   if(hidden)h+='<div class="history-limit"><span>'+tpl(t.historyLimitNotice,{n:hidden})+'</span><button onclick="openUpgrade()">'+t.upgrade+'</button></div>';
   el.innerHTML=h;
