@@ -2332,6 +2332,12 @@ async function saveCalc(){
   renderAll();
 }
 
+function calcIsVisible(c){
+  if(!curProj)return false;
+  if(hasFullVisibility())return true;
+  return visibleCalcs(curProj).some(x=>x.id===c.id);
+}
+
 function renderHistory(){
   const el=document.getElementById('calc-hist');if(!el)return;
   const t=T[lang];
