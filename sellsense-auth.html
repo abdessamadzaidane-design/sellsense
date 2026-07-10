@@ -165,7 +165,6 @@ nav{background:rgba(24,5,12,.93);border-bottom-color:rgba(216,173,61,.18);}
     <div class="lang-sw">
       <button class="lbtn active" data-lang="en" onclick="setL('en')" aria-pressed="true">EN</button>
       <button class="lbtn" data-lang="fr" onclick="setL('fr')" aria-pressed="false">FR</button>
-      <button class="lbtn" data-lang="ar" onclick="setL('ar')" aria-pressed="false">AR</button>
     </div>
   </div>
 </nav>
@@ -250,7 +249,7 @@ nav{background:rgba(24,5,12,.93);border-bottom-color:rgba(216,173,61,.18);}
 <script>
 const {createClient}=supabase;
 const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-let lang=['en','fr','ar'].includes(localStorage.getItem('sellsense-lang'))?localStorage.getItem('sellsense-lang'):'en',selType=null;
+let lang=['en','fr'].includes(localStorage.getItem('sellsense-lang'))?localStorage.getItem('sellsense-lang'):'en',selType=null;
 const requestedPlan=new URLSearchParams(location.search).get('plan');
 if(['monthly','annual'].includes(requestedPlan))localStorage.setItem('sellsense-upgrade-intent',requestedPlan);
 function dashboardUrl(){
@@ -396,6 +395,7 @@ const TX={
 };
 
 function setL(l){
+  if(!['en','fr'].includes(l))l='en';
   lang=l;
   localStorage.setItem('sellsense-lang',l);
   document.querySelectorAll('.lbtn[data-lang]').forEach(b=>{
@@ -403,8 +403,8 @@ function setL(l){
     b.classList.toggle('active',active);
     b.setAttribute('aria-pressed',String(active));
   });
-  document.documentElement.setAttribute('dir',l==='ar'?'rtl':'ltr');
-  document.body.setAttribute('dir',l==='ar'?'rtl':'ltr');
+  document.documentElement.setAttribute('dir','ltr');
+  document.body.setAttribute('dir','ltr');
   document.documentElement.setAttribute('lang',l);
   applyTX();
 }
