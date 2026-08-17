@@ -417,6 +417,7 @@ svg{display:block;}
 .sl-logo{gap:12px;}
 .sl-symbol{width:40px;height:40px;position:relative;display:inline-grid;place-items:center;flex:0 0 auto;border-radius:13px;background:linear-gradient(145deg,#731936,#260711);border:1px solid rgba(216,173,61,.72);box-shadow:0 8px 24px rgba(20,2,8,.48),inset 0 0 0 1px rgba(255,255,255,.05);}
 .brand-star{width:28px;height:28px;position:relative;display:block;background:var(--star-outline) center/contain no-repeat;clip-path:none;}
+.brand-star{width:28px;height:28px;position:relative;display:block;background:var(--star-outline) center/contain no-repeat;clip-path:none;}
 .brand-star::after{content:none;}
 .sl-name{position:relative;letter-spacing:-.045em;}.sl-name span{color:var(--gold);}
 .sl-name::after{content:"";position:absolute;left:1px;right:0;bottom:-4px;height:1px;background:linear-gradient(90deg,var(--gold),transparent 82%);opacity:.72;}
@@ -499,6 +500,7 @@ svg{display:block;}
     <div class="view" id="view-calc"></div>
     <div class="view" id="view-analytics"></div>
     <div class="view" id="view-daily"></div>
+    <div class="view" id="view-billing"></div>
   </div>
 </div>
 
@@ -514,9 +516,36 @@ svg{display:block;}
     <div class="mf"><label data-t="projectName">Project name</label><input class="minput" type="text" id="pname" placeholder="e.g. My Shopify Store"/></div>
     <div class="mf"><label data-t="currency">Currency</label>
       <select class="mselect" id="pdevise">
-        <option value="MAD" data-t="currencyMad">MAD — Moroccan Dirham</option>
-        <option value="USD" data-t="currencyUsd">USD — US Dollar</option>
-        <option value="EUR" data-t="currencyEur">EUR — Euro</option>
+        <option value="AED">AED — UAE Dirham</option>
+        <option value="AUD">AUD — Australian Dollar</option>
+        <option value="BRL">BRL — Brazilian Real</option>
+        <option value="CAD">CAD — Canadian Dollar</option>
+        <option value="CHF">CHF — Swiss Franc</option>
+        <option value="CNY">CNY — Chinese Yuan</option>
+        <option value="DZD">DZD — Algerian Dinar</option>
+        <option value="EGP">EGP — Egyptian Pound</option>
+        <option value="EUR">EUR — Euro</option>
+        <option value="GBP">GBP — British Pound</option>
+        <option value="INR">INR — Indian Rupee</option>
+        <option value="JPY">JPY — Japanese Yen</option>
+        <option value="KRW">KRW — South Korean Won</option>
+        <option value="MAD">MAD — Moroccan Dirham</option>
+        <option value="MXN">MXN — Mexican Peso</option>
+        <option value="NGN">NGN — Nigerian Naira</option>
+        <option value="NOK">NOK — Norwegian Krone</option>
+        <option value="NZD">NZD — New Zealand Dollar</option>
+        <option value="PHP">PHP — Philippine Peso</option>
+        <option value="PKR">PKR — Pakistani Rupee</option>
+        <option value="PLN">PLN — Polish Zloty</option>
+        <option value="RUB">RUB — Russian Ruble</option>
+        <option value="SAR">SAR — Saudi Riyal</option>
+        <option value="SEK">SEK — Swedish Krona</option>
+        <option value="SGD">SGD — Singapore Dollar</option>
+        <option value="THB">THB — Thai Baht</option>
+        <option value="TRY">TRY — Turkish Lira</option>
+        <option value="USD">USD — US Dollar</option>
+        <option value="ZAR">ZAR — South African Rand</option>
+      </select>
       </select>
     </div>
     <div class="modal-btns">
@@ -582,6 +611,7 @@ const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 /* ════════ ICONS (inline SVG — no emoji, encoding-proof) ════════ */
 const P={
   grid:'<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>',
+  card:'<rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="15" x2="10" y2="15"/>',
   folder:'<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>',
   bars:'<line x1="6" y1="20" x2="6" y2="14"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="10"/>',
   calendar:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
@@ -695,9 +725,6 @@ const T={
     "typeEcom": "E-commerce / COD",
     "typeCreator": "Content Creator",
     "typeFreelancer": "Freelancer",
-    "currencyMad": "MAD — Moroccan dirham",
-    "currencyUsd": "USD — US dollar",
-    "currencyEur": "EUR — Euro",
     "cancel": "Cancel",
     "delete": "Delete",
     "confirmTitle": "Confirm action",
@@ -712,7 +739,7 @@ const T={
     "trialDaysLeft": "{n} days left",
     "accessKicker": "Your plan",
     "accessTitleTrial": "Full visibility is open",
-    "accessSubTrial": "You have {n} days of full visibility left. Premium unlocks unlimited projects and insights for $10/month.",
+    "accessSubTrial": "You have {n} days of full visibility left. Premium unlocks unlimited projects and insights for $9.99/month.",
     "accessTitleExpired": "Your Pro trial ended",
     "accessSubExpired": "Free keeps 1 active project and the latest 3 saved periods. Upgrade for complete history.",
     "accessTitlePremium": "Premium is active",
@@ -925,9 +952,6 @@ const T={
     "typeEcom": "E-commerce / COD",
     "typeCreator": "Créateur de contenu",
     "typeFreelancer": "Freelance",
-    "currencyMad": "MAD — Dirham marocain",
-    "currencyUsd": "USD — Dollar américain",
-    "currencyEur": "EUR — Euro",
     "cancel": "Annuler",
     "delete": "Supprimer",
     "confirmTitle": "Confirmer l'action",
@@ -942,7 +966,7 @@ const T={
     "trialDaysLeft": "{n} jours restants",
     "accessKicker": "Votre offre",
     "accessTitleTrial": "La visibilité complète est ouverte",
-    "accessSubTrial": "Il vous reste {n} jours de visibilité complète. Premium débloque les projets et analyses illimités pour 10 $/mois.",
+    "accessSubTrial": "Il vous reste {n} jours de visibilité complète. Premium débloque les projets et analyses illimités pour 9,99 $/mois.",
     "accessTitleExpired": "Votre essai Pro est termine",
     "accessSubExpired": "L'offre gratuite garde 1 projet actif et les 3 dernières périodes sauvegardées.",
     "accessTitlePremium": "Premium est actif",
@@ -1156,9 +1180,6 @@ const T={
     "typeEcom": "تجارة إلكترونية / COD",
     "typeCreator": "صانع محتوى",
     "typeFreelancer": "فريلانسر",
-    "currencyMad": "MAD — الدرهم المغربي",
-    "currencyUsd": "USD — الدولار الأمريكي",
-    "currencyEur": "EUR — الأورو",
     "cancel": "إلغاء",
     "delete": "حذف",
     "confirmTitle": "أكد العملية",
@@ -1173,7 +1194,7 @@ const T={
     "trialDaysLeft": "{n} أيام باقيين",
     "accessKicker": "الخطة ديالك",
     "accessTitleTrial": "الرؤية كاملة محلولة دابا",
-    "accessSubTrial": "باقي {n} أيام فالرؤية الكاملة. Premium بـ 10$ فالشهر كيعطيك مشاريع وتحليلات بلا حدود.",
+    "accessSubTrial": "باقي {n} أيام فالرؤية الكاملة. Premium بـ 9.99$ فالشهر كيعطيك مشاريع وتحليلات بلا حدود.",
     "accessTitleExpired": "7 أيام ديال الرؤية سالات",
     "accessSubExpired": "الخطة المجانية كتخلي مشروع واحد وآخر 3 فترات محفوظة.",
     "accessTitlePremium": "Premium خدام",
@@ -1327,7 +1348,7 @@ const BUCKET_COLOR={product:'#9B2C4D',shipping:'#F4CA5B',marketing:'#65152F',fee
 const BUCKET_KEY={product:'bProduct',shipping:'bShipping',marketing:'bMarketing',fees:'bFees',tools:'bTools',production:'bProduction',team:'bTeam',other:'bOther'};
 
 /* ════════ STATE ════════ */
-let lang=['en','fr'].includes(localStorage.getItem('sellsense-lang'))?localStorage.getItem('sellsense-lang'):'en',user=null,profile=null,billing=null,billingReady=false,projects=[],curProj=null,curDevise='MAD',overviewCur='MAD',newType=null,curView='overview',confirmCb=null,calcWorkingDetails=null;
+let lang=['en','fr'].includes(localStorage.getItem('sellsense-lang'))?localStorage.getItem('sellsense-lang'):'en',user=null,profile=null,billing=null,billingReady=false,projects=[],curProj=null,curDevise=lang==='fr'?'EUR':'USD',overviewCur=lang==='fr'?'EUR':'USD',newType=null,curView='overview',confirmCb=null,calcWorkingDetails=null;
 const charts={};
 const TRIAL_DAYS=14;
 const FREE_PROJECT_LIMIT=1;
@@ -1469,6 +1490,38 @@ function renderAccessStatus(){
   const days=trialDaysLeft();
   el.innerHTML='<span>'+(days>0?tpl(t.trialDaysLeft,{n:days}):t.freePlan)+'</span><button onclick="openUpgrade()">'+t.upgrade+'</button>';
 }
+function renderBilling(){
+  const el=document.getElementById('view-billing');if(!el)return;
+  const t=T[lang];
+  const days=trialDaysLeft();
+  const admin=isTesterAccess();
+  const pro=isPremium()&&!admin;
+  const trial=!isPremium()&&days>0;
+  const planName=admin?t.planAdmin:pro?t.planPro:trial?t.planTrial:t.planFree;
+  let statusLine;
+  if(admin)statusLine=t.billingAdminNote;
+  else if(pro)statusLine=billing&&billing.current_period_end?tpl(t.renewsOn,{d:new Date(billing.current_period_end).toLocaleDateString(lang==='fr'?'fr-FR':'en-US',{year:'numeric',month:'long',day:'numeric'})}):t.billingProNote;
+  else if(trial)statusLine=tpl(t.trialDaysLeft,{n:days});
+  else statusLine=t.billingFreeNote;
+  const canPortal=!!(billing&&billing.stripe_customer_id);
+  let actions='';
+  if(canPortal)actions+='<button class="btn-modal pri" onclick="openBillingPortal()">'+t.managePlan+'</button>';
+  if(!isPremium())actions+='<button class="btn-modal'+(canPortal?'':' pri')+'" onclick="openUpgrade()">'+t.upgrade+'</button>';
+  el.innerHTML=
+    '<div class="upgrade-grid" style="grid-template-columns:1fr;max-width:640px">'+
+      '<div class="upgrade-card premium"><h4>'+t.currentPlan+'</h4>'+
+        '<div class="upgrade-price" style="font-size:28px">'+planName+'</div>'+
+        '<div class="upgrade-note" style="text-align:start;margin:0 0 14px">'+statusLine+'</div>'+
+        (actions?'<div class="upgrade-actions" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">'+actions+'</div>':'')+
+      '</div>'+
+      '<div class="upgrade-card"><h4>'+t.billingHelpTitle+'</h4>'+
+        '<div class="upgrade-list">'+
+          '<div><b>&middot;</b><span>'+t.billingHelpPortal+'</span></div>'+
+          '<div><b>&middot;</b><span>'+t.billingHelpInvoices+'</span></div>'+
+          '<div><b>&middot;</b><span>'+t.billingHelpSupport+'</span></div>'+
+        '</div></div>'+
+    '</div>';
+}
 
 function availableCurrencies(){
   const calcs=allCalcs(),found=new Set(calcs.map(c=>c._cur));
@@ -1478,16 +1531,12 @@ function availableCurrencies(){
 function preferredCurrency(){
   const currencies=availableCurrencies();
   if(currencies.includes(overviewCur))return overviewCur;
-  if(currencies.includes('MAD'))return 'MAD';
+  if(currencies.includes(lang==='fr'?'EUR':'USD'))return lang==='fr'?'EUR':'USD';
   if(profile&&currencies.includes(profile.currency))return profile.currency;
-  return currencies[0]||(profile&&profile.currency)||'MAD';
+  return currencies[0]||(profile&&profile.currency)||(lang==='fr'?'EUR':'USD');
 }
 function currencySwitch(){
-  const currencies=availableCurrencies(),active=preferredCurrency();
-  if(currencies.length<2)return '';
-  return '<div class="overview-currency" aria-label="Overview currency">'+currencies.map(c=>
-    '<button class="overview-cur-btn'+(c===active?' active':'')+'" onclick="setOverviewCurrency(\''+c+'\')">'+c+'</button>'
-  ).join('')+'</div>';
+  return '';
 }
 function mixedPeriodWarning(currency){
   const periods=new Set();
@@ -1548,7 +1597,7 @@ function expenseBuckets(currency){
 function buildSidebar(){
   const t=T[lang];
   const items=[
-    ['overview','grid'],['projects','folder'],['analytics','bars'],['daily','calendar']
+    ['overview','grid'],['projects','folder'],['analytics','bars'],['daily','calendar'],['billing','card']
   ];
   let h='<span class="nl">'+t.main+'</span>';
   items.forEach(([v,i])=>{
@@ -1573,6 +1622,7 @@ function renderAll(){
   renderProjects();
   renderAnalytics();
   renderDaily();
+  renderBilling();
   drawCharts(curView);
 }
 
@@ -2034,8 +2084,6 @@ function renderCalc(){
   let h='<div class="calc-head">'+
     '<button class="btn-ghost" onclick="showView(\'projects\')">'+ic('arrowL')+t.back+'</button>'+
     '<div><div class="calc-name">'+esc(p.name)+'</div><div class="calc-type">'+t[tkey[p.business_type]]+'</div></div></div>';
-  h+='<div class="devise-row">'+['MAD','USD','EUR'].map(d=>
-    '<button class="devise-btn'+(d===curDevise?' active':'')+'" onclick="setDevise(\''+d+'\')">'+d+'</button>').join('')+'</div>';
   h+='<div class="calc-context"><label>'+t.reportingPeriod+'<select id="calc-period" onchange="recalc()">'+
     '<option value="day">'+t.periodDay+'</option><option value="week">'+t.periodWeek+'</option><option value="month">'+t.periodMonth+'</option><option value="project">'+t.periodProject+'</option></select></label>'+
     '<label>'+t.periodEnd+'<input type="date" id="calc-date" onchange="recalc()"/></label></div>';
@@ -2105,7 +2153,6 @@ function setDevise(d){
   calcWorkingDetails=null;
   overviewCur=d;
   curProj.currency=d;
-  document.querySelectorAll('.devise-btn').forEach(b=>b.classList.toggle('active',b.textContent.trim()===d));
   document.getElementById('rp-cur').textContent=d;
   buildFields();
 }
@@ -2379,7 +2426,7 @@ function openAdd(){
   if(!canCreateProject()){openUpgrade('project');return;}
   newType=null;
   document.getElementById('pname').value='';
-  document.getElementById('pdevise').value='MAD';
+  document.getElementById('pdevise').value=lang==='fr'?'EUR':'USD';
   document.getElementById('add-err').classList.remove('show');
   document.querySelectorAll('.tc').forEach(c=>c.classList.remove('sel'));
   openM('add-modal');
@@ -2476,14 +2523,14 @@ async function openBillingPortal(){
 /* ════════ VIEWS / UI ════════ */
 function showView(v){
   curView=v;
-  ['overview','projects','calc','analytics','daily'].forEach(x=>{
+  ['overview','projects','calc','analytics','daily','billing'].forEach(x=>{
     document.getElementById('view-'+x).classList.toggle('active',x===v);
   });
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
   const nav=document.getElementById('nav-'+v);
   if(nav)nav.classList.add('active');
   const t=T[lang];
-  const titles={overview:t.overview,projects:t.projects,calc:curProj?curProj.name:t.projects,analytics:t.analyticsTitle,daily:t.dailyTitle};
+  const titles={overview:t.overview,projects:t.projects,calc:curProj?curProj.name:t.projects,analytics:t.analyticsTitle,daily:t.dailyTitle,billing:t.billingTitle};
   document.getElementById('topbar-title').textContent=titles[v]||'';
   drawCharts(v);
   if(window.innerWidth<=760)document.getElementById('sidebar').classList.remove('open');
@@ -2520,6 +2567,21 @@ function setLang(l){
 
 /* ════════ START ════════ */
 Object.assign(T.en,{
+  billing:"Billing",
+  billingTitle:"Billing & subscription",
+  currentPlan:"Current plan",
+  planFree:"Free",
+  planPro:"Founding Pro",
+  planTrial:"Premium trial",
+  planAdmin:"Owner access",
+  renewsOn:"Renews on {d}",
+  billingAdminNote:"Full access - owner account. No payment required.",
+  billingProNote:"Your Founding Pro subscription is active.",
+  billingFreeNote:"You are on the Free plan: 1 active project and the latest 3 saved periods. Upgrade for unlimited projects and complete history.",
+  billingHelpTitle:"Manage your billing",
+  billingHelpPortal:"Update your payment method or cancel anytime through the secure Stripe portal.",
+  billingHelpInvoices:"Download invoices and receipts from the portal's invoice history.",
+  billingHelpSupport:"Questions about a charge? Contact support@sellsenseapp.com.",
   fullAccessBeta:"Billing setup pending - full access",
   accessTitleTrial:"Your Pro trial is active",
   accessSubTrial:"You have {n} days of Pro left. Keep unlimited projects, complete history and insights with Founding Pro.",
@@ -2548,6 +2610,21 @@ Object.assign(T.en,{
   testerAccess:"Product testing access - unlimited"
 });
 Object.assign(T.fr,{
+  billing:"Facturation",
+  billingTitle:"Facturation et abonnement",
+  currentPlan:"Forfait actuel",
+  planFree:"Gratuit",
+  planPro:"Founding Pro",
+  planTrial:"Essai Premium",
+  planAdmin:"Accès propriétaire",
+  renewsOn:"Renouvellement le {d}",
+  billingAdminNote:"Accès complet - compte propriétaire. Aucun paiement requis.",
+  billingProNote:"Votre abonnement Founding Pro est actif.",
+  billingFreeNote:"Vous êtes sur le forfait Gratuit : 1 projet actif et les 3 dernières périodes sauvegardées. Passez à Pro pour des projets et un historique illimités.",
+  billingHelpTitle:"Gérer votre facturation",
+  billingHelpPortal:"Modifiez votre moyen de paiement ou annulez à tout moment via le portail sécurisé Stripe.",
+  billingHelpInvoices:"Téléchargez vos factures et reçus depuis l'historique du portail.",
+  billingHelpSupport:"Une question sur un paiement ? Écrivez à support@sellsenseapp.com.",
   fullAccessBeta:"Configuration du paiement en cours - acces complet",
   accessTitleTrial:"Votre essai Pro est actif",
   accessSubTrial:"Il vous reste {n} jours de Pro. Gardez les projets illimites, l'historique complet et les analyses avec Founding Pro.",
@@ -2576,6 +2653,21 @@ Object.assign(T.fr,{
   testerAccess:"Acces test produit - illimite"
 });
 Object.assign(T.ar,{
+  billing:"الفوترة",
+  billingTitle:"الفوترة والاشتراك",
+  currentPlan:"الخطة الحالية",
+  planFree:"مجانية",
+  planPro:"Founding Pro",
+  planTrial:"تجربة Premium",
+  planAdmin:"وصول المالك",
+  renewsOn:"يتجدد في {d}",
+  billingAdminNote:"وصول كامل - حساب المالك. بلا أداء.",
+  billingProNote:"اشتراكك Founding Pro خدام.",
+  billingFreeNote:"راك على الخطة المجانية: مشروع واحد نشيط وآخر 3 فترات محفوظة. دير الترقية باش تحل مشاريع وسجل بلا حدود.",
+  billingHelpTitle:"تدبير الفوترة",
+  billingHelpPortal:"بدل وسيلة الأداء ولا ألغي في أي وقت عبر بوابة Stripe الآمنة.",
+  billingHelpInvoices:"حمل الفواتير والإيصالات من سجل الفواتير فالبوابة.",
+  billingHelpSupport:"عندك سؤال على شي أداء؟ راسل support@sellsenseapp.com.",
   fullAccessBeta:"إعداد الأداء باقي خدام - الولوج كامل",
   accessTitleTrial:"تجربة Pro ديالك خدامة",
   accessSubTrial:"باقي ليك {n} أيام فـ Pro. خليك بالمشاريع بلا حدود، السجل كامل، والتحليلات مع Founding Pro.",

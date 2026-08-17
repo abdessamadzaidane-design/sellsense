@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /sellsense-dashboard.html
+Disallow: /sellsense-auth.html
+
+Sitemap: https://www.sellsenseapp.com/sitemap.xml

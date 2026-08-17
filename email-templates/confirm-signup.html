@@ -1,0 +1,58 @@
+<!-- SellSense — Supabase "Confirm signup" email template
+     Paste into: Supabase Dashboard → Authentication → Emails → Confirm signup
+     Suggested subject line:  Welcome to SellSense — confirm your email ✨
+-->
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#1B080F;padding:32px 16px;">
+  <tr><td align="center">
+    <table width="560" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;width:100%;">
+
+      <!-- Header -->
+      <tr><td align="center" style="padding:8px 0 24px;">
+        <span style="font-family:Georgia,serif;font-size:26px;color:#FFF8F2;font-weight:bold;">Sell<span style="color:#F4CA5B;">Sense</span></span>
+      </td></tr>
+
+      <!-- Card -->
+      <tr><td style="background-color:#4B1023;border-radius:14px;padding:36px 32px;">
+        <h1 style="font-family:Georgia,serif;color:#FFF8F2;font-size:22px;margin:0 0 14px;">Welcome aboard 👋</h1>
+        <p style="font-family:Arial,Helvetica,sans-serif;color:#F2DDD1;font-size:15px;line-height:1.7;margin:0 0 12px;">
+          Thanks for joining <strong style="color:#FFF8F2;">SellSense</strong> — the profit tracker built for Africa's
+          e-commerce sellers, freelancers and content creators.
+        </p>
+        <p style="font-family:Arial,Helvetica,sans-serif;color:#F2DDD1;font-size:15px;line-height:1.7;margin:0 0 26px;">
+          One quick step: confirm your email address and your dashboard is ready.
+        </p>
+        <table cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 26px;">
+          <tr><td align="center" style="background-color:#F4CA5B;border-radius:9px;">
+            <a href="{{ .ConfirmationURL }}" target="_blank"
+               style="display:inline-block;padding:14px 34px;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:bold;color:#1B080F;text-decoration:none;">
+              Confirm my email
+            </a>
+          </td></tr>
+        </table>
+        <p style="font-family:Arial,Helvetica,sans-serif;color:#C9A79B;font-size:13px;line-height:1.6;margin:0;">
+          Once you're in, you'll see exactly what your business really keeps — what comes in, what goes out,
+          and what truly remains. No more guessing.
+        </p>
+      </td></tr>
+
+      <!-- Fallback link -->
+      <tr><td style="padding:20px 8px 0;">
+        <p style="font-family:Arial,Helvetica,sans-serif;color:#8A6A5E;font-size:12px;line-height:1.6;margin:0;">
+          Button not working? Copy and paste this link into your browser:<br/>
+          <a href="{{ .ConfirmationURL }}" style="color:#F4CA5B;word-break:break-all;">{{ .ConfirmationURL }}</a>
+        </p>
+      </td></tr>
+
+      <!-- Footer -->
+      <tr><td align="center" style="padding:26px 8px 0;">
+        <p style="font-family:Arial,Helvetica,sans-serif;color:#8A6A5E;font-size:12px;line-height:1.7;margin:0;">
+          You're receiving this because an account was created on
+          <a href="https://www.sellsenseapp.com" style="color:#F4CA5B;text-decoration:none;">sellsenseapp.com</a>
+          with this address. If it wasn't you, you can safely ignore this email.<br/>
+          © 2026 SellSense · Questions? <a href="mailto:support@sellsenseapp.com" style="color:#F4CA5B;text-decoration:none;">support@sellsenseapp.com</a>
+        </p>
+      </td></tr>
+
+    </table>
+  </td></tr>
+</table>

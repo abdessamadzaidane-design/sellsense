@@ -68,6 +68,12 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:48px 
 
 .field{margin-bottom:14px;}
 label{display:block;font-size:13px;color:var(--text-2);font-weight:500;margin-bottom:7px;}
+.pw-wrap{position:relative;}
+.pw-wrap input{padding-right:44px;}
+.pw-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;transition:color .2s;}
+.pw-toggle:hover{color:var(--text);}
+.pw-toggle .icn{width:18px;height:18px;}
+
 input[type="text"],input[type="email"],input[type="password"]{width:100%;background:var(--bg-2);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:var(--fb);font-size:15px;transition:all .2s;}
 input::placeholder{color:var(--muted-2);}
 input:focus{outline:none;border-color:var(--blue);background:var(--surface);}
@@ -134,6 +140,8 @@ nav{background:rgba(24,5,12,.93);border-bottom-color:rgba(216,173,61,.18);}
 .logo-symbol{width:40px;height:40px;position:relative;display:inline-grid;place-items:center;flex:0 0 auto;border-radius:13px;background:linear-gradient(145deg,#731936,#260711);border:1px solid rgba(216,173,61,.72);box-shadow:0 8px 24px rgba(20,2,8,.48),inset 0 0 0 1px rgba(255,255,255,.05);}
 .brand-star{width:28px;height:28px;position:relative;display:block;background:var(--star-outline) center/contain no-repeat;clip-path:none;}
 .brand-star::after{content:none;}
+.brand-star{width:28px;height:28px;position:relative;display:block;background:var(--star-outline) center/contain no-repeat;clip-path:none;}
+.brand-star::after{content:none;}
 .logo-name{position:relative;letter-spacing:-.045em;}.logo-name span{color:var(--gold);}
 .logo-name::after{content:"";position:absolute;left:1px;right:0;bottom:-4px;height:1px;background:linear-gradient(90deg,var(--gold),transparent 82%);opacity:.72;}
 [dir="rtl"] .logo-name::after{background:linear-gradient(270deg,var(--gold),transparent 82%);}
@@ -196,7 +204,7 @@ nav{background:rgba(24,5,12,.93);border-bottom-color:rgba(216,173,61,.18);}
       </button>
       <div class="or"><span id="or-txt">or</span></div>
       <div class="field"><label id="lbl-email" for="le">Email</label><input type="email" id="le" autocomplete="email" placeholder="you@example.com"/></div>
-      <div class="field"><label id="lbl-pass" for="lp">Password</label><input type="password" id="lp" autocomplete="current-password" placeholder="********"/></div>
+      <div class="field"><label id="lbl-pass" for="lp">Password</label><div class="pw-wrap"><input type="password" id="lp" autocomplete="current-password" placeholder="********"/><button type="button" class="pw-toggle" onclick="togglePw('lp',this)" aria-label="Show password"><svg class="icn" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
       <button class="forgot-btn" onclick="sv('forgot')" id="forgot-txt">Forgot password?</button>
       <button class="btn-p" id="bl" onclick="doLogin()"><span class="bt" id="btn-login-txt">Log in</span><div class="sp"></div></button>
       <p class="terms"><span id="no-acc-txt">No account yet?</span> <a onclick="sw('signup')" id="signup-link-txt">Sign up free</a></p>
@@ -213,7 +221,7 @@ nav{background:rgba(24,5,12,.93);border-bottom-color:rgba(216,173,61,.18);}
       <div class="or"><span id="or-txt2">or</span></div>
       <div class="field"><label id="lbl-name" for="sn">Full name</label><input type="text" id="sn" autocomplete="name" placeholder="Your name"/></div>
       <div class="field"><label id="lbl-email2" for="se">Email</label><input type="email" id="se" autocomplete="email" placeholder="you@example.com"/></div>
-      <div class="field"><label id="lbl-pass2" for="sp">Password (min. 8 characters)</label><input type="password" id="sp" autocomplete="new-password" placeholder="********"/></div>
+      <div class="field"><label id="lbl-pass2" for="sp">Password (min. 8 characters)</label><div class="pw-wrap"><input type="password" id="sp" autocomplete="new-password" placeholder="********"/><button type="button" class="pw-toggle" onclick="togglePw('sp',this)" aria-label="Show password"><svg class="icn" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
       <div class="field">
         <label id="lbl-type">I am a...</label>
         <div class="tgrid">
@@ -450,6 +458,16 @@ function applyTX(){
 
 sb.auth.getSession().then(({data:{session}})=>{if(session)location.href=dashboardUrl();});
 sb.auth.onAuthStateChange((ev,session)=>{if(ev==='SIGNED_IN'&&session){ok();setTimeout(()=>location.href=dashboardUrl(),1400);}});
+
+function togglePw(inputId,btn){
+  const inp=document.getElementById(inputId);
+  const isPw=inp.type==='password';
+  inp.type=isPw?'text':'password';
+  btn.setAttribute('aria-label',isPw?'Hide password':'Show password');
+  btn.innerHTML=isPw
+    ?'<svg class="icn" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+    :'<svg class="icn" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+}
 
 function sw(tab){
   const isLogin=tab==='login';
